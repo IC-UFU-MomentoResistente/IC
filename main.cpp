@@ -13,6 +13,6 @@ int main() {
    iniciarInterface();  
    iniciarLoop();
    limpeza();
-
+// DevLunarti branch
     return 0;
 }

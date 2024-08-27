@@ -6,6 +6,7 @@
 #include "rlImGuiColors.h"
 #include "data_storage.h"  // Inclui a biblioteca de armazenamento de dados
 #include <stdio.h>
+#include <polygon.h>
 
 
 // Função para converter Color de Raylib para ImU32
@@ -13,6 +14,26 @@ ImU32 ColorToImU32(Color color) {
     return IM_COL32(color.r, color.g, color.b, color.a);
 }
 
+// Crie uma instância global ou use uma classe para gerenciar o polígono
+Polygon polygon;
+ReferencePolygon refPolygon;
+
+// Função para atualizar os dados do polígono com base na interface
+void updatePolygonFromInterface() {
+    // Limpar o polígono atual
+    polygon = Polygon();
+
+    // Adicionar os pontos do data storage ao polígono
+    int numPoints = GetNumPoints();
+    for (int i = 0; i < numPoints; ++i) {
+        float x, y;
+        GetTableData(i, &x, &y);
+        polygon.addVertex(x, y);
+    }
+
+    // Garantir que o polígono está na ordem anti-horária
+    polygon.ensureCounterClockwise();
+}
 
 void iniciarInterface() {
 

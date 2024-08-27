@@ -10,9 +10,9 @@
 int main() {
     // Inicializa a janela do Raylib
    
-   iniciarInterface();  
-   iniciarLoop();
-   limpeza();
+    iniciarInterface();  
+    iniciarLoop();
+    limpeza();
 
     return 0;
 }

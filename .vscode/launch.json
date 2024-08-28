@@ -1,56 +1,26 @@
 {
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Debug",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/${fileBasenameNoExtension}.exe", // Certifique-se de incluir a extensão .exe
-      "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": false,
-      "MIMode": "gdb",
-      "setupCommands": [
+    "version": "0.2.0",
+    "configurations": [
         {
-          "description": "Enable pretty-printing for gdb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": false
+            "name": "Debug",
+            "type": "gdb",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/main",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "ignoreFailures": true,
+                    "text": "-enable-pretty-printing"
+                }
+            ],
+            "preLaunchTask": "build",
+            "miDebuggerPath": "/usr/bin/gdb"
         }
-      ],
-      "windows": {
-        "miDebuggerPath": "C:/raylib/w64devkit/bin/gdb.exe"
-      },
-      "osx": {
-        "MIMode": "lldb"
-      },
-      "linux": {
-        "miDebuggerPath": "/usr/bin/gdb"
-      },
-      "preLaunchTask": "build debug"
-    },
-    {
-      "name": "Run",
-      "type": "cppdbg",
-      "request": "launch",
-      "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": false,
-      "program": "${workspaceFolder}/${fileBasenameNoExtension}.exe",
-      "MIMode": "gdb",
-      "windows": {
-        "miDebuggerPath": "C:/raylib/w64devkit/bin/gdb.exe"
-      },
-      "osx": {
-        "MIMode": "lldb"
-      },
-      "linux": {
-        "miDebuggerPath": "/usr/bin/gdb"
-      },
-      "preLaunchTask": "build release"
-    }
-  ]
+    ]
 }

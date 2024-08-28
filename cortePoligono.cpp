@@ -1,9 +1,8 @@
+#define _USE_MATH_DEFINES
 #include <iostream>
 #include <vector>
 #include <cmath>
 #include <algorithm>
-
-#define _USE_MATH_DEFINES
 
 struct Point {
     double x;
@@ -83,33 +82,44 @@ public:
         return translatedVertices;
     }
 
-    void cutByHorizontalLine(double yCut) {
-        std::vector<Point> newVertices;
+    void intersecao_linha_neutra(double y_neutra, double epsilon = 1e-7) {
+        std::vector<Point> nova_lista_vertices;
         int n = vertices.size();
 
         for (int i = 0; i < n; ++i) {
-            int j = (i + 1) % n;
-
-            if (vertices[i].y < yCut && vertices[j].y >= yCut) {
-                // Interseção com a linha horizontal
-                double xIntersect = vertices[i].x + (yCut - vertices[i].y) * (vertices[j].x - vertices[i].x) / (vertices[j].y - vertices[i].y);
-                newVertices.emplace_back(xIntersect, yCut);
+            Point vertice_atual = vertices[i];
+            Point proximo_vertice = vertices[(i + 1) % n];
+            
+            double xi = vertice_atual.x, yi = vertice_atual.y;
+            double xj = proximo_vertice.x, yj = proximo_vertice.y;
+            
+            // Adicionar o vértice atual à nova lista se não está sobre a linha neutra
+            if (fabs(yi - y_neutra) >= epsilon) {
+                nova_lista_vertices.push_back(vertice_atual);
             }
-
-            if (vertices[i].y >= yCut) {
-                newVertices.emplace_back(vertices[i].x, vertices[i].y);
+            
+            // Verificar aresta horizontal na linha neutra
+            if (fabs(yi - y_neutra) < epsilon && fabs(yj - y_neutra) < epsilon) {
+                continue; // Aresta é paralela à linha neutra, ignora interseção
             }
-
-            if (vertices[j].y >= yCut && vertices[i].y < yCut) {
-                // Interseção com a linha horizontal
-                double xIntersect = vertices[i].x + (yCut - vertices[i].y) * (vertices[j].x - vertices[i].x) / (vertices[j].y - vertices[i].y);
-                newVertices.emplace_back(xIntersect, yCut);
+            
+            // Verificar interseção real
+            if ((yi - y_neutra) * (yj - y_neutra) < 0) {
+                double t = (y_neutra - yi) / (yj - yi);
+                double x_intersecao = xi + t * (xj - xi);
+                double y_intersecao = y_neutra;
+                
+                // Evitar duplicação de pontos e manter a ordem dos vértices
+                if (nova_lista_vertices.empty() || 
+                    (fabs(nova_lista_vertices.back().x - x_intersecao) > epsilon || 
+                     fabs(nova_lista_vertices.back().y - y_intersecao) > epsilon)) {
+                    nova_lista_vertices.emplace_back(x_intersecao, y_intersecao);
+                }
             }
         }
 
-        // Atualizar a lista de vértices
-        vertices = std::move(newVertices);
-        ensureCounterClockwise();
+        vertices = std::move(nova_lista_vertices);
+        ensureCounterClockwise(); // Garantir que os vértices estão no sentido anti-horário
     }
 
     void printVertices() const {
@@ -123,60 +133,21 @@ public:
     }
 };
 
+// Exemplo de uso
 int main() {
     Polygon polygon;
-    int numVertices;
+    polygon.addVertex(0, 0);
+    polygon.addVertex(4, 0);
+    polygon.addVertex(4, 4);
+    polygon.addVertex(0, 4);
 
-    std::cout << "Insira o número de vértices do polígono: ";
-    std::cin >> numVertices;
+    std::cout << "Polígono original:" << std::endl;
+    polygon.printVertices();
 
-    for (int i = 0; i < numVertices; ++i) {
-        double x, y;
-        std::cout << "Insira as coordenadas do vértice " << i + 1 << " (formato: x y): ";
-        std::cin >> x >> y;
-        polygon.addVertex(x, y);
-    }
+    double y_neutra = 2.0;
+    polygon.intersecao_linha_neutra(y_neutra);
 
-    // Garantir que os vértices estão em ordem anti-horária
-    polygon.ensureCounterClockwise();
-
-    // Cálculo da área
-    double area = polygon.area();
-    std::cout << "Área: " << area << std::endl;
-
-    // Cálculo do centro de gravidade
-    Point cg = polygon.centroid();
-    std::cout << "Centro de Gravidade (CG): (" << cg.x << ", " << cg.y << ")" << std::endl;
-
-    // Translada os vértices para que o centróide coincida com a origem
-    std::vector<Point> translatedVertices = polygon.translateToCG();
-    std::cout << "Vértices transladados para o centróide:" << std::endl;
-    for (const auto& vertex : translatedVertices) {
-        std::cout << "(" << vertex.x << ", " << vertex.y << ")" << std::endl;
-    }
-
-    int numCuts;
-    std::cout << "Digite o número de coordenadas de corte (horizontais): ";
-    std::cin >> numCuts;
-
-    if (numCuts < 1) {
-        std::cerr << "O número de cortes deve ser pelo menos 1." << std::endl;
-        return 1;
-    }
-
-    std::vector<double> cutCoordinates(numCuts);
-    std::cout << "Digite as coordenadas de corte (uma por linha):" << std::endl;
-    for (int i = 0; i < numCuts; ++i) {
-        std::cout << "Corte " << i + 1 << ": ";
-        std::cin >> cutCoordinates[i];
-    }
-
-    for (double cut : cutCoordinates) {
-        polygon.cutByHorizontalLine(cut);
-    }
-
-    // Exibir os vértices finais após o corte
-    std::cout << "Vértices após os cortes:" << std::endl;
+    std::cout << "Polígono após cortar com linha horizontal em y = " << y_neutra << ":" << std::endl;
     polygon.printVertices();
 
     return 0;

@@ -4,6 +4,10 @@
 #include <cmath>
 #include <algorithm>
 
+//classe retorna características geométricas do polígono
+//classe implementa o método de corte do polígono em uma linha horizontal
+//classe retorna em es o polígono de compressão
+
 struct Point {
     double x;
     double y;
@@ -14,6 +18,7 @@ struct Point {
 class Polygon {
 private:
     std::vector<Point> vertices;
+    std::vector<Point> compressedPolygon;
 
     bool isClockwise() const {
         double sum = 0.0;
@@ -95,7 +100,7 @@ public:
         return translatedVertices;
     }
 
-    void cutByHorizontalLine(double VLN) {
+    std::vector<Point> cutByHorizontalLine(double VLN) {
         std::vector<Point> newVertices;
         int NV = vertices.size();
 
@@ -115,8 +120,10 @@ public:
             }
         }
 
-        vertices = std::move(newVertices);
+        std::vector<Point> compressedPolygon = std::move(newVertices);
         ensureCounterClockwise();
+
+        return compressedPolygon;
     }
 
     void printVertices() const {
@@ -127,5 +134,63 @@ public:
 
     std::vector<Point> getVertices() const {
         return vertices;
+        return compressedPolygon;
     }
 };
+
+int main() {
+    Polygon polygon;
+    int numVertices;
+
+    std::cout << "Insira o número de vértices do polígono: ";
+    std::cin >> numVertices;
+
+    for (int i = 0; i < numVertices; ++i) {
+        double x, y;
+        std::cout << "Insira as coordenadas do vértice " << i + 1 << " (formato: x y): ";
+        std::cin >> x >> y;
+        polygon.addVertex(x, y);
+    }
+
+    // Garantir que os vértices estão em ordem anti-horária
+    polygon.ensureCounterClockwise();
+
+    // Cálculo da área
+    double area = polygon.area();
+    std::cout << "Área: " << area << std::endl;
+
+    // Cálculo do centro de gravidade
+    Point cg = polygon.centroid();
+    std::cout << "Centro de Gravidade (CG): (" << cg.x << ", " << cg.y << ")" << std::endl;
+
+    // Translada os vértices para que o centróide coincida com a origem
+    std::vector<Point> translatedVertices = polygon.translateToCG();
+    std::cout << "Vértices transladados para o centróide:" << std::endl;
+    for (const auto& vertex : translatedVertices) {
+        std::cout << "(" << vertex.x << ", " << vertex.y << ")" << std::endl;
+    }
+
+    int numCuts;
+    std::cout << "Digite o número de coordenadas de corte (horizontais): ";
+    std::cin >> numCuts;
+
+    if (numCuts < 1) {
+        std::cerr << "O número de cortes deve ser pelo menos 1." << std::endl;
+        return 1;
+    }
+
+    std::vector<double> cutCoordinates(numCuts);
+    std::cout << "Digite as coordenadas de corte (uma por linha):" << std::endl;
+    for (int i = 0; i < numCuts; ++i) {
+        std::cout << "Corte " << i + 1 << ": ";
+        std::cin >> cutCoordinates[i];
+    }
+
+    for (double cut : cutCoordinates) {
+        polygon.cutByHorizontalLine(cut);
+        std::cout << "Vértices após corte na linha y = " << cut << ":" << std::endl;
+        polygon.compressedPolygon.printVertices();
+    }
+
+    return 0;
+}

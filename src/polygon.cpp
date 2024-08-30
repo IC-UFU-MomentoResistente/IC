@@ -81,11 +81,14 @@ void Polygon::intersecao_linha_neutra(double y_neutra, double epsilon) {
         double xj = proximo_vertice.x, yj = proximo_vertice.y;
         
         // Adicionar o vértice atual à nova lista se não está sobre a linha neutra
+        
+        // verificar a condição, provavelmente yi - y_neutra > 0
         if (fabs(yi - y_neutra) >= epsilon) {
             nova_lista_vertices.push_back(vertice_atual);
         }
         
         // Verificar aresta horizontal na linha neutra
+        // Verificar pq não entra no continue
         if (fabs(yi - y_neutra) < epsilon && fabs(yj - y_neutra) < epsilon) {
             continue; // Aresta é paralela à linha neutra, ignora interseção
         }
@@ -97,6 +100,7 @@ void Polygon::intersecao_linha_neutra(double y_neutra, double epsilon) {
             double y_intersecao = y_neutra;
             
             // Evitar duplicação de pontos e manter a ordem dos vértices
+            // Evitar a lógica de ir alimentando a nova lista 
             if (nova_lista_vertices.empty() || 
                 (fabs(nova_lista_vertices.back().x - x_intersecao) > epsilon || 
                  fabs(nova_lista_vertices.back().y - y_intersecao) > epsilon)) {

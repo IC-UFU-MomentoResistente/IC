@@ -3,16 +3,16 @@
 #include "imgui.h"
 #include "rlImGui.h"
 #include "rlImGuiColors.h"
-#include "data_storage.h"  // Inclui a biblioteca de armazenamento de dados
+#include "implot.h"
+#include "data_storage.h" // Inclui a biblioteca de armazenamento de dados
 #include <stdio.h>
 #include "window.h"
 
-int main() {
-    // Inicializa a janela do Raylib
-   
-   iniciarInterface();  
-   iniciarLoop();
-   limpeza();
-// DevLunarti branch
+int main()
+{
+
+    IniciarInterface();
+    loopPrograma();
+
     return 0;
 }

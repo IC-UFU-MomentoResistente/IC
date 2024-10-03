@@ -4,43 +4,113 @@
 #include "rlImGui.h"
 #include "rlImGuiColors.h"
 #include "implot.h"
-#include "data_storage.h" // Inclui a biblioteca de armazenamento de dados
-#include <stdio.h>
-#include "window.h"
-#include <cmath>
+#include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cmath>
+#include <stdio.h>
+#include "data_storage.h"
 
-// Estrutura para armazenar os pontos
-struct Ponto {
-    float x, y;
+// Classe Point para cálculos geométricos
+struct Point {
+    double x;
+    double y;
+
+    Point(double x_val, double y_val) : x(x_val), y(y_val) {}
 };
 
-// Função para calcular o centroide
-Ponto CalcularCentroide(const std::vector<Ponto>& pontos) {
-    Ponto centroide = {0.0f, 0.0f};
-    for (const auto& ponto : pontos) {
-        centroide.x += ponto.x;
-        centroide.y += ponto.y;
+class Polygon {
+private:
+    std::vector<Point> vertices;
+
+    bool isClockwise() const {
+        double sum = 0.0;
+        int n = vertices.size();
+        for (int i = 0; i < n; ++i) {
+            int j = (i + 1) % n;
+            sum += (vertices[j].x - vertices[i].x) * (vertices[j].y + vertices[i].y);
+        }
+        return sum > 0;
     }
-    centroide.x /= pontos.size();
-    centroide.y /= pontos.size();
-    return centroide;
-}
 
-// Função para calcular o ângulo polar
-float CalcularAngulo(const Ponto& centroide, const Ponto& ponto) {
-    return atan2(ponto.y - centroide.y, ponto.x - centroide.x);
-}
+public:
+    void setVertices(const std::vector<Ponto>& points) {
+        vertices.clear();
+        for (const auto& p : points) {
+            vertices.emplace_back(p.x, p.y);
+        }
+    }
 
-// Função para ordenar os pontos com base no ângulo polar
-void OrdenarPontosPorAngulo(std::vector<Ponto>& pontos) {
-    Ponto centroide = CalcularCentroide(pontos);
-    std::sort(pontos.begin(), pontos.end(), [&](const Ponto& a, const Ponto& b) {
-        return CalcularAngulo(centroide, a) < CalcularAngulo(centroide, b);
-    });
-}
+    void ensureCounterClockwise() {
+        if (isClockwise()) {
+            std::reverse(vertices.begin(), vertices.end());
+        }
+    }
 
+    double area() const {
+        double A = 0.0;
+        int n = vertices.size();
+        for (int i = 0; i < n; ++i) {
+            int j = (i + 1) % n;
+            A += vertices[i].x * vertices[j].y - vertices[j].x * vertices[i].y;
+        }
+        return std::abs(A) / 2.0;
+    }
+
+    Point centroid() const {
+        double Cx = 0.0, Cy = 0.0;
+        double A = area();
+        int n = vertices.size();
+        for (int i = 0; i < n; ++i) {
+            int j = (i + 1) % n;
+            double factor = (vertices[i].x * vertices[j].y - vertices[j].x * vertices[i].y);
+            Cx += (vertices[i].x + vertices[j].x) * factor;
+            Cy += (vertices[i].y + vertices[j].y) * factor;
+        }
+        Cx /= (6.0 * A);
+        Cy /= (6.0 * A);
+        return Point(Cx, Cy);
+    }
+
+    void printVertices() const {
+        for (const auto& vertex : vertices) {
+            std::cout << "(" << vertex.x << ", " << vertex.y << ")" << std::endl;
+        }
+    }
+
+    // Método para cortar o polígono por uma linha horizontal
+    std::vector<Point> cutByHorizontalLine(double y) {
+        std::vector<Point> newVertices;
+        int n = vertices.size();
+        for (int i = 0; i < n; ++i) {
+            Point p1 = vertices[i];
+            Point p2 = vertices[(i + 1) % n];
+
+            if (p1.y < y) {
+                newVertices.push_back(p1);
+            }
+            if ((p1.y >= y && p2.y < y) || (p1.y < y && p2.y >= y)) {
+                double x = p1.x + (y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y);
+                newVertices.push_back(Point(x, y));
+            }
+        }
+        return newVertices;
+    }
+
+    // Método para cortar o polígono em uma posição específica
+    void cut(double yPosition) {
+        std::vector<Point> newVertices = cutByHorizontalLine(yPosition);
+        if (!newVertices.empty()) {
+            vertices = newVertices;
+        }
+    }
+};
+
+// Variáveis globais
+std::vector<Ponto> collectedPoints; // Armazenar os pontos coletados
+Polygon polygon;
+
+// Funções de inicialização da interface
 void IniciarInterface()
 {
     const int screenWidth = 1280;
@@ -49,12 +119,11 @@ void IniciarInterface()
     SetTargetFPS(60);
     rlImGuiSetup(true);
     ImPlot::CreateContext();
-    InitData();
 }
 
 void loopPrograma()
 {
-    static int tempNumPoints = GetNumPoints();
+    static int tempNumPoints = 0;
     static bool showGraficoWindow = true;
     static bool showDadosWindow = true;
 
@@ -71,9 +140,9 @@ void loopPrograma()
             ImGui::Text("DADOS");
             ImGui::InputInt("Número de Pontos", &tempNumPoints);
 
-            if (tempNumPoints != GetNumPoints())
+            if (tempNumPoints != collectedPoints.size())
             {
-                SetNumPoints(tempNumPoints);
+                collectedPoints.resize(tempNumPoints); // Ajustar o tamanho do vetor
             }
 
             if (ImGui::BeginTable("Table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
@@ -82,7 +151,7 @@ void loopPrograma()
                 ImGui::TableSetupColumn("y", ImGuiTableColumnFlags_WidthFixed, 100.0f);
                 ImGui::TableHeadersRow();
 
-                for (int row = 0; row < GetNumPoints(); row++)
+                for (int row = 0; row < collectedPoints.size(); row++)
                 {
                     ImGui::TableNextRow();
                     ImGui::TableSetColumnIndex(0);
@@ -91,14 +160,9 @@ void loopPrograma()
                     snprintf(labelX, sizeof(labelX), "x%d", row);
                     snprintf(labelY, sizeof(labelY), "y%d", row);
 
-                    float x, y;
-                    GetTableData(row, &x, &y);
-
-                    ImGui::InputFloat(labelX, &x);
+                    ImGui::InputFloat(labelX, &collectedPoints[row].x);
                     ImGui::TableSetColumnIndex(1);
-                    ImGui::InputFloat(labelY, &y);
-
-                    SetTableData(row, x, y);
+                    ImGui::InputFloat(labelY, &collectedPoints[row].y);
                 }
 
                 ImGui::EndTable();
@@ -107,12 +171,22 @@ void loopPrograma()
             if (ImGui::Button("Mostrar Valores"))
             {
                 TraceLog(LOG_INFO, "Valores armazenados:");
-                for (int row = 0; row < GetNumPoints(); row++)
+                for (const auto& point : collectedPoints)
                 {
-                    float x, y;
-                    GetTableData(row, &x, &y);
-                    TraceLog(LOG_INFO, "Linha %d: x = %.2f, y = %.2f", row + 1, x, y);
+                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
                 }
+            }
+
+            if (ImGui::Button("Calcular Área e Centróide"))
+            {
+                polygon.setVertices(collectedPoints);  // Transfere os pontos para o polígono
+                polygon.ensureCounterClockwise();      // Garante o sentido anti-horário
+
+                double polygonArea = polygon.area();    // Calcula a área
+                Point centroid = polygon.centroid();    // Calcula o centróide
+
+                TraceLog(LOG_INFO, "Área: %.2f", polygonArea);
+                TraceLog(LOG_INFO, "Centróide: (%.2f, %.2f)", centroid.x, centroid.y);
             }
 
             ImGui::End();  // Finaliza a janela de dados
@@ -124,43 +198,40 @@ void loopPrograma()
 
             static float x_data[100];
             static float y_data[100];
-            int numPoints = GetNumPoints();
+            int numPoints = collectedPoints.size();
 
-            // Vetor para armazenar os pontos
-            std::vector<Ponto> pontos;
+            // Preenche os arrays x_data e y_data com os pontos coletados
             for (int i = 0; i < numPoints; i++)
             {
-                Ponto p;
-                GetTableData(i, &p.x, &p.y); // Pegue os dados da tabela
-                pontos.push_back(p);
+                x_data[i] = collectedPoints[i].x;
+                y_data[i] = collectedPoints[i].y;
             }
 
             if (numPoints >= 3) // Verifica se foram inseridos pelo menos 3 vértices
-            {
-                // Ordena os pontos para evitar cruzamentos
-                OrdenarPontosPorAngulo(pontos);
+{
+    // Preenche os arrays x_data e y_data com os pontos coletados
+    for (int i = 0; i < numPoints; i++)
+    {
+        x_data[i] = collectedPoints[i].x;
+        y_data[i] = collectedPoints[i].y;
+    }
 
-                // Adiciona o primeiro ponto ao final para fechar o polígono
-                pontos.push_back(pontos[0]);
+    // Adiciona o primeiro ponto ao final para fechar o polígono
+    x_data[numPoints] = collectedPoints[0].x;
+    y_data[numPoints] = collectedPoints[0].y;
 
-                // Preenche os arrays x_data e y_data com os pontos ordenados
-                for (int i = 0; i < pontos.size(); i++) {
-                    x_data[i] = pontos[i].x;
-                    y_data[i] = pontos[i].y;
-                }
-
-                // Plota os pontos e desenha o polígono
-                if (ImPlot::BeginPlot("Gráfico"))
-                {
-                    ImPlot::PlotScatter("Vértices", x_data, y_data, numPoints);
-                    ImPlot::PlotLine("Polígono", x_data, y_data, numPoints + 1);
-                    ImPlot::EndPlot();
-                }
-            }
-            else
-            {
-                ImGui::Text("Insira pelo menos 3 vértices para formar um polígono.");
-            }
+    // Plota os pontos e desenha o polígono
+    if (ImPlot::BeginPlot("Gráfico"))
+    {
+        ImPlot::PlotScatter("Vértices", x_data, y_data, numPoints);
+        ImPlot::PlotLine("Polígono", x_data, y_data, numPoints + 1);  // Aumente para numPoints + 1
+        ImPlot::EndPlot();
+    }
+}
+else
+{
+    ImGui::Text("Insira pelo menos 3 vértices para formar um polígono.");
+}
 
             ImGui::End();  // Finaliza a janela do gráfico
         }

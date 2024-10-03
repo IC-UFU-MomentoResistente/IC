@@ -200,38 +200,32 @@ void loopPrograma()
             static float y_data[100];
             int numPoints = collectedPoints.size();
 
-            // Preenche os arrays x_data e y_data com os pontos coletados
-            for (int i = 0; i < numPoints; i++)
-            {
-                x_data[i] = collectedPoints[i].x;
-                y_data[i] = collectedPoints[i].y;
-            }
 
             if (numPoints >= 3) // Verifica se foram inseridos pelo menos 3 vértices
-{
-    // Preenche os arrays x_data e y_data com os pontos coletados
-    for (int i = 0; i < numPoints; i++)
-    {
-        x_data[i] = collectedPoints[i].x;
-        y_data[i] = collectedPoints[i].y;
-    }
+            {
+                // Preenche os arrays x_data e y_data com os pontos coletados
+                for (int i = 0; i < numPoints; i++)
+                {
+                    x_data[i] = collectedPoints[i].x;
+                    y_data[i] = collectedPoints[i].y;
+                }
 
-    // Adiciona o primeiro ponto ao final para fechar o polígono
-    x_data[numPoints] = collectedPoints[0].x;
-    y_data[numPoints] = collectedPoints[0].y;
+                // Adiciona o primeiro ponto ao final para fechar o polígono
+                x_data[numPoints] = collectedPoints[0].x;
+                y_data[numPoints] = collectedPoints[0].y;
 
-    // Plota os pontos e desenha o polígono
-    if (ImPlot::BeginPlot("Gráfico"))
-    {
-        ImPlot::PlotScatter("Vértices", x_data, y_data, numPoints);
-        ImPlot::PlotLine("Polígono", x_data, y_data, numPoints + 1);  // Aumente para numPoints + 1
-        ImPlot::EndPlot();
-    }
-}
-else
-{
-    ImGui::Text("Insira pelo menos 3 vértices para formar um polígono.");
-}
+                // Plota os pontos e desenha o polígono
+                if (ImPlot::BeginPlot("Gráfico"))
+                {
+                    ImPlot::PlotScatter("Vértices", x_data, y_data, numPoints);
+                    ImPlot::PlotLine("Polígono", x_data, y_data, numPoints + 1);  // Aumente para numPoints + 1
+                    ImPlot::EndPlot();
+                }
+            }
+            else
+            {
+                ImGui::Text("Insira pelo menos 3 vértices para formar um polígono.");
+            }
 
             ImGui::End();  // Finaliza a janela do gráfico
         }
@@ -244,3 +238,15 @@ else
     ImPlot::DestroyContext();
     rlImGuiShutdown();
 }
+
+//não usou nenhuma função de data_storage
+//collectedPoints começa com o quê? Vazio
+//logo após comparamos o collectedPoits.size com tempNumPoints
+//como sabemos o tamnho de collectedPoints se ele não foi declarado com nenhum ponto
+//ImGui::InputFloat(labelX, &collectedPoints[row].x);
+//ImGui::InputFloat(labelY, &collectedPoints[row].y);
+//essas função são as responsáveis por atualizar a lista collectecPoints?
+//debugar aqui para tentar entender
+//verificar a possibilidade de utilizar a estrutura Point para exibir os vértices na interface
+//talvez algo como referenciar o grafico já com as características bidimensionais 
+//para evitar a abertura do colectedPoints de modo a armazenar em novas variáveis

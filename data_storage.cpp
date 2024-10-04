@@ -1,42 +1,33 @@
-// data_storage.cpp
-
 #include "data_storage.h"
-#include <cstdlib>  // Necessário para malloc, free
-#include <cstring>  // Necessário para memset
+#include <vector>  // Para usar std::vector
 
-static float* pointsData = NULL;  // Ponteiro para armazenar os dados dos pontos
-static int numPoints = 0;         // Número de pontos
+static std::vector<Ponto> pointsData; // Usando std::vector para gerenciar pontos
 
 void InitData() {
-    // Inicializa a memória para os dados dos pontos
-    pointsData = NULL;
-    numPoints = 0;
+    pointsData.clear(); // Inicializa a memória para os dados dos pontos
 }
 
 void SetNumPoints(int numPointsInput) {
     if (numPointsInput < 0) numPointsInput = 0;
-    delete[] pointsData; // Libera a memória anterior
-    numPoints = numPointsInput;
-    pointsData = new float[numPoints * 2](); // Inicializa a memória com zeros
+    pointsData.resize(numPointsInput); // Ajusta o tamanho do vetor
 }
 
 void GetTableData(int index, float* x, float* y) {
-    if (index < 0 || index >= numPoints) return;
-    *x = pointsData[2 * index];
-    *y = pointsData[2 * index + 1];
+    if (index < 0 || index >= pointsData.size()) return; // Verifica limites
+    *x = pointsData[index].x;
+    *y = pointsData[index].y;
 }
 
 void SetTableData(int index, float x, float y) {
-    if (index < 0 || index >= numPoints) return;
-    pointsData[2 * index] = x;
-    pointsData[2 * index + 1] = y;
+    if (index < 0 || index >= pointsData.size()) return; // Verifica limites
+    pointsData[index].x = x;
+    pointsData[index].y = y;
 }
 
 int GetNumPoints() {
-    return numPoints;
+    return pointsData.size(); // Retorna o tamanho do vetor
 }
 
 void FreeData() {
-    delete[] pointsData; // Libera a memória alocada
-    pointsData = NULL;
+    pointsData.clear(); // Limpa os dados
 }

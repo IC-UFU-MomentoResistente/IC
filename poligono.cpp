@@ -194,3 +194,53 @@ public:
 
     return 0;
 } */
+
+
+/*
+
+int verificarCaso(const Point& p1, const Point& p2, double cortar) {
+    if ((p2.y <= cortar && p1.y >= cortar) || (p2.y >= cortar && p1.y <= cortar)) {
+        return 2; // Caso 2: Corta o trecho
+    }
+    return 1; // Caso 1: Adiciona o nó final na nova poligonal
+}
+
+// Função para calcular o ponto de interseção
+Point calcularIntersecao(const Point& p1, const Point& p2, double cortar) {
+    double deltaY = p2.y - p1.y;
+    double deltaX = p2.x - p1.x;
+    
+    if (std::abs(deltaX) < 1e-6) {
+        return Point(p1.x, cortar);
+    } else {
+        double tg = deltaY / deltaX;
+        double x = p1.x - (p1.y - cortar) / tg;
+        return Point(x, cortar);
+    }
+}
+
+std::vector<Point> cortarPoligonal(const std::vector<Point>& secao, const std::vector<double>& cortar) {
+    std::vector<Point> resultado = secao;
+
+    for (double nivel : cortar) {
+        std::vector<Point> novaPoligonal;
+        int nv = resultado.size();
+
+        for (int i = 0; i < nv; i++) {
+            int caso = verificarCaso(resultado[i], resultado[(i + 1) % nv], nivel);
+
+            if (caso == 2) {
+                Point intersecao = calcularIntersecao(resultado[i], resultado[(i + 1) % nv], nivel);
+                novaPoligonal.push_back(intersecao);
+            }
+
+            novaPoligonal.push_back(resultado[(i + 1) % nv]);
+        }
+
+        resultado = novaPoligonal;
+    }
+
+    return resultado;
+}
+
+*/

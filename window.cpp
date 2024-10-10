@@ -15,17 +15,17 @@
 
 // Classe Point para cálculos geométricos
 struct Point {
-    double x;
-    double y;
+    float x;
+    float y;
 
-    Point(double x_val, double y_val) : x(x_val), y(y_val) {}
+    Point(float x_val, float y_val) : x(x_val), y(y_val) {}
 };
 
 class Polygon {
-private:
+/* private:
     std::vector<Point> vertices;
 
-    /* bool isClockwise() const {
+    bool isClockwise() const {
         double sum = 0.0;
         int n = vertices.size();
         for (int i = 0; i < n; ++i) {
@@ -33,10 +33,13 @@ private:
             sum += (vertices[j].x - vertices[i].x) * (vertices[j].y + vertices[i].y);
         }
         return sum > 0;
-    }*/
+    }
+*/
+
 
 public:
-    void setVertices(const std::vector<Ponto>& points) {
+    std::vector<Point> vertices;
+    void setVertices(const std::vector<Point>& points) {
         vertices.clear();
         for (const auto& p : points) {
             vertices.emplace_back(p.x, p.y);
@@ -114,10 +117,107 @@ public:
         return newVertices;
         // ensureCounterClockwise();
     }
+
+    int verificarCaso(const Point& p1, const Point& p2, double cortar) {
+        if ((p2.y <= cortar && p1.y >= cortar) || (p2.y >= cortar && p1.y <= cortar)) {
+            return 2; // Caso 2: Corta o trecho
+        }
+        return 1; // Caso 1: Adiciona o nó final na nova poligonal
+    }
+
+    // Função para calcular o ponto de interseção
+    Point calcularIntersecao(const Point& p1, const Point& p2, double cortar) {
+        double deltaY = p2.y - p1.y;
+        double deltaX = p2.x - p1.x;
+        
+        if (std::abs(deltaX) < 1e-6) {
+            return Point(p1.x, cortar);
+        } else {
+            double tg = deltaY / deltaX;
+            double x = p1.x - (p1.y - cortar) / tg;
+            return Point(x, cortar);
+        }
+    }
+
+    std::vector<Point> cortarPoligonal(const std::vector<Point>& vertices, const std::vector<float>& cortar) {
+        std::vector<Point> resultado = vertices;
+
+        for (float nivel : cortar) {
+            std::vector<Point> novaPoligonal;
+            int nv = resultado.size();
+
+            for (int i = 0; i < nv; i++) {
+                int caso = verificarCaso(resultado[i], resultado[(i + 1) % nv], nivel);
+
+                if (caso == 2) {
+                    Point intersecao = calcularIntersecao(resultado[i], resultado[(i + 1) % nv], nivel);
+                    novaPoligonal.push_back(intersecao);
+                }
+
+                novaPoligonal.push_back(resultado[(i + 1) % nv]);
+            }
+
+            resultado = novaPoligonal;
+        }
+
+        return resultado;
+}
+
+
 };
 
+
+/*
+
+    int verificarCaso(const Point& p1, const Point& p2, double cortar) {
+        if ((p2.y <= cortar && p1.y >= cortar) || (p2.y >= cortar && p1.y <= cortar)) {
+            return 2; // Caso 2: Corta o trecho
+        }
+        return 1; // Caso 1: Adiciona o nó final na nova poligonal
+    }
+
+    // Função para calcular o ponto de interseção
+    Point calcularIntersecao(const Point& p1, const Point& p2, double cortar) {
+        double deltaY = p2.y - p1.y;
+        double deltaX = p2.x - p1.x;
+        
+        if (std::abs(deltaX) < 1e-6) {
+            return Point(p1.x, cortar);
+        } else {
+            double tg = deltaY / deltaX;
+            double x = p1.x - (p1.y - cortar) / tg;
+            return Point(x, cortar);
+        }
+    }
+
+    std::vector<Point> cortarPoligonal(const std::vector<Point>& collectedPoints, const std::vector<double>& cortar) {
+        std::vector<Point> resultado = secao;
+
+        for (double nivel : cortar) {
+            std::vector<Point> novaPoligonal;
+            int nv = resultado.size();
+
+            for (int i = 0; i < nv; i++) {
+                int caso = verificarCaso(resultado[i], resultado[(i + 1) % nv], nivel);
+
+                if (caso == 2) {
+                    Point intersecao = calcularIntersecao(resultado[i], resultado[(i + 1) % nv], nivel);
+                    novaPoligonal.push_back(intersecao);
+                }
+
+                novaPoligonal.push_back(resultado[(i + 1) % nv]);
+            }
+
+            resultado = novaPoligonal;
+        }
+
+        return resultado;
+}
+
+*/
+
 // Variáveis globais
-std::vector<Ponto> collectedPoints; // Armazenar os pontos coletados
+std::vector<Point> collectedPoints; // Armazenar os pontos coletados
 Polygon polygon;
 
 // Funções de inicialização da interface
@@ -134,6 +234,7 @@ void IniciarInterface()
 void loopPrograma()
 {
     float VLN = 0;
+    std::vector<float> cortar;
     static int tempNumPoints = 0;
     static bool showGraficoWindow = true;
     static bool showDadosWindow = true;
@@ -188,7 +289,13 @@ void loopPrograma()
             if (showDadosWindowTwo) {
                 ImGui::Begin("Central de operações com polígono", &showDadosWindowTwo);
                 ImGui::Text("Insira a coordenada Y do corte");
-                ImGui::InputFloat("Y", &VLN);
+
+                int NC = um temp num poins da qtd de cortes
+
+                for(int i = 0; i < NC; i++){
+                    ImGui::InputFloat("Y", &VLN);
+                    cortar.push_back(VLN);
+                }
 
             
             if (ImGui::Button("Cortar"))
@@ -202,6 +309,10 @@ void loopPrograma()
                 }
             };
 
+            if(ImGui::Button("Cortar2")){
+                polygon.cortarPoligonal(polygon.vertices, cortar);
+                int NV = 
+            }
             
             if (ImGui::Button("Mostrar Valores"))
             {

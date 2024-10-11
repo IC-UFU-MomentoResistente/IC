@@ -11,39 +11,21 @@
 #include <stdio.h>
 #include "data_storage.h"
 
-// Classe Point para cálculos geométricos
 struct Point {
-    double x;
-    double y;
+    float x;
+    float y;
 
-    Point(double x_val, double y_val) : x(x_val), y(y_val) {}
+    Point() : x(0), y(0) {}
+    Point(float x_val, float y_val) : x(x_val), y(y_val) {}
 };
 
 class Polygon {
-private:
-    std::vector<Point> vertices;
-
-    bool isClockwise() const {
-        double sum = 0.0;
-        int n = vertices.size();
-        for (int i = 0; i < n; ++i) {
-            int j = (i + 1) % n;
-            sum += (vertices[j].x - vertices[i].x) * (vertices[j].y + vertices[i].y);
-        }
-        return sum > 0;
-    }
-
 public:
-    void setVertices(const std::vector<Ponto>& points) {
+    std::vector<Point> vertices;
+    void setVertices(const std::vector<Point>& points) {
         vertices.clear();
         for (const auto& p : points) {
             vertices.emplace_back(p.x, p.y);
-        }
-    }
-
-    void ensureCounterClockwise() {
-        if (isClockwise()) {
-            std::reverse(vertices.begin(), vertices.end());
         }
     }
 
@@ -71,43 +53,54 @@ public:
         Cy /= (6.0 * A);
         return Point(Cx, Cy);
     }
+    
+    int verificarCaso(const Point& p1, const Point& p2, double cortar) {
+        if ((p2.y <= cortar && p1.y >= cortar) || (p2.y >= cortar && p1.y <= cortar)) {
+            return 2; // Caso 2: Corta o trecho
+        }
+        return 1; // Caso 1: Adiciona o nó final na nova poligonal
+    }
 
-    void printVertices() const {
-        for (const auto& vertex : vertices) {
-            std::cout << "(" << vertex.x << ", " << vertex.y << ")" << std::endl;
+    // Função para calcular o ponto de interseção
+    Point calcularIntersecao(const Point& p1, const Point& p2, double cortar) {
+        double deltaY = p2.y - p1.y;
+        double deltaX = p2.x - p1.x;
+        
+        if (std::abs(deltaX) < 1e-6) {
+            return Point(p1.x, cortar);
+        } else {
+            double tg = deltaY / deltaX;
+            double x = p1.x - (p1.y - cortar) / tg;
+            return Point(x, cortar);
         }
     }
 
-    // Método para cortar o polígono por uma linha horizontal
-    std::vector<Point> cutByHorizontalLine(double y) {
-        std::vector<Point> newVertices;
-        int n = vertices.size();
-        for (int i = 0; i < n; ++i) {
-            Point p1 = vertices[i];
-            Point p2 = vertices[(i + 1) % n];
+    std::vector<Point> resultadoCorte = vertices;
+    std::vector<Point> cortarPoligonal(const std::vector<Point>& vertices, const std::vector<float>& cortar) {
 
-            if (p1.y < y) {
-                newVertices.push_back(p1);
-            }
-            if ((p1.y >= y && p2.y < y) || (p1.y < y && p2.y >= y)) {
-                double x = p1.x + (y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y);
-                newVertices.push_back(Point(x, y));
-            }
-        }
-        return newVertices;
-    }
+        for (float nivel : cortar) {
+            std::vector<Point> novaPoligonal;
+            int nv = resultadoCorte.size();
 
-    // Método para cortar o polígono em uma posição específica
-    void cut(double yPosition) {
-        std::vector<Point> newVertices = cutByHorizontalLine(yPosition);
-        if (!newVertices.empty()) {
-            vertices = newVertices;
+            for (int i = 0; i < nv; i++) {
+                int caso = verificarCaso(resultadoCorte[i], resultadoCorte[(i + 1) % nv], nivel);
+
+                if (caso == 2) {
+                    Point intersecao = calcularIntersecao(resultadoCorte[i], resultadoCorte[(i + 1) % nv], nivel);
+                    novaPoligonal.push_back(intersecao);
+                }
+
+                novaPoligonal.push_back(resultadoCorte[(i + 1) % nv]);
+            }
+            resultadoCorte = novaPoligonal;
         }
+        return resultadoCorte;
     }
 };
 
+
 // Variáveis globais
-std::vector<Ponto> collectedPoints; // Armazenar os pontos coletados
+std::vector<Point> collectedPoints; // Armazenar os pontos coletados
 Polygon polygon;
 
 // Funções de inicialização da interface
@@ -123,12 +116,16 @@ void IniciarInterface()
 
 void loopPrograma()
 {
+    float VLN = 0;
+    std::vector<float> cortar;
     static int tempNumPoints = 0;
     static bool showGraficoWindow = true;
     static bool showDadosWindow = true;
-
+    static bool showDadosWindowTwo = true; 
+    
     while (!WindowShouldClose())
     {
+       
         BeginDrawing();
         ClearBackground(BLACK);
         rlImGuiBegin();
@@ -168,29 +165,70 @@ void loopPrograma()
                 ImGui::EndTable();
             }
 
+                       
+            ImGui::End();  // Finaliza a janela de dados
+        }
+
+            if (showDadosWindowTwo) {
+                ImGui::Begin("Central de operações com polígono", &showDadosWindowTwo);
+                ImGui::Text("Insira a coordenada de corte");
+
+                // cortar.clear(); // Limpa o vetor de cortes antes de adicionar novos valores
+
+                // Declare VLN fora do loop, se ainda não estiver declarado
+                static float VLN = 0.0f; // Usar static para manter o valor entre as chamadas
+
+                ImGui::InputFloat("Y", &VLN); // Permite ao usuário inserir a coordenada Y
+
+                // Adiciona a coordenada Y ao vetor de cortes
+                if (ImGui::Button("Adicionar Corte")) { // Botão para adicionar o corte
+                    cortar.push_back(VLN);
+                }
+                
+                ImGui::Text("Cortes adicionados:");
+                for (const auto& corte : cortar) {
+                        ImGui::Text("%.2f", corte); // Mostra cada corte adicionado
+                }
+
+
+                if(ImGui::Button("Cortar")){
+                    polygon.setVertices(collectedPoints);
+                    polygon.cortarPoligonal(polygon.vertices, cortar);
+                    int NV = polygon.vertices.size();
+                    TraceLog(LOG_INFO, "Valores dos Cortes Armazenados");
+                    for(int i = 0; i < NV; i++){
+                        TraceLog(LOG_INFO, "x = %2.f, y = %2.f", polygon.resultadoCorte[i].x, polygon.resultadoCorte[i].y);
+                    }
+                }
+            
             if (ImGui::Button("Mostrar Valores"))
             {
+                TraceLog(LOG_INFO, "VLN", VLN);
+                TraceLog(LOG_INFO, "Valor do corte", &cortar[0]);
                 TraceLog(LOG_INFO, "Valores armazenados:");
                 for (const auto& point : collectedPoints)
                 {
-                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
+                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);             
                 }
             }
-
+            
             if (ImGui::Button("Calcular Área e Centróide"))
             {
                 polygon.setVertices(collectedPoints);  // Transfere os pontos para o polígono
-                polygon.ensureCounterClockwise();      // Garante o sentido anti-horário
+                 // Garante o sentido anti-horário
 
                 double polygonArea = polygon.area();    // Calcula a área
                 Point centroid = polygon.centroid();    // Calcula o centróide
 
                 TraceLog(LOG_INFO, "Área: %.2f", polygonArea);
                 TraceLog(LOG_INFO, "Centróide: (%.2f, %.2f)", centroid.x, centroid.y);
+
             }
 
-            ImGui::End();  // Finaliza a janela de dados
-        }
+                                 
+                ImGui::End();
+            
+            }
 
         // Janela do Gráfico
         if (showGraficoWindow) {
@@ -239,14 +277,11 @@ void loopPrograma()
     rlImGuiShutdown();
 }
 
-//não usou nenhuma função de data_storage
-//collectedPoints começa com o quê? Vazio
-//logo após comparamos o collectedPoits.size com tempNumPoints
-//como sabemos o tamnho de collectedPoints se ele não foi declarado com nenhum ponto
-//ImGui::InputFloat(labelX, &collectedPoints[row].x);
-//ImGui::InputFloat(labelY, &collectedPoints[row].y);
-//essas função são as responsáveis por atualizar a lista collectecPoints?
-//debugar aqui para tentar entender
-//verificar a possibilidade de utilizar a estrutura Point para exibir os vértices na interface
-//talvez algo como referenciar o grafico já com as características bidimensionais 
-//para evitar a abertura do colectedPoints de modo a armazenar em novas variáveis
+
+
+// Colocar uma caixa de texto para o usuário inserir a coordenada y de corte
+// Botão para mostrar a linha de corte antes de cortar
+
+// Botão que corta o polígono
+
+// Janela que mostra o polígono comprimido

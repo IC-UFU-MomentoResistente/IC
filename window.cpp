@@ -11,32 +11,15 @@
 #include <stdio.h>
 #include "data_storage.h"
 
-// static float VLN = 0; 
-
-// Classe Point para cálculos geométricos
 struct Point {
     float x;
     float y;
 
+    Point() : x(0), y(0) {}
     Point(float x_val, float y_val) : x(x_val), y(y_val) {}
 };
 
 class Polygon {
-/* private:
-    std::vector<Point> vertices;
-
-    bool isClockwise() const {
-        double sum = 0.0;
-        int n = vertices.size();
-        for (int i = 0; i < n; ++i) {
-            int j = (i + 1) % n;
-            sum += (vertices[j].x - vertices[i].x) * (vertices[j].y + vertices[i].y);
-        }
-        return sum > 0;
-    }
-*/
-
-
 public:
     std::vector<Point> vertices;
     void setVertices(const std::vector<Point>& points) {
@@ -45,12 +28,6 @@ public:
             vertices.emplace_back(p.x, p.y);
         }
     }
-
-    /* void ensureCounterClockwise() {
-        if (isClockwise()) {
-            std::reverse(vertices.begin(), vertices.end());
-        }
-    }*/
 
     double area() const {
         double A = 0.0;
@@ -77,47 +54,6 @@ public:
         return Point(Cx, Cy);
     }
     
-    // Método para cortar o polígono por uma linha horizontal
-    void SP_Corte(int i, int j, float VLN, std::vector<Point>& newVertices) {
-        double DELTAW = vertices[j].y - vertices[i].y;
-        double DELTAU = vertices[j].x - vertices[i].x;
-
-        if (std::abs(DELTAU) < 0.01) {
-            return;
-        }
-
-        double COEFANG = DELTAW / DELTAU;
-        double xIntersect = vertices[i].x - (vertices[i].y - VLN) / COEFANG;
-        newVertices.emplace_back(xIntersect, VLN);
-    }
-
-    std::vector<Point> newVertices;
-
-    std::vector<Point> cutByHorizontalLine(float VLN) {
-        newVertices.clear();
-        int NV = vertices.size();
-
-        for (int i = 0; i < NV; i++) {
-            int j = (i + 1) % NV;
-
-
-            if(vertices[i].y <= VLN && vertices[j].y >= VLN){
-                SP_Corte(i, j, VLN, newVertices);
-            }
-
-            if (vertices[i].y >= VLN && vertices[j].y <= VLN) {
-                SP_Corte(i, j, VLN, newVertices);
-            }
-
-            if (vertices[i].y >= VLN && vertices[j].y >= VLN) {
-                newVertices.emplace_back(vertices[i].x, vertices[i].y);
-            }
-        }
-
-        return newVertices;
-        // ensureCounterClockwise();
-    }
-
     int verificarCaso(const Point& p1, const Point& p2, double cortar) {
         if ((p2.y <= cortar && p1.y >= cortar) || (p2.y >= cortar && p1.y <= cortar)) {
             return 2; // Caso 2: Corta o trecho
@@ -139,82 +75,29 @@ public:
         }
     }
 
+    std::vector<Point> resultadoCorte = vertices;
     std::vector<Point> cortarPoligonal(const std::vector<Point>& vertices, const std::vector<float>& cortar) {
-        std::vector<Point> resultado = vertices;
 
         for (float nivel : cortar) {
             std::vector<Point> novaPoligonal;
-            int nv = resultado.size();
+            int nv = resultadoCorte.size();
 
             for (int i = 0; i < nv; i++) {
-                int caso = verificarCaso(resultado[i], resultado[(i + 1) % nv], nivel);
+                int caso = verificarCaso(resultadoCorte[i], resultadoCorte[(i + 1) % nv], nivel);
 
                 if (caso == 2) {
-                    Point intersecao = calcularIntersecao(resultado[i], resultado[(i + 1) % nv], nivel);
+                    Point intersecao = calcularIntersecao(resultadoCorte[i], resultadoCorte[(i + 1) % nv], nivel);
                     novaPoligonal.push_back(intersecao);
                 }
 
-                novaPoligonal.push_back(resultado[(i + 1) % nv]);
+                novaPoligonal.push_back(resultadoCorte[(i + 1) % nv]);
             }
-
-            resultado = novaPoligonal;
+            resultadoCorte = novaPoligonal;
         }
-
-        return resultado;
-}
-
-
+        return resultadoCorte;
+    }
 };
 
-
-/*
-
-    int verificarCaso(const Point& p1, const Point& p2, double cortar) {
-        if ((p2.y <= cortar && p1.y >= cortar) || (p2.y >= cortar && p1.y <= cortar)) {
-            return 2; // Caso 2: Corta o trecho
-        }
-        return 1; // Caso 1: Adiciona o nó final na nova poligonal
-    }
-
-    // Função para calcular o ponto de interseção
-    Point calcularIntersecao(const Point& p1, const Point& p2, double cortar) {
-        double deltaY = p2.y - p1.y;
-        double deltaX = p2.x - p1.x;
-        
-        if (std::abs(deltaX) < 1e-6) {
-            return Point(p1.x, cortar);
-        } else {
-            double tg = deltaY / deltaX;
-            double x = p1.x - (p1.y - cortar) / tg;
-            return Point(x, cortar);
-        }
-    }
-
-    std::vector<Point> cortarPoligonal(const std::vector<Point>& collectedPoints, const std::vector<double>& cortar) {
-        std::vector<Point> resultado = secao;
-
-        for (double nivel : cortar) {
-            std::vector<Point> novaPoligonal;
-            int nv = resultado.size();
-
-            for (int i = 0; i < nv; i++) {
-                int caso = verificarCaso(resultado[i], resultado[(i + 1) % nv], nivel);
-
-                if (caso == 2) {
-                    Point intersecao = calcularIntersecao(resultado[i], resultado[(i + 1) % nv], nivel);
-                    novaPoligonal.push_back(intersecao);
-                }
-
-                novaPoligonal.push_back(resultado[(i + 1) % nv]);
-            }
-
-            resultado = novaPoligonal;
-        }
-
-        return resultado;
-}
-
-*/
 
 // Variáveis globais
 std::vector<Point> collectedPoints; // Armazenar os pontos coletados
@@ -288,34 +171,40 @@ void loopPrograma()
 
             if (showDadosWindowTwo) {
                 ImGui::Begin("Central de operações com polígono", &showDadosWindowTwo);
-                ImGui::Text("Insira a coordenada Y do corte");
+                ImGui::Text("Insira a coordenada de corte");
 
-                int NC = um temp num poins da qtd de cortes
+                // cortar.clear(); // Limpa o vetor de cortes antes de adicionar novos valores
 
-                for(int i = 0; i < NC; i++){
-                    ImGui::InputFloat("Y", &VLN);
+                // Declare VLN fora do loop, se ainda não estiver declarado
+                static float VLN = 0.0f; // Usar static para manter o valor entre as chamadas
+
+                ImGui::InputFloat("Y", &VLN); // Permite ao usuário inserir a coordenada Y
+
+                // Adiciona a coordenada Y ao vetor de cortes
+                if (ImGui::Button("Adicionar Corte")) { // Botão para adicionar o corte
                     cortar.push_back(VLN);
                 }
-
-            
-            if (ImGui::Button("Cortar"))
-            {
-                polygon.cutByHorizontalLine(VLN);
-                int NV = polygon.newVertices.size();
-
-                TraceLog(LOG_INFO, "Valores Armazenados do Corte");
-                for (int i = 0; i <= NV; i++){
-                    TraceLog(LOG_INFO, "x = %2.f, y = %2.f", polygon.newVertices[i].x, polygon.newVertices[i].y);
+                
+                ImGui::Text("Cortes adicionados:");
+                for (const auto& corte : cortar) {
+                        ImGui::Text("%.2f", corte); // Mostra cada corte adicionado
                 }
-            };
 
-            if(ImGui::Button("Cortar2")){
-                polygon.cortarPoligonal(polygon.vertices, cortar);
-                int NV = 
-            }
+
+                if(ImGui::Button("Cortar")){
+                    polygon.setVertices(collectedPoints);
+                    polygon.cortarPoligonal(polygon.vertices, cortar);
+                    int NV = polygon.vertices.size();
+                    TraceLog(LOG_INFO, "Valores dos Cortes Armazenados");
+                    for(int i = 0; i < NV; i++){
+                        TraceLog(LOG_INFO, "x = %2.f, y = %2.f", polygon.resultadoCorte[i].x, polygon.resultadoCorte[i].y);
+                    }
+                }
             
             if (ImGui::Button("Mostrar Valores"))
             {
+                TraceLog(LOG_INFO, "VLN", VLN);
+                TraceLog(LOG_INFO, "Valor do corte", &cortar[0]);
                 TraceLog(LOG_INFO, "Valores armazenados:");
                 for (const auto& point : collectedPoints)
                 {

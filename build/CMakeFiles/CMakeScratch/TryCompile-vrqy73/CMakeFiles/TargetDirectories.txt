@@ -1,0 +1,2 @@
+C:/Users/gabri/OneDrive/Documentos/GitHub/IC/build/CMakeFiles/CMakeScratch/TryCompile-vrqy73/CMakeFiles/cmTC_6922b.dir
+C:/Users/gabri/OneDrive/Documentos/GitHub/IC/build/CMakeFiles/CMakeScratch/TryCompile-vrqy73/CMakeFiles/ALL_BUILD.dir

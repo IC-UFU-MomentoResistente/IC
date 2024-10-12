@@ -129,6 +129,7 @@ void IniciarInterface()
 }
 
 void loopPrograma()
+
 {
     static float VLN = 0;
     static float cortar = 0;
@@ -148,7 +149,6 @@ void loopPrograma()
         if (showDadosWindow)
         {
             ImGui::Begin("Inserir Dados", &showDadosWindow); // Título da janela
-
             ImGui::Text("DADOS");
             ImGui::InputInt("Número de Pontos", &tempNumPoints);
 
@@ -159,8 +159,8 @@ void loopPrograma()
 
             if (ImGui::BeginTable("Table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
             {
-                ImGui::TableSetupColumn("x", ImGuiTableColumnFlags_WidthFixed, 100.0f);
-                ImGui::TableSetupColumn("y", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+                ImGui::TableSetupColumn("x");
+                ImGui::TableSetupColumn("y");
                 ImGui::TableHeadersRow();
 
                 for (int row = 0; row < collectedPoints.size(); row++)
@@ -215,12 +215,12 @@ void loopPrograma()
                 {
                     TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
                 }
+
                 TraceLog(LOG_INFO, "Valores após o corte");
                 for (const auto &point : polygon.resultadoCorte)
                 {
                     TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
                 }
-                TraceLog(LOG_INFO, "Corte", cortar);
             }
 
             if (ImGui::Button("Calcular Área e Centróide"))
@@ -248,7 +248,7 @@ void loopPrograma()
             {
                 y_values[i] = VLN;
             }
-
+            int numPoints2 = 0;
             int numPoints = collectedPoints.size();
             float x_corte[polygon.resultadoCorte.size()];
             float y_corte[polygon.resultadoCorte.size()];
@@ -267,10 +267,14 @@ void loopPrograma()
 
                 for (const auto &point : polygon.resultadoCorte)
                 {
-                    x_corte[i] = polygon.resultadoCorte[i].x;
-                    y_corte[i] = polygon.resultadoCorte[i].y;
-                }
 
+                    if (numPoints2 <= polygon.resultadoCorte.size())
+                    {
+                        x_corte[numPoints2] = point.x;
+                        y_corte[numPoints2] = point.y;
+                        numPoints2++;
+                    }
+                }
                 // Adiciona o primeiro ponto ao final para fechar o polígono
                 x_data[numPoints] = collectedPoints[0].x;
                 y_data[numPoints] = collectedPoints[0].y;
@@ -279,7 +283,7 @@ void loopPrograma()
                 if (ImPlot::BeginPlot("Gráfico"))
                 {
                     ImPlot::PlotScatter("Vértices", x_data, y_data, numPoints);
-                    ImPlot::PlotScatter("Vértices cortadas", x_corte, y_corte, numPoints);
+                    ImPlot::PlotScatter("Vértices cortadas", x_corte, y_corte, numPoints2);
                     ImPlot::PlotLine("Polígono", x_data, y_data, numPoints + 1); // Aumente para numPoints + 1
                     ImPlot::PlotLine("Linha de corte,", x_values, y_values, 6);
                     ImPlot::EndPlot();

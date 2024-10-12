@@ -301,3 +301,12 @@ void loopPrograma()
     ImPlot::DestroyContext();
     rlImGuiShutdown();
 }
+
+//Tarefas
+//Definir seção I pronta para começar a interface
+//Inserir pontos de corte na janela do gráfico 
+//Ajustar tamanho dos vetores x_data, y_data, x_corte, y_corte
+//Ajustar desenho da linha com os limites de x + 10%
+//Funções para corte superior e corte inferior
+//Corta com as setas do teclado a cada frame ou a cada "clique"
+//Rodas a seção com as setas 

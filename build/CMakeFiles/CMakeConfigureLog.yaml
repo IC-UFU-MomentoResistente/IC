@@ -1130,3 +1130,327 @@ events:
         
       exitCode: 1
 ...
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeDetermineSystem.cmake:205 (message)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      The system is: Windows - 10.0.22631 - AMD64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      Vers├úo do MSBuild 17.10.4+10fbfbf2e para .NET Framework
+      Compila├º├úo de 10/12/2024 11:35:17 AM iniciada.
+      
+      Projeto "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\3.30.2\\CompilerIdC\\CompilerIdC.vcxproj" no n├│ 1 (destinos padr├úo).
+      PrepareForBuild:
+        Criando o diret├│rio "Debug\\".
+        A sa├¡da estruturada est├í habilitada. A formata├º├úo do diagn├│stico do compilador refletir├í a hierarquia de erros. Consulte https://aka.ms/cpp/structured-output para obter mais detalhes.
+        Criando o diret├│rio "Debug\\CompilerIdC.tlog\\".
+      InitializeBuildStatus:
+        Criando "Debug\\CompilerIdC.tlog\\unsuccessfulbuild" porque "AlwaysCreate" foi especificado.
+        Tocando "Debug\\CompilerIdC.tlog\\unsuccessfulbuild".
+      VcpkgTripletSelection:
+        Using triplet "x64-windows" from "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\"
+        Using normalized configuration "Release"
+      ClCompile:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\bin\\HostX64\\x64\\CL.exe /c /I"C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\include" /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TC /FC /errorReport:queue CMakeCCompilerId.c
+        CMakeCCompilerId.c
+      Link:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\lib" /LIBPATH:"C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\lib\\manual-link" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\lib\\*.lib" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdC.lib" /MACHINE:X64 Debug\\CMakeCCompilerId.obj
+        CompilerIdC.vcxproj -> C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\3.30.2\\CompilerIdC\\CompilerIdC.exe
+      AppLocalFromInstalled:
+        pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\3.30.2\\CompilerIdC\\CompilerIdC.exe" "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\bin" "Debug\\CompilerIdC.tlog\\CompilerIdC.write.1u.tlog" "Debug\\vcpkg.applocal.log"
+        'pwsh.exe' n├úo ├® reconhecido como um comando interno
+        ou externo, um programa oper├ível ou um arquivo em lotes.
+        O comando "pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\3.30.2\\CompilerIdC\\CompilerIdC.exe" "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\bin" "Debug\\CompilerIdC.tlog\\CompilerIdC.write.1u.tlog" "Debug\\vcpkg.applocal.log"" foi encerrado com o c├│digo 9009.
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\3.30.2\\CompilerIdC\\CompilerIdC.exe" "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\bin" "Debug\\CompilerIdC.tlog\\CompilerIdC.write.1u.tlog" "Debug\\vcpkg.applocal.log"
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        Excluindo o arquivo "Debug\\CompilerIdC.tlog\\unsuccessfulbuild".
+        Tocando "Debug\\CompilerIdC.tlog\\CompilerIdC.lastbuildstate".
+      Projeto de compila├º├úo pronto "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\3.30.2\\CompilerIdC\\CompilerIdC.vcxproj" (destinos padr├úo).
+      
+      Compila├º├úo com ├¬xito.
+          0 Aviso(s)
+          0 Erro(s)
+      
+      Tempo Decorrido 00:00:04.21
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
+      
+      The C compiler identification is MSVC, found in:
+        C:/Users/gabri/OneDrive/Documentos/GitHub/IC/build/CMakeFiles/3.30.2/CompilerIdC/CompilerIdC.exe
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      Vers├úo do MSBuild 17.10.4+10fbfbf2e para .NET Framework
+      Compila├º├úo de 10/12/2024 11:35:22 AM iniciada.
+      
+      Projeto "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\3.30.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" no n├│ 1 (destinos padr├úo).
+      PrepareForBuild:
+        Criando o diret├│rio "Debug\\".
+        A sa├¡da estruturada est├í habilitada. A formata├º├úo do diagn├│stico do compilador refletir├í a hierarquia de erros. Consulte https://aka.ms/cpp/structured-output para obter mais detalhes.
+        Criando o diret├│rio "Debug\\CompilerIdCXX.tlog\\".
+      InitializeBuildStatus:
+        Criando "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild" porque "AlwaysCreate" foi especificado.
+        Tocando "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
+      VcpkgTripletSelection:
+        Using triplet "x64-windows" from "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\"
+        Using normalized configuration "Release"
+      ClCompile:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\bin\\HostX64\\x64\\CL.exe /c /I"C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\include" /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+        CMakeCXXCompilerId.cpp
+      Link:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\lib" /LIBPATH:"C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\lib\\manual-link" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\lib\\*.lib" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
+        CompilerIdCXX.vcxproj -> C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\3.30.2\\CompilerIdCXX\\CompilerIdCXX.exe
+      AppLocalFromInstalled:
+        pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\3.30.2\\CompilerIdCXX\\CompilerIdCXX.exe" "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\bin" "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.write.1u.tlog" "Debug\\vcpkg.applocal.log"
+        'pwsh.exe' n├úo ├® reconhecido como um comando interno
+        ou externo, um programa oper├ível ou um arquivo em lotes.
+        O comando "pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\3.30.2\\CompilerIdCXX\\CompilerIdCXX.exe" "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\bin" "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.write.1u.tlog" "Debug\\vcpkg.applocal.log"" foi encerrado com o c├│digo 9009.
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\3.30.2\\CompilerIdCXX\\CompilerIdCXX.exe" "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\bin" "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.write.1u.tlog" "Debug\\vcpkg.applocal.log"
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        Excluindo o arquivo "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
+        Tocando "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate".
+      Projeto de compila├º├úo pronto "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\3.30.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (destinos padr├úo).
+      
+      Compila├º├úo com ├¬xito.
+          0 Aviso(s)
+          0 Erro(s)
+      
+      Tempo Decorrido 00:00:03.72
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
+      
+      The CXX compiler identification is MSVC, found in:
+        C:/Users/gabri/OneDrive/Documentos/GitHub/IC/build/CMakeFiles/3.30.2/CompilerIdCXX/CompilerIdCXX.exe
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "C:/Users/gabri/OneDrive/Documentos/GitHub/IC/build/CMakeFiles/CMakeScratch/TryCompile-ro2r3n"
+      binary: "C:/Users/gabri/OneDrive/Documentos/GitHub/IC/build/CMakeFiles/CMakeScratch/TryCompile-ro2r3n"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
+      CMAKE_C_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/gabri/OneDrive/Documentos/GitHub/IC/build/CMakeFiles/CMakeScratch/TryCompile-ro2r3n'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_8fa3f.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Vers├úo do MSBuild 17.10.4+10fbfbf2e para .NET Framework
+        Compila├º├úo de 10/12/2024 11:35:26 AM iniciada.
+        
+        Projeto "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ro2r3n\\cmTC_8fa3f.vcxproj" no n├│ 1 (destinos padr├úo).
+        PrepareForBuild:
+          Criando o diret├│rio "cmTC_8fa3f.dir\\Debug\\".
+          A sa├¡da estruturada est├í habilitada. A formata├º├úo do diagn├│stico do compilador refletir├í a hierarquia de erros. Consulte https://aka.ms/cpp/structured-output para obter mais detalhes.
+          Criando o diret├│rio "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ro2r3n\\Debug\\".
+          Criando o diret├│rio "cmTC_8fa3f.dir\\Debug\\cmTC_8fa3f.tlog\\".
+        InitializeBuildStatus:
+          Criando "cmTC_8fa3f.dir\\Debug\\cmTC_8fa3f.tlog\\unsuccessfulbuild" porque "AlwaysCreate" foi especificado.
+          Tocando "cmTC_8fa3f.dir\\Debug\\cmTC_8fa3f.tlog\\unsuccessfulbuild".
+        VcpkgTripletSelection:
+          Using triplet "x64-windows" from "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\"
+          Using normalized configuration "Debug"
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\bin\\HostX64\\x64\\CL.exe /c /I"C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_8fa3f.dir\\Debug\\\\" /Fd"cmTC_8fa3f.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Users\\gabri\\scoop\\apps\\cmake\\3.30.2\\share\\cmake-3.30\\Modules\\CMakeCCompilerABI.c"
+          Microsoft (R) C/C++ Optimizing Compiler Vers├úo 19.40.33813 para x64
+          Copyright (C) Microsoft Corporation. Todos os direitos reservados.
+          cl /c /I"C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_8fa3f.dir\\Debug\\\\" /Fd"cmTC_8fa3f.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Users\\gabri\\scoop\\apps\\cmake\\3.30.2\\share\\cmake-3.30\\Modules\\CMakeCCompilerABI.c"
+          CMakeCCompilerABI.c
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ro2r3n\\Debug\\cmTC_8fa3f.exe" /INCREMENTAL /ILK:"cmTC_8fa3f.dir\\Debug\\cmTC_8fa3f.ilk" /NOLOGO /LIBPATH:"C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\debug\\lib" /LIBPATH:"C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\debug\\lib\\manual-link" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\debug\\lib\\*.lib" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/gabri/OneDrive/Documentos/GitHub/IC/build/CMakeFiles/CMakeScratch/TryCompile-ro2r3n/Debug/cmTC_8fa3f.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/gabri/OneDrive/Documentos/GitHub/IC/build/CMakeFiles/CMakeScratch/TryCompile-ro2r3n/Debug/cmTC_8fa3f.lib" /MACHINE:X64  /machine:x64 cmTC_8fa3f.dir\\Debug\\CMakeCCompilerABI.obj
+          cmTC_8fa3f.vcxproj -> C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ro2r3n\\Debug\\cmTC_8fa3f.exe
+        AppLocalFromInstalled:
+          pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ro2r3n\\Debug\\cmTC_8fa3f.exe" "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\debug\\bin" "cmTC_8fa3f.dir\\Debug\\cmTC_8fa3f.tlog\\cmTC_8fa3f.write.1u.tlog" "cmTC_8fa3f.dir\\Debug\\vcpkg.applocal.log"
+          'pwsh.exe' n├úo ├® reconhecido como um comando interno
+          ou externo, um programa oper├ível ou um arquivo em lotes.
+          O comando "pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ro2r3n\\Debug\\cmTC_8fa3f.exe" "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\debug\\bin" "cmTC_8fa3f.dir\\Debug\\cmTC_8fa3f.tlog\\cmTC_8fa3f.write.1u.tlog" "cmTC_8fa3f.dir\\Debug\\vcpkg.applocal.log"" foi encerrado com o c├│digo 9009.
+          "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ro2r3n\\Debug\\cmTC_8fa3f.exe" "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\debug\\bin" "cmTC_8fa3f.dir\\Debug\\cmTC_8fa3f.tlog\\cmTC_8fa3f.write.1u.tlog" "cmTC_8fa3f.dir\\Debug\\vcpkg.applocal.log"
+        FinalizeBuildStatus:
+          Excluindo o arquivo "cmTC_8fa3f.dir\\Debug\\cmTC_8fa3f.tlog\\unsuccessfulbuild".
+          Tocando "cmTC_8fa3f.dir\\Debug\\cmTC_8fa3f.tlog\\cmTC_8fa3f.lastbuildstate".
+        Projeto de compila├º├úo pronto "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ro2r3n\\cmTC_8fa3f.vcxproj" (destinos padr├úo).
+        
+        Compila├º├úo com ├¬xito.
+            0 Aviso(s)
+            0 Erro(s)
+        
+        Tempo Decorrido 00:00:03.69
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?))("|,| |$)]
+        linker tool for 'C': C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.40.33807/bin/HostX64/x64/link.exe
+        implicit libs: []
+        implicit objs: []
+        implicit dirs: []
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/Internal/CMakeDetermineLinkerId.cmake:40 (message)"
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:255 (cmake_determine_linker_id)"
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Running the C compiler's linker: "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.40.33807/bin/HostX64/x64/link.exe" "-v"
+      Microsoft (R) Incremental Linker Version 14.40.33813.0
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "C:/Users/gabri/OneDrive/Documentos/GitHub/IC/build/CMakeFiles/CMakeScratch/TryCompile-vrqy73"
+      binary: "C:/Users/gabri/OneDrive/Documentos/GitHub/IC/build/CMakeFiles/CMakeScratch/TryCompile-vrqy73"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
+      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/gabri/OneDrive/Documentos/GitHub/IC/build/CMakeFiles/CMakeScratch/TryCompile-vrqy73'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_6922b.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Vers├úo do MSBuild 17.10.4+10fbfbf2e para .NET Framework
+        Compila├º├úo de 10/12/2024 11:35:31 AM iniciada.
+        
+        Projeto "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-vrqy73\\cmTC_6922b.vcxproj" no n├│ 1 (destinos padr├úo).
+        PrepareForBuild:
+          Criando o diret├│rio "cmTC_6922b.dir\\Debug\\".
+          A sa├¡da estruturada est├í habilitada. A formata├º├úo do diagn├│stico do compilador refletir├í a hierarquia de erros. Consulte https://aka.ms/cpp/structured-output para obter mais detalhes.
+          Criando o diret├│rio "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-vrqy73\\Debug\\".
+          Criando o diret├│rio "cmTC_6922b.dir\\Debug\\cmTC_6922b.tlog\\".
+        InitializeBuildStatus:
+          Criando "cmTC_6922b.dir\\Debug\\cmTC_6922b.tlog\\unsuccessfulbuild" porque "AlwaysCreate" foi especificado.
+          Tocando "cmTC_6922b.dir\\Debug\\cmTC_6922b.tlog\\unsuccessfulbuild".
+        VcpkgTripletSelection:
+          Using triplet "x64-windows" from "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\"
+          Using normalized configuration "Debug"
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\bin\\HostX64\\x64\\CL.exe /c /I"C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_6922b.dir\\Debug\\\\" /Fd"cmTC_6922b.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Users\\gabri\\scoop\\apps\\cmake\\3.30.2\\share\\cmake-3.30\\Modules\\CMakeCXXCompilerABI.cpp"
+          Microsoft (R) C/C++ Optimizing Compiler Vers├úo 19.40.33813 para x64
+          Copyright (C) Microsoft Corporation. Todos os direitos reservados.
+          cl /c /I"C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_6922b.dir\\Debug\\\\" /Fd"cmTC_6922b.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Users\\gabri\\scoop\\apps\\cmake\\3.30.2\\share\\cmake-3.30\\Modules\\CMakeCXXCompilerABI.cpp"
+          CMakeCXXCompilerABI.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-vrqy73\\Debug\\cmTC_6922b.exe" /INCREMENTAL /ILK:"cmTC_6922b.dir\\Debug\\cmTC_6922b.ilk" /NOLOGO /LIBPATH:"C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\debug\\lib" /LIBPATH:"C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\debug\\lib\\manual-link" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\debug\\lib\\*.lib" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/gabri/OneDrive/Documentos/GitHub/IC/build/CMakeFiles/CMakeScratch/TryCompile-vrqy73/Debug/cmTC_6922b.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/gabri/OneDrive/Documentos/GitHub/IC/build/CMakeFiles/CMakeScratch/TryCompile-vrqy73/Debug/cmTC_6922b.lib" /MACHINE:X64  /machine:x64 cmTC_6922b.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_6922b.vcxproj -> C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-vrqy73\\Debug\\cmTC_6922b.exe
+        AppLocalFromInstalled:
+          pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-vrqy73\\Debug\\cmTC_6922b.exe" "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\debug\\bin" "cmTC_6922b.dir\\Debug\\cmTC_6922b.tlog\\cmTC_6922b.write.1u.tlog" "cmTC_6922b.dir\\Debug\\vcpkg.applocal.log"
+          'pwsh.exe' n├úo ├® reconhecido como um comando interno
+          ou externo, um programa oper├ível ou um arquivo em lotes.
+          O comando "pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-vrqy73\\Debug\\cmTC_6922b.exe" "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\debug\\bin" "cmTC_6922b.dir\\Debug\\cmTC_6922b.tlog\\cmTC_6922b.write.1u.tlog" "cmTC_6922b.dir\\Debug\\vcpkg.applocal.log"" foi encerrado com o c├│digo 9009.
+          "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-vrqy73\\Debug\\cmTC_6922b.exe" "C:\\Users\\gabri\\scoop\\apps\\vcpkg\\current\\installed\\x64-windows\\debug\\bin" "cmTC_6922b.dir\\Debug\\cmTC_6922b.tlog\\cmTC_6922b.write.1u.tlog" "cmTC_6922b.dir\\Debug\\vcpkg.applocal.log"
+        FinalizeBuildStatus:
+          Excluindo o arquivo "cmTC_6922b.dir\\Debug\\cmTC_6922b.tlog\\unsuccessfulbuild".
+          Tocando "cmTC_6922b.dir\\Debug\\cmTC_6922b.tlog\\cmTC_6922b.lastbuildstate".
+        Projeto de compila├º├úo pronto "C:\\Users\\gabri\\OneDrive\\Documentos\\GitHub\\IC\\build\\CMakeFiles\\CMakeScratch\\TryCompile-vrqy73\\cmTC_6922b.vcxproj" (destinos padr├úo).
+        
+        Compila├º├úo com ├¬xito.
+            0 Aviso(s)
+            0 Erro(s)
+        
+        Tempo Decorrido 00:00:03.72
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?))("|,| |$)]
+        linker tool for 'CXX': C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.40.33807/bin/HostX64/x64/link.exe
+        implicit libs: []
+        implicit objs: []
+        implicit dirs: []
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/Internal/CMakeDetermineLinkerId.cmake:40 (message)"
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:255 (cmake_determine_linker_id)"
+      - "C:/Users/gabri/scoop/apps/cmake/3.30.2/share/cmake-3.30/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Running the CXX compiler's linker: "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.40.33807/bin/HostX64/x64/link.exe" "-v"
+      Microsoft (R) Incremental Linker Version 14.40.33813.0
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+...

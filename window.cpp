@@ -305,3 +305,7 @@ void loopPrograma()
     ImPlot::DestroyContext();
     rlImGuiShutdown();
 }
+
+// Problemas: Verificar ---
+// Quando acrescenta uma certa quantidade de pontos, o primeiro ponto some, ai tem que inserir mais um vetor pra preencher o lugar
+// do primeiro vetor

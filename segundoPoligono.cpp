@@ -1,9 +1,22 @@
 #define _USE_MATH_DEFINES
+#include <iostream>
+#include <vector>
 #include <cmath>
 #include <algorithm>
-#include "polygon.h"
 
-bool Polygon::isClockwise() const {
+struct Point {
+    double x;
+    double y;
+
+    Point(double x_val, double y_val) : x(x_val), y(y_val) {}
+};
+
+class Polygon{
+public:
+
+    std::vector<Point> vertices;
+
+bool isClockwise() const {
     double sum = 0.0;
     int n = vertices.size();
     for (int i = 0; i < n; ++i) {
@@ -13,11 +26,11 @@ bool Polygon::isClockwise() const {
     return sum > 0;
 }
 
-void Polygon::addVertex(double x, double y) {
+void addVertex(double x, double y) {
     vertices.emplace_back(x, y);
 }
 
-void Polygon::ensureCounterClockwise() {
+void ensureCounterClockwise() {
     std::cout << "Vértices antes de garantir o sentido anti-horário:" << std::endl;
     printVertices(); // Exibe os vértices antes da alteração
 
@@ -29,7 +42,7 @@ void Polygon::ensureCounterClockwise() {
     printVertices(); // Exibe os vértices após a alteração
 }
 
-double Polygon::area() const {
+double area() const {
     double A = 0.0;
     int n = vertices.size();
     for (int i = 0; i < n; ++i) {
@@ -39,7 +52,7 @@ double Polygon::area() const {
     return std::abs(A) / 2.0;
 }
 
-Point Polygon::centroid() const {
+Point centroid() const {
     double Cx = 0.0, Cy = 0.0;
     double A = area();
     int n = vertices.size();
@@ -54,7 +67,7 @@ Point Polygon::centroid() const {
     return Point(Cx, Cy);
 }
 
-std::vector<Point> Polygon::translateToCG() const {
+std::vector<Point> translateToCG() const {
     Point cg = centroid();
     std::vector<Point> translatedVertices;
     int n = vertices.size();
@@ -69,7 +82,7 @@ std::vector<Point> Polygon::translateToCG() const {
     return translatedVertices;
 }
 
-void Polygon::intersecao_linha_neutra(double y_neutra, double epsilon) {
+void intersecao_linha_neutra(double y_neutra, double epsilon) {
     std::vector<Point> nova_lista_vertices;
     int n = vertices.size();
 
@@ -113,12 +126,16 @@ void Polygon::intersecao_linha_neutra(double y_neutra, double epsilon) {
     ensureCounterClockwise(); // Garantir que os vértices estão no sentido anti-horário
 }
 
-void Polygon::printVertices() const {
+void printVertices() const {
     for (const auto& vertex : vertices) {
         std::cout << "(" << vertex.x << ", " << vertex.y << ")" << std::endl;
     }
 }
 
-std::vector<Point> Polygon::getVertices() const {
+std::vector<Point> getVertices() const {
     return vertices;
 }
+
+};
+
+

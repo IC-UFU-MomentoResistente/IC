@@ -121,7 +121,7 @@ Polygon polygon;
 void IniciarInterface()
 {
     const int screenWidth = 1280;
-    const int screenHeight = 960;
+    const int screenHeight = 720;
     InitWindow(screenWidth, screenHeight, "Software de cálculo de esforços em concreto armado");
     SetTargetFPS(60);
     rlImGuiSetup(true);
@@ -237,7 +237,73 @@ void loopPrograma()
         }
 
         // Janela do Gráfico
+
+        // ... código existente ...
+
         if (showGraficoWindow)
+        {
+            ImGui::Begin("Gráfico da Seção Transversal", &showGraficoWindow); // Título da janela
+
+            static float x_values[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; // teste
+            static float y_values[11];
+
+            // Preenche y_values com o valor de VLN
+            std::fill(std::begin(y_values), std::end(y_values), VLN);
+
+            int numPoints = collectedPoints.size();
+            int numCortes = polygon.resultadoCorte.size();
+
+            // Verifica se foram inseridos pelo menos 3 vértices
+            if (numPoints >= 3) 
+            {
+                // Arrays para os dados do gráfico
+                std::vector<float> x_data(numPoints + 1);
+                std::vector<float> y_data(numPoints + 1);
+                std::vector<float> x_corte(numCortes);
+                std::vector<float> y_corte(numCortes);
+
+                // Preenche os arrays x_data e y_data com os pontos coletados
+                for (int i = 0; i < numPoints; i++)
+                {
+                    x_data[i] = collectedPoints[i].x;
+                    y_data[i] = collectedPoints[i].y;
+                }
+
+                // Adiciona o primeiro ponto ao final para fechar o polígono
+                x_data[numPoints] = collectedPoints[0].x;
+                y_data[numPoints] = collectedPoints[0].y;
+
+                // Preenche os arrays de cortes
+                for (int i = 0; i < numCortes; i++)
+                {
+                    x_corte[i] = polygon.resultadoCorte[i].x;
+                    y_corte[i] = polygon.resultadoCorte[i].y;
+                }
+
+                // Plota os pontos e desenha o polígono
+                if (ImPlot::BeginPlot("Gráfico"))
+                {
+                    ImPlot::PlotScatter("Vértices", x_data.data(), y_data.data(), numPoints + 1);
+                    ImPlot::PlotScatter("Vértices cortadas", x_corte.data(), y_corte.data(), numCortes);
+                    ImPlot::PlotLine("Polígono", x_data.data(), y_data.data(), numPoints + 1);
+                    ImPlot::PlotLine("Linha de corte", x_values, y_values, sizeof(x_values) / sizeof(float));
+                    ImPlot::EndPlot();
+                }
+            }
+            else
+            {
+                ImGui::Text("Insira pelo menos 3 vértices para formar um polígono.");
+            }
+
+            ImGui::End(); // Finaliza a janela do gráfico
+        }
+
+        // ... código existente ...
+
+
+
+
+        /* if (showGraficoWindow)
         {
             ImGui::Begin("Gráfico da Seção Transversal", &showGraficoWindow); // Título da janela
 
@@ -265,10 +331,12 @@ void loopPrograma()
                     y_data[i] = collectedPoints[i].y;
                 }
 
+                int i = 0;
                 for (const auto &point : polygon.resultadoCorte)
                 {
-                    x_corte[i] = polygon.resultadoCorte[i].x;
-                    y_corte[i] = polygon.resultadoCorte[i].y;
+                    x_corte[i] = point.x;
+                    y_corte[i] = point.y;
+                    i++;
                 }
 
                 // Adiciona o primeiro ponto ao final para fechar o polígono
@@ -291,7 +359,7 @@ void loopPrograma()
             }
 
             ImGui::End(); // Finaliza a janela do gráfico
-        }
+        } */
 
         rlImGuiEnd();
         EndDrawing();

@@ -114,7 +114,10 @@ public:
 };
 
 // Variáveis globais
-std::vector<Point> collectedPoints; // Armazenar os pontos coletados
+std::vector<Point> collectedPoints = {
+    {0,190}, {0,178}, {50,170}, {50,45}, {25,25}, {25,0},
+    {95,0}, {95, 25}, {70,45}, {70,170}, {120,178}, {120,190}
+}; // Armazenar os pontos coletados
 Polygon polygon;
 
 // Funções de inicialização da interface
@@ -145,7 +148,7 @@ void loopPrograma()
         rlImGuiBegin();
 
         // Janela de Inserção de Dados
-        if (showDadosWindow)
+        /* if (showDadosWindow)
         {
             ImGui::Begin("Inserir Dados", &showDadosWindow); // Título da janela
 
@@ -181,7 +184,7 @@ void loopPrograma()
             }
 
             ImGui::End(); // Finaliza a janela de dados
-        }
+        } */
 
         if (showDadosWindowTwo)
         {
@@ -240,12 +243,12 @@ void loopPrograma()
 
         // ... código existente ...
 
-        if (showGraficoWindow)
+        /* if (showGraficoWindow)
         {
             ImGui::Begin("Gráfico da Seção Transversal", &showGraficoWindow); // Título da janela
 
-            static float x_values[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; // teste
-            static float y_values[11];
+            static float x_values[] = {-10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130}; // teste
+            static float y_values[15];
 
             // Preenche y_values com o valor de VLN
             std::fill(std::begin(y_values), std::end(y_values), VLN);
@@ -296,9 +299,70 @@ void loopPrograma()
             }
 
             ImGui::End(); // Finaliza a janela do gráfico
-        }
+        } */
 
         // ... código existente ...
+
+        if (showGraficoWindow)
+        {
+            ImGui::Begin("Gráfico da Seção Transversal", &showGraficoWindow); // Título da janela
+
+            static float x_values[] = {-10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130}; // teste
+            static float y_values[15];
+
+            // Preenche y_values com o valor de VLN
+            std::fill(std::begin(y_values), std::end(y_values), VLN);
+
+            int numPoints = collectedPoints.size();
+            int numCortes = polygon.resultadoCorte.size();
+
+            // Verifica se foram inseridos pelo menos 3 vértices
+            if (numPoints >= 3) 
+            {
+                // Arrays para os dados do gráfico
+                std::vector<float> x_data(numPoints + 1);
+                std::vector<float> y_data(numPoints + 1);
+                std::vector<float> x_corte(numCortes);
+                std::vector<float> y_corte(numCortes);
+
+                // Preenche os arrays x_data e y_data com os pontos coletados
+                for (int i = 0; i < numPoints; i++)
+                {
+                    x_data[i] = collectedPoints[i].x;
+                    y_data[i] = collectedPoints[i].y;
+                }
+
+                // Adiciona o primeiro ponto ao final para fechar o polígono
+                x_data[numPoints] = collectedPoints[0].x;
+                y_data[numPoints] = collectedPoints[0].y;
+
+                // Preenche os arrays de cortes
+                for (int i = 0; i < numCortes; i++)
+                {
+                    x_corte[i] = polygon.resultadoCorte[i].x;
+                    y_corte[i] = polygon.resultadoCorte[i].y;
+                }
+
+                // Obtém o tamanho disponível para o gráfico dentro da janela
+                ImVec2 plotSize = ImGui::GetContentRegionAvail();
+
+                // Plota os pontos e desenha o polígono
+                if (ImPlot::BeginPlot("Gráfico", ImVec2(plotSize.x, plotSize.y)))
+                {
+                    ImPlot::PlotScatter("Vértices", x_data.data(), y_data.data(), numPoints + 1);
+                    ImPlot::PlotScatter("Vértices cortadas", x_corte.data(), y_corte.data(), numCortes);
+                    ImPlot::PlotLine("Polígono", x_data.data(), y_data.data(), numPoints + 1);
+                    ImPlot::PlotLine("Linha de corte", x_values, y_values, sizeof(x_values) / sizeof(float));
+                    ImPlot::EndPlot();
+                }
+            }
+            else
+            {
+                ImGui::Text("Insira pelo menos 3 vértices para formar um polígono.");
+            }
+
+            ImGui::End(); // Finaliza a janela do gráfico
+        }
 
 
 

@@ -221,8 +221,10 @@ void loopPrograma()
                 {
                     TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
                 }
+                TraceLog(LOG_INFO, "Corte", cortar);            
             }
 
+/*
             if (ImGui::Button("Calcular Área e Centróide"))
             {
                 polygon.setVertices(collectedPoints); // Transfere os pontos para o polígono
@@ -231,7 +233,7 @@ void loopPrograma()
 
                 TraceLog(LOG_INFO, "Área: %.2f", polygonArea);
                 TraceLog(LOG_INFO, "Centróide: (%.2f, %.2f)", centroid.x, centroid.y);
-            }
+            }*/
 
             ImGui::End();
         }
@@ -241,13 +243,26 @@ void loopPrograma()
         {
             ImGui::Begin("Gráfico da Seção Transversal", &showGraficoWindow); // Título da janela
 
-            static float x_values[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; // teste
-            static float y_values[11];
+            static float x_values[2]; // teste
+            static float y_values[2];
+
+            float valorMenor = 100;
+            float valorMaior = 100;
+
 
             for (int i = 0; i < sizeof(x_values); i++)
             {
                 y_values[i] = VLN;
             }
+
+            if(IsKeyPressed(KEY_UP)) {
+                VLN = VLN + 1;
+            }
+            if(IsKeyPressed(KEY_DOWN)) {
+                VLN = VLN - 1;
+            }
+
+
             int numPoints2 = 0;
             int numPoints = collectedPoints.size();
             float x_corte[polygon.resultadoCorte.size()];
@@ -263,6 +278,19 @@ void loopPrograma()
                 {
                     x_data[i] = collectedPoints[i].x;
                     y_data[i] = collectedPoints[i].y;
+              
+                if (collectedPoints[i].x > valorMaior) 
+                {
+                    valorMaior = collectedPoints[i].x;
+                }
+                if (collectedPoints[i].x < valorMenor) 
+                {
+                    valorMenor = collectedPoints[i].x;
+                }
+              
+                x_values[0] = valorMenor - 0.1*valorMenor;
+                x_values[1] = valorMaior + 0.1*valorMaior;
+              
                 }
 
                 for (const auto &point : polygon.resultadoCorte)
@@ -285,7 +313,7 @@ void loopPrograma()
                     ImPlot::PlotScatter("Vértices", x_data, y_data, numPoints);
                     ImPlot::PlotScatter("Vértices cortadas", x_corte, y_corte, numPoints2);
                     ImPlot::PlotLine("Polígono", x_data, y_data, numPoints + 1); // Aumente para numPoints + 1
-                    ImPlot::PlotLine("Linha de corte,", x_values, y_values, 6);
+                    ImPlot::PlotLine("Linha de corte,", x_values, y_values, sizeof(x_values));
                     ImPlot::EndPlot();
                 }
             }
@@ -310,10 +338,10 @@ void loopPrograma()
 // Quando acrescenta uma certa quantidade de pontos, o primeiro ponto some, ai tem que inserir mais um vetor pra preencher o lugar
 // do primeiro vetor
 // Tarefas
-// Definir seção I pronta para começar a interface
-// Inserir pontos de corte na janela do gráfico
-// Ajustar tamanho dos vetores x_data, y_data, x_corte, y_corte
-// Ajustar desenho da linha com os limites de x + 10%
+// Definir seção I pronta para começar a interface FEITO 
+// Inserir pontos de corte na janela do gráfico FEITO 
+// Ajustar tamanho dos vetores x_data, y_data, x_corte, y_corte FEITO 
+// Ajustar desenho da linha com os limites de x + 10% 
 // Funções para corte superior e corte inferior
-// Corta com as setas do teclado a cada frame ou a cada "clique"
+// Corta com as setas do teclado a cada frame ou a cada "clique" FEITO 
 // Rodas a seção com as setas

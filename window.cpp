@@ -9,7 +9,6 @@
 #include <algorithm>
 #include <cmath>
 #include <stdio.h>
-#include "data_storage.h"
 
 struct Point
 {
@@ -25,6 +24,9 @@ class Polygon
 public:
     std::vector<Point> vertices;
     std::vector<Point> resultadoCorte;
+    std::vector<Point> areaComprimida;
+    std::vector<Point> areaTracionada;
+    
     void setVertices(const std::vector<Point> &points)
     {
         vertices.clear();
@@ -34,40 +36,16 @@ public:
         }
     }
 
-    double area() const
-    {
-        double A = 0.0;
-        int n = vertices.size();
-        for (int i = 0; i < n; ++i)
-        {
-            int j = (i + 1) % n;
-            A += vertices[i].x * vertices[j].y - vertices[j].x * vertices[i].y;
-        }
-        return std::abs(A) / 2.0;
-    }
-
-    Point centroid() const
-    {
-        double Cx = 0.0, Cy = 0.0;
-        double A = area();
-        int n = vertices.size();
-        for (int i = 0; i < n; ++i)
-        {
-            int j = (i + 1) % n;
-            double factor = (vertices[i].x * vertices[j].y - vertices[j].x * vertices[i].y);
-            Cx += (vertices[i].x + vertices[j].x) * factor;
-            Cy += (vertices[i].y + vertices[j].y) * factor;
-        }
-        Cx /= (6.0 * A);
-        Cy /= (6.0 * A);
-        return Point(Cx, Cy);
-    }
-
     int verificarCaso(const Point &p1, const Point &p2, double cortar)
     {
-        if ((p2.y <= cortar && p1.y >= cortar) || (p2.y >= cortar && p1.y <= cortar))
-        {
+        if ((p2.y <= cortar && p1.y >= cortar) || (p2.y >= cortar && p1.y <= cortar)){
             return 2; // Caso 2: Corta o trecho
+        }
+        if (p2.y >= cortar && p1.y >= cortar){
+            return 3; // caso 3: vértices acima da linha de corte; área comprimida
+        }
+        if (p2.y <= cortar && p1.y <= cortar){
+            return 4; // caso 4: vértices abaixo da linha de corte: área tracionada
         }
         return 1; // Caso 1: Adiciona o nó final na nova poligonal
     }
@@ -92,24 +70,30 @@ public:
 
     void cortarPoligonal(const std::vector<Point> &vertices, float &cortar)
     {
-        float nivel = cortar;
-        std::vector<Point> novaPoligonal;
         int nv = vertices.size();
 
-        for (int i = 0; i < nv; i++)
-        {
-            int caso = verificarCaso(vertices[i], vertices[(i + 1) % nv], nivel);
+        for (int i = 0; i < nv; i++){
+            int caso = verificarCaso(vertices[i], vertices[(i + 1) % nv], cortar);
 
-            if (caso == 2)
-            {
-                Point intersecao = calcularIntersecao(vertices[i], vertices[(i + 1) % nv], nivel);
-                novaPoligonal.push_back(intersecao);
+            if (caso == 2){
+                Point intersecao = calcularIntersecao(vertices[i], vertices[(i + 1) % nv], cortar);
+                resultadoCorte.push_back(intersecao);
+                areaComprimida.push_back(intersecao);
+                areaTracionada.push_back(intersecao);
             }
-
-            novaPoligonal.push_back(vertices[(i + 1) % nv]);
-        }
-
-        resultadoCorte = novaPoligonal;
+            if (caso == 3){
+                resultadoCorte.push_back(vertices[i]);
+                resultadoCorte.push_back(vertices[(i + 1) % nv]);
+                areaComprimida.push_back(vertices[i]);
+                areaComprimida.push_back(vertices[(i + 1) % nv]);
+            }
+            if (caso == 4){
+                resultadoCorte.push_back(vertices[i]);
+                resultadoCorte.push_back(vertices[(i + 1) % nv]);
+                areaTracionada.push_back(vertices[i]);
+                areaTracionada.push_back(vertices[(i + 1) % nv]);
+            }   
+        } 
     }
 };
 
@@ -135,9 +119,7 @@ void loopPrograma()
 {
     static float VLN = 0;
     static float cortar = 0;
-    static int tempNumPoints = 0;
     static bool showGraficoWindow = true;
-    static bool showDadosWindow = true;
     static bool showDadosWindowTwo = true;
 
     while (!WindowShouldClose())
@@ -146,45 +128,6 @@ void loopPrograma()
         BeginDrawing();
         ClearBackground(BLACK);
         rlImGuiBegin();
-
-        // Janela de Inserção de Dados
-        /* if (showDadosWindow)
-        {
-            ImGui::Begin("Inserir Dados", &showDadosWindow); // Título da janela
-
-            ImGui::Text("DADOS");
-            ImGui::InputInt("Número de Pontos", &tempNumPoints);
-
-            if (tempNumPoints != collectedPoints.size())
-            {
-                collectedPoints.resize(tempNumPoints); // Ajustar o tamanho do vetor
-            }
-
-            if (ImGui::BeginTable("Table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
-            {
-                ImGui::TableSetupColumn("x", ImGuiTableColumnFlags_WidthFixed, 100.0f);
-                ImGui::TableSetupColumn("y", ImGuiTableColumnFlags_WidthFixed, 100.0f);
-                ImGui::TableHeadersRow();
-
-                for (int row = 0; row < collectedPoints.size(); row++)
-                {
-                    ImGui::TableNextRow();
-                    ImGui::TableSetColumnIndex(0);
-
-                    char labelX[10], labelY[10];
-                    snprintf(labelX, sizeof(labelX), "x%d", row);
-                    snprintf(labelY, sizeof(labelY), "y%d", row);
-
-                    ImGui::InputFloat(labelX, &collectedPoints[row].x);
-                    ImGui::TableSetColumnIndex(1);
-                    ImGui::InputFloat(labelY, &collectedPoints[row].y);
-                }
-
-                ImGui::EndTable();
-            }
-
-            ImGui::End(); // Finaliza a janela de dados
-        } */
 
         if (showDadosWindowTwo)
         {
@@ -214,94 +157,18 @@ void loopPrograma()
             {
 
                 TraceLog(LOG_INFO, "Valores armazenados:");
-                for (const auto &point : collectedPoints)
-                {
+                for (const auto &point : collectedPoints){
                     TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
                 }
                 TraceLog(LOG_INFO, "Valores após o corte");
-                for (const auto &point : polygon.resultadoCorte)
-                {
+                for (const auto &point : polygon.resultadoCorte){
                     TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
                 }
                 TraceLog(LOG_INFO, "Corte", cortar);
             }
 
-            if (ImGui::Button("Calcular Área e Centróide"))
-            {
-                polygon.setVertices(collectedPoints); // Transfere os pontos para o polígono
-                double polygonArea = polygon.area();  // Calcula a área
-                Point centroid = polygon.centroid();  // Calcula o centróide
-
-                TraceLog(LOG_INFO, "Área: %.2f", polygonArea);
-                TraceLog(LOG_INFO, "Centróide: (%.2f, %.2f)", centroid.x, centroid.y);
-            }
-
             ImGui::End();
         }
-
-        // Janela do Gráfico
-
-        // ... código existente ...
-
-        /* if (showGraficoWindow)
-        {
-            ImGui::Begin("Gráfico da Seção Transversal", &showGraficoWindow); // Título da janela
-
-            static float x_values[] = {-10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130}; // teste
-            static float y_values[15];
-
-            // Preenche y_values com o valor de VLN
-            std::fill(std::begin(y_values), std::end(y_values), VLN);
-
-            int numPoints = collectedPoints.size();
-            int numCortes = polygon.resultadoCorte.size();
-
-            // Verifica se foram inseridos pelo menos 3 vértices
-            if (numPoints >= 3) 
-            {
-                // Arrays para os dados do gráfico
-                std::vector<float> x_data(numPoints + 1);
-                std::vector<float> y_data(numPoints + 1);
-                std::vector<float> x_corte(numCortes);
-                std::vector<float> y_corte(numCortes);
-
-                // Preenche os arrays x_data e y_data com os pontos coletados
-                for (int i = 0; i < numPoints; i++)
-                {
-                    x_data[i] = collectedPoints[i].x;
-                    y_data[i] = collectedPoints[i].y;
-                }
-
-                // Adiciona o primeiro ponto ao final para fechar o polígono
-                x_data[numPoints] = collectedPoints[0].x;
-                y_data[numPoints] = collectedPoints[0].y;
-
-                // Preenche os arrays de cortes
-                for (int i = 0; i < numCortes; i++)
-                {
-                    x_corte[i] = polygon.resultadoCorte[i].x;
-                    y_corte[i] = polygon.resultadoCorte[i].y;
-                }
-
-                // Plota os pontos e desenha o polígono
-                if (ImPlot::BeginPlot("Gráfico"))
-                {
-                    ImPlot::PlotScatter("Vértices", x_data.data(), y_data.data(), numPoints + 1);
-                    ImPlot::PlotScatter("Vértices cortadas", x_corte.data(), y_corte.data(), numCortes);
-                    ImPlot::PlotLine("Polígono", x_data.data(), y_data.data(), numPoints + 1);
-                    ImPlot::PlotLine("Linha de corte", x_values, y_values, sizeof(x_values) / sizeof(float));
-                    ImPlot::EndPlot();
-                }
-            }
-            else
-            {
-                ImGui::Text("Insira pelo menos 3 vértices para formar um polígono.");
-            }
-
-            ImGui::End(); // Finaliza a janela do gráfico
-        } */
-
-        // ... código existente ...
 
         if (showGraficoWindow)
         {
@@ -315,6 +182,8 @@ void loopPrograma()
 
             int numPoints = collectedPoints.size();
             int numCortes = polygon.resultadoCorte.size();
+            int numAreaComprimida = polygon.areaComprimida.size();
+            int numAreaTracionada = polygon.areaTracionada.size();
 
             // Verifica se foram inseridos pelo menos 3 vértices
             if (numPoints >= 3) 
@@ -322,12 +191,16 @@ void loopPrograma()
                 // Arrays para os dados do gráfico
                 std::vector<float> x_data(numPoints + 1);
                 std::vector<float> y_data(numPoints + 1);
-                std::vector<float> x_corte(numCortes);
-                std::vector<float> y_corte(numCortes);
+                std::vector<float> x_corte(numCortes + 1);
+                std::vector<float> y_corte(numCortes + 1);
+                std::vector<float> x_comprimido(numAreaComprimida);
+                std::vector<float> y_comprimido(numAreaTracionada);
+                std::vector<float> x_tracionado(numAreaComprimida);
+                std::vector<float> y_tracionado(numAreaTracionada);
+                
 
                 // Preenche os arrays x_data e y_data com os pontos coletados
-                for (int i = 0; i < numPoints; i++)
-                {
+                for (int i = 0; i < numPoints; i++){
                     x_data[i] = collectedPoints[i].x;
                     y_data[i] = collectedPoints[i].y;
                 }
@@ -337,93 +210,44 @@ void loopPrograma()
                 y_data[numPoints] = collectedPoints[0].y;
 
                 // Preenche os arrays de cortes
-                for (int i = 0; i < numCortes; i++)
-                {
+                for (int i = 0; i < numCortes; i++){
                     x_corte[i] = polygon.resultadoCorte[i].x;
                     y_corte[i] = polygon.resultadoCorte[i].y;
+                }
+
+                for (int i = 0; i < numAreaComprimida; i++){
+                    x_comprimido[i] = polygon.areaComprimida[i].x;
+                    y_comprimido[i] = polygon.areaComprimida[i].y;
+                }
+
+                for (int i = 0; i < numAreaTracionada; i++){
+                    x_tracionado[i] = polygon.areaTracionada[i].x;
+                    y_tracionado[i] = polygon.areaTracionada[i].y;
                 }
 
                 // Obtém o tamanho disponível para o gráfico dentro da janela
                 ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
                 // Plota os pontos e desenha o polígono
-                if (ImPlot::BeginPlot("Gráfico", ImVec2(plotSize.x, plotSize.y)))
-                {
+                if (ImPlot::BeginPlot("Gráfico", ImVec2(plotSize.x, plotSize.y))){
                     ImPlot::PlotScatter("Vértices", x_data.data(), y_data.data(), numPoints + 1);
                     ImPlot::PlotScatter("Vértices cortadas", x_corte.data(), y_corte.data(), numCortes);
+                    ImPlot::PlotScatter("Vértices comprimidos", x_comprimido.data(), y_comprimido.data(), numAreaComprimida);
+                    ImPlot::PlotScatter("Vértices tracionados", x_tracionado.data(), y_tracionado.data(), numAreaTracionada);
                     ImPlot::PlotLine("Polígono", x_data.data(), y_data.data(), numPoints + 1);
+                    ImPlot::PlotLine("Poligono cortado", x_corte.data(), y_corte.data(), numCortes);
+                    ImPlot::PlotLine("Polígono comprimido", x_comprimido.data(), y_comprimido.data(), numAreaComprimida);
+                    ImPlot::PlotLine("Polígono tracionado", x_tracionado.data(), y_tracionado.data(), numAreaTracionada);
                     ImPlot::PlotLine("Linha de corte", x_values, y_values, sizeof(x_values) / sizeof(float));
                     ImPlot::EndPlot();
                 }
             }
-            else
-            {
+            else{
                 ImGui::Text("Insira pelo menos 3 vértices para formar um polígono.");
             }
 
             ImGui::End(); // Finaliza a janela do gráfico
         }
-
-
-
-
-        /* if (showGraficoWindow)
-        {
-            ImGui::Begin("Gráfico da Seção Transversal", &showGraficoWindow); // Título da janela
-
-            static float x_values[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; // teste
-            static float y_values[11];
-
-            for (int i = 0; i < sizeof(x_values); i++)
-            {
-                y_values[i] = VLN;
-            }
-
-            int numPoints = collectedPoints.size();
-            float x_corte[polygon.resultadoCorte.size()];
-            float y_corte[polygon.resultadoCorte.size()];
-
-            float x_data[collectedPoints.size()];
-            float y_data[collectedPoints.size()];
-
-            if (numPoints >= 3) // Verifica se foram inseridos pelo menos 3 vértices
-            {
-                // Preenche os arrays x_data e y_data com os pontos coletados
-                for (int i = 0; i < numPoints; i++)
-                {
-                    x_data[i] = collectedPoints[i].x;
-                    y_data[i] = collectedPoints[i].y;
-                }
-
-                int i = 0;
-                for (const auto &point : polygon.resultadoCorte)
-                {
-                    x_corte[i] = point.x;
-                    y_corte[i] = point.y;
-                    i++;
-                }
-
-                // Adiciona o primeiro ponto ao final para fechar o polígono
-                x_data[numPoints] = collectedPoints[0].x;
-                y_data[numPoints] = collectedPoints[0].y;
-
-                // Plota os pontos e desenha o polígono
-                if (ImPlot::BeginPlot("Gráfico"))
-                {
-                    ImPlot::PlotScatter("Vértices", x_data, y_data, numPoints);
-                    ImPlot::PlotScatter("Vértices cortadas", x_corte, y_corte, numPoints);
-                    ImPlot::PlotLine("Polígono", x_data, y_data, numPoints + 1); // Aumente para numPoints + 1
-                    ImPlot::PlotLine("Linha de corte,", x_values, y_values, 6);
-                    ImPlot::EndPlot();
-                }
-            }
-            else
-            {
-                ImGui::Text("Insira pelo menos 3 vértices para formar um polígono.");
-            }
-
-            ImGui::End(); // Finaliza a janela do gráfico
-        } */
 
         rlImGuiEnd();
         EndDrawing();

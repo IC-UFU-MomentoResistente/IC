@@ -9,14 +9,22 @@
 #include <algorithm>
 #include <cmath>
 #include <stdio.h>
+#include <set>
 
-struct Point
-{
+struct Point {
     float x;
     float y;
 
     Point() : x(0), y(0) {}
     Point(float x_val, float y_val) : x(x_val), y(y_val) {}
+
+    // Definir o operador de comparação para que o std::set funcione
+    bool operator<(const Point& other) const {
+        if (x != other.x) {
+            return x < other.x;
+        }
+        return y < other.y;
+    }
 };
 
 class Polygon
@@ -70,30 +78,53 @@ public:
 
     void cortarPoligonal(const std::vector<Point> &vertices, float &cortar)
     {
+        resultadoCorte.clear();
+        areaComprimida.clear();
+        areaTracionada.clear();
         int nv = vertices.size();
+        std::set<Point> pontosAdicionados; // Conjunto para rastrear pontos já adicionados
 
-        for (int i = 0; i < nv; i++){
+        for (int i = 0; i < nv; i++)
+        {
             int caso = verificarCaso(vertices[i], vertices[(i + 1) % nv], cortar);
 
-            if (caso == 2){
+            if (caso == 2)
+            {
                 Point intersecao = calcularIntersecao(vertices[i], vertices[(i + 1) % nv], cortar);
-                resultadoCorte.push_back(intersecao);
-                areaComprimida.push_back(intersecao);
-                areaTracionada.push_back(intersecao);
+                if (pontosAdicionados.insert(intersecao).second) // Adiciona se não existir
+                {
+                    resultadoCorte.push_back(intersecao);
+                    areaComprimida.push_back(intersecao);
+                    areaTracionada.push_back(intersecao);
+                }
             }
-            if (caso == 3){
-                resultadoCorte.push_back(vertices[i]);
-                resultadoCorte.push_back(vertices[(i + 1) % nv]);
-                areaComprimida.push_back(vertices[i]);
-                areaComprimida.push_back(vertices[(i + 1) % nv]);
+            if (caso == 3)
+            {
+                if (pontosAdicionados.insert(vertices[i]).second) // Adiciona se não existir
+                {
+                    resultadoCorte.push_back(vertices[i]);
+                    areaComprimida.push_back(vertices[i]);
+                }
+                if (pontosAdicionados.insert(vertices[(i + 1) % nv]).second) // Adiciona se não existir
+                {
+                    resultadoCorte.push_back(vertices[(i + 1) % nv]);
+                    areaComprimida.push_back(vertices[(i + 1) % nv]);
+                }
             }
-            if (caso == 4){
-                resultadoCorte.push_back(vertices[i]);
-                resultadoCorte.push_back(vertices[(i + 1) % nv]);
-                areaTracionada.push_back(vertices[i]);
-                areaTracionada.push_back(vertices[(i + 1) % nv]);
-            }   
-        } 
+            if (caso == 4)
+            {
+                if (pontosAdicionados.insert(vertices[i]).second) // Adiciona se não existir
+                {
+                    resultadoCorte.push_back(vertices[i]);
+                    areaTracionada.push_back(vertices[i]);
+                }
+                if (pontosAdicionados.insert(vertices[(i + 1) % nv]).second) // Adiciona se não existir
+                {
+                    resultadoCorte.push_back(vertices[(i + 1) % nv]);
+                    areaTracionada.push_back(vertices[(i + 1) % nv]);
+                }
+            }
+        }
     }
 };
 
@@ -122,15 +153,13 @@ void loopPrograma()
     static bool showGraficoWindow = true;
     static bool showDadosWindowTwo = true;
 
-    while (!WindowShouldClose())
-    {
+    while (!WindowShouldClose()){
 
         BeginDrawing();
         ClearBackground(BLACK);
         rlImGuiBegin();
 
-        if (showDadosWindowTwo)
-        {
+        if (showDadosWindowTwo){
             ImGui::Begin("Central de operações com polígono", &showDadosWindowTwo);
             ImGui::Text("Insira a coordenada de corte");
 
@@ -157,28 +186,49 @@ void loopPrograma()
             {
 
                 TraceLog(LOG_INFO, "Valores armazenados:");
-                for (const auto &point : collectedPoints){
+                for (const auto &point : collectedPoints)
+                {
                     TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
                 }
+
                 TraceLog(LOG_INFO, "Valores após o corte");
-                for (const auto &point : polygon.resultadoCorte){
+                for (const auto &point : polygon.resultadoCorte)
+                {
                     TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
                 }
-                TraceLog(LOG_INFO, "Corte", cortar);
+
+                TraceLog(LOG_INFO, "Vertices comprimidos");
+                for (const auto &point : polygon.areaComprimida){
+                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
+                }
+
+                TraceLog(LOG_INFO, "Vertices tracionados");
+                for (const auto &point : polygon.areaTracionada){
+                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
+                }
             }
 
             ImGui::End();
         }
 
-        if (showGraficoWindow)
-        {
+        // Janela do Gráfico
+        if (showGraficoWindow){
             ImGui::Begin("Gráfico da Seção Transversal", &showGraficoWindow); // Título da janela
 
-            static float x_values[] = {-10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130}; // teste
-            static float y_values[15];
+            static float x_values[] = {-10, 130};
+            static float y_values[2];
 
-            // Preenche y_values com o valor de VLN
-            std::fill(std::begin(y_values), std::end(y_values), VLN);
+            for (int i = 0; i < sizeof(x_values); i++)
+            {
+                y_values[i] = VLN;
+            }
+
+            if(IsKeyPressed(KEY_UP)) {
+                VLN = VLN + 1;
+            }
+            if(IsKeyPressed(KEY_DOWN)) {
+                VLN = VLN - 1;
+            }
 
             int numPoints = collectedPoints.size();
             int numCortes = polygon.resultadoCorte.size();
@@ -186,8 +236,7 @@ void loopPrograma()
             int numAreaTracionada = polygon.areaTracionada.size();
 
             // Verifica se foram inseridos pelo menos 3 vértices
-            if (numPoints >= 3) 
-            {
+            if (numPoints >= 3) {
                 // Arrays para os dados do gráfico
                 std::vector<float> x_data(numPoints + 1);
                 std::vector<float> y_data(numPoints + 1);
@@ -258,11 +307,12 @@ void loopPrograma()
     rlImGuiShutdown();
 }
 
+
 //Tarefas
-//Definir seção I pronta para começar a interface
-//Inserir pontos de corte na janela do gráfico 
-//Ajustar tamanho dos vetores x_data, y_data, x_corte, y_corte
-//Ajustar desenho da linha com os limites de x + 10%
-//Funções para corte superior e corte inferior
-//Corta com as setas do teclado a cada frame ou a cada "clique"
-//Rodas a seção com as setas 
+//Definir seção I pronta para começar a interface FEITO 
+//Inserir pontos de corte na janela do gráfico  FEITO 
+//Ajustar tamanho dos vetores x_data, y_data, x_corte, y_corte FEITO 
+//Ajustar desenho da linha com os limites de x + 10% FEITO 
+//Funções para corte superior e corte inferior FEITO 
+//Corta com as setas do teclado a cada frame ou a cada "clique" FEITO
+//Rodar a seção com as setas - A FAZER 

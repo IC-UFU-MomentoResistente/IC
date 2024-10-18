@@ -195,6 +195,10 @@ void loopPrograma()
 
             ImGui::InputFloat("Y", &VLN); // Permite ao usuário inserir a coordenada Y
 
+                cortar = VLN;
+                polygon.setVertices(collectedPoints);
+                polygon.cortarPoligonal(polygon.vertices, cortar);
+
             // Adiciona a coordenada Y ao vetor de cortes
             if (ImGui::Button("Adicionar Corte"))
             { // Botão para adicionar o corte
@@ -246,8 +250,8 @@ void loopPrograma()
             static float x_values[2]; // teste
             static float y_values[2];
 
-            float valorMenor = 100;
-            float valorMaior = 100;
+            float valorMenor = FLT_MAX; //Número de ponto flutuante representável máximo.
+            float valorMaior = -FLT_MAX; // Número de ponto flutuante representável máximo.
 
 
             for (int i = 0; i < sizeof(x_values); i++)
@@ -257,9 +261,19 @@ void loopPrograma()
 
             if(IsKeyPressed(KEY_UP)) {
                 VLN = VLN + 1;
+            
+                cortar = VLN;
+                polygon.setVertices(collectedPoints);
+                polygon.cortarPoligonal(polygon.vertices, cortar);
+            
             }
             if(IsKeyPressed(KEY_DOWN)) {
                 VLN = VLN - 1;
+
+                cortar = VLN;
+                polygon.setVertices(collectedPoints);
+                polygon.cortarPoligonal(polygon.vertices, cortar);
+            
             }
 
 
@@ -279,19 +293,21 @@ void loopPrograma()
                     x_data[i] = collectedPoints[i].x;
                     y_data[i] = collectedPoints[i].y;
               
-                if (collectedPoints[i].x > valorMaior) 
-                {
+                    if (collectedPoints[i].x > valorMaior) 
+                    {
                     valorMaior = collectedPoints[i].x;
-                }
-                if (collectedPoints[i].x < valorMenor) 
-                {
+                     }
+                    if (collectedPoints[i].x < valorMenor) 
+                    {
                     valorMenor = collectedPoints[i].x;
+                    }
+                                           
                 }
-              
-                x_values[0] = valorMenor - 0.1*valorMenor;
-                x_values[1] = valorMaior + 0.1*valorMaior;
-              
-                }
+
+                    x_values[0] = valorMenor - valorMenor*0.1;
+                    x_values[1] = valorMaior + valorMaior*0.1 - valorMenor*0.1;
+                
+                                          
 
                 for (const auto &point : polygon.resultadoCorte)
                 {
@@ -313,7 +329,7 @@ void loopPrograma()
                     ImPlot::PlotScatter("Vértices", x_data, y_data, numPoints);
                     ImPlot::PlotScatter("Vértices cortadas", x_corte, y_corte, numPoints2);
                     ImPlot::PlotLine("Polígono", x_data, y_data, numPoints + 1); // Aumente para numPoints + 1
-                    ImPlot::PlotLine("Linha de corte,", x_values, y_values, sizeof(x_values));
+                    ImPlot::PlotLine("Linha de corte,", x_values, y_values, 2);
                     ImPlot::EndPlot();
                 }
             }

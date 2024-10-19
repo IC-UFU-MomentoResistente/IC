@@ -32,8 +32,8 @@ class Polygon
 public:
     std::vector<Point> vertices;
     std::vector<Point> resultadoCorte;
-    std::vector<Point> areaComprimida;
-    std::vector<Point> areaTracionada;
+    std::vector<Point> AreaSuperior;
+    std::vector<Point> AreaInferior;
     
     void setVertices(const std::vector<Point> &points)
     {
@@ -79,8 +79,8 @@ public:
     void cortarPoligonal(const std::vector<Point> &vertices, float &cortar)
     {
         resultadoCorte.clear();
-        areaComprimida.clear();
-        areaTracionada.clear();
+        AreaSuperior.clear();
+        AreaInferior.clear();
         int nv = vertices.size();
         std::set<Point> pontosAdicionados; // Conjunto para rastrear pontos já adicionados
 
@@ -94,8 +94,8 @@ public:
                 if (pontosAdicionados.insert(intersecao).second) // Adiciona se não existir
                 {
                     resultadoCorte.push_back(intersecao);
-                    areaComprimida.push_back(intersecao);
-                    areaTracionada.push_back(intersecao);
+                    AreaSuperior.push_back(intersecao);
+                    AreaInferior.push_back(intersecao);
                 }
             }
             if (caso == 3)
@@ -103,12 +103,12 @@ public:
                 if (pontosAdicionados.insert(vertices[i]).second) // Adiciona se não existir
                 {
                     resultadoCorte.push_back(vertices[i]);
-                    areaComprimida.push_back(vertices[i]);
+                    AreaSuperior.push_back(vertices[i]);
                 }
                 if (pontosAdicionados.insert(vertices[(i + 1) % nv]).second) // Adiciona se não existir
                 {
                     resultadoCorte.push_back(vertices[(i + 1) % nv]);
-                    areaComprimida.push_back(vertices[(i + 1) % nv]);
+                    AreaSuperior.push_back(vertices[(i + 1) % nv]);
                 }
             }
             if (caso == 4)
@@ -116,12 +116,12 @@ public:
                 if (pontosAdicionados.insert(vertices[i]).second) // Adiciona se não existir
                 {
                     resultadoCorte.push_back(vertices[i]);
-                    areaTracionada.push_back(vertices[i]);
+                    AreaInferior.push_back(vertices[i]);
                 }
                 if (pontosAdicionados.insert(vertices[(i + 1) % nv]).second) // Adiciona se não existir
                 {
                     resultadoCorte.push_back(vertices[(i + 1) % nv]);
-                    areaTracionada.push_back(vertices[(i + 1) % nv]);
+                    AreaInferior.push_back(vertices[(i + 1) % nv]);
                 }
             }
         }
@@ -198,12 +198,12 @@ void loopPrograma()
                 }
 
                 TraceLog(LOG_INFO, "Vertices comprimidos");
-                for (const auto &point : polygon.areaComprimida){
+                for (const auto &point : polygon.AreaSuperior){
                     TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
                 }
 
                 TraceLog(LOG_INFO, "Vertices tracionados");
-                for (const auto &point : polygon.areaTracionada){
+                for (const auto &point : polygon.AreaInferior){
                     TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
                 }
             }
@@ -215,8 +215,12 @@ void loopPrograma()
         if (showGraficoWindow){
             ImGui::Begin("Gráfico da Seção Transversal", &showGraficoWindow); // Título da janela
 
-            static float x_values[] = {-10, 130};
+            static float x_values[2]; // teste
             static float y_values[2];
+
+            float valorMenor = FLT_MAX; //Número de ponto flutuante representável máximo.
+            float valorMaior = -FLT_MAX; // Número de ponto flutuante representável máximo.
+
 
             for (int i = 0; i < sizeof(x_values); i++)
             {
@@ -225,69 +229,97 @@ void loopPrograma()
 
             if(IsKeyPressed(KEY_UP)) {
                 VLN = VLN + 1;
+            
+                cortar = VLN;
+                polygon.setVertices(collectedPoints);
+                polygon.cortarPoligonal(polygon.vertices, cortar);
+            
             }
             if(IsKeyPressed(KEY_DOWN)) {
                 VLN = VLN - 1;
+
+                cortar = VLN;
+                polygon.setVertices(collectedPoints);
+                polygon.cortarPoligonal(polygon.vertices, cortar);
+            
             }
 
             int numPoints = collectedPoints.size();
-            int numCortes = polygon.resultadoCorte.size();
-            int numAreaComprimida = polygon.areaComprimida.size();
-            int numAreaTracionada = polygon.areaTracionada.size();
+            int numCortes = 0;
+            int numAreaSuperior = 0;
+            int numAreaInferior = 0;
 
-            // Verifica se foram inseridos pelo menos 3 vértices
+            float x_data [collectedPoints.size()];
+            float y_data [collectedPoints.size()];
+            float x_corte [polygon.resultadoCorte.size()];
+            float y_corte [polygon.resultadoCorte.size()];
+            float x_superior [polygon.AreaSuperior.size()];
+            float y_superior [polygon.AreaSuperior.size()];
+            float x_inferior [polygon.AreaInferior.size()];
+            float y_inferior [polygon.AreaInferior.size()];
+
             if (numPoints >= 3) {
-                // Arrays para os dados do gráfico
-                std::vector<float> x_data(numPoints + 1);
-                std::vector<float> y_data(numPoints + 1);
-                std::vector<float> x_corte(numCortes + 1);
-                std::vector<float> y_corte(numCortes + 1);
-                std::vector<float> x_comprimido(numAreaComprimida);
-                std::vector<float> y_comprimido(numAreaTracionada);
-                std::vector<float> x_tracionado(numAreaComprimida);
-                std::vector<float> y_tracionado(numAreaTracionada);
-                
-
-                // Preenche os arrays x_data e y_data com os pontos coletados
-                for (int i = 0; i < numPoints; i++){
+                for (int i = 0; i <= numPoints; i++){
                     x_data[i] = collectedPoints[i].x;
-                    y_data[i] = collectedPoints[i].y;
+                    y_data[i] = collectedPoints[i].y;  
+                    
+                    if (collectedPoints[i].x > valorMaior) {
+                        valorMaior = collectedPoints[i].x;
+                    }
+                    
+                    if (collectedPoints[i].x < valorMenor) {
+                        valorMenor = collectedPoints[i].x;
+                    }
+                }
+
+                    x_values[0] = valorMenor - (valorMaior-valorMenor)*0.1;
+                    x_values[1] = valorMaior + (valorMaior-valorMenor)*0.1;
+    
+                for (const auto &point : polygon.resultadoCorte){
+                    if (numCortes <= polygon.resultadoCorte.size())
+                    {
+                        x_corte[numCortes] = point.x;
+                        y_corte[numCortes] = point.y;
+                        numCortes++;
+                    }
+                }
+
+                for (const auto &point : polygon.AreaSuperior){
+                    if (numAreaSuperior <= polygon.AreaSuperior.size())
+                    {
+                        x_superior[numAreaSuperior] = point.x;
+                        y_superior[numAreaSuperior] = point.y;
+                        numAreaSuperior++;
+                    }
+                }
+
+                for (const auto &point : polygon.AreaInferior){
+                    if (numAreaInferior <= polygon.AreaInferior.size())
+                    {
+                        x_inferior[numAreaInferior] = point.x;
+                        y_inferior[numAreaInferior] = point.y;
+                        numAreaInferior++;
+                    }
                 }
 
                 // Adiciona o primeiro ponto ao final para fechar o polígono
-                x_data[numPoints] = collectedPoints[0].x;
-                y_data[numPoints] = collectedPoints[0].y;
-
-                // Preenche os arrays de cortes
-                for (int i = 0; i < numCortes; i++){
-                    x_corte[i] = polygon.resultadoCorte[i].x;
-                    y_corte[i] = polygon.resultadoCorte[i].y;
-                }
-
-                for (int i = 0; i < numAreaComprimida; i++){
-                    x_comprimido[i] = polygon.areaComprimida[i].x;
-                    y_comprimido[i] = polygon.areaComprimida[i].y;
-                }
-
-                for (int i = 0; i < numAreaTracionada; i++){
-                    x_tracionado[i] = polygon.areaTracionada[i].x;
-                    y_tracionado[i] = polygon.areaTracionada[i].y;
-                }
+                //x_data[numPoints] = 0;
+                //y_data[numPoints] = 190;
 
                 // Obtém o tamanho disponível para o gráfico dentro da janela
                 ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
                 // Plota os pontos e desenha o polígono
                 if (ImPlot::BeginPlot("Gráfico", ImVec2(plotSize.x, plotSize.y))){
-                    ImPlot::PlotScatter("Vértices", x_data.data(), y_data.data(), numPoints + 1);
-                    ImPlot::PlotScatter("Vértices cortadas", x_corte.data(), y_corte.data(), numCortes);
-                    ImPlot::PlotScatter("Vértices comprimidos", x_comprimido.data(), y_comprimido.data(), numAreaComprimida);
-                    ImPlot::PlotScatter("Vértices tracionados", x_tracionado.data(), y_tracionado.data(), numAreaTracionada);
-                    ImPlot::PlotLine("Polígono", x_data.data(), y_data.data(), numPoints + 1);
-                    ImPlot::PlotLine("Poligono cortado", x_corte.data(), y_corte.data(), numCortes);
-                    ImPlot::PlotLine("Polígono comprimido", x_comprimido.data(), y_comprimido.data(), numAreaComprimida);
-                    ImPlot::PlotLine("Polígono tracionado", x_tracionado.data(), y_tracionado.data(), numAreaTracionada);
-                    ImPlot::PlotLine("Linha de corte", x_values, y_values, sizeof(x_values) / sizeof(float));
+                    ImPlot::PlotScatter("Vértices", x_data, y_data, numPoints);
+                    ImPlot::PlotScatter("Vértices cortadas", x_corte, y_corte, numCortes);
+                    ImPlot::PlotScatter("Vértices superiores", x_superior, y_superior, numAreaSuperior);
+                    ImPlot::PlotScatter("Vértices inferiores", x_inferior, y_inferior, numAreaInferior);
+                    ImPlot::PlotLine("Polígono", x_data, y_data, numPoints++);
+                    ImPlot::PlotLine("Poligono cortado", x_corte, y_corte, numCortes);
+                    ImPlot::PlotLine("Polígono superior", x_superior, y_superior, numAreaSuperior);
+                    ImPlot::PlotLine("Polígono inferior", x_inferior, y_inferior, numAreaInferior);
+                    ImPlot::PlotLine("Linha de corte", x_values, y_values, 2);
                     ImPlot::EndPlot();
                 }
             }

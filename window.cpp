@@ -123,7 +123,7 @@ void IniciarInterface()
     const int screenWidth = 1280;
     const int screenHeight = 960;
     InitWindow(screenWidth, screenHeight, "Software de cálculo de esforços em concreto armado");
-    SetTargetFPS(60);
+    SetTargetFPS(100);
     rlImGuiSetup(true);
     ImPlot::CreateContext();
 }
@@ -131,6 +131,10 @@ void IniciarInterface()
 void loopPrograma()
 
 {
+
+    float KeyDownDelay = 0.0f;
+    float KeyDownDelayTime = 0.2f;
+
     static float VLN = 0;
     static float cortar = 0;
     static int tempNumPoints = 0;
@@ -140,6 +144,8 @@ void loopPrograma()
 
     while (!WindowShouldClose())
     {
+
+        KeyDownDelay = KeyDownDelay + GetFrameTime();
 
         BeginDrawing();
         ClearBackground(BLACK);
@@ -195,9 +201,9 @@ void loopPrograma()
 
             ImGui::InputFloat("Y", &VLN); // Permite ao usuário inserir a coordenada Y
 
-                cortar = VLN;
-                polygon.setVertices(collectedPoints);
-                polygon.cortarPoligonal(polygon.vertices, cortar);
+            cortar = VLN;
+            polygon.setVertices(collectedPoints);
+            polygon.cortarPoligonal(polygon.vertices, cortar);
 
             // Adiciona a coordenada Y ao vetor de cortes
             if (ImGui::Button("Adicionar Corte"))
@@ -225,19 +231,19 @@ void loopPrograma()
                 {
                     TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
                 }
-                TraceLog(LOG_INFO, "Corte", cortar);            
+                TraceLog(LOG_INFO, "Corte", cortar);
             }
 
-/*
-            if (ImGui::Button("Calcular Área e Centróide"))
-            {
-                polygon.setVertices(collectedPoints); // Transfere os pontos para o polígono
-                double polygonArea = polygon.area();  // Calcula a área
-                Point centroid = polygon.centroid();  // Calcula o centróide
+            /*
+                        if (ImGui::Button("Calcular Área e Centróide"))
+                        {
+                            polygon.setVertices(collectedPoints); // Transfere os pontos para o polígono
+                            double polygonArea = polygon.area();  // Calcula a área
+                            Point centroid = polygon.centroid();  // Calcula o centróide
 
-                TraceLog(LOG_INFO, "Área: %.2f", polygonArea);
-                TraceLog(LOG_INFO, "Centróide: (%.2f, %.2f)", centroid.x, centroid.y);
-            }*/
+                            TraceLog(LOG_INFO, "Área: %.2f", polygonArea);
+                            TraceLog(LOG_INFO, "Centróide: (%.2f, %.2f)", centroid.x, centroid.y);
+                        }*/
 
             ImGui::End();
         }
@@ -246,37 +252,62 @@ void loopPrograma()
         if (showGraficoWindow)
         {
             ImGui::Begin("Gráfico da Seção Transversal", &showGraficoWindow); // Título da janela
-
+            DrawFPS(20, 20);
             static float x_values[2]; // teste
             static float y_values[2];
 
-            float valorMenor = FLT_MAX; //Número de ponto flutuante representável máximo.
+            float valorMenor = FLT_MAX;  // Número de ponto flutuante representável máximo.
             float valorMaior = -FLT_MAX; // Número de ponto flutuante representável máximo.
-
 
             for (int i = 0; i < sizeof(x_values); i++)
             {
                 y_values[i] = VLN;
             }
 
-            if(IsKeyPressed(KEY_UP)) {
+            if (IsKeyPressed(KEY_UP))
+            {
                 VLN = VLN + 1;
-            
-                cortar = VLN;
-                polygon.setVertices(collectedPoints);
-                polygon.cortarPoligonal(polygon.vertices, cortar);
-            
-            }
-            if(IsKeyPressed(KEY_DOWN)) {
-                VLN = VLN - 1;
 
                 cortar = VLN;
                 polygon.setVertices(collectedPoints);
                 polygon.cortarPoligonal(polygon.vertices, cortar);
-            
+
+                KeyDownDelay = 0.0f;
             }
 
+            if (IsKeyPressed(KEY_DOWN))
+            {
+                VLN = VLN + -1;
 
+                cortar = VLN;
+                polygon.setVertices(collectedPoints);
+                polygon.cortarPoligonal(polygon.vertices, cortar);
+                KeyDownDelay = 0.0f;
+            }
+
+            if (KeyDownDelay >= KeyDownDelayTime)
+            {
+
+                if (IsKeyDown(KEY_UP))
+                {
+
+                    VLN = VLN + 1;
+                    cortar = VLN;
+                    polygon.setVertices(collectedPoints);
+                    polygon.cortarPoligonal(polygon.vertices, cortar);
+
+                    KeyDownDelay = 0.0f;
+                }
+                if (IsKeyDown(KEY_DOWN))
+                {
+                    VLN = VLN + -1;
+                    cortar = VLN;
+                    polygon.setVertices(collectedPoints);
+                    polygon.cortarPoligonal(polygon.vertices, cortar);
+
+                    KeyDownDelay = 0.0f;
+                }
+            }
             int numPoints2 = 0;
             int numPoints = collectedPoints.size();
             float x_corte[polygon.resultadoCorte.size()];
@@ -292,22 +323,21 @@ void loopPrograma()
                 {
                     x_data[i] = collectedPoints[i].x;
                     y_data[i] = collectedPoints[i].y;
-              
-                    if (collectedPoints[i].x > valorMaior) 
+
+                    if (collectedPoints[i].x > valorMaior)
                     {
-                    valorMaior = collectedPoints[i].x;
-                     }
-                    if (collectedPoints[i].x < valorMenor) 
-                    {
-                    valorMenor = collectedPoints[i].x;
+                        valorMaior = collectedPoints[i].x;
                     }
-                                           
+                    if (collectedPoints[i].x < valorMenor)
+                    {
+                        valorMenor = collectedPoints[i].x;
+                    }
                 }
 
-                    x_values[0] = valorMenor - valorMenor*0.1;
-                    x_values[1] = valorMaior + valorMaior*0.1 - valorMenor*0.1;
-                
-                                          
+                float intermediario = valorMaior - valorMenor;
+
+                x_values[0] = valorMenor - intermediario * 0.1;
+                x_values[1] = valorMaior + intermediario * 0.1; // mudar essa parte
 
                 for (const auto &point : polygon.resultadoCorte)
                 {
@@ -354,10 +384,10 @@ void loopPrograma()
 // Quando acrescenta uma certa quantidade de pontos, o primeiro ponto some, ai tem que inserir mais um vetor pra preencher o lugar
 // do primeiro vetor
 // Tarefas
-// Definir seção I pronta para começar a interface FEITO 
-// Inserir pontos de corte na janela do gráfico FEITO 
-// Ajustar tamanho dos vetores x_data, y_data, x_corte, y_corte FEITO 
-// Ajustar desenho da linha com os limites de x + 10% 
+// Definir seção I pronta para começar a interface FEITO
+// Inserir pontos de corte na janela do gráfico FEITO
+// Ajustar tamanho dos vetores x_data, y_data, x_corte, y_corte FEITO
+// Ajustar desenho da linha com os limites de x + 10%
 // Funções para corte superior e corte inferior
-// Corta com as setas do teclado a cada frame ou a cada "clique" FEITO 
+// Corta com as setas do teclado a cada frame ou a cada "clique" FEITO
 // Rodas a seção com as setas

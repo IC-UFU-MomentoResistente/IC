@@ -126,6 +126,12 @@ public:
             }
         }
     }
+
+    void fecharPoligono(std::vector<Point>& pontos) {
+        if (!pontos.empty()) {
+            pontos.push_back(pontos[0]);
+        }
+    }
 };
 
 // Variáveis globais
@@ -211,7 +217,6 @@ void loopPrograma()
             ImGui::End();
         }
 
-        // Janela do Gráfico
         if (showGraficoWindow){
             ImGui::Begin("Gráfico da Seção Transversal", &showGraficoWindow); // Título da janela
 
@@ -243,82 +248,77 @@ void loopPrograma()
                 polygon.cortarPoligonal(polygon.vertices, cortar);
             
             }
-
+            
             int numPoints = collectedPoints.size();
-            int numCortes = 0;
-            int numAreaSuperior = 0;
-            int numAreaInferior = 0;
+            
+            for (int i = 0; i <= numPoints; i++){        
+                if (collectedPoints[i].x > valorMaior) {
+                    valorMaior = collectedPoints[i].x;
+                }
+                
+                if (collectedPoints[i].x < valorMenor) {
+                    valorMenor = collectedPoints[i].x;
+                }
+            }
 
-            float x_data [collectedPoints.size()];
-            float y_data [collectedPoints.size()];
-            float x_corte [polygon.resultadoCorte.size()];
-            float y_corte [polygon.resultadoCorte.size()];
-            float x_superior [polygon.AreaSuperior.size()];
-            float y_superior [polygon.AreaSuperior.size()];
-            float x_inferior [polygon.AreaInferior.size()];
-            float y_inferior [polygon.AreaInferior.size()];
-
+            x_values[0] = valorMenor - (valorMaior-valorMenor)*0.1;
+            x_values[1] = valorMaior + (valorMaior-valorMenor)*0.1;
+            
+            // Ajuste o código de desenho no gráfico
             if (numPoints >= 3) {
-                for (int i = 0; i <= numPoints; i++){
-                    x_data[i] = collectedPoints[i].x;
-                    y_data[i] = collectedPoints[i].y;  
-                    
-                    if (collectedPoints[i].x > valorMaior) {
-                        valorMaior = collectedPoints[i].x;
-                    }
-                    
-                    if (collectedPoints[i].x < valorMenor) {
-                        valorMenor = collectedPoints[i].x;
-                    }
+                // Fechar os vetores adicionando o primeiro ponto ao final
+                std::vector<Point> collectedPointsFechados = collectedPoints;
+                polygon.fecharPoligono(collectedPointsFechados);
+                std::vector<Point> resultadoCorteFechado = polygon.resultadoCorte;
+                polygon.fecharPoligono(resultadoCorteFechado);
+                std::vector<Point> AreaSuperiorFechado = polygon.AreaSuperior;
+                polygon.fecharPoligono(AreaSuperiorFechado);
+                std::vector<Point> AreaInferiorFechado = polygon.AreaInferior;
+                polygon.fecharPoligono(AreaInferiorFechado);
+
+                // Converter para arrays de float para os gráficos
+                float x_data[collectedPointsFechados.size()];
+                float y_data[collectedPointsFechados.size()];
+                float x_corte[resultadoCorteFechado.size()];
+                float y_corte[resultadoCorteFechado.size()];
+                float x_superior[AreaSuperiorFechado.size()];
+                float y_superior[AreaSuperiorFechado.size()];
+                float x_inferior[AreaInferiorFechado.size()];
+                float y_inferior[AreaInferiorFechado.size()];
+
+                for (size_t i = 0; i < collectedPointsFechados.size(); i++) {
+                    x_data[i] = collectedPointsFechados[i].x;
+                    y_data[i] = collectedPointsFechados[i].y;
                 }
 
-                    x_values[0] = valorMenor - (valorMaior-valorMenor)*0.1;
-                    x_values[1] = valorMaior + (valorMaior-valorMenor)*0.1;
-    
-                for (const auto &point : polygon.resultadoCorte){
-                    if (numCortes <= polygon.resultadoCorte.size())
-                    {
-                        x_corte[numCortes] = point.x;
-                        y_corte[numCortes] = point.y;
-                        numCortes++;
-                    }
+                for (size_t i = 0; i < resultadoCorteFechado.size(); i++) {
+                    x_corte[i] = resultadoCorteFechado[i].x;
+                    y_corte[i] = resultadoCorteFechado[i].y;
                 }
 
-                for (const auto &point : polygon.AreaSuperior){
-                    if (numAreaSuperior <= polygon.AreaSuperior.size())
-                    {
-                        x_superior[numAreaSuperior] = point.x;
-                        y_superior[numAreaSuperior] = point.y;
-                        numAreaSuperior++;
-                    }
+                for (size_t i = 0; i < AreaSuperiorFechado.size(); i++) {
+                    x_superior[i] = AreaSuperiorFechado[i].x;
+                    y_superior[i] = AreaSuperiorFechado[i].y;
                 }
 
-                for (const auto &point : polygon.AreaInferior){
-                    if (numAreaInferior <= polygon.AreaInferior.size())
-                    {
-                        x_inferior[numAreaInferior] = point.x;
-                        y_inferior[numAreaInferior] = point.y;
-                        numAreaInferior++;
-                    }
+                for (size_t i = 0; i < AreaInferiorFechado.size(); i++) {
+                    x_inferior[i] = AreaInferiorFechado[i].x;
+                    y_inferior[i] = AreaInferiorFechado[i].y;
                 }
 
-                // Adiciona o primeiro ponto ao final para fechar o polígono
-                //x_data[numPoints] = 0;
-                //y_data[numPoints] = 190;
-
-                // Obtém o tamanho disponível para o gráfico dentro da janela
+                // Obter o tamanho disponível para o gráfico
                 ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
                 // Plota os pontos e desenha o polígono
-                if (ImPlot::BeginPlot("Gráfico", ImVec2(plotSize.x, plotSize.y))){
-                    ImPlot::PlotScatter("Vértices", x_data, y_data, numPoints);
-                    ImPlot::PlotScatter("Vértices cortadas", x_corte, y_corte, numCortes);
-                    ImPlot::PlotScatter("Vértices superiores", x_superior, y_superior, numAreaSuperior);
-                    ImPlot::PlotScatter("Vértices inferiores", x_inferior, y_inferior, numAreaInferior);
-                    ImPlot::PlotLine("Polígono", x_data, y_data, numPoints++);
-                    ImPlot::PlotLine("Poligono cortado", x_corte, y_corte, numCortes);
-                    ImPlot::PlotLine("Polígono superior", x_superior, y_superior, numAreaSuperior);
-                    ImPlot::PlotLine("Polígono inferior", x_inferior, y_inferior, numAreaInferior);
+                if (ImPlot::BeginPlot("Gráfico", ImVec2(plotSize.x, plotSize.y))) {
+                    ImPlot::PlotScatter("Vértices", x_data, y_data, collectedPointsFechados.size());
+                    ImPlot::PlotScatter("Vértices cortadas", x_corte, y_corte, resultadoCorteFechado.size());
+                    ImPlot::PlotScatter("Vértices superiores", x_superior, y_superior, AreaSuperiorFechado.size());
+                    ImPlot::PlotScatter("Vértices inferiores", x_inferior, y_inferior, AreaInferiorFechado.size());
+                    ImPlot::PlotLine("Polígono", x_data, y_data, collectedPointsFechados.size());
+                    ImPlot::PlotLine("Polígono cortado", x_corte, y_corte, resultadoCorteFechado.size());
+                    ImPlot::PlotLine("Polígono superior", x_superior, y_superior, AreaSuperiorFechado.size());
+                    ImPlot::PlotLine("Polígono inferior", x_inferior, y_inferior, AreaInferiorFechado.size());
                     ImPlot::PlotLine("Linha de corte", x_values, y_values, 2);
                     ImPlot::EndPlot();
                 }

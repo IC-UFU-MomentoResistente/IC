@@ -144,7 +144,9 @@ public:
 
 // Variáveis globais
 std::vector<Point> collectedPoints = {
-    {0, 190}, {0, 178}, {50, 170}, {50, 45}, {25, 25}, {25, 0}, {95, 0}, {95, 25}, {70, 45}, {70, 170}, {120, 178}, {120, 190}}; // Armazenar os pontos coletados
+    {0,190}, {0,178}, {50,170}, {50,45}, {25,25}, {25,0},
+    {95,0}, {95, 25}, {70,45}, {70,170}, {120,178}, {120,190}
+}; // Armazenar os pontos coletados
 Polygon polygon;
 
 // Funções de inicialização da interface

@@ -144,10 +144,24 @@ public:
 
 // Variáveis globais
 std::vector<Point> collectedPoints = {
-    {0,190}, {0,178}, {50,170}, {50,45}, {25,25}, {25,0},
-    {95,0}, {95, 25}, {70,45}, {70,170}, {120,178}, {120,190}
-}; // Armazenar os pontos coletados
+    {0, 190}, {0, 178}, {50, 170}, {50, 45}, {25, 25}, {25, 0}, {95, 0}, {95, 25}, {70, 45}, {70, 170}, {120, 178}, {120, 190}}; // Armazenar os pontos coletados
 Polygon polygon;
+
+std::vector<Point> pontosOriginais = collectedPoints;
+
+float radianos = 0;
+
+void rotacionarPoligono(std::vector<Point> &collectedPoints)
+{
+    for (size_t i = 0; i < pontosOriginais.size(); ++i)
+    {
+        double xOriginal = pontosOriginais[i].x;
+        double yOriginal = pontosOriginais[i].y;
+
+        collectedPoints[i].x = xOriginal * cos(radianos) - yOriginal * sin(radianos);
+        collectedPoints[i].y = xOriginal * sin(radianos) + yOriginal * cos(radianos);
+    }
+}
 
 // Funções de inicialização da interface
 void IniciarInterface()
@@ -164,7 +178,6 @@ void loopPrograma()
 {
     float KeyDownDelay = 0.0f;
     float KeyDownDelayTime = 0.1f;
-
     int numBarras = 1;
     static float VLN = 0;
     static float cortar = 0;
@@ -204,12 +217,6 @@ void loopPrograma()
             if (ImGui::Button("Adicionar Corte"))
             { // Botão para adicionar o corte
                 cortar = VLN;
-            }
-
-            if (ImGui::Button("Cortar"))
-            {
-                polygon.setVertices(collectedPoints);
-                polygon.cortarPoligonal(polygon.vertices, cortar);
             }
 
             if (ImGui::Button("Mostrar Valores"))
@@ -281,17 +288,11 @@ void loopPrograma()
                 ImGui::SameLine();
                 ImGui::InputFloat("Posição Yf (mm)", &diametroPosYf);
             }
-            ImGui::Button("Adicionar");
-            ImGui::SameLine();
-            ImGui::Button("Remover");
+
             if (ImGui::BeginTable("Tabela", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
             {
-
                 ImGui::TableSetupColumn("Barra");
-                ImGui::TableSetupColumn("Diâmetro");
-                ImGui::TableSetupColumn("X(cm)");
-                ImGui::TableSetupColumn("Y(cm)");
-                ImGui::TableHeadersRow();
+
                 ImGui::EndTable();
             }
 
@@ -316,7 +317,6 @@ void loopPrograma()
             if (IsKeyPressed(KEY_UP))
             {
                 VLN = VLN + 1;
-
                 cortar = VLN;
                 polygon.setVertices(collectedPoints);
                 polygon.cortarPoligonal(polygon.vertices, cortar);
@@ -355,6 +355,25 @@ void loopPrograma()
 
                     KeyDownDelay = 0.0f;
                 }
+            }
+
+            if (IsKeyPressed(KEY_LEFT))
+            {
+                radianos = radianos + 0.261799;
+                TraceLog(LOG_INFO, "Angulo %.2f", radianos);
+                rotacionarPoligono(collectedPoints);
+
+                polygon.setVertices(collectedPoints);
+                polygon.cortarPoligonal(polygon.vertices, cortar);
+            }
+
+            if (IsKeyPressed(KEY_RIGHT))
+            {
+                radianos = radianos - 0.261799;
+                TraceLog(LOG_INFO, "Angulo %.2f", radianos);
+                rotacionarPoligono(collectedPoints);
+                polygon.setVertices(collectedPoints);
+                polygon.cortarPoligonal(polygon.vertices, cortar);
             }
 
             int numPoints = collectedPoints.size();

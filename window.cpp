@@ -176,10 +176,9 @@ std::vector<Point> collectedPoints = {
     {0, 190}, {0, 178}, {50, 170}, {50, 45}, {25, 25}, {25, 0}, {95, 0}, {95, 25}, {70, 45}, {70, 170}, {120, 178}, {120, 190}}; // Armazenar os pontos coletados
 
 Polygon polygon;
-
+std::vector<Point> Armaduras;
 std::vector<Point> Rot = collectedPoints;
 std::vector<Point> pontosOriginais = collectedPoints;
-std::vector<Point> Armaduras;
 
 float radianos = 0;
 Point centroideInicial;
@@ -235,15 +234,16 @@ void loopPrograma()
 {
     float KeyDownDelay = 0.0f;
     float KeyDownDelayTime = 0.1f;
-    int numBarras = 1;
+    int numBarras = 0;
     int barras = 0;
+    float valorDiametroBarras[numBarras];
     static float VLN = 0;
     static float cortar = 0;
     static float diametroBarras = 0;
-    static float diametroPosXi = 0;
-    static float diametroPosYi = 0;
-    static float diametroPosXf = 0;
-    static float diametroPosYf = 0;
+    static float barrasPosXi = 0;
+    static float barrasPosYi = 0;
+    static float barrasPosXf = 0;
+    static float barrasPosYf = 0;
     static bool showGraficoWindow = true;
     static bool showDadosWindowTwo = true;
     static bool tabelaArmadura = true;
@@ -328,9 +328,25 @@ void loopPrograma()
                 numBarras = 1;
                 ImGui::PushItemWidth(50);
                 ImGui::InputFloat("Diâmetro das Barras", &diametroBarras);
-                ImGui::InputFloat("Posição X (mm)", &diametroPosXi);
+                ImGui::InputFloat("Posição X (mm)", &barrasPosXi);
                 ImGui::SameLine();
-                ImGui::InputFloat("Posição Y (mm)", &diametroPosYi);
+                ImGui::InputFloat("Posição Y (mm)", &barrasPosYi);
+
+                if(ImGui::Button("Adicionar")) {
+                    if (Armaduras.size() < numBarras)
+                    {
+                        Armaduras.resize(numBarras);
+                    }
+                    Armaduras[numBarras -1].x = barrasPosXi;
+                    Armaduras[numBarras -1].y = barrasPosYi;
+                    
+                };
+                ImGui::SameLine();
+                if(ImGui::Button("Remover")) {
+                   
+
+                };
+            
             }
 
             if (barras == 1)
@@ -343,12 +359,12 @@ void loopPrograma()
                 }
                 ImGui::PushItemWidth(50);
                 ImGui::InputFloat("Diâmetro das Barras", &diametroBarras);
-                ImGui::InputFloat("Posição Xi (mm)", &diametroPosXi);
+                ImGui::InputFloat("Posição Xi (mm)", &barrasPosXi);
                 ImGui::SameLine();
-                ImGui::InputFloat("Posição Yi (mm)", &diametroPosYi);
-                ImGui::InputFloat("Posição Xf (mm)", &diametroPosXf);
+                ImGui::InputFloat("Posição Yi (mm)", &barrasPosYi);
+                ImGui::InputFloat("Posição Xf (mm)", &barrasPosXf);
                 ImGui::SameLine();
-                ImGui::InputFloat("Posição Yf (mm)", &diametroPosYf);
+                ImGui::InputFloat("Posição Yf (mm)", &barrasPosYf);
             }
 
             if (ImGui::BeginTable("Tabela", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))

@@ -47,6 +47,35 @@ public:
         }
     }
 
+    double area() const
+    {
+        double A = 0.0;
+        int n = vertices.size();
+        for (int i = 0; i < n; ++i)
+        {
+            int j = (i + 1) % n;
+            A += vertices[i].x * vertices[j].y - vertices[j].x * vertices[i].y;
+        }
+        return std::abs(A) / 2.0;
+    }
+
+    Point centroid() const
+    {
+        double Cx = 0.0, Cy = 0.0;
+        double A = area();
+        int n = vertices.size();
+        for (int i = 0; i < n; ++i)
+        {
+            int j = (i + 1) % n;
+            double factor = (vertices[i].x * vertices[j].y - vertices[j].x * vertices[i].y);
+            Cx += (vertices[i].x + vertices[j].x) * factor;
+            Cy += (vertices[i].y + vertices[j].y) * factor;
+        }
+        Cx /= (6.0 * A);
+        Cy /= (6.0 * A);
+        return Point(Cx, Cy);
+    }
+
     int verificarCaso(const Point &p1, const Point &p2, double cortar)
     {
         if ((p2.y <= cortar && p1.y >= cortar) || (p2.y >= cortar && p1.y <= cortar))
@@ -145,24 +174,51 @@ public:
 // Variáveis globais
 std::vector<Point> collectedPoints = {
     {0, 190}, {0, 178}, {50, 170}, {50, 45}, {25, 25}, {25, 0}, {95, 0}, {95, 25}, {70, 45}, {70, 170}, {120, 178}, {120, 190}}; // Armazenar os pontos coletados
+
 Polygon polygon;
 
+std::vector<Point> Rot = collectedPoints;
 std::vector<Point> pontosOriginais = collectedPoints;
+std::vector<Point> Armaduras;
 
 float radianos = 0;
+Point centroideInicial;
+
+Point calcularCentroide(const std::vector<Point> &pontos)
+{
+    float somaX = 0.0f;
+    float somaY = 0.0f;
+    int n = pontos.size();
+
+    for (const auto &p : pontos)
+    {
+        somaX += p.x;
+        somaY += p.y;
+    }
+
+    return Point(somaX / n, somaY / n);
+}
 
 void rotacionarPoligono(std::vector<Point> &collectedPoints)
 {
     for (size_t i = 0; i < pontosOriginais.size(); ++i)
     {
-        double xOriginal = pontosOriginais[i].x;
-        double yOriginal = pontosOriginais[i].y;
+        // transladar os pontos para a origem do centróide
+        double xTransladado = pontosOriginais[i].x - centroideInicial.x;
+        double yTransladado = pontosOriginais[i].y - centroideInicial.y;
 
-        collectedPoints[i].x = xOriginal * cos(radianos) - yOriginal * sin(radianos);
-        collectedPoints[i].y = xOriginal * sin(radianos) + yOriginal * cos(radianos);
+        // Aplicar a rotação
+        double xRotacionado = xTransladado * cos(radianos) - yTransladado * sin(radianos);
+        double yRotacionado = xTransladado * sin(radianos) + yTransladado * cos(radianos);
+
+        // Transladar os pontos de volta para a posição original em relação ao centróide
+        collectedPoints[i].x = xRotacionado + centroideInicial.x;
+        collectedPoints[i].y = yRotacionado + centroideInicial.y;
+
+        Rot[i].x = xRotacionado + centroideInicial.x;
+        Rot[i].y = yRotacionado + centroideInicial.y;
     }
 }
-
 // Funções de inicialização da interface
 void IniciarInterface()
 {
@@ -172,6 +228,7 @@ void IniciarInterface()
     SetTargetFPS(60);
     rlImGuiSetup(true);
     ImPlot::CreateContext();
+    centroideInicial = calcularCentroide(collectedPoints);
 }
 
 void loopPrograma()
@@ -179,6 +236,7 @@ void loopPrograma()
     float KeyDownDelay = 0.0f;
     float KeyDownDelayTime = 0.1f;
     int numBarras = 1;
+    int barras = 0;
     static float VLN = 0;
     static float cortar = 0;
     static float diametroBarras = 0;
@@ -189,8 +247,6 @@ void loopPrograma()
     static bool showGraficoWindow = true;
     static bool showDadosWindowTwo = true;
     static bool tabelaArmadura = true;
-    static bool umaBarra = false;
-    static bool linhaBarras = false;
 
     while (!WindowShouldClose())
     {
@@ -247,25 +303,27 @@ void loopPrograma()
                 }
             }
 
+            if (ImGui::Button("Calcular Área e Centróide"))
+            {
+                polygon.setVertices(collectedPoints); // Transfere os pontos para o polígono
+                double polygonArea = polygon.area();  // Calcula a área
+                Point centroid = polygon.centroid();  // Calcula o centróide
+
+                TraceLog(LOG_INFO, "Área: %.2f", polygonArea);
+                TraceLog(LOG_INFO, "Centróide: (%.2f, %.2f)", centroid.x, centroid.y);
+            }
+
             ImGui::End();
         }
 
         if (tabelaArmadura)
         {
             ImGui::Begin("Entrada de dados: Armadura Passiva", &tabelaArmadura);
-            ImGui::Checkbox("Uma Barra", &umaBarra);
-            if (umaBarra == true)
-            {
-                linhaBarras = false;
-            }
+            ImGui::RadioButton("Uma Barra", &barras, 0);
+            ImGui::SameLine();
+            ImGui::RadioButton("Linha de Barras", &barras, 1);
 
-            ImGui::Checkbox("Linha de Barras", &linhaBarras);
-            if (linhaBarras == true)
-            {
-                umaBarra = false;
-            }
-
-            if (umaBarra == true)
+            if (barras == 0)
             {
                 numBarras = 1;
                 ImGui::PushItemWidth(50);
@@ -275,10 +333,14 @@ void loopPrograma()
                 ImGui::InputFloat("Posição Y (mm)", &diametroPosYi);
             }
 
-            if (linhaBarras == true)
+            if (barras == 1)
             {
                 ImGui::SetNextItemWidth(100);
                 ImGui::InputInt("Numero de Barras na Linha", &numBarras);
+                if (numBarras < 1)
+                {
+                    numBarras = 1;
+                }
                 ImGui::PushItemWidth(50);
                 ImGui::InputFloat("Diâmetro das Barras", &diametroBarras);
                 ImGui::InputFloat("Posição Xi (mm)", &diametroPosXi);
@@ -398,6 +460,8 @@ void loopPrograma()
             if (numPoints >= 3)
             {
                 // Fechar os vetores adicionando o primeiro ponto ao final
+                std::vector<Point> Rotacionados = Rot;
+                polygon.fecharPoligono(Rotacionados);
                 std::vector<Point> collectedPointsFechados = collectedPoints;
                 polygon.fecharPoligono(collectedPointsFechados);
                 std::vector<Point> resultadoCorteFechado = polygon.resultadoCorte;
@@ -416,6 +480,13 @@ void loopPrograma()
                 float y_superior[AreaSuperiorFechado.size()];
                 float x_inferior[AreaInferiorFechado.size()];
                 float y_inferior[AreaInferiorFechado.size()];
+                float xRot[Rotacionados.size()];
+                float yRot[Rotacionados.size()];
+                for (size_t i = 0; i < Rotacionados.size(); i++)
+                {
+                    xRot[i] = Rot[i].x;
+                    yRot[i] = Rot[i].y;
+                }
 
                 for (size_t i = 0; i < collectedPointsFechados.size(); i++)
                 {
@@ -451,6 +522,7 @@ void loopPrograma()
                     ImPlot::PlotScatter("Vértices cortadas", x_corte, y_corte, resultadoCorteFechado.size());
                     ImPlot::PlotScatter("Vértices superiores", x_superior, y_superior, AreaSuperiorFechado.size());
                     ImPlot::PlotScatter("Vértices inferiores", x_inferior, y_inferior, AreaInferiorFechado.size());
+                    ImPlot::PlotScatter("Vértices Rotacionados", xRot, yRot, (Rotacionados.size() - 1));
                     ImPlot::PlotLine("Polígono", x_data, y_data, collectedPointsFechados.size());
                     ImPlot::PlotLine("Polígono cortado", x_corte, y_corte, resultadoCorteFechado.size());
                     ImPlot::PlotLine("Polígono superior", x_superior, y_superior, AreaSuperiorFechado.size());

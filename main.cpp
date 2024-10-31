@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -285,23 +286,6 @@ class Concreto{
         return { Nc * 1E3, Mc * 1E3 }; // Retorna em kN e kN*m
     }
 };
-    
-
-class Aco{
-    public:
-    
-    void definirParametrosAco{
-        double fyk, fyd, Es, gama_s, Eps, Epyd;
-        fyk = 500; //MPa
-        gama_s = 1.15;
-        fyd = fyk/gama_s;
-        Es = 210; //GPa;
-    }
-
-    std::pair<double, double> calcularNpMp;
-
-};
-
 
 int main() {
 
@@ -332,6 +316,6 @@ int main() {
     for (const auto& p : poligono.areaTracionada) {
         std::cout << "(" << p.x << ", " << p.y << ")" << std::endl;
     }
-
+    
     return 0;
 }

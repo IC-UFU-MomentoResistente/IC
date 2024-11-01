@@ -208,6 +208,21 @@ void parametrosConcreto(float fck, float gama_c){
     fcd = fck / gama_c;
 }
 
+float mod_elas_aco;
+float fyk;
+float gama_aco;
+float fyd;
+float epsilon_aco;
+
+void parametrosAco (int num_classe){
+    if (num_classe == 50){
+        mod_elas_aco = 210; //GPa;
+        fyk = 500; //MPa;
+        gama_aco = 1.15;
+        fyd = fyk / gama_aco;
+        epsilon_aco = mod_elas_aco * pow(10,3) / fyd;
+    }
+}
 
 double Nctr = 0;
 double Mctr = 0;
@@ -311,16 +326,23 @@ int main() {
     float fck = 30;
     float gama_c = 1.5;
 
-    // Chamar a função para modificar as variáveis globais
     parametrosConcreto(fck, gama_c);
 
-    // Acessar e exibir os valores modificados
     std::cout << "\nParâmetros do Concreto:" << std::endl;
     std::cout << "fator_mult_tensao_comp_concreto: " << fator_mult_tensao_comp_concreto << std::endl;
     std::cout << "epsilon_concreto_ultimo: " << epsilon_concreto_ultimo << std::endl;
     std::cout << "expoente_tensao_concreto: " << expoente_tensao_concreto << std::endl;
     std::cout << "epsilon_concreto_2: " << epsilon_concreto_2 << std::endl;
     std::cout << "fcd: " << fcd << std::endl;
+
+    parametrosAco(50);
+
+    std::cout << "\nParâmetros do Concreto:" << std::endl;
+    std::cout << "mod_elas_aco: " << mod_elas_aco << std::endl;
+    std::cout << "fyk: " << fyk << std::endl;
+    std::cout << "gama_aco: " << gama_aco << std::endl;
+    std::cout << "fyd: " << fyd << std::endl;
+    std::cout << "epsilon_aco: " << epsilon_aco << std::endl;
 
     return 0;
 }

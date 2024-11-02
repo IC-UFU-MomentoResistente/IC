@@ -30,6 +30,23 @@ struct Point
     }
 };
 
+std::vector<Point> Armaduras;           // Vetor para armazenar as barras
+std::vector<float> valorDiametroBarras; // Vetor para armazenar os diâmetros
+
+void AdicionarBarra(float posX, float posY, float diametro)
+{
+    Armaduras.push_back(Point(posX, posY));  // Adiciona nova posição
+    valorDiametroBarras.push_back(diametro); // Armazena o diâmetro
+}
+
+void RemoverBarra()
+{
+    if (!Armaduras.empty())
+    {
+        Armaduras.pop_back();           // Remove a última barra
+        valorDiametroBarras.pop_back(); // Remove o último diâmetro
+    }
+}
 class Polygon
 {
 public:
@@ -176,7 +193,6 @@ std::vector<Point> collectedPoints = {
     {0, 190}, {0, 178}, {50, 170}, {50, 45}, {25, 25}, {25, 0}, {95, 0}, {95, 25}, {70, 45}, {70, 170}, {120, 178}, {120, 190}}; // Armazenar os pontos coletados
 
 Polygon polygon;
-std::vector<Point> Armaduras;
 std::vector<Point> Rot = collectedPoints;
 std::vector<Point> pontosOriginais = collectedPoints;
 
@@ -236,7 +252,6 @@ void loopPrograma()
     float KeyDownDelayTime = 0.1f;
     int numBarras = 0;
     int barras = 0;
-    float valorDiametroBarras[numBarras];
     static float VLN = 0;
     static float cortar = 0;
     static float diametroBarras = 0;
@@ -332,21 +347,15 @@ void loopPrograma()
                 ImGui::SameLine();
                 ImGui::InputFloat("Posição Y (mm)", &barrasPosYi);
 
-                if(ImGui::Button("Adicionar")) {
-                    if (Armaduras.size() < numBarras)
-                    {
-                        Armaduras.resize(numBarras);
-                    }
-                    Armaduras[numBarras -1].x = barrasPosXi;
-                    Armaduras[numBarras -1].y = barrasPosYi;
-                    
+                if (ImGui::Button("Adicionar"))
+                {
+                    AdicionarBarra(barrasPosXi, barrasPosYi, diametroBarras);
                 };
                 ImGui::SameLine();
-                if(ImGui::Button("Remover")) {
-                   
-
+                if (ImGui::Button("Remover"))
+                {
+                    RemoverBarra();
                 };
-            
             }
 
             if (barras == 1)
@@ -365,12 +374,51 @@ void loopPrograma()
                 ImGui::InputFloat("Posição Xf (mm)", &barrasPosXf);
                 ImGui::SameLine();
                 ImGui::InputFloat("Posição Yf (mm)", &barrasPosYf);
+
+                float xAdicionado = (barrasPosXf - barrasPosXi) / (numBarras - 1);
+                float yAdicionado = (barrasPosYf - barrasPosYi) / (numBarras - 1);
+                float valorAdicionadoX = 0;
+                float valorAdicionadoY = 0;
+
+                if (ImGui::Button("Adicionar"))
+                {
+                    for (int i = 0; i < numBarras; i++)
+                    {
+
+                        valorAdicionadoX = barrasPosXi + xAdicionado * i;
+                        valorAdicionadoY = barrasPosYi + yAdicionado * i;
+
+                        AdicionarBarra(valorAdicionadoX, valorAdicionadoY, diametroBarras);
+                    }
+                };
+                ImGui::SameLine();
+                if (ImGui::Button("Remover"))
+                {
+                    RemoverBarra();
+                };
             }
 
             if (ImGui::BeginTable("Tabela", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
             {
-                ImGui::TableSetupColumn("Barra");
+                ImGui::TableSetupColumn("ID");
+                ImGui::TableSetupColumn("Posição X (mm)");
+                ImGui::TableSetupColumn("Posição Y (mm)");
+                ImGui::TableSetupColumn("Diâmetro");
 
+                ImGui::TableHeadersRow();
+
+                for (size_t i = 0; i < Armaduras.size(); ++i)
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableSetColumnIndex(0);
+                    ImGui::Text("%d", static_cast<int>(i + 1));
+                    ImGui::TableSetColumnIndex(1);
+                    ImGui::Text("%.2f", Armaduras[i].x);
+                    ImGui::TableSetColumnIndex(2);
+                    ImGui::Text("%.2f", Armaduras[i].y);
+                    ImGui::TableSetColumnIndex(3);
+                    ImGui::Text("%.2f", valorDiametroBarras[i]);
+                }
                 ImGui::EndTable();
             }
 

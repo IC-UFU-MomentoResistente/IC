@@ -43,10 +43,10 @@ public:
         if ((p2.y <= cortar && p1.y >= cortar) || (p2.y >= cortar && p1.y <= cortar)){
             return 2; // Caso 2: Corta o trecho
         }
-        if (p2.y >= cortar && p1.y >= cortar){
+        if ((p2.y >= cortar && p1.y >= cortar) || (p1.y >= cortar) || (p2.y >= cortar)){
             return 3; // caso 3: vértices acima da linha de corte; área comprimida
         }
-        if (p2.y <= cortar && p1.y <= cortar){
+        if ((p2.y <= cortar && p1.y <= cortar) || (p1.y <= cortar) || (p2.y <= cortar)){
             return 4; // caso 4: vértices abaixo da linha de corte: área tracionada
         }
         return 1; // Caso 1: Adiciona o nó final na nova poligonal
@@ -70,52 +70,83 @@ public:
         }
     }
 
-    void cortarPoligonal(const std::vector<Point> &vertices, float &cortar)
+    void cortarPoligonal(const std::vector<Point> &vertices, float cortar)
     {
         resultadoCorte.clear();
         areaComprimida.clear();
         areaTracionada.clear();
         int nv = vertices.size();
-        std::set<Point> pontosAdicionados; // Conjunto para rastrear pontos já adicionados
+        std::set<Point> pontosAdicionados;
 
         for (int i = 0; i < nv; i++)
         {
-            int caso = verificarCaso(vertices[i], vertices[(i + 1) % nv], cortar);
+            const Point &p1 = vertices[i];
+            const Point &p2 = vertices[(i + 1) % nv];
 
-            if (caso == 2)
+            int caso = verificarCaso(p1, p2, cortar);
+
+            if (caso == 2) 
             {
-                Point intersecao = calcularIntersecao(vertices[i], vertices[(i + 1) % nv], cortar);
-                if (pontosAdicionados.insert(intersecao).second) // Adiciona se não existir
+                Point intersecao = calcularIntersecao(p1, p2, cortar);
+                if (pontosAdicionados.insert(intersecao).second)
                 {
                     resultadoCorte.push_back(intersecao);
                     areaComprimida.push_back(intersecao);
                     areaTracionada.push_back(intersecao);
                 }
+                
+                if(pontosAdicionados.insert(p1).second)
+                {
+                    if (p1.y > cortar)
+                    {
+                        areaComprimida.push_back(p1);
+                        resultadoCorte.push_back(p1);
+                    }
+                    else
+                    {
+                        areaTracionada.push_back(p1);
+                        resultadoCorte.push_back(p1);
+                    }
+                }
+
+                if (pontosAdicionados.insert(p2).second)
+                {
+                    if (p2.y > cortar)
+                    {
+                        areaComprimida.push_back(p2);
+                        resultadoCorte.push_back(p2);
+                    }
+                    else
+                    {
+                        areaTracionada.push_back(p2);
+                        resultadoCorte.push_back(p2);
+                    }
+                }
             }
-            if (caso == 3)
+            else if (caso == 3) 
             {
-                if (pontosAdicionados.insert(vertices[i]).second) // Adiciona se não existir
+                if (pontosAdicionados.insert(p1).second)
                 {
-                    resultadoCorte.push_back(vertices[i]);
-                    areaComprimida.push_back(vertices[i]);
+                    resultadoCorte.push_back(p1);
+                    areaComprimida.push_back(p1);
                 }
-                if (pontosAdicionados.insert(vertices[(i + 1) % nv]).second) // Adiciona se não existir
+                if (pontosAdicionados.insert(p2).second)
                 {
-                    resultadoCorte.push_back(vertices[(i + 1) % nv]);
-                    areaComprimida.push_back(vertices[(i + 1) % nv]);
+                    resultadoCorte.push_back(p2);
+                    areaComprimida.push_back(p2);
                 }
             }
-            if (caso == 4)
+            else if (caso == 4) 
             {
-                if (pontosAdicionados.insert(vertices[i]).second) // Adiciona se não existir
+                if (pontosAdicionados.insert(p1).second)
                 {
-                    resultadoCorte.push_back(vertices[i]);
-                    areaTracionada.push_back(vertices[i]);
+                    resultadoCorte.push_back(p1);
+                    areaTracionada.push_back(p1);
                 }
-                if (pontosAdicionados.insert(vertices[(i + 1) % nv]).second) // Adiciona se não existir
+                if (pontosAdicionados.insert(p2).second)
                 {
-                    resultadoCorte.push_back(vertices[(i + 1) % nv]);
-                    areaTracionada.push_back(vertices[(i + 1) % nv]);
+                    resultadoCorte.push_back(p2);
+                    areaTracionada.push_back(p2);
                 }
             }
         }
@@ -126,13 +157,12 @@ public:
 int main() {
 
     std::vector<Point> collectedPoints = {
-        {0,190}, {0,178}, {50,170}, {50,45}, {25,25}, {25,0},
-        {95,0}, {95, 25}, {70,45}, {70,170}, {120,178}, {120,190}
+        {0,0}, {100,0}, {50,100}
     }; 
 
     Polygon polygon;
 
-    float linhaDeCorte = 100.0;
+    float linhaDeCorte = 50.0;
 
     polygon.setVertices(collectedPoints);
 

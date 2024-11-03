@@ -261,7 +261,7 @@ void EquacoesTensoesConcretoTrapezioParabola(float fcd, float xEpc2, float n_con
 }
 
 double Nc = 0;
-double Mc = 0;
+double Mc =
 
 void ResultantesNormalMomentoConcreto(){
     Nc = 0;
@@ -270,8 +270,7 @@ void ResultantesNormalMomentoConcreto(){
 
 int main() {
     std::vector<Point> collectedPoints = {
-        {0,190}, {0,178}, {50,170}, {50,45}, {25,25}, {25,0},
-        {95,0}, {95, 25}, {70,45}, {70,170}, {120,178}, {120,190}
+        {0,0}, {2,0}, {1,2}
     }; 
     Poligono poligono;
     

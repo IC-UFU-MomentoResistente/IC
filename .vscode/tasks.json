@@ -1,0 +1,37 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++17",
+                "-I", "include",
+                "-I", "lib/raylib/src",
+                "-I", "lib/imgui",
+                "-I", "lib/implot",
+                "-I", "lib/rlImGui",
+                "-L", "lib/raylib/build",
+                "-L", "lib/imgui/build",
+                "-L", "lib/implot/build",
+                "-L", "lib/rlImGui/build",
+                "-o", "build/main.exe",
+                "src/main.cpp",
+                "src/poligono.cpp",
+                "-l:libimgui.a",
+                "-l:libimplot.a",
+                "-l:libraylib.a",
+                "-l:librlImGui.a",
+                "-lwinmm",   // Adicionado para corrigir o erro
+                "-lgdi32"    // Adicionado para corrigir o erro
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "detail": "Compilação do projeto com raylib, imgui, implot e rlImGui"
+        }
+    ]
+}

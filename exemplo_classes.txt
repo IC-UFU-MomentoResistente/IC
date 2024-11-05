@@ -1,0 +1,92 @@
+#include <iostream>
+#include <vector>
+
+class Poligono {
+private:
+    std::vector<Point> vertices;
+    std::vector<Point> resultadoCorte;
+    std::vector<Point> areaSuperior;
+    std::vector<Point> areaInferior;
+    std::vector<Point> verticesTransladados;
+    std::vector<Point> verticesRotacionados;
+
+public:
+    // Métodos para manipulação dos vértices e operações geométricas
+    void setVertices(const std::vector<Point>& points) { vertices = points; }
+    double area() const;
+    Point centroide() const;
+    void translacaoCG(const std::vector<Point>& points);
+    void rotacao(double angulo);
+    void MaxMin(float& yMin, float& yMax) const;
+    int verificarCaso(const Point& p1, const Point& p2, double cortar);
+    Point calcularIntersecao(const Point& p1, const Point& p2, double cortar);
+    void cortarPoligonal(const std::vector<Point>& verticesTransladados, float& cortar);
+    void fecharPoligono(std::vector<Point> &pontos);
+};
+
+
+class Concreto {
+private:
+    Poligono poligono;
+    float fck;   // Resistência característica do concreto à compressão
+    float Nc;    // Esforço normal do concreto
+    float Mc;    // Momento de flexão do concreto
+
+public:
+    Concreto(float fckValue) : fck(fckValue), Nc(0), Mc(0) {}
+
+    void calculaNc();
+    void calculaMc();
+
+    // Acessores para Nc e Mc
+    float getNc() const { return Nc; }
+    float getMc() const { return Mc; }
+};
+
+
+class Reforco {
+private:
+    float fyk;   // Resistência característica do aço
+    float N;     // Esforço axial no reforço
+
+public:
+    Reforco(float fykValue) : fyk(fykValue), N(0) {}
+
+    float calcularRelacaoConstitutiva();  // Método para calcular relação constitutiva
+    void calculaN();
+
+    // Acessor para N
+    float getN() const { return N; }
+};
+
+
+// Inclua as definições das classes aqui, ou em arquivos de cabeçalho separados.
+
+int main() {
+    // Passo 1: Definir os vértices do polígono (exemplo de uma seção retangular)
+    std::vector<Point> vertices = {
+        Point(0.0, 0.0),
+        Point(1.0, 0.0),
+        Point(1.0, 1.0),
+        Point(0.0, 1.0)
+    };
+
+    // Passo 2: Criar o objeto de concreto e definir o polígono
+    Concreto concreto(25.0); // Suponha fck = 25 MPa
+    concreto.getPoligono().setVertices(vertices); // Assumindo um método getPoligono() para acessar o polígono
+    
+    // Passo 3: Criar o objeto de reforço com resistência característica do aço
+    Reforco reforco(500.0); // Suponha fyk = 500 MPa
+
+    // Passo 4: Criar a viga com os objetos concreto e reforço
+    Viga viga(25.0, 500.0);
+
+    // Passo 5: Calcular os esforços na viga
+    viga.calculaEsforcos();
+
+    // Passo 6: Exibir os resultados dos cálculos
+    std::cout << "Resultados dos Cálculos da Viga:" << std::endl;
+    viga.mostrarResultados();
+
+    return 0;
+}

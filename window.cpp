@@ -362,9 +362,10 @@ void loopPrograma()
             {
                 ImGui::SetNextItemWidth(100);
                 ImGui::InputInt("Numero de Barras na Linha", &numBarras);
-                if (numBarras < 1)
+                
+                if (numBarras <= 1)
                 {
-                    numBarras = 1;
+                    numBarras = 2;
                 }
                 ImGui::PushItemWidth(50);
                 ImGui::InputFloat("Diâmetro das Barras", &diametroBarras);
@@ -382,6 +383,9 @@ void loopPrograma()
 
                 if (ImGui::Button("Adicionar"))
                 {
+                   
+                   if(numBarras >= 2) {
+                   
                     for (int i = 0; i < numBarras; i++)
                     {
 
@@ -390,6 +394,8 @@ void loopPrograma()
 
                         AdicionarBarra(valorAdicionadoX, valorAdicionadoY, diametroBarras);
                     }
+                   }
+                   else {};
                 };
                 ImGui::SameLine();
                 if (ImGui::Button("Remover"))

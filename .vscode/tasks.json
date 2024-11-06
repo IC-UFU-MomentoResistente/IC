@@ -19,6 +19,7 @@
                 "-o", "build/main.exe",
                 "src/main.cpp",
                 "src/poligono.cpp",
+                "src/concreto.cpp",
                 "-l:libimgui.a",
                 "-l:libimplot.a",
                 "-l:libraylib.a",

@@ -3,6 +3,7 @@
 #include "rlImGui.h"
 #include "implot.h"
 #include "poligono.h"
+#include "concreto.h"
 #include <iostream>
 #include <vector>
 
@@ -26,7 +27,7 @@ void RemoverBarra()
 
 // Variáveis globais
 std::vector<Point> collectedPoints = {
-    {0, 190}, {0, 178}, {50, 170}, {50, 45}, {25, 25}, {25, 0}, {95, 0}, {95, 25}, {70, 45}, {70, 170}, {120, 178}, {120, 190}}; // Armazenar os pontos coletados
+    {-10, -20}, {10, -20}, {10, 20}, {-10, 20}}; // Armazenar os pontos coletados
 
 Poligono poligono;
 std::vector<Point> Rot = collectedPoints;
@@ -95,9 +96,12 @@ void loopPrograma()
     static float barrasPosYi = 0;
     static float barrasPosXf = 0;
     static float barrasPosYf = 0;
-    static bool showGraficoWindow = true;
-    static bool showDadosWindowTwo = true;
+    static float fck;
+    static float gama_c;
+    static bool janelaGrafico = true;
+    static bool janelaPoligono = true;
     static bool tabelaArmadura = true;
+    static bool janelaConcreto = true;
 
     while (!WindowShouldClose())
     {
@@ -108,9 +112,9 @@ void loopPrograma()
         ClearBackground(BLACK);
         rlImGuiBegin();
 
-        if (showDadosWindowTwo)
+        if (janelaPoligono)
         {
-            ImGui::Begin("Central de operações com polígono", &showDadosWindowTwo);
+            ImGui::Begin("Central de operações com polígono", &janelaPoligono);
             ImGui::Text("Insira a coordenada de corte");
 
             // cortar.clear(); // Limpa o vetor de cortes antes de adicionar novos valores
@@ -158,12 +162,34 @@ void loopPrograma()
             {
                 poligono.setVertices(collectedPoints); // Transfere os pontos para o polígono
                 double poligonoArea = poligono.area();  // Calcula a área
-                Point centroid = poligono.centroide();  // Calcula o centróide
+                Point centroide = poligono.centroide();  // Calcula o centróide
 
                 TraceLog(LOG_INFO, "Área: %.2f", poligonoArea);
-                TraceLog(LOG_INFO, "Centróide: (%.2f, %.2f)", centroid.x, centroid.y);
+                TraceLog(LOG_INFO, "Centróide: (%.2f, %.2f)", centroide.x, centroide.y);
             }
 
+            ImGui::End();
+        }
+
+        if (janelaConcreto)
+        {
+            ImGui::Begin ("Entradas de dados: Parâmetros Concreto", &janelaConcreto);
+            ImGui::Text("Insira os valores de fck e gama_c");
+            ImGui::InputFloat("fck", &fck);
+            ImGui::InputFloat("gama_c", &gama_c);
+
+            if (ImGui::Button("Calcular parâmetros"))
+            {
+                Concreto concreto (fck, gama_c);
+                Concreto::ParametrosConcreto parametrosConcreto = concreto.getParametros();
+
+                TraceLog(LOG_INFO, "Parâmetros do Concreto Calculados");
+                TraceLog(LOG_INFO, "Fator multiplicativo: %.2f", parametrosConcreto.fatorMultTensaoCompConcreto);
+                TraceLog(LOG_INFO, "Ep ultimo: %.2f", parametrosConcreto.epsilonConcretoUltimo);
+                TraceLog(LOG_INFO, "Ep2: %.2f", parametrosConcreto.epsilonConcreto2);
+                TraceLog(LOG_INFO, "Expoente: %.2f", parametrosConcreto.expoenteTensaoConcreto);
+                TraceLog(LOG_INFO, "fcd: %.2f", parametrosConcreto.fcd);
+            }
             ImGui::End();
         }
 
@@ -171,7 +197,6 @@ void loopPrograma()
         {
             ImGui::Begin("Entrada de dados: Armadura Passiva", &tabelaArmadura);
             ImGui::RadioButton("Uma Barra", &barras, 0);
-            ImGui::SameLine();
             ImGui::RadioButton("Linha de Barras", &barras, 1);
 
             if (barras == 0)
@@ -180,14 +205,13 @@ void loopPrograma()
                 ImGui::PushItemWidth(50);
                 ImGui::InputFloat("Diâmetro das Barras", &diametroBarras);
                 ImGui::InputFloat("Posição X (mm)", &barrasPosXi);
-                ImGui::SameLine();
                 ImGui::InputFloat("Posição Y (mm)", &barrasPosYi);
 
                 if (ImGui::Button("Adicionar"))
                 {
                     AdicionarBarra(barrasPosXi, barrasPosYi, diametroBarras);
                 };
-                ImGui::SameLine();
+
                 if (ImGui::Button("Remover"))
                 {
                     RemoverBarra();
@@ -205,10 +229,8 @@ void loopPrograma()
                 ImGui::PushItemWidth(50);
                 ImGui::InputFloat("Diâmetro das Barras", &diametroBarras);
                 ImGui::InputFloat("Posição Xi (mm)", &barrasPosXi);
-                ImGui::SameLine();
                 ImGui::InputFloat("Posição Yi (mm)", &barrasPosYi);
                 ImGui::InputFloat("Posição Xf (mm)", &barrasPosXf);
-                ImGui::SameLine();
                 ImGui::InputFloat("Posição Yf (mm)", &barrasPosYf);
 
                 float xAdicionado = (barrasPosXf - barrasPosXi) / (numBarras - 1);
@@ -226,7 +248,6 @@ void loopPrograma()
                         AdicionarBarra(valorAdicionadoX, valorAdicionadoY, diametroBarras);
                     }
                 };
-                ImGui::SameLine();
                 if (ImGui::Button("Remover"))
                 {
                     RemoverBarra();
@@ -239,7 +260,6 @@ void loopPrograma()
                 ImGui::TableSetupColumn("Posição X (mm)");
                 ImGui::TableSetupColumn("Posição Y (mm)");
                 ImGui::TableSetupColumn("Diâmetro");
-
                 ImGui::TableHeadersRow();
 
                 for (size_t i = 0; i < Armaduras.size(); ++i)
@@ -260,9 +280,9 @@ void loopPrograma()
             ImGui::End();
         }
 
-        if (showGraficoWindow)
+        if (janelaGrafico)
         {
-            ImGui::Begin("Gráfico da Seção Transversal", &showGraficoWindow); // Título da janela
+            ImGui::Begin("Gráfico da Seção Transversal", &janelaGrafico); // Título da janela
 
             static float x_values[2]; // teste
             static float y_values[2];

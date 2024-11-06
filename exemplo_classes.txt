@@ -90,3 +90,170 @@ int main() {
 
     return 0;
 }
+
+
+#include "raylib.h"
+#include "imgui.h"
+#include "rlImGui.h"
+#include "implot.h"
+#include "poligono.h"
+#include <vector>
+#include <optional>
+#include <algorithm>
+#include <cmath>
+
+// Estrutura para manter o estado do programa
+struct EstadoPrograma {
+    std::vector<Point> armaduras;
+    std::vector<float> diametrosArmadura;
+    std::vector<Point> collectedPoints;
+    std::vector<Point> rotacionados;
+    float radianos = 0.0f;
+    float VLN = 0.0f;
+    float cortar = 0.0f;
+    bool showGraficoWindow = true;
+    bool showDadosWindowTwo = true;
+    bool tabelaArmadura = true;
+};
+
+// Adiciona uma barra ao estado sem mutá-lo
+EstadoPrograma adicionarBarra(EstadoPrograma estado, float posX, float posY, float diametro) {
+    estado.armaduras.push_back(Point(posX, posY));
+    estado.diametrosArmadura.push_back(diametro);
+    return estado;
+}
+
+// Remove a última barra do estado de forma imutável
+EstadoPrograma removerBarra(EstadoPrograma estado) {
+    if (!estado.armaduras.empty() && !estado.diametrosArmadura.empty()) {
+        estado.armaduras.pop_back();
+        estado.diametrosArmadura.pop_back();
+    }
+    return estado;
+}
+
+// Calcula o centroide sem alterar o estado
+Point calcularCentroide(const std::vector<Point>& pontos) {
+    float somaX = 0.0f;
+    float somaY = 0.0f;
+    for (const auto& p : pontos) {
+        somaX += p.x;
+        somaY += p.y;
+    }
+    return Point(somaX / pontos.size(), somaY / pontos.size());
+}
+
+// Rotaciona um conjunto de pontos com base em um ângulo e centróide e retorna novos pontos
+std::vector<Point> rotacionarPoligono(const std::vector<Point>& pontosOriginais, const Point& centroide, float radianos) {
+    std::vector<Point> pontosRotacionados;
+    for (const auto& ponto : pontosOriginais) {
+        float xTransladado = ponto.x - centroide.x;
+        float yTransladado = ponto.y - centroide.y;
+        float xRotacionado = xTransladado * cos(radianos) - yTransladado * sin(radianos);
+        float yRotacionado = xTransladado * sin(radianos) + yTransladado * cos(radianos);
+        pontosRotacionados.push_back(Point(xRotacionado + centroide.x, yRotacionado + centroide.y));
+    }
+    return pontosRotacionados;
+}
+
+// Inicialização da interface
+void inicializarInterface() {
+    InitWindow(1280, 720, "Software de cálculo de esforços em seções de concreto armado");
+    SetTargetFPS(60);
+    rlImGuiSetup(true);
+    ImPlot::CreateContext();
+}
+
+// Atualiza o estado com base nos inputs do usuário (manteremos a lógica fora da função de loop)
+EstadoPrograma processarEntradaUsuario(EstadoPrograma estado) {
+    if (IsKeyPressed(KEY_UP)) {
+        estado.VLN += 1;
+    }
+    if (IsKeyPressed(KEY_DOWN)) {
+        estado.VLN -= 1;
+    }
+    if (IsKeyPressed(KEY_LEFT)) {
+        estado.radianos += 0.261799;  // Incrementa ângulo em radianos
+        estado.rotacionados = rotacionarPoligono(estado.collectedPoints, calcularCentroide(estado.collectedPoints), estado.radianos);
+    }
+    if (IsKeyPressed(KEY_RIGHT)) {
+        estado.radianos -= 0.261799;
+        estado.rotacionados = rotacionarPoligono(estado.collectedPoints, calcularCentroide(estado.collectedPoints), estado.radianos);
+    }
+    return estado;
+}
+
+// Função principal de loop
+void loopPrograma(EstadoPrograma estado) {
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        ClearBackground(BLACK);
+        rlImGuiBegin();
+
+        // Desenha FPS na tela
+        DrawFPS(20, 20);
+
+        if (estado.showDadosWindowTwo) {
+            ImGui::Begin("Central de operações com polígono", &estado.showDadosWindowTwo);
+            ImGui::Text("Insira a coordenada de corte");
+            ImGui::InputFloat("Y", &estado.VLN);
+            if (ImGui::Button("Adicionar Corte")) {
+                estado.cortar = estado.VLN;
+            }
+            ImGui::End();
+        }
+
+        if (estado.tabelaArmadura) {
+            ImGui::Begin("Entrada de dados: Armadura Passiva", &estado.tabelaArmadura);
+            static float diametroBarras = 0.0f;
+            static float barrasPosX = 0.0f;
+            static float barrasPosY = 0.0f;
+
+            ImGui::InputFloat("Diâmetro das Barras", &diametroBarras);
+            ImGui::InputFloat("Posição X (mm)", &barrasPosX);
+            ImGui::InputFloat("Posição Y (mm)", &barrasPosY);
+
+            if (ImGui::Button("Adicionar")) {
+                estado = adicionarBarra(estado, barrasPosX, barrasPosY, diametroBarras);
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Remover")) {
+                estado = removerBarra(estado);
+            }
+            ImGui::End();
+        }
+
+        // Renderização do gráfico
+        if (estado.showGraficoWindow) {
+            ImGui::Begin("Gráfico da Seção Transversal", &estado.showGraficoWindow);
+            if (ImPlot::BeginPlot("Gráfico")) {
+                std::vector<float> x_data, y_data;
+                for (const auto& ponto : estado.collectedPoints) {
+                    x_data.push_back(ponto.x);
+                    y_data.push_back(ponto.y);
+                }
+                ImPlot::PlotScatter("Vértices", x_data.data(), y_data.data(), x_data.size());
+                ImPlot::EndPlot();
+            }
+            ImGui::End();
+        }
+
+        rlImGuiEnd();
+        EndDrawing();
+
+        estado = processarEntradaUsuario(estado);  // Atualiza estado baseado em entrada do usuário
+    }
+    rlImGuiShutdown();
+    ImPlot::DestroyContext();
+    CloseWindow();
+}
+
+// Função principal para inicialização e execução do loop
+int main() {
+    EstadoPrograma estado;
+    estado.collectedPoints = {{0, 190}, {0, 178}, {50, 170}, {50, 45}, {25, 25}, {25, 0}, {95, 0}, {95, 25}, {70, 45}, {70, 170}, {120, 178}, {120, 190}};
+    estado.rotacionados = estado.collectedPoints;
+    inicializarInterface();
+    loopPrograma(estado);
+    return 0;
+}

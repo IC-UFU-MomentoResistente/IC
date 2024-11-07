@@ -232,15 +232,17 @@ void loopPrograma()
                 ImGui::InputFloat("Diâmetro das Barras", &diametroBarras);
                 ImGui::InputFloat("Posição X (mm)", &barrasPosXi);
                 ImGui::InputFloat("Posição Y (mm)", &barrasPosYi);
-
+                
                 if (ImGui::Button("Adicionar"))
                 {
                     reforco.AdicionarBarra(barrasPosXi, barrasPosYi, diametroBarras);
+                    
                 };
 
                 if (ImGui::Button("Remover"))
                 {
                     reforco.RemoverBarra();
+                    
                 };
             }
 
@@ -263,7 +265,7 @@ void loopPrograma()
                 float yAdicionado = (barrasPosYf - barrasPosYi) / (numBarras - 1);
                 float valorAdicionadoX = 0;
                 float valorAdicionadoY = 0;
-
+    
                 if (ImGui::Button("Adicionar"))
                 {
                     for (int i = 0; i < numBarras; i++)
@@ -363,7 +365,7 @@ void loopPrograma()
                     KeyDownDelay = 0.0f;
                 }
             }
-
+/*
             if (IsKeyPressed(KEY_LEFT))
             {
                 graus = graus + 15;
@@ -375,6 +377,21 @@ void loopPrograma()
                 poligono.rotacao(graus);
                 poligono.cortarPoligonal(poligono.verticesRotacionados, cortar);
                 Rot = poligono.verticesRotacionados;
+                Point cg = poligono.centroide();
+                reforco.translacaoCG(reforco.Armaduras, cg);
+                reforco.RotacionarArmadura(graus);
+
+                TraceLog(LOG_INFO, "Vertices Armaduras");
+                for (const auto &point : reforco.Armaduras)
+                {
+                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
+                }
+
+                TraceLog(LOG_INFO, "Barras Transladadas");
+                for (const auto &point : reforco.barrasTransladadas)
+                {
+                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
+                }
             }
 
             if (IsKeyPressed(KEY_RIGHT))
@@ -390,6 +407,54 @@ void loopPrograma()
                 poligono.rotacao(graus);
                 poligono.cortarPoligonal(poligono.verticesRotacionados, cortar);
                 Rot = poligono.verticesRotacionados;
+                Point cg = poligono.centroide();
+                reforco.translacaoCG(reforco.Armaduras, cg);
+                reforco.RotacionarArmadura(graus); 
+
+                TraceLog(LOG_INFO, "Vertices Armaduras");
+                for (const auto &point : reforco.Armaduras)
+                {
+                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
+                }
+
+                TraceLog(LOG_INFO, "Barras Transladadas");
+                for (const auto &point : reforco.barrasTransladadas)
+                {
+                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
+                }
+            }
+*/
+            if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT))
+            {
+                if (IsKeyPressed(KEY_LEFT))
+                    graus += 15;
+                if (IsKeyPressed(KEY_RIGHT))
+                    graus -= 15;
+
+                TraceLog(LOG_INFO, "Angulo %.2f", graus);
+
+                poligono.setVertices(collectedPoints);
+                poligono.translacaoCG(poligono.vertices); 
+                poligono.rotacao(graus);                  
+                poligono.cortarPoligonal(poligono.verticesRotacionados, cortar);
+                Rot = poligono.verticesRotacionados; 
+                
+                Point centroide = poligono.centroide();
+
+                reforco.translacaoCG(reforco.Armaduras, centroide);
+                reforco.RotacionarArmadura(graus);
+
+                TraceLog(LOG_INFO, "Vertices Armaduras (Originais)");
+                for (const auto &point : reforco.Armaduras)
+                {
+                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
+                }
+
+                TraceLog(LOG_INFO, "Barras Transladadas e Rotacionadas");
+                for (const auto &point : reforco.barrasRotacionadas)
+                {
+                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
+                }
             }
 
             int numPoints = Rot.size();
@@ -424,6 +489,10 @@ void loopPrograma()
                 poligono.fecharPoligono(AreaSuperiorFechado);
                 std::vector<Point> AreaInferiorFechado = poligono.areaInferior;
                 poligono.fecharPoligono(AreaInferiorFechado);
+                std::vector<Point> ArmadurasFechadas = reforco.Armaduras;
+                poligono.fecharPoligono(ArmadurasFechadas);
+                std::vector<Point> ArmaduraRotFechada = reforco.barrasRotacionadas;
+                poligono.fecharPoligono(ArmaduraRotFechada);
 
                 // Converter para arrays de float para os gráficos
                 float x_data[collectedPointsFechados.size()];
@@ -436,7 +505,16 @@ void loopPrograma()
                 float y_inferior[AreaInferiorFechado.size()];
                 float xRot[rotacionadosFechados.size()];
                 float yRot[rotacionadosFechados.size()];
+                //float xArmadura[ArmadurasFechadas.size()]; 
+                //float yArmadura[ArmadurasFechadas.size()];
+                float xArmaduraRotacionada[ArmaduraRotFechada.size()];
+                float yArmaduraRotacionada[ArmaduraRotFechada.size()];
 
+                for (size_t i = 0; i < ArmaduraRotFechada.size(); i++)
+                {
+                    xArmaduraRotacionada[i] = ArmaduraRotFechada[i].x;
+                    yArmaduraRotacionada[i] = ArmaduraRotFechada[i].y;
+                }
                 for (size_t i = 0; i < rotacionadosFechados.size(); i++)
                 {
                     xRot[i] = rotacionadosFechados[i].x;
@@ -478,6 +556,7 @@ void loopPrograma()
                     ImPlot::PlotScatter("Vértices superiores", x_superior, y_superior, AreaSuperiorFechado.size());
                     ImPlot::PlotScatter("Vértices inferiores", x_inferior, y_inferior, AreaInferiorFechado.size());
                     ImPlot::PlotScatter("Vértices Rotacionados", xRot, yRot, (rotacionadosFechados.size()));                     
+                    ImPlot::PlotScatter("Armadura Rotacionada", xArmaduraRotacionada, yArmaduraRotacionada, ArmaduraRotFechada.size());
                     ImPlot::PlotLine("Polígono", x_data, y_data, collectedPointsFechados.size());
                     ImPlot::PlotLine("Polígono cortado", x_corte, y_corte, resultadoCorteFechado.size());
                     ImPlot::PlotLine("Polígono superior", x_superior, y_superior, AreaSuperiorFechado.size());

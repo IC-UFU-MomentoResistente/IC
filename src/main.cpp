@@ -6,24 +6,25 @@
 #include "concreto.h"
 #include <iostream>
 #include <vector>
+#include "reforco.h"
 
-std::vector<Point> Armaduras;           // Vetor para armazenar as barras
-std::vector<float> valorDiametroBarras; // Vetor para armazenar os diâmetros
 
-void AdicionarBarra(float posX, float posY, float diametro)
+Reforco reforco;
+
+/* void AdicionarBarra(float posX, float posY, float diametro)
 {
-    Armaduras.push_back(Point(posX, posY));  // Adiciona nova posição
-    valorDiametroBarras.push_back(diametro); // Armazena o diâmetro
+    reforco.Armaduras.push_back(Point(posX, posY));  // Adiciona nova posição
+    reforco.valorDiametroBarras.push_back(diametro); // Armazena o diâmetro
 }
 
 void RemoverBarra()
 {
-    if (!Armaduras.empty())
+    if (!reforco.Armaduras.empty())
     {
-        Armaduras.pop_back();           // Remove a última barra
-        valorDiametroBarras.pop_back(); // Remove o último diâmetro
+        reforco.Armaduras.pop_back();           // Remove a última barra
+        reforco.valorDiametroBarras.pop_back(); // Remove o último diâmetro
     }
-}
+} */
 
 // Variáveis globais
 std::vector<Point> collectedPoints = {
@@ -33,10 +34,10 @@ Poligono poligono;
 std::vector<Point> Rot = collectedPoints;
 std::vector<Point> pontosOriginais = collectedPoints;
 
-float radianos = 0;
+float graus = 0;
 Point centroideInicial;
 
-Point calcularCentroide(const std::vector<Point> &pontos)
+/* Point calcularCentroide(const std::vector<Point> &pontos)
 {
     float somaX = 0.0f;
     float somaY = 0.0f;
@@ -50,8 +51,8 @@ Point calcularCentroide(const std::vector<Point> &pontos)
 
     return Point(somaX / n, somaY / n);
 }
-
-void rotacionarPoligono(std::vector<Point> &collectedPoints)
+*/ 
+/* void rotacionarPoligono(std::vector<Point> &collectedPoints)
 {
     for (size_t i = 0; i < pontosOriginais.size(); ++i)
     {
@@ -64,6 +65,8 @@ void rotacionarPoligono(std::vector<Point> &collectedPoints)
         double yRotacionado = xTransladado * sin(radianos) + yTransladado * cos(radianos);
 
         // Transladar os pontos de volta para a posição original em relação ao centróide
+        poligono.verticesRotacionados[i].x;
+        
         collectedPoints[i].x = xRotacionado + centroideInicial.x;
         collectedPoints[i].y = yRotacionado + centroideInicial.y;
 
@@ -71,38 +74,50 @@ void rotacionarPoligono(std::vector<Point> &collectedPoints)
         Rot[i].y = yRotacionado + centroideInicial.y;
     }
 }
-
+*/ 
 void IniciarInterface()
 {
     const int screenWidth = 1280;
     const int screenHeight = 720;
     InitWindow(screenWidth, screenHeight, "Software de cálculo de esforços em seções de concreto armado");
+
+    if (!IsWindowReady()) // Verifique se a janela foi criada com sucesso
+    {
+        std::cerr << "Erro ao criar a janela!" << std::endl;
+        return; // Saia da função se a janela não foi criada
+    }
+
     SetTargetFPS(60);
     rlImGuiSetup(true);
     ImPlot::CreateContext();
-    centroideInicial = calcularCentroide(collectedPoints);
+    // centroideInicial = calcularCentroide(collectedPoints);
 }
+
+
+float KeyDownDelay = 0.0f;
+float KeyDownDelayTime = 0.1f;
+int numBarras = 0;
+int barras = 0;
+static float VLN = 0;
+static float cortar = 0;
+static float diametroBarras = 0;
+static float barrasPosXi = 0;
+static float barrasPosYi = 0;
+static float barrasPosXf = 0;
+static float barrasPosYf = 0;
+static float fck = 0;
+static float gama_c = 0;
+static float eps1 = 0;
+static float eps2 = 0;
+static float x_d = 0;
+static float d = 0;
+static bool janelaGrafico = true;
+static bool janelaPoligono = true;
+static bool tabelaArmadura = true;
+static bool janelaConcreto = true;
 
 void loopPrograma()
 {
-    float KeyDownDelay = 0.0f;
-    float KeyDownDelayTime = 0.1f;
-    int numBarras = 0;
-    int barras = 0;
-    static float VLN = 0;
-    static float cortar = 0;
-    static float diametroBarras = 0;
-    static float barrasPosXi = 0;
-    static float barrasPosYi = 0;
-    static float barrasPosXf = 0;
-    static float barrasPosYf = 0;
-    static float fck;
-    static float gama_c;
-    static bool janelaGrafico = true;
-    static bool janelaPoligono = true;
-    static bool tabelaArmadura = true;
-    static bool janelaConcreto = true;
-
     while (!WindowShouldClose())
     {
         DrawFPS(20, 20);
@@ -175,13 +190,20 @@ void loopPrograma()
         {
             ImGui::Begin ("Entradas de dados: Parâmetros Concreto", &janelaConcreto);
             ImGui::Text("Insira os valores de fck e gama_c");
+            
             ImGui::InputFloat("fck", &fck);
             ImGui::InputFloat("gama_c", &gama_c);
+            ImGui::InputFloat("eps1", &eps1);
+            ImGui::InputFloat("eps2", &eps2);
+            ImGui::InputFloat("x sobre d", &x_d);
+            ImGui::InputFloat("d", &d);
+            
 
             if (ImGui::Button("Calcular parâmetros"))
             {
-                Concreto concreto (fck, gama_c);
+                Concreto concreto (fck, gama_c, eps1, eps2, x_d, d);
                 Concreto::ParametrosConcreto parametrosConcreto = concreto.getParametros();
+                Concreto::AlturasConcreto alturasConcreto = concreto.getAlturas();
 
                 TraceLog(LOG_INFO, "Parâmetros do Concreto Calculados");
                 TraceLog(LOG_INFO, "Fator multiplicativo: %.2f", parametrosConcreto.fatorMultTensaoCompConcreto);
@@ -189,7 +211,11 @@ void loopPrograma()
                 TraceLog(LOG_INFO, "Ep2: %.2f", parametrosConcreto.epsilonConcreto2);
                 TraceLog(LOG_INFO, "Expoente: %.2f", parametrosConcreto.expoenteTensaoConcreto);
                 TraceLog(LOG_INFO, "fcd: %.2f", parametrosConcreto.fcd);
+                TraceLog(LOG_INFO, "altura 2/1000: %.2f", alturasConcreto.altura_deformacao_2);
+                TraceLog(LOG_INFO, "altuara ultima: %.2f", alturasConcreto.altura_deformacao_ultima);
+                TraceLog(LOG_INFO, "altura LN: %.2f", alturasConcreto.altura_LN);
             }
+
             ImGui::End();
         }
 
@@ -209,12 +235,12 @@ void loopPrograma()
 
                 if (ImGui::Button("Adicionar"))
                 {
-                    AdicionarBarra(barrasPosXi, barrasPosYi, diametroBarras);
+                    reforco.AdicionarBarra(barrasPosXi, barrasPosYi, diametroBarras);
                 };
 
                 if (ImGui::Button("Remover"))
                 {
-                    RemoverBarra();
+                    reforco.RemoverBarra();
                 };
             }
 
@@ -222,9 +248,9 @@ void loopPrograma()
             {
                 ImGui::SetNextItemWidth(100);
                 ImGui::InputInt("Numero de Barras na Linha", &numBarras);
-                if (numBarras < 1)
+                if (numBarras < 2)
                 {
-                    numBarras = 1;
+                    numBarras = 2;
                 }
                 ImGui::PushItemWidth(50);
                 ImGui::InputFloat("Diâmetro das Barras", &diametroBarras);
@@ -245,13 +271,13 @@ void loopPrograma()
                         valorAdicionadoX = barrasPosXi + xAdicionado * i;
                         valorAdicionadoY = barrasPosYi + yAdicionado * i;
 
-                        AdicionarBarra(valorAdicionadoX, valorAdicionadoY, diametroBarras);
+                        reforco.AdicionarBarra(valorAdicionadoX, valorAdicionadoY, diametroBarras);
                     }
-                };
+                }
                 if (ImGui::Button("Remover"))
                 {
-                    RemoverBarra();
-                };
+                    reforco.RemoverBarra();
+                }
             }
 
             if (ImGui::BeginTable("Tabela", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
@@ -262,17 +288,17 @@ void loopPrograma()
                 ImGui::TableSetupColumn("Diâmetro");
                 ImGui::TableHeadersRow();
 
-                for (size_t i = 0; i < Armaduras.size(); ++i)
+                for (size_t i = 0; i < reforco.Armaduras.size(); ++i)
                 {
                     ImGui::TableNextRow();
                     ImGui::TableSetColumnIndex(0);
                     ImGui::Text("%d", static_cast<int>(i + 1));
                     ImGui::TableSetColumnIndex(1);
-                    ImGui::Text("%.2f", Armaduras[i].x);
+                    ImGui::Text("%.2f", reforco.Armaduras[i].x);
                     ImGui::TableSetColumnIndex(2);
-                    ImGui::Text("%.2f", Armaduras[i].y);
+                    ImGui::Text("%.2f", reforco.Armaduras[i].y);
                     ImGui::TableSetColumnIndex(3);
-                    ImGui::Text("%.2f", valorDiametroBarras[i]);
+                    ImGui::Text("%.2f", reforco.valorDiametroBarras[i]);
                 }
                 ImGui::EndTable();
             }
@@ -300,8 +326,8 @@ void loopPrograma()
                 VLN = VLN + 1;
                 cortar = VLN;
                 poligono.setVertices(collectedPoints);
-                poligono.cortarPoligonal(poligono.vertices, cortar);
-
+                poligono.cortarPoligonal(poligono.verticesRotacionados, cortar);
+                Rot = poligono.verticesRotacionados;
                 KeyDownDelay = 0.0f;
             }
             if (IsKeyPressed(KEY_DOWN))
@@ -310,8 +336,8 @@ void loopPrograma()
 
                 cortar = VLN;
                 poligono.setVertices(collectedPoints);
-                poligono.cortarPoligonal(poligono.vertices, cortar);
-
+                poligono.cortarPoligonal(poligono.verticesRotacionados, cortar);
+                Rot = poligono.verticesRotacionados;
                 KeyDownDelay = 0.0f;
             }
 
@@ -323,8 +349,8 @@ void loopPrograma()
                     VLN = VLN + 1;
                     cortar = VLN;
                     poligono.setVertices(collectedPoints);
-                    poligono.cortarPoligonal(poligono.vertices, cortar);
-
+                    poligono.cortarPoligonal(poligono.verticesRotacionados, cortar);
+                    Rot = poligono.verticesRotacionados;
                     KeyDownDelay = 0.0f;
                 }
                 if (IsKeyDown(KEY_DOWN))
@@ -332,43 +358,52 @@ void loopPrograma()
                     VLN = VLN + -1;
                     cortar = VLN;
                     poligono.setVertices(collectedPoints);
-                    poligono.cortarPoligonal(poligono.vertices, cortar);
-
+                    poligono.cortarPoligonal(poligono.verticesRotacionados, cortar);
+                    Rot = poligono.verticesRotacionados;
                     KeyDownDelay = 0.0f;
                 }
             }
 
             if (IsKeyPressed(KEY_LEFT))
             {
-                radianos = radianos + 0.261799;
-                TraceLog(LOG_INFO, "Angulo %.2f", radianos);
-                rotacionarPoligono(collectedPoints);
+                graus = graus + 15;
+                TraceLog(LOG_INFO, "Angulo %.2f", graus);
+                //rotacionarPoligono(collectedPoints);
 
                 poligono.setVertices(collectedPoints);
-                poligono.cortarPoligonal(poligono.vertices, cortar);
+                poligono.translacaoCG(poligono.vertices);
+                poligono.rotacao(graus);
+                poligono.cortarPoligonal(poligono.verticesRotacionados, cortar);
+                Rot = poligono.verticesRotacionados;
             }
 
             if (IsKeyPressed(KEY_RIGHT))
             {
-                radianos = radianos - 0.261799;
-                TraceLog(LOG_INFO, "Angulo %.2f", radianos);
-                rotacionarPoligono(collectedPoints);
+                graus = graus - 15;
+                TraceLog(LOG_INFO, "Angulo %.2f", graus);
+                // rotacionarPoligono(collectedPoints);
+                // poligono.setVertices(collectedPoints);
+                // poligono.cortarPoligonal(poligono.vertices, cortar);
+
                 poligono.setVertices(collectedPoints);
-                poligono.cortarPoligonal(poligono.vertices, cortar);
+                poligono.translacaoCG(poligono.vertices);
+                poligono.rotacao(graus);
+                poligono.cortarPoligonal(poligono.verticesRotacionados, cortar);
+                Rot = poligono.verticesRotacionados;
             }
 
-            int numPoints = collectedPoints.size();
+            int numPoints = Rot.size();
 
             for (int i = 0; i <= numPoints; i++)
             {
-                if (collectedPoints[i].x > valorMaior)
+                if (Rot[i].x > valorMaior)
                 {
-                    valorMaior = collectedPoints[i].x;
+                    valorMaior = Rot[i].x;
                 }
 
-                if (collectedPoints[i].x < valorMenor)
+                if (Rot[i].x < valorMenor)
                 {
-                    valorMenor = collectedPoints[i].x;
+                    valorMenor = Rot[i].x;
                 }
             }
 
@@ -379,8 +414,8 @@ void loopPrograma()
             if (numPoints >= 3)
             {
                 // Fechar os vetores adicionando o primeiro ponto ao final
-                std::vector<Point> Rotacionados = Rot;
-                poligono.fecharPoligono(Rotacionados);
+                std::vector<Point> rotacionadosFechados = Rot;
+                poligono.fecharPoligono(rotacionadosFechados);
                 std::vector<Point> collectedPointsFechados = collectedPoints;
                 poligono.fecharPoligono(collectedPointsFechados);
                 std::vector<Point> resultadoCorteFechado = poligono.resultadoCorte;
@@ -399,13 +434,13 @@ void loopPrograma()
                 float y_superior[AreaSuperiorFechado.size()];
                 float x_inferior[AreaInferiorFechado.size()];
                 float y_inferior[AreaInferiorFechado.size()];
-                float xRot[Rotacionados.size()];
-                float yRot[Rotacionados.size()];
+                float xRot[rotacionadosFechados.size()];
+                float yRot[rotacionadosFechados.size()];
 
-                for (size_t i = 0; i < Rotacionados.size(); i++)
+                for (size_t i = 0; i < rotacionadosFechados.size(); i++)
                 {
-                    xRot[i] = Rot[i].x;
-                    yRot[i] = Rot[i].y;
+                    xRot[i] = rotacionadosFechados[i].x;
+                    yRot[i] = rotacionadosFechados[i].y;
                 }
 
                 for (size_t i = 0; i < collectedPointsFechados.size(); i++)
@@ -442,13 +477,15 @@ void loopPrograma()
                     ImPlot::PlotScatter("Vértices cortadas", x_corte, y_corte, resultadoCorteFechado.size());
                     ImPlot::PlotScatter("Vértices superiores", x_superior, y_superior, AreaSuperiorFechado.size());
                     ImPlot::PlotScatter("Vértices inferiores", x_inferior, y_inferior, AreaInferiorFechado.size());
-                    ImPlot::PlotScatter("Vértices Rotacionados", xRot, yRot, (Rotacionados.size() - 1));
+                    ImPlot::PlotScatter("Vértices Rotacionados", xRot, yRot, (rotacionadosFechados.size()));                     
                     ImPlot::PlotLine("Polígono", x_data, y_data, collectedPointsFechados.size());
                     ImPlot::PlotLine("Polígono cortado", x_corte, y_corte, resultadoCorteFechado.size());
                     ImPlot::PlotLine("Polígono superior", x_superior, y_superior, AreaSuperiorFechado.size());
                     ImPlot::PlotLine("Polígono inferior", x_inferior, y_inferior, AreaInferiorFechado.size());
                     ImPlot::PlotLine("Linha de corte", x_values, y_values, 2);
+                    ImPlot::PlotLine("Polígono Rotacionado", xRot, yRot, rotacionadosFechados.size());
                     ImPlot::EndPlot();
+               
                 }
             }
             else
@@ -470,7 +507,9 @@ void loopPrograma()
 
 int main()
 {
+    std::cout << "Iniciando a interface..." << std::endl;
     IniciarInterface();
+    std::cout << "Entrando no loop do programa..." << std::endl;
     loopPrograma();
     return 0;
 }

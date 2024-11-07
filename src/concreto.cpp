@@ -1,7 +1,8 @@
 #include "concreto.h"
 
-Concreto::Concreto (float fck, float gama_c) {
+Concreto::Concreto (float fck, float gama_c, float eps1, float eps2, float x_por_d, float d) {
     calculaParametros(fck, gama_c);
+    calculaAlturaDeformacao(eps1, eps2, x_por_d, d);
 }
 
 Concreto::ParametrosConcreto Concreto::getParametros() const {
@@ -41,11 +42,11 @@ void Concreto::calculaParametros(float fck, float gama_c) {
     fcd = fck / gama_c;
 }
 
-void Concreto::calculaAlturaDeformacao (float epsilon_fibra_comprimida, float epsilon_fibra_tracionada, float x_por_d, float d)
+void Concreto::calculaAlturaDeformacao (float eps1, float eps2, float x_por_d, float d)
 {
     altura_LN = x_por_d * d;
 
-    float diferenca_epsilon = epsilon_fibra_comprimida - epsilon_fibra_tracionada;
+    float diferenca_epsilon = eps1 - eps2;
     if (diferenca_epsilon != 0.0f) {
         altura_deformacao_2 = (d / diferenca_epsilon) * epsilon_concreto_2;
         altura_deformacao_ultima = (d / diferenca_epsilon) * epsilon_concreto_ultimo;

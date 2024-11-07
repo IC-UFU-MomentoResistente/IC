@@ -20,6 +20,8 @@
                 "src/main.cpp",
                 "src/poligono.cpp",
                 "src/concreto.cpp",
+                "src/reforco.cpp",
+                "src/point.cpp",
                 "-l:libimgui.a",
                 "-l:libimplot.a",
                 "-l:libraylib.a",

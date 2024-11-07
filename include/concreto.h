@@ -29,14 +29,14 @@ public:
         float altura_LN;
     };
 
-    Concreto(float fck, float gama_c);
+    Concreto(float fck, float gama_c, float eps1, float eps2, float x_por_d, float d);
 
     ParametrosConcreto getParametros() const;
     AlturasConcreto getAlturas() const;
 
 private:
     void calculaParametros(float fck, float gama_c);
-    void calculaAlturaDeformacao (float epsilon_fibra_comprimida, float epsilon_fibra_tracionada, float x_por_d, float d);
+    void calculaAlturaDeformacao (float eps1, float eps2, float x_por_d, float d);
 };
 
 #endif 

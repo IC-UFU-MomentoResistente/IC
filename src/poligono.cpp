@@ -1,22 +1,9 @@
 #define _USE_MATH_DEFINES
-#include "poligono.h"
 #include <iostream>
 #include <cmath>
 #include <algorithm>
-
-// Implementação do construtor padrão de Point
-Point::Point() : x(0), y(0) {}
-
-// Implementação do construtor com parâmetros de Point
-Point::Point(float x_val, float y_val) : x(x_val), y(y_val) {}
-
-// Implementação do operador de comparação para Point
-bool Point::operator<(const Point& other) const {
-    if (x != other.x) {
-        return x < other.x;
-    }
-    return y < other.y;
-}
+#include "point.h"
+#include "poligono.h"
 
 // Implementação do método setVertices
 void Poligono::setVertices(const std::vector<Point>& points) {
@@ -119,17 +106,17 @@ Point Poligono::calcularIntersecao(const Point& p1, const Point& p2, double cort
 }
 
 // Implementação do método cortarPoligonal
-void Poligono::cortarPoligonal(const std::vector<Point>& verticesTransladados, float& cortar) {
+void Poligono::cortarPoligonal(const std::vector<Point>& verticesCorte, float& cortar) {
     resultadoCorte.clear();
     areaSuperior.clear();
     areaInferior.clear();
-    int nv = vertices.size();
+    int nv = verticesCorte.size();
     std::set<Point> pontosAdicionados;
 
     for (int i = 0; i < nv; i++)
     {
-        const Point &p1 = vertices[i];
-        const Point &p2 = vertices[(i + 1) % nv];
+        const Point &p1 = verticesCorte[i];
+        const Point &p2 = verticesCorte[(i + 1) % nv];
 
         int caso = verificarCaso(p1, p2, cortar);
 

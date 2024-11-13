@@ -1,0 +1,35 @@
+requisitos
+# Atualizar os caminhos dos diretórios nos tasks.json, launch.json e c_cpp_properties.json se preciso for 
+# Ver se tem os arquivos .h das bibliotecas (ex.: raylib.h, ...), além dos arquivos estáticos (ex.: libraylib.a) 
+que devem estar em \llib e subpastas
+# Pasta \build deve estar vazia no diretório raiz do projeto
+# Estrutura das pastas deve estar assim:
+    \.vscode
+        c_cpp_properties.json
+        launcn.json
+        tasks.json
+    \build
+    \incluce
+        arquivos .h criados durante o projeto
+    \lib
+        \raylib
+            arquivos.h
+            \build
+                libraylib.a
+        \imgui
+            arquivos.h
+            \build
+                libimgui.a
+        \implot
+            arquivos.h
+            \build
+                libimplot.a
+        \rlImgui
+            arquivos.h
+            \build
+                librlImgui.a
+    \src
+        main.cpp
+        arquivos.cpp extras
+# Caso os arquivos da raylib, imgui, implot e rlImgui não aparecerem na pasta lib, deve-se inserí-los e gerar os arquivos.a 
+# Assim que adicionar mais arquivos.h e .cpp deve-se atualizar o arquivo tasks.json indicando esses novos arquivos

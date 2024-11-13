@@ -8,25 +8,8 @@
 #include <vector>
 #include "reforco.h"
 
-
 Reforco reforco;
 
-/* void AdicionarBarra(float posX, float posY, float diametro)
-{
-    reforco.Armaduras.push_back(Point(posX, posY));  // Adiciona nova posição
-    reforco.valorDiametroBarras.push_back(diametro); // Armazena o diâmetro
-}
-
-void RemoverBarra()
-{
-    if (!reforco.Armaduras.empty())
-    {
-        reforco.Armaduras.pop_back();           // Remove a última barra
-        reforco.valorDiametroBarras.pop_back(); // Remove o último diâmetro
-    }
-} */
-
-// Variáveis globais
 std::vector<Point> collectedPoints = {
     {-10, -20}, {10, -20}, {10, 20}, {-10, 20}}; // Armazenar os pontos coletados
 
@@ -105,12 +88,6 @@ static float barrasPosXi = 0;
 static float barrasPosYi = 0;
 static float barrasPosXf = 0;
 static float barrasPosYf = 0;
-static float fck = 0;
-static float gama_c = 0;
-static float eps1 = 0;
-static float eps2 = 0;
-static float x_d = 0;
-static float d = 0;
 static bool janelaGrafico = true;
 static bool janelaPoligono = true;
 static bool tabelaArmadura = true;
@@ -186,6 +163,18 @@ void loopPrograma()
             ImGui::End();
         }
 
+        static float fck = 0;
+        static float gama_c = 0;
+        static float eps1 = 0;
+        static float eps2 = 0;
+        static float x_d = 0;
+        static float d = 0;
+        static float fyk = 0;
+        static float gama_s = 0;
+        static float Es = 0;
+        static float Epap = 0;
+        static float EpA = 0;
+
         if (janelaConcreto)
         {
             ImGui::Begin ("Entradas de dados: Parâmetros Concreto", &janelaConcreto);
@@ -197,13 +186,19 @@ void loopPrograma()
             ImGui::InputFloat("eps2", &eps2);
             ImGui::InputFloat("x sobre d", &x_d);
             ImGui::InputFloat("d", &d);
+            ImGui::InputFloat("fyk", &fyk);
+            ImGui::InputFloat("gama_S", &gama_s);
+            ImGui::InputFloat("Es", &Es);
+            ImGui::InputFloat("Epap", &Epap);
+            ImGui::InputFloat("EpA", &EpA);
             
-
             if (ImGui::Button("Calcular parâmetros"))
             {
                 Concreto concreto (fck, gama_c, eps1, eps2, x_d, d);
                 Concreto::ParametrosConcreto parametrosConcreto = concreto.getParametros();
                 Concreto::AlturasConcreto alturasConcreto = concreto.getAlturas();
+                reforco.calculaParametros(fyk, gama_s, Es);
+                reforco.calculaNormal_Momento(Epap, EpA);
 
                 TraceLog(LOG_INFO, "Parâmetros do Concreto Calculados");
                 TraceLog(LOG_INFO, "Fator multiplicativo: %.2f", parametrosConcreto.fatorMultTensaoCompConcreto);
@@ -214,6 +209,11 @@ void loopPrograma()
                 TraceLog(LOG_INFO, "altura 2/1000: %.2f", alturasConcreto.altura_deformacao_2);
                 TraceLog(LOG_INFO, "altuara ultima: %.2f", alturasConcreto.altura_deformacao_ultima);
                 TraceLog(LOG_INFO, "altura LN: %.2f", alturasConcreto.altura_LN);
+                TraceLog(LOG_INFO, "fyd: %.2f", reforco.fyd);
+                TraceLog(LOG_INFO, "epyd: %.7f", reforco.epsilon_yd);
+                TraceLog(LOG_INFO, "Normal Aço Passivo: %.4f", reforco.soma_normal_aco_passivo);
+                TraceLog(LOG_INFO, "Momento Aço Passivo: %.4f", reforco.soma_momento_aco_passivo);
+                
             }
 
             ImGui::End();
@@ -235,15 +235,27 @@ void loopPrograma()
                 
                 if (ImGui::Button("Adicionar"))
                 {
+                    if(diametroBarras <= 0) 
+                    {
+
+                    }
+                    else {
                     reforco.AdicionarBarra(barrasPosXi, barrasPosYi, diametroBarras);
-                    
-                };
+                    Point centroide = poligono.centroide();
+
+                    reforco.translacaoCG(reforco.Armaduras, centroide);
+                    reforco.RotacionarArmadura(graus);
+                    }
+                }
 
                 if (ImGui::Button("Remover"))
                 {
                     reforco.RemoverBarra();
-                    
-                };
+                    Point centroide = poligono.centroide();
+
+                    reforco.translacaoCG(reforco.Armaduras, centroide);
+                    reforco.RotacionarArmadura(graus);
+                }
             }
 
             if (barras == 1)
@@ -268,17 +280,31 @@ void loopPrograma()
     
                 if (ImGui::Button("Adicionar"))
                 {
+                    if(diametroBarras <= 0) 
+                    {
+
+                    }
+                    else {
                     for (int i = 0; i < numBarras; i++)
                     {
                         valorAdicionadoX = barrasPosXi + xAdicionado * i;
                         valorAdicionadoY = barrasPosYi + yAdicionado * i;
 
                         reforco.AdicionarBarra(valorAdicionadoX, valorAdicionadoY, diametroBarras);
+                        Point centroide = poligono.centroide();
+
+                        reforco.translacaoCG(reforco.Armaduras, centroide);
+                        reforco.RotacionarArmadura(graus);
+                    }
                     }
                 }
                 if (ImGui::Button("Remover"))
                 {
                     reforco.RemoverBarra();
+                    Point centroide = poligono.centroide();
+
+                    reforco.translacaoCG(reforco.Armaduras, centroide);
+                    reforco.RotacionarArmadura(graus);
                 }
             }
 
@@ -308,7 +334,7 @@ void loopPrograma()
             ImGui::End();
         }
 
-        if (janelaGrafico)
+        /* if (janelaGrafico)
         {
             ImGui::Begin("Gráfico da Seção Transversal", &janelaGrafico); // Título da janela
 
@@ -347,7 +373,6 @@ void loopPrograma()
             {
                 if (IsKeyDown(KEY_UP))
                 {
-
                     VLN = VLN + 1;
                     cortar = VLN;
                     poligono.setVertices(collectedPoints);
@@ -365,65 +390,7 @@ void loopPrograma()
                     KeyDownDelay = 0.0f;
                 }
             }
-/*
-            if (IsKeyPressed(KEY_LEFT))
-            {
-                graus = graus + 15;
-                TraceLog(LOG_INFO, "Angulo %.2f", graus);
-                //rotacionarPoligono(collectedPoints);
 
-                poligono.setVertices(collectedPoints);
-                poligono.translacaoCG(poligono.vertices);
-                poligono.rotacao(graus);
-                poligono.cortarPoligonal(poligono.verticesRotacionados, cortar);
-                Rot = poligono.verticesRotacionados;
-                Point cg = poligono.centroide();
-                reforco.translacaoCG(reforco.Armaduras, cg);
-                reforco.RotacionarArmadura(graus);
-
-                TraceLog(LOG_INFO, "Vertices Armaduras");
-                for (const auto &point : reforco.Armaduras)
-                {
-                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
-                }
-
-                TraceLog(LOG_INFO, "Barras Transladadas");
-                for (const auto &point : reforco.barrasTransladadas)
-                {
-                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
-                }
-            }
-
-            if (IsKeyPressed(KEY_RIGHT))
-            {
-                graus = graus - 15;
-                TraceLog(LOG_INFO, "Angulo %.2f", graus);
-                // rotacionarPoligono(collectedPoints);
-                // poligono.setVertices(collectedPoints);
-                // poligono.cortarPoligonal(poligono.vertices, cortar);
-
-                poligono.setVertices(collectedPoints);
-                poligono.translacaoCG(poligono.vertices);
-                poligono.rotacao(graus);
-                poligono.cortarPoligonal(poligono.verticesRotacionados, cortar);
-                Rot = poligono.verticesRotacionados;
-                Point cg = poligono.centroide();
-                reforco.translacaoCG(reforco.Armaduras, cg);
-                reforco.RotacionarArmadura(graus); 
-
-                TraceLog(LOG_INFO, "Vertices Armaduras");
-                for (const auto &point : reforco.Armaduras)
-                {
-                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
-                }
-
-                TraceLog(LOG_INFO, "Barras Transladadas");
-                for (const auto &point : reforco.barrasTransladadas)
-                {
-                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
-                }
-            }
-*/
             if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT))
             {
                 if (IsKeyPressed(KEY_LEFT))
@@ -505,8 +472,6 @@ void loopPrograma()
                 float y_inferior[AreaInferiorFechado.size()];
                 float xRot[rotacionadosFechados.size()];
                 float yRot[rotacionadosFechados.size()];
-                //float xArmadura[ArmadurasFechadas.size()]; 
-                //float yArmadura[ArmadurasFechadas.size()];
                 float xArmaduraRotacionada[ArmaduraRotFechada.size()];
                 float yArmaduraRotacionada[ArmaduraRotFechada.size()];
 
@@ -544,10 +509,10 @@ void loopPrograma()
                     x_inferior[i] = AreaInferiorFechado[i].x;
                     y_inferior[i] = AreaInferiorFechado[i].y;
                 }
-
+        
                 // Obter o tamanho disponível para o gráfico
                 ImVec2 plotSize = ImGui::GetContentRegionAvail();
-
+                
                 // Plota os pontos e desenha o polígono
                 if (ImPlot::BeginPlot("Gráfico", ImVec2(plotSize.x, plotSize.y)))
                 {
@@ -570,17 +535,17 @@ void loopPrograma()
             else
             {
                 ImGui::Text("Insira pelo menos 3 vértices para formar um polígono.");
-            }
-
+            } 
+ 
             ImGui::End(); // Finaliza a janela do gráfico
-        }
-
+        } 
+        */
         rlImGuiEnd();
         EndDrawing();
     }
 
     // Finaliza o contexto
-    ImPlot::DestroyContext();
+    //ImPlot::DestroyContext();
     rlImGuiShutdown();
 }
 

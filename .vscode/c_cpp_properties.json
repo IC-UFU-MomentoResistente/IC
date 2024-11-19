@@ -1,21 +1,23 @@
 {
     "configurations": [
         {
-            "name": "Win64",
+            "name": "windows-gcc-x64",
             "includePath": [
-                "${workspaceFolder}/include",
-                "${workspaceFolder}/lib/raylib/src",
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src",
                 "${workspaceFolder}/lib/imgui",
                 "${workspaceFolder}/lib/implot",
-                "${workspaceFolder}/lib/rlImGui"
+                "${workspaceFolder}/lib/raylib",
+                "${workspaceFolder}/lib/rlImGui",
+                "${workspaceFolder}/lib/raylib/build/raylib/include"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE"
             ],
-            "compilerPath": "C:/raylib/w64devkit/bin/g++.exe",
-            "cStandard": "c17",
-            "cppStandard": "c++17",
+            "compilerPath": "C:/msys64/ucrt64/bin/gcc.exe",
+            "cStandard": "${default}",
+            "cppStandard": "${default}",
             "intelliSenseMode": "windows-gcc-x64"
         }
     ],

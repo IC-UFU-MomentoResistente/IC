@@ -95,6 +95,7 @@ static bool janelaConcreto = true;
 
 void loopPrograma()
 {
+    
     while (!WindowShouldClose())
     {
         DrawFPS(20, 20);
@@ -163,7 +164,11 @@ void loopPrograma()
             ImGui::End();
         }
 
-        static float fck = 0;
+       
+            
+        if (janelaConcreto)
+        {
+            static float fck = 0;
         static float gama_c = 0;
         static float eps1 = 0;
         static float eps2 = 0;
@@ -174,9 +179,8 @@ void loopPrograma()
         static float Es = 0;
         static float Epap = 0;
         static float EpA = 0;
-
-        if (janelaConcreto)
-        {
+            
+            
             ImGui::Begin ("Entradas de dados: Parâmetros Concreto", &janelaConcreto);
             ImGui::Text("Insira os valores de fck e gama_c");
             
@@ -187,10 +191,10 @@ void loopPrograma()
             ImGui::InputFloat("x sobre d", &x_d);
             ImGui::InputFloat("d", &d);
             ImGui::InputFloat("fyk", &fyk);
-            ImGui::InputFloat("gama_S", &gama_s);
+             ImGui::InputFloat("gama_S", &gama_s);
             ImGui::InputFloat("Es", &Es);
             ImGui::InputFloat("Epap", &Epap);
-            ImGui::InputFloat("EpA", &EpA);
+            ImGui::InputFloat("EpA", &EpA); 
             
             if (ImGui::Button("Calcular parâmetros"))
             {
@@ -198,7 +202,7 @@ void loopPrograma()
                 Concreto::ParametrosConcreto parametrosConcreto = concreto.getParametros();
                 Concreto::AlturasConcreto alturasConcreto = concreto.getAlturas();
                 reforco.calculaParametros(fyk, gama_s, Es);
-                reforco.calculaNormal_Momento(Epap, EpA);
+                reforco.calculaNormal_Momento(Epap, EpA); 
 
                 TraceLog(LOG_INFO, "Parâmetros do Concreto Calculados");
                 TraceLog(LOG_INFO, "Fator multiplicativo: %.2f", parametrosConcreto.fatorMultTensaoCompConcreto);
@@ -334,7 +338,7 @@ void loopPrograma()
             ImGui::End();
         }
 
-        /* if (janelaGrafico)
+         if (janelaGrafico)
         {
             ImGui::Begin("Gráfico da Seção Transversal", &janelaGrafico); // Título da janela
 
@@ -514,7 +518,7 @@ void loopPrograma()
                 ImVec2 plotSize = ImGui::GetContentRegionAvail();
                 
                 // Plota os pontos e desenha o polígono
-                if (ImPlot::BeginPlot("Gráfico", ImVec2(plotSize.x, plotSize.y)))
+                if (ImPlot::BeginPlot("Gráfico", ImVec2(plotSize.x, plotSize.y),ImPlotFlags_Equal))
                 {
                     ImPlot::PlotScatter("Vértices", x_data, y_data, collectedPointsFechados.size());
                     ImPlot::PlotScatter("Vértices cortadas", x_corte, y_corte, resultadoCorteFechado.size());
@@ -539,7 +543,7 @@ void loopPrograma()
  
             ImGui::End(); // Finaliza a janela do gráfico
         } 
-        */
+        
         rlImGuiEnd();
         EndDrawing();
     }

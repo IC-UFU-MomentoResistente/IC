@@ -133,28 +133,39 @@ void Reforco::calculaNormal_Momento(float Epap, float EpA)
     }
     
     float d = yMaxSecao - yMinArmadura;
-    float k;
+    float k = 0; 
+    
 
     //Epi[Armaduras.size()];
     //tensao_barra[Armaduras.size()];
     //area_barra[Armaduras.size()];
     //aco_passivo_momento[Armaduras.size()];
     //aco_passivo_normal[Armaduras.size()];
-   
-    for (size_t i = 0; i < Armaduras.size(); i++) 
-    {   
-        k = (Epap - EpA)/d;
-        deformacao_barra = (k*(yMaxSecao - Armaduras[i].y))+EpA;
-        Epi.push_back(deformacao_barra);
-        tensao(Epi[i]);
-        tensao_barra.push_back(tensao_aco_passivo);
-        area_barra_variavel = (pow(valorDiametroBarras[i],2)*M_PI) / 4;
-        area_barra.push_back(area_barra_variavel);
-        normal_aco_passivo_variavel = tensao_aco_passivo*area_barra[i];
-        momento_aco_passivo_variavel = aco_passivo_normal[i]* (Armaduras[i].y);    
-        aco_passivo_normal.push_back(normal_aco_passivo_variavel);
-        aco_passivo_momento.push_back(momento_aco_passivo_variavel);
-        soma_normal_aco_passivo = soma_normal_aco_passivo + aco_passivo_normal[i];
-        soma_momento_aco_passivo = soma_momento_aco_passivo + aco_passivo_momento[i];
-    }
+
+   for (size_t i = 0; i < Armaduras.size(); i++) {   
+    k = (Epap - EpA) / d;
+    deformacao_barra = (k * (yMaxSecao - Armaduras[i].y)) + EpA;
+    
+    // Adicionar deformação
+    Epi.push_back(deformacao_barra);
+    tensao(Epi.back()); // Usar o último valor adicionado
+    tensao_barra.push_back(tensao_aco_passivo);
+
+    // Calcular área
+    area_barra_variavel = (pow(valorDiametroBarras[i], 2) * M_PI) / 4;
+    area_barra.push_back(area_barra_variavel);
+
+    // Calcular normal e momento
+    normal_aco_passivo_variavel = tensao_aco_passivo * area_barra.back();
+    momento_aco_passivo_variavel = normal_aco_passivo_variavel * Armaduras[i].y;
+    
+    aco_passivo_normal.push_back(normal_aco_passivo_variavel);
+    aco_passivo_momento.push_back(momento_aco_passivo_variavel);
+
+    // Soma normal e momento
+    soma_normal_aco_passivo += normal_aco_passivo_variavel;
+    soma_momento_aco_passivo += momento_aco_passivo_variavel;
 }
+    
+}
+

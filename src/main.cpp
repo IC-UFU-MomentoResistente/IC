@@ -122,6 +122,7 @@ void ProgramLoop() {
                 // Fechar e preparar as áreas superior e inferior para plotagem
                 std::vector<Point> closedUpperArea = poligono.areaSuperior;
                 std::vector<Point> closedLowerArea = poligono.areaInferior;
+
                 poligono.fecharPoligono(closedUpperArea);
                 poligono.fecharPoligono(closedLowerArea);
 

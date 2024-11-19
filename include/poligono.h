@@ -21,6 +21,8 @@ public:
     void setVertices(const std::vector<Point>& points);
     double area() const;
     Point centroide() const;
+    Point calcularCentroid(const std::vector<Point>& pontos);
+    void ordenarPontosAntihorario(std::vector<Point>& pontos);
     void translacaoCG(const std::vector<Point>& points);
     void rotacao(double angulo);
     void MaxMin(float& yMin, float& yMax) const;

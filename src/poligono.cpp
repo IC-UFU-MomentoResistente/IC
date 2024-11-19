@@ -40,6 +40,28 @@ Point Poligono::centroide() const {
     return Point(Cx, Cy);
 }
 
+// Função para calcular o centróide
+Point Poligono::calcularCentroid(const std::vector<Point>& pontos) {
+    float cx = 0, cy = 0;
+    for (const auto& ponto : pontos) {
+        cx += ponto.x;
+        cy += ponto.y;
+    }
+    cx /= pontos.size();
+    cy /= pontos.size();
+    return {cx, cy};
+}
+
+// Função para ordenar os pontos em sentido anti-horário
+void Poligono::ordenarPontosAntihorario(std::vector<Point>& pontos) {
+    Point centroid = calcularCentroid(pontos);
+    std::sort(pontos.begin(), pontos.end(), [&centroid](const Point& a, const Point& b) {
+        float angA = atan2(a.y - centroid.y, a.x - centroid.x);
+        float angB = atan2(b.y - centroid.y, b.x - centroid.x);
+        return angA < angB;
+    });
+}
+
 // Implementação do método translacaoCG
 void Poligono::translacaoCG(const std::vector<Point>& points) {
     verticesTransladados.clear();
@@ -50,6 +72,8 @@ void Poligono::translacaoCG(const std::vector<Point>& points) {
         float v = p.y - cg.y;
         verticesTransladados.emplace_back(u, v);
     }
+
+    ordenarPontosAntihorario(verticesTransladados);
 }
 
 // Implementação do método rotacao
@@ -62,6 +86,8 @@ void Poligono::rotacao(double angulo) {
         float v = (p.x * sin(ang_radianos)) + (p.y * cos(ang_radianos));
         verticesRotacionados.emplace_back(u, v);
     }
+
+    ordenarPontosAntihorario(verticesRotacionados);
 }
 
 // Implementação do método MaxMin
@@ -185,6 +211,10 @@ void Poligono::cortarPoligonal(const std::vector<Point>& verticesCorte, float& c
             }
         }
     }
+
+    ordenarPontosAntihorario(resultadoCorte);
+    ordenarPontosAntihorario(areaSuperior);
+    ordenarPontosAntihorario(areaInferior);
 }
 
 void Poligono::fecharPoligono(std::vector<Point> &pontos) {

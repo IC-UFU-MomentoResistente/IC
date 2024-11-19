@@ -338,7 +338,7 @@ void loopPrograma()
             ImGui::End();
         }
 
-         if (janelaGrafico)
+        /* if (janelaGrafico)
         {
             ImGui::Begin("Gráfico da Seção Transversal", &janelaGrafico); // Título da janela
 
@@ -543,7 +543,7 @@ void loopPrograma()
  
             ImGui::End(); // Finaliza a janela do gráfico
         } 
-        
+        */
         rlImGuiEnd();
         EndDrawing();
     }

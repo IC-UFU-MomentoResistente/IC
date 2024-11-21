@@ -21,13 +21,21 @@ public:
     void setVertices(const std::vector<Point>& points);
     double area() const;
     Point centroide() const;
+    Point calcularCentroid(const std::vector<Point>& pontos);
+    void ordenarPontosAntihorario(std::vector<Point>& pontos);
     void translacaoCG(const std::vector<Point>& points);
     void rotacao(double angulo);
-    void MaxMin(float& yMin, float& yMax) const;
+    void MaxMin(float& yMax, float& yMin) const;
     int verificarCaso(const Point& p1, const Point& p2, double cortar);
     Point calcularIntersecao(const Point& p1, const Point& p2, double cortar);
     void cortarPoligonal(const std::vector<Point>& verticesTransladados, float& cortar);
     void fecharPoligono(std::vector<Point> &pontos);
+    const std::vector<Point> getVertices () const;
+    const std::vector<Point> getResultadoCorte () const;
+    const std::vector<Point> getAreaSuperior () const;
+    const std::vector<Point> getAreaInferior () const;
+    const std::vector<Point> getVerticesTransladados () const;
+    const std::vector<Point> getVerticesRotacionados () const;
 };
 
 #endif // POLIGONO_H

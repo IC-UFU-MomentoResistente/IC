@@ -11,70 +11,20 @@
 
 Reforco reforco;
 
-/* void AdicionarBarra(float posX, float posY, float diametro)
-{
-    reforco.Armaduras.push_back(Point(posX, posY));  // Adiciona nova posição
-    reforco.valorDiametroBarras.push_back(diametro); // Armazena o diâmetro
-}
-
-void RemoverBarra()
-{
-    if (!reforco.Armaduras.empty())
-    {
-        reforco.Armaduras.pop_back();           // Remove a última barra
-        reforco.valorDiametroBarras.pop_back(); // Remove o último diâmetro
-    }
-} */
-
-// Variáveis globais
-std::vector<Point> collectedPoints = {
-    {-10, -20}, {10, -20}, {10, 20}, {-10, 20}}; // Armazenar os pontos coletados
+std::vector<Point> collectedPoints = {{-10, -20}, {10, -20}, {10, 20}, {-10, 20}}; 
 
 Poligono poligono;
+
 std::vector<Point> Rot = collectedPoints;
 std::vector<Point> pontosOriginais = collectedPoints;
 
 float graus = 0;
+float yMaxSecao = 0;
+float yMinSecao = 0;
+float yMinArmadura = 0;
+
 Point centroideInicial;
 
-/* Point calcularCentroide(const std::vector<Point> &pontos)
-{
-    float somaX = 0.0f;
-    float somaY = 0.0f;
-    int n = pontos.size();
-
-    for (const auto &p : pontos)
-    {
-        somaX += p.x;
-        somaY += p.y;
-    }
-
-    return Point(somaX / n, somaY / n);
-}
-*/ 
-/* void rotacionarPoligono(std::vector<Point> &collectedPoints)
-{
-    for (size_t i = 0; i < pontosOriginais.size(); ++i)
-    {
-        // transladar os pontos para a origem do centróide
-        double xTransladado = pontosOriginais[i].x - centroideInicial.x;
-        double yTransladado = pontosOriginais[i].y - centroideInicial.y;
-
-        // Aplicar a rotação
-        double xRotacionado = xTransladado * cos(radianos) - yTransladado * sin(radianos);
-        double yRotacionado = xTransladado * sin(radianos) + yTransladado * cos(radianos);
-
-        // Transladar os pontos de volta para a posição original em relação ao centróide
-        poligono.verticesRotacionados[i].x;
-        
-        collectedPoints[i].x = xRotacionado + centroideInicial.x;
-        collectedPoints[i].y = yRotacionado + centroideInicial.y;
-
-        Rot[i].x = xRotacionado + centroideInicial.x;
-        Rot[i].y = yRotacionado + centroideInicial.y;
-    }
-}
-*/ 
 void IniciarInterface()
 {
     const int screenWidth = 1280;
@@ -127,187 +77,6 @@ void loopPrograma()
         ClearBackground(BLACK);
         rlImGuiBegin();
 
-        if (janelaPoligono)
-        {
-            ImGui::Begin("Central de operações com polígono", &janelaPoligono);
-            ImGui::Text("Insira a coordenada de corte");
-
-            // cortar.clear(); // Limpa o vetor de cortes antes de adicionar novos valores
-
-            // Declare VLN fora do loop, se ainda não estiver declarado
-            // Usar static para manter o valor entre as chamadas
-            ImGui::SetNextItemWidth(100);
-            ImGui::InputFloat("Y", &VLN); // Permite ao usuário inserir a coordenada Y
-
-            // Adiciona a coordenada Y ao vetor de cortes
-            if (ImGui::Button("Adicionar Corte"))
-            { // Botão para adicionar o corte
-                cortar = VLN;
-            }
-
-            if (ImGui::Button("Mostrar Valores"))
-            {
-
-                TraceLog(LOG_INFO, "Valores armazenados:");
-                for (const auto &point : collectedPoints)
-                {
-                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
-                }
-
-                TraceLog(LOG_INFO, "Valores após o corte");
-                for (const auto &point : poligono.resultadoCorte)
-                {
-                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
-                }
-
-                TraceLog(LOG_INFO, "Vertices superiores");
-                for (const auto &point : poligono.areaSuperior)
-                {
-                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
-                }
-
-                TraceLog(LOG_INFO, "Vertices inferiores");
-                for (const auto &point : poligono.areaInferior)
-                {
-                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
-                }
-            }
-
-            if (ImGui::Button("Calcular Área e Centróide"))
-            {
-                poligono.setVertices(collectedPoints); // Transfere os pontos para o polígono
-                double poligonoArea = poligono.area();  // Calcula a área
-                Point centroide = poligono.centroide();  // Calcula o centróide
-
-                TraceLog(LOG_INFO, "Área: %.2f", poligonoArea);
-                TraceLog(LOG_INFO, "Centróide: (%.2f, %.2f)", centroide.x, centroide.y);
-            }
-
-            ImGui::End();
-        }
-
-        if (janelaConcreto)
-        {
-            ImGui::Begin ("Entradas de dados: Parâmetros Concreto", &janelaConcreto);
-            ImGui::Text("Insira os valores de fck e gama_c");
-            
-            ImGui::InputFloat("fck", &fck);
-            ImGui::InputFloat("gama_c", &gama_c);
-            ImGui::InputFloat("eps1", &eps1);
-            ImGui::InputFloat("eps2", &eps2);
-            ImGui::InputFloat("x sobre d", &x_d);
-            ImGui::InputFloat("d", &d);
-            
-
-            if (ImGui::Button("Calcular parâmetros"))
-            {
-                Concreto concreto (fck, gama_c, eps1, eps2, x_d, d);
-                Concreto::ParametrosConcreto parametrosConcreto = concreto.getParametros();
-                Concreto::AlturasConcreto alturasConcreto = concreto.getAlturas();
-
-                TraceLog(LOG_INFO, "Parâmetros do Concreto Calculados");
-                TraceLog(LOG_INFO, "Fator multiplicativo: %.2f", parametrosConcreto.fatorMultTensaoCompConcreto);
-                TraceLog(LOG_INFO, "Ep ultimo: %.2f", parametrosConcreto.epsilonConcretoUltimo);
-                TraceLog(LOG_INFO, "Ep2: %.2f", parametrosConcreto.epsilonConcreto2);
-                TraceLog(LOG_INFO, "Expoente: %.2f", parametrosConcreto.expoenteTensaoConcreto);
-                TraceLog(LOG_INFO, "fcd: %.2f", parametrosConcreto.fcd);
-                TraceLog(LOG_INFO, "altura 2/1000: %.2f", alturasConcreto.altura_deformacao_2);
-                TraceLog(LOG_INFO, "altuara ultima: %.2f", alturasConcreto.altura_deformacao_ultima);
-                TraceLog(LOG_INFO, "altura LN: %.2f", alturasConcreto.altura_LN);
-            }
-
-            ImGui::End();
-        }
-
-        if (tabelaArmadura)
-        {
-            ImGui::Begin("Entrada de dados: Armadura Passiva", &tabelaArmadura);
-            ImGui::RadioButton("Uma Barra", &barras, 0);
-            ImGui::RadioButton("Linha de Barras", &barras, 1);
-
-            if (barras == 0)
-            {
-                numBarras = 1;
-                ImGui::PushItemWidth(50);
-                ImGui::InputFloat("Diâmetro das Barras", &diametroBarras);
-                ImGui::InputFloat("Posição X (mm)", &barrasPosXi);
-                ImGui::InputFloat("Posição Y (mm)", &barrasPosYi);
-                
-                if (ImGui::Button("Adicionar"))
-                {
-                    reforco.AdicionarBarra(barrasPosXi, barrasPosYi, diametroBarras);
-                    
-                };
-
-                if (ImGui::Button("Remover"))
-                {
-                    reforco.RemoverBarra();
-                    
-                };
-            }
-
-            if (barras == 1)
-            {
-                ImGui::SetNextItemWidth(100);
-                ImGui::InputInt("Numero de Barras na Linha", &numBarras);
-                if (numBarras < 2)
-                {
-                    numBarras = 2;
-                }
-                ImGui::PushItemWidth(50);
-                ImGui::InputFloat("Diâmetro das Barras", &diametroBarras);
-                ImGui::InputFloat("Posição Xi (mm)", &barrasPosXi);
-                ImGui::InputFloat("Posição Yi (mm)", &barrasPosYi);
-                ImGui::InputFloat("Posição Xf (mm)", &barrasPosXf);
-                ImGui::InputFloat("Posição Yf (mm)", &barrasPosYf);
-
-                float xAdicionado = (barrasPosXf - barrasPosXi) / (numBarras - 1);
-                float yAdicionado = (barrasPosYf - barrasPosYi) / (numBarras - 1);
-                float valorAdicionadoX = 0;
-                float valorAdicionadoY = 0;
-    
-                if (ImGui::Button("Adicionar"))
-                {
-                    for (int i = 0; i < numBarras; i++)
-                    {
-                        valorAdicionadoX = barrasPosXi + xAdicionado * i;
-                        valorAdicionadoY = barrasPosYi + yAdicionado * i;
-
-                        reforco.AdicionarBarra(valorAdicionadoX, valorAdicionadoY, diametroBarras);
-                    }
-                }
-                if (ImGui::Button("Remover"))
-                {
-                    reforco.RemoverBarra();
-                }
-            }
-
-            if (ImGui::BeginTable("Tabela", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
-            {
-                ImGui::TableSetupColumn("ID");
-                ImGui::TableSetupColumn("Posição X (mm)");
-                ImGui::TableSetupColumn("Posição Y (mm)");
-                ImGui::TableSetupColumn("Diâmetro");
-                ImGui::TableHeadersRow();
-
-                for (size_t i = 0; i < reforco.Armaduras.size(); ++i)
-                {
-                    ImGui::TableNextRow();
-                    ImGui::TableSetColumnIndex(0);
-                    ImGui::Text("%d", static_cast<int>(i + 1));
-                    ImGui::TableSetColumnIndex(1);
-                    ImGui::Text("%.2f", reforco.Armaduras[i].x);
-                    ImGui::TableSetColumnIndex(2);
-                    ImGui::Text("%.2f", reforco.Armaduras[i].y);
-                    ImGui::TableSetColumnIndex(3);
-                    ImGui::Text("%.2f", reforco.valorDiametroBarras[i]);
-                }
-                ImGui::EndTable();
-            }
-
-            ImGui::End();
-        }
-
         if (janelaGrafico)
         {
             ImGui::Begin("Gráfico da Seção Transversal", &janelaGrafico); // Título da janela
@@ -332,6 +101,7 @@ void loopPrograma()
                 Rot = poligono.verticesRotacionados;
                 KeyDownDelay = 0.0f;
             }
+            
             if (IsKeyPressed(KEY_DOWN))
             {
                 VLN = VLN - 1;
@@ -347,7 +117,6 @@ void loopPrograma()
             {
                 if (IsKeyDown(KEY_UP))
                 {
-
                     VLN = VLN + 1;
                     cortar = VLN;
                     poligono.setVertices(collectedPoints);
@@ -365,65 +134,7 @@ void loopPrograma()
                     KeyDownDelay = 0.0f;
                 }
             }
-/*
-            if (IsKeyPressed(KEY_LEFT))
-            {
-                graus = graus + 15;
-                TraceLog(LOG_INFO, "Angulo %.2f", graus);
-                //rotacionarPoligono(collectedPoints);
 
-                poligono.setVertices(collectedPoints);
-                poligono.translacaoCG(poligono.vertices);
-                poligono.rotacao(graus);
-                poligono.cortarPoligonal(poligono.verticesRotacionados, cortar);
-                Rot = poligono.verticesRotacionados;
-                Point cg = poligono.centroide();
-                reforco.translacaoCG(reforco.Armaduras, cg);
-                reforco.RotacionarArmadura(graus);
-
-                TraceLog(LOG_INFO, "Vertices Armaduras");
-                for (const auto &point : reforco.Armaduras)
-                {
-                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
-                }
-
-                TraceLog(LOG_INFO, "Barras Transladadas");
-                for (const auto &point : reforco.barrasTransladadas)
-                {
-                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
-                }
-            }
-
-            if (IsKeyPressed(KEY_RIGHT))
-            {
-                graus = graus - 15;
-                TraceLog(LOG_INFO, "Angulo %.2f", graus);
-                // rotacionarPoligono(collectedPoints);
-                // poligono.setVertices(collectedPoints);
-                // poligono.cortarPoligonal(poligono.vertices, cortar);
-
-                poligono.setVertices(collectedPoints);
-                poligono.translacaoCG(poligono.vertices);
-                poligono.rotacao(graus);
-                poligono.cortarPoligonal(poligono.verticesRotacionados, cortar);
-                Rot = poligono.verticesRotacionados;
-                Point cg = poligono.centroide();
-                reforco.translacaoCG(reforco.Armaduras, cg);
-                reforco.RotacionarArmadura(graus); 
-
-                TraceLog(LOG_INFO, "Vertices Armaduras");
-                for (const auto &point : reforco.Armaduras)
-                {
-                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
-                }
-
-                TraceLog(LOG_INFO, "Barras Transladadas");
-                for (const auto &point : reforco.barrasTransladadas)
-                {
-                    TraceLog(LOG_INFO, "x = %.2f, y = %.2f", point.x, point.y);
-                }
-            }
-*/
             if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT))
             {
                 if (IsKeyPressed(KEY_LEFT))
@@ -443,7 +154,7 @@ void loopPrograma()
 
                 reforco.translacaoCG(reforco.Armaduras, centroide);
                 reforco.RotacionarArmadura(graus);
-
+                
                 TraceLog(LOG_INFO, "Vertices Armaduras (Originais)");
                 for (const auto &point : reforco.Armaduras)
                 {
@@ -564,7 +275,6 @@ void loopPrograma()
                     ImPlot::PlotLine("Linha de corte", x_values, y_values, 2);
                     ImPlot::PlotLine("Polígono Rotacionado", xRot, yRot, rotacionadosFechados.size());
                     ImPlot::EndPlot();
-               
                 }
             }
             else
@@ -573,6 +283,161 @@ void loopPrograma()
             }
 
             ImGui::End(); // Finaliza a janela do gráfico
+        }
+
+        if (janelaConcreto)
+        {
+            ImGui::Begin ("Entradas de dados: Parâmetros Concreto", &janelaConcreto);
+            ImGui::Text("Insira os valores de fck e gama_c");
+            
+            ImGui::InputFloat("fck", &fck);
+            ImGui::InputFloat("gama_c", &gama_c);
+            ImGui::InputFloat("eps1", &eps1);
+            ImGui::InputFloat("eps2", &eps2);
+            ImGui::InputFloat("x sobre d", &x_d);
+
+            poligono.MaxMin(yMaxSecao, yMinSecao);
+            centroideInicial = poligono.centroide();
+            reforco.Min(yMinArmadura);
+
+            if (ImGui::Button("Calcular parâmetros"))
+            {
+                Concreto concreto (fck, gama_c, eps1, eps2, x_d, yMaxSecao, yMinSecao, yMinArmadura, centroideInicial.y);
+                Concreto::ParametrosConcreto parametrosConcreto = concreto.getParametros();
+                Concreto::AlturasConcreto alturasConcreto = concreto.getAlturas();
+
+                TraceLog(LOG_INFO, "Parâmetros do Concreto Calculados");
+                TraceLog(LOG_INFO, "Fator multiplicativo: %.3f", parametrosConcreto.fatorMultTensaoCompConcreto);
+                TraceLog(LOG_INFO, "Ep ultimo: %.5f", parametrosConcreto.epsilonConcretoUltimo);
+                TraceLog(LOG_INFO, "Ep2: %.5f", parametrosConcreto.epsilonConcreto2);
+                TraceLog(LOG_INFO, "Expoente: %.2f", parametrosConcreto.expoenteTensaoConcreto);
+                TraceLog(LOG_INFO, "fcd: %.2f", parametrosConcreto.fcd);
+                TraceLog(LOG_INFO, "altura 2/1000: %.2f", alturasConcreto.altura_deformacao_2);
+                TraceLog(LOG_INFO, "altura ultima: %.2f", alturasConcreto.altura_deformacao_ultima);
+                TraceLog(LOG_INFO, "altura LN: %.2f", alturasConcreto.altura_LN);
+                TraceLog(LOG_INFO, "altura d: %.2f", alturasConcreto.d);
+                TraceLog(LOG_INFO, "altura h: %.2f", alturasConcreto.h);
+                TraceLog(LOG_INFO, "yMaxSecao: %.2f", yMaxSecao);
+                TraceLog(LOG_INFO, "yMinSecao: %.2f", yMinSecao);
+                TraceLog(LOG_INFO, "yMinArmadura: %.2f", yMinArmadura);
+            }
+
+            ImGui::End();
+        }
+
+        if (tabelaArmadura)
+        {
+            ImGui::Begin("Entrada de dados: Armadura Passiva", &tabelaArmadura);
+            ImGui::RadioButton("Uma Barra", &barras, 0);
+            ImGui::RadioButton("Linha de Barras", &barras, 1);
+
+            if (barras == 0)
+            {
+                numBarras = 1;
+                ImGui::PushItemWidth(50);
+                ImGui::InputFloat("Diâmetro das Barras", &diametroBarras);
+                ImGui::InputFloat("Posição X (mm)", &barrasPosXi);
+                ImGui::InputFloat("Posição Y (mm)", &barrasPosYi);
+                
+                if (ImGui::Button("Adicionar"))
+                {
+                    if(diametroBarras <= 0) 
+                    {
+
+                    }
+                    else {
+                    reforco.AdicionarBarra(barrasPosXi, barrasPosYi, diametroBarras);
+                    Point centroide = poligono.centroide();
+
+                    reforco.translacaoCG(reforco.Armaduras, centroide);
+                    reforco.RotacionarArmadura(graus);
+                    }
+                }
+
+                if (ImGui::Button("Remover"))
+                {
+                    reforco.RemoverBarra();
+                    Point centroide = poligono.centroide();
+
+                    reforco.translacaoCG(reforco.Armaduras, centroide);
+                    reforco.RotacionarArmadura(graus);
+                }
+            }
+
+            if (barras == 1)
+            {
+                ImGui::SetNextItemWidth(100);
+                ImGui::InputInt("Numero de Barras na Linha", &numBarras);
+                if (numBarras < 2)
+                {
+                    numBarras = 2;
+                }
+                ImGui::PushItemWidth(50);
+                ImGui::InputFloat("Diâmetro das Barras", &diametroBarras);
+                ImGui::InputFloat("Posição Xi (mm)", &barrasPosXi);
+                ImGui::InputFloat("Posição Yi (mm)", &barrasPosYi);
+                ImGui::InputFloat("Posição Xf (mm)", &barrasPosXf);
+                ImGui::InputFloat("Posição Yf (mm)", &barrasPosYf);
+
+                float xAdicionado = (barrasPosXf - barrasPosXi) / (numBarras - 1);
+                float yAdicionado = (barrasPosYf - barrasPosYi) / (numBarras - 1);
+                float valorAdicionadoX = 0;
+                float valorAdicionadoY = 0;
+    
+                if (ImGui::Button("Adicionar"))
+                {
+                    if(diametroBarras <= 0) 
+                    {
+
+                    }
+                    else {
+                    for (int i = 0; i < numBarras; i++)
+                    {
+                        valorAdicionadoX = barrasPosXi + xAdicionado * i;
+                        valorAdicionadoY = barrasPosYi + yAdicionado * i;
+
+                        reforco.AdicionarBarra(valorAdicionadoX, valorAdicionadoY, diametroBarras);
+                        Point centroide = poligono.centroide();
+
+                        reforco.translacaoCG(reforco.Armaduras, centroide);
+                        reforco.RotacionarArmadura(graus);
+                    }
+                    }
+                }
+                if (ImGui::Button("Remover"))
+                {
+                    reforco.RemoverBarra();
+                    Point centroide = poligono.centroide();
+
+                    reforco.translacaoCG(reforco.Armaduras, centroide);
+                    reforco.RotacionarArmadura(graus);
+                }
+            }
+
+            if (ImGui::BeginTable("Tabela", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+            {
+                ImGui::TableSetupColumn("ID");
+                ImGui::TableSetupColumn("Posição X (mm)");
+                ImGui::TableSetupColumn("Posição Y (mm)");
+                ImGui::TableSetupColumn("Diâmetro");
+                ImGui::TableHeadersRow();
+
+                for (size_t i = 0; i < reforco.Armaduras.size(); ++i)
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableSetColumnIndex(0);
+                    ImGui::Text("%d", static_cast<int>(i + 1));
+                    ImGui::TableSetColumnIndex(1);
+                    ImGui::Text("%.2f", reforco.Armaduras[i].x);
+                    ImGui::TableSetColumnIndex(2);
+                    ImGui::Text("%.2f", reforco.Armaduras[i].y);
+                    ImGui::TableSetColumnIndex(3);
+                    ImGui::Text("%.2f", reforco.valorDiametroBarras[i]);
+                }
+                ImGui::EndTable();
+            }
+
+            ImGui::End();
         }
 
         rlImGuiEnd();

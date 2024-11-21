@@ -40,6 +40,28 @@ Point Poligono::centroide() const {
     return Point(Cx, Cy);
 }
 
+// Função para calcular o centróide
+Point Poligono::calcularCentroid(const std::vector<Point>& pontos) {
+    float cx = 0, cy = 0;
+    for (const auto& ponto : pontos) {
+        cx += ponto.x;
+        cy += ponto.y;
+    }
+    cx /= pontos.size();
+    cy /= pontos.size();
+    return {cx, cy};
+}
+
+// Função para ordenar os pontos em sentido anti-horário
+void Poligono::ordenarPontosAntihorario(std::vector<Point>& pontos) {
+    Point centroid = calcularCentroid(pontos);
+    std::sort(pontos.begin(), pontos.end(), [&centroid](const Point& a, const Point& b) {
+        float angA = atan2(a.y - centroid.y, a.x - centroid.x);
+        float angB = atan2(b.y - centroid.y, b.x - centroid.x);
+        return angA < angB;
+    });
+}
+
 // Implementação do método translacaoCG
 void Poligono::translacaoCG(const std::vector<Point>& points) {
     verticesTransladados.clear();
@@ -50,6 +72,8 @@ void Poligono::translacaoCG(const std::vector<Point>& points) {
         float v = p.y - cg.y;
         verticesTransladados.emplace_back(u, v);
     }
+
+    ordenarPontosAntihorario(verticesTransladados);
 }
 
 // Implementação do método rotacao
@@ -57,21 +81,33 @@ void Poligono::rotacao(double angulo) {
     verticesRotacionados.clear();
     double ang_radianos = angulo * M_PI / 180.0;
 
-    for (const auto& p : verticesTransladados) {
-        float u = (p.x * cos(ang_radianos)) - (p.y * sin(ang_radianos));
-        float v = (p.x * sin(ang_radianos)) + (p.y * cos(ang_radianos));
-        verticesRotacionados.emplace_back(u, v);
+    if (angulo == 0)
+    {
+        for (const auto& p : verticesTransladados)
+        {
+            verticesRotacionados.emplace_back(p.x, p.y);
+        }
+    } else 
+    {
+        for (const auto& p : verticesTransladados) 
+        {
+            float u = (p.x * cos(ang_radianos)) - (p.y * sin(ang_radianos));
+            float v = (p.x * sin(ang_radianos)) + (p.y * cos(ang_radianos));
+            verticesRotacionados.emplace_back(u, v);
+        }
     }
+
+    ordenarPontosAntihorario(verticesRotacionados);
 }
 
 // Implementação do método MaxMin
-void Poligono::MaxMin(float& yMin, float& yMax) const {
-    if (verticesTransladados.empty()) return;
+void Poligono::MaxMin(float& yMax, float& yMin) const {
+    if (verticesRotacionados.empty()) return;
 
-    yMin = verticesTransladados[0].y;
-    yMax = verticesTransladados[0].y;
+    yMin = verticesRotacionados[0].y;
+    yMax = verticesRotacionados[0].y;
 
-    for (const auto& p : verticesTransladados) {
+    for (const auto& p : verticesRotacionados) {
         if (p.y < yMin) yMin = p.y;
         if (p.y > yMax) yMax = p.y;
     }
@@ -185,6 +221,10 @@ void Poligono::cortarPoligonal(const std::vector<Point>& verticesCorte, float& c
             }
         }
     }
+
+    ordenarPontosAntihorario(resultadoCorte);
+    ordenarPontosAntihorario(areaSuperior);
+    ordenarPontosAntihorario(areaInferior);
 }
 
 void Poligono::fecharPoligono(std::vector<Point> &pontos) {
@@ -192,4 +232,34 @@ void Poligono::fecharPoligono(std::vector<Point> &pontos) {
     {
         pontos.push_back(pontos[0]);
     }
+}
+
+const std::vector<Point> Poligono::getVertices () const 
+{
+    return vertices;
+}
+
+const std::vector<Point> Poligono::getResultadoCorte() const 
+{
+    return resultadoCorte;
+}
+
+const std::vector<Point> Poligono::getAreaSuperior() const 
+{
+    return areaSuperior;
+}
+
+const std::vector<Point> Poligono::getAreaInferior() const 
+{
+    return areaInferior;
+}
+
+const std::vector<Point> Poligono::getVerticesTransladados() const 
+{
+    return verticesTransladados;
+}
+
+const std::vector<Point> Poligono::getVerticesRotacionados() const 
+{
+    return verticesRotacionados;
 }

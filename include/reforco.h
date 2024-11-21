@@ -21,6 +21,10 @@ public:
     void RemoverBarra();
     void translacaoCG(const std::vector<Point>& points, Point cg);
     void RotacionarArmadura(double angulo);
+    void Min(float& yMin) const;
+    const std::vector<Point> getBarrasRotacionadas () const;
+    const std::vector<Point> getBarrasTransladadas () const;
+    const std::vector<Point> getBarras () const;
 };
 
 

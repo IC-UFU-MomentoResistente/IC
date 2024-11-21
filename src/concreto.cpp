@@ -1,8 +1,12 @@
+#include <iostream> // Para std::cerr
+#include <cfloat>   // Para FLT_MAX
 #include "concreto.h"
+#include "poligono.h"
+#include "reforco.h"
 
-Concreto::Concreto (float fck, float gama_c, float eps1, float eps2, float x_por_d, float d) {
+Concreto::Concreto (float fck, float gama_c, float eps1, float eps2, float x_por_d, float yMaxSecao, float yMinSecao, float yMinArmadura, float yCG) {
     calculaParametros(fck, gama_c);
-    calculaAlturaDeformacao(eps1, eps2, x_por_d, d);
+    calculaAlturaDeformacao(eps1, eps2, x_por_d, yMaxSecao, yMinSecao, yMinArmadura, yCG);
 }
 
 Concreto::ParametrosConcreto Concreto::getParametros() const {
@@ -19,7 +23,9 @@ Concreto::AlturasConcreto Concreto::getAlturas() const {
     return { 
         altura_deformacao_2,
         altura_deformacao_ultima,
-        altura_LN
+        altura_LN,
+        d,
+        h
     };
 }
 
@@ -42,16 +48,28 @@ void Concreto::calculaParametros(float fck, float gama_c) {
     fcd = fck / gama_c;
 }
 
-void Concreto::calculaAlturaDeformacao (float eps1, float eps2, float x_por_d, float d)
+void Concreto::calculaAlturaDeformacao (float eps1, float eps2, float x_por_d, 
+                                        float yMaxSecao, float yMinSecao, float yMinArmadura, float yCG)
 {
+    // Calcula 'd' e outras alturas
+    d = yMaxSecao - yMinArmadura;
+    h = yMaxSecao - yMinSecao;
     altura_LN = x_por_d * d;
 
-    float diferenca_epsilon = eps1 - eps2;
-    if (diferenca_epsilon != 0.0f) {
-        altura_deformacao_2 = (d / diferenca_epsilon) * epsilon_concreto_2;
-        altura_deformacao_ultima = (d / diferenca_epsilon) * epsilon_concreto_ultimo;
+    // Calcula inclinação da linha neutra
+    float k = (eps2 - eps1) / (d * 1000); // Multiplicação por 1000 para ajustar unidades
+    float k2 = (eps2 - eps1) / (h * 1000);
+    
+    epsilon_concreto_2 = epsilon_concreto_2/1000;
+    epsilon_concreto_ultimo = epsilon_concreto_ultimo/1000;
+    eps1 = eps1/1000;
+    eps2 = eps2/1000;
+
+    if (k != 0) {
+        altura_deformacao_2 = (epsilon_concreto_2 - eps1) / k - yCG;
+        altura_deformacao_ultima = (epsilon_concreto_ultimo - eps1) / k - yCG;
     } else {
-        altura_deformacao_2 = 0.0f;  
-        altura_deformacao_ultima = 0.0f; 
+        altura_deformacao_2 = 0.0f;
+        altura_deformacao_ultima = 0.0f;
     }
 }

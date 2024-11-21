@@ -87,9 +87,48 @@ void Reforco::RotacionarArmadura(double angulo) {
     barrasRotacionadas.clear(); // Limpa o vetor de barras rotacionadas
     double ang_radianos = angulo * M_PI / 180.0;
 
-    for (const auto& p : barrasTransladadas) {
+    if (angulo == 0){
+        for (const auto& p : Armaduras)
+        {
+            barrasRotacionadas.emplace_back(p.x, p.y);
+        }
+    } else
+    {
+        for (const auto& p : barrasTransladadas) 
+        {
         float u = (p.x * cos(ang_radianos)) - (p.y * sin(ang_radianos));
         float v = (p.x * sin(ang_radianos)) + (p.y * cos(ang_radianos));
         barrasRotacionadas.emplace_back(u, v); // Adiciona ponto rotacionado
+    }    
     }
+}
+
+void Reforco::Min(float& yMin) const 
+{
+    if (barrasRotacionadas.empty()) return;
+
+    yMin = barrasRotacionadas[0].y;
+    
+    for (const auto& p : barrasRotacionadas)
+    {
+        if (p.y < yMin)
+        {
+            yMin = p.y;
+        }
+    }
+}
+
+const std::vector<Point> Reforco::getBarrasRotacionadas () const
+{
+    return barrasRotacionadas;
+}
+
+const std::vector<Point> Reforco::getBarrasTransladadas () const
+{
+    return barrasTransladadas;
+}
+
+const std::vector<Point> Reforco::getBarras () const
+{
+    return Armaduras;
 }

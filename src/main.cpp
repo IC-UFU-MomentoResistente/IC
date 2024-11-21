@@ -314,9 +314,11 @@ void loopPrograma()
                 TraceLog(LOG_INFO, "fcd: %.2f", parametrosConcreto.fcd);
                 TraceLog(LOG_INFO, "altura 2/1000: %.2f", alturasConcreto.altura_deformacao_2);
                 TraceLog(LOG_INFO, "altura ultima: %.2f", alturasConcreto.altura_deformacao_ultima);
+                TraceLog(LOG_INFO, "altura 2/1000 2: %.2f", concreto.altura_2);
+                TraceLog(LOG_INFO, "altura ultima 2: %.2f", concreto.altura_ultima);
                 TraceLog(LOG_INFO, "altura LN: %.2f", alturasConcreto.altura_LN);
                 TraceLog(LOG_INFO, "altura d: %.2f", alturasConcreto.d);
-                TraceLog(LOG_INFO, "altura h: %.2f", alturasConcreto.h);
+                TraceLog(LOG_INFO, "altura h: %.2f", concreto.h);
                 TraceLog(LOG_INFO, "yMaxSecao: %.2f", yMaxSecao);
                 TraceLog(LOG_INFO, "yMinSecao: %.2f", yMinSecao);
                 TraceLog(LOG_INFO, "yMinArmadura: %.2f", yMinArmadura);

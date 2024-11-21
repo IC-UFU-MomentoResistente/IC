@@ -1,8 +1,8 @@
 #include <iostream> // Para std::cerr
-#include <cfloat>   // Para FLT_MAX
-#include "concreto.h"
+#include <cfloat>   // Para FLT_MA
 #include "poligono.h"
 #include "reforco.h"
+#include "concreto.h"
 
 Concreto::Concreto (float fck, float gama_c, float eps1, float eps2, float x_por_d, float yMaxSecao, float yMinSecao, float yMinArmadura, float yCG) {
     calculaParametros(fck, gama_c);
@@ -24,8 +24,7 @@ Concreto::AlturasConcreto Concreto::getAlturas() const {
         altura_deformacao_2,
         altura_deformacao_ultima,
         altura_LN,
-        d,
-        h
+        d
     };
 }
 
@@ -68,6 +67,8 @@ void Concreto::calculaAlturaDeformacao (float eps1, float eps2, float x_por_d,
     if (k != 0) {
         altura_deformacao_2 = (epsilon_concreto_2 - eps1) / k - yCG;
         altura_deformacao_ultima = (epsilon_concreto_ultimo - eps1) / k - yCG;
+        altura_2 = (epsilon_concreto_2 - eps1) / k2 - yCG;
+        altura_ultima = (epsilon_concreto_ultimo - eps1) / k2 - yCG;
     } else {
         altura_deformacao_2 = 0.0f;
         altura_deformacao_ultima = 0.0f;

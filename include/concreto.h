@@ -16,11 +16,14 @@ private:
     float altura_deformacao_ultima;
     float altura_LN;
     float d;
-    float h;
 
 public:
     Poligono poligono;
     Reforco armadura;
+
+    float h;
+    float altura_2;
+    float altura_ultima;
 
     struct ParametrosConcreto {
         float fatorMultTensaoCompConcreto;
@@ -35,7 +38,6 @@ public:
         float altura_deformacao_ultima;
         float altura_LN;
         float d;
-        float h;
     };
 
     Concreto(float fck, float gama_c, float eps1, float eps2, float x_por_d, float yMaxSecao, float yMinSecao, float yMinArmadura, float yCG);

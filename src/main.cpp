@@ -14,6 +14,9 @@ Reforco reforco;
 std::vector<Point> collectedPoints = {{-10, -20}, {10, -20}, {10, 20}, {-10, 20}}; 
 
 Poligono poligono;
+Poligono poligonoComprimido;
+Poligono poligonoAreaParabola;
+Poligono poligonoAreaRetangulo;
 
 std::vector<Point> Rot = collectedPoints;
 std::vector<Point> pontosOriginais = collectedPoints;
@@ -65,6 +68,7 @@ static bool janelaGrafico = true;
 static bool janelaPoligono = true;
 static bool tabelaArmadura = true;
 static bool janelaConcreto = true;
+static bool janelaPoligonoComprimido = true;
 
 void loopPrograma()
 {
@@ -305,6 +309,13 @@ void loopPrograma()
                 Concreto concreto (fck, gama_c, eps1, eps2, x_d, yMaxSecao, yMinSecao, yMinArmadura, centroideInicial.y);
                 Concreto::ParametrosConcreto parametrosConcreto = concreto.getParametros();
                 Concreto::AlturasConcreto alturasConcreto = concreto.getAlturas();
+                float corte_LN = alturasConcreto.altura_LN;
+                poligono.cortarPoligonal(poligono.verticesRotacionados, corte_LN);
+                poligonoComprimido.setVertices(poligono.areaSuperior);
+                float corte_def_2 = alturasConcreto.altura_deformacao_2;
+                poligonoComprimido.cortarPoligonal(poligonoComprimido.areaSuperior, corte_def_2);
+                poligonoAreaParabola.setVertices(poligonoComprimido.areaInferior);
+                poligonoAreaRetangulo.setVertices(poligonoComprimido.areaSuperior);
 
                 TraceLog(LOG_INFO, "Parâmetros do Concreto Calculados");
                 TraceLog(LOG_INFO, "Fator multiplicativo: %.3f", parametrosConcreto.fatorMultTensaoCompConcreto);
@@ -323,6 +334,62 @@ void loopPrograma()
             }
 
             ImGui::End();
+        }
+
+        if (janelaPoligonoComprimido)
+        {
+            ImGui::Begin ("POligono comprimido", &janelaPoligonoComprimido);
+
+            std::vector<Point> poligonoComprimidoFechado = poligonoComprimido.vertices;
+            poligonoComprimido.fecharPoligono(poligonoComprimidoFechado);
+            std::vector<Point> poligonoAreaParabolaFechado = poligonoAreaParabola.vertices;
+            poligonoAreaParabola.fecharPoligono(poligonoAreaParabolaFechado);
+            std::vector<Point> poligonoAreaRetanguloFechado = poligonoAreaRetangulo.vertices;
+            poligonoAreaRetangulo.fecharPoligono(poligonoAreaRetanguloFechado);
+
+            float x_poligonoComprimido[poligonoComprimidoFechado.size()];
+            float y_poligonoComprimido[poligonoComprimidoFechado.size()];;
+            float x_poligonoAreaParabola[poligonoAreaParabolaFechado.size()];
+            float y_poligonoAreaParabola[poligonoAreaParabolaFechado.size()];
+            float x_poligonoAreaRetangulo[poligonoAreaRetanguloFechado.size()];
+            float y_poligonoAreaRetangulo[poligonoAreaRetanguloFechado.size()];
+
+            for(size_t i = 0; i < poligonoComprimidoFechado.size(); i++)
+            {
+                x_poligonoComprimido[i] = poligonoComprimidoFechado[i].x;
+                y_poligonoComprimido[i] = poligonoComprimidoFechado[i].y;
+            }
+
+            for (size_t i = 0; i < poligonoAreaParabolaFechado.size(); i++)
+            {
+                x_poligonoAreaParabola[i] = poligonoAreaParabolaFechado[i].x;
+                y_poligonoAreaParabola[i] = poligonoAreaParabolaFechado[i].y;
+            }
+
+            for (size_t i = 0; i < poligonoAreaRetanguloFechado.size(); i++)
+            {
+                x_poligonoAreaRetangulo[i] = poligonoAreaRetanguloFechado[i].x;
+                y_poligonoAreaRetangulo[i] = poligonoAreaRetanguloFechado[i].y;
+            }
+
+            ImVec2 plotSize = ImGui::GetContentRegionAvail();
+
+            // Plota os pontos e desenha o polígono
+            if (ImPlot::BeginPlot("Gráfico", ImVec2(plotSize.x, plotSize.y)))
+            {
+                ImPlot::PlotScatter("Vertices comprimidos", x_poligonoComprimido, y_poligonoComprimido, poligonoComprimidoFechado.size());
+                ImPlot::PlotScatter("Vertices parabola", x_poligonoAreaParabola, y_poligonoAreaParabola, poligonoAreaParabolaFechado.size());
+                ImPlot::PlotScatter("Vertices retangulo", x_poligonoAreaRetangulo, y_poligonoAreaRetangulo, poligonoAreaRetanguloFechado.size());
+
+                ImPlot::PlotLine("Poligono Comprimido", x_poligonoComprimido, y_poligonoComprimido, poligonoComprimidoFechado.size());
+                ImPlot::PlotLine("Poligono parabola", x_poligonoAreaParabola, y_poligonoAreaParabola, poligonoAreaParabolaFechado.size());
+                ImPlot::PlotLine("Poligono retangulo", x_poligonoAreaRetangulo, y_poligonoAreaRetangulo, poligonoAreaRetanguloFechado.size());
+
+                ImPlot::EndPlot();
+            }
+
+            ImGui::End();
+
         }
 
         if (tabelaArmadura)

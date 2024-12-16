@@ -19,6 +19,7 @@ private:
 
 public:
     Poligono poligono;
+    Poligono poligonoComprimido;
     Reforco armadura;
     float h_secao;
 

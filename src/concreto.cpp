@@ -4,7 +4,8 @@
 #include "reforco.h"
 #include "concreto.h"
 
-Concreto::Concreto (float fck, float gama_c, float eps1, float eps2, float x_por_d, float yMaxSecao, float yMinSecao, float yMinArmadura, float yCG) {
+Concreto::Concreto (float fck, float gama_c, float eps1, float eps2, float x_por_d, 
+                    float yMaxSecao, float yMinSecao, float yMinArmadura, float yCG) {
     calculaParametros(fck, gama_c);
     calculaAlturaDeformacao(eps1, eps2, x_por_d, yMaxSecao, yMinSecao, yMinArmadura, yCG);
 }

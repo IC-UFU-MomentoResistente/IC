@@ -20,10 +20,7 @@ private:
 public:
     Poligono poligono;
     Reforco armadura;
-
-    float h;
-    float altura_2;
-    float altura_ultima;
+    float h_secao;
 
     struct ParametrosConcreto {
         float fatorMultTensaoCompConcreto;

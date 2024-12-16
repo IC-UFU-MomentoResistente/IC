@@ -52,25 +52,9 @@ void Concreto::calculaAlturaDeformacao (float eps1, float eps2, float x_por_d,
 {
     // Calcula 'd' e outras alturas
     d = yMaxSecao - yMinArmadura;
-    h = yMaxSecao - yMinSecao;
-    altura_LN = x_por_d * d;
+    h_secao = yMaxSecao - yMinSecao;
 
-    // Calcula inclinação da linha neutra
-    float k = (eps2 - eps1) / (d * 1000); // Multiplicação por 1000 para ajustar unidades
-    float k2 = (eps2 - eps1) / (h * 1000);
-    
-    epsilon_concreto_2 = epsilon_concreto_2/1000;
-    epsilon_concreto_ultimo = epsilon_concreto_ultimo/1000;
-    eps1 = eps1/1000;
-    eps2 = eps2/1000;
-
-    if (k != 0) {
-        altura_deformacao_2 = (epsilon_concreto_2 - eps1) / k - yCG;
-        altura_deformacao_ultima = (epsilon_concreto_ultimo - eps1) / k - yCG;
-        altura_2 = (epsilon_concreto_2 - eps1) / k2 - yCG;
-        altura_ultima = (epsilon_concreto_ultimo - eps1) / k2 - yCG;
-    } else {
-        altura_deformacao_2 = 0.0f;
-        altura_deformacao_ultima = 0.0f;
-    }
+    altura_LN = yMaxSecao - (((-eps1/1000) / ((eps2/1000) - (eps1/1000))) * h_secao);
+    altura_deformacao_2 = yMaxSecao - ((((-epsilon_concreto_2/1000) - (eps1/1000)) / ((eps2/1000) - (eps1/1000))) * h_secao);
+    altura_deformacao_ultima = yMaxSecao - ((((-epsilon_concreto_ultimo/1000) - (eps1/1000)) / ((eps2/1000) - (eps1/1000))) * h_secao);
 }

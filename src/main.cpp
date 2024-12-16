@@ -80,14 +80,15 @@ void loopPrograma()
         if (janelaGrafico)
         {
             ImGui::Begin("Gráfico da Seção Transversal", &janelaGrafico); // Título da janela
-
-            static float x_values[2]; // teste
-            static float y_values[2];
+            
+            int ARR_SIZE = 2;
+            float x_values[ARR_SIZE]; // teste
+            float y_values[ARR_SIZE];
 
             float valorMenor = FLT_MAX;  // Número de ponto flutuante representável máximo.
             float valorMaior = -FLT_MAX; // Número de ponto flutuante representável máximo.
 
-            for (int i = 0; i < sizeof(x_values); i++)
+            for (int i = 0; i < ARR_SIZE; i++)
             {
                 y_values[i] = VLN;
             }
@@ -170,7 +171,7 @@ void loopPrograma()
 
             int numPoints = Rot.size();
 
-            for (int i = 0; i <= numPoints; i++)
+            for (int i = 0; i < numPoints; i++)
             {
                 if (Rot[i].x > valorMaior)
                 {
@@ -294,7 +295,6 @@ void loopPrograma()
             ImGui::InputFloat("gama_c", &gama_c);
             ImGui::InputFloat("eps1", &eps1);
             ImGui::InputFloat("eps2", &eps2);
-            ImGui::InputFloat("x sobre d", &x_d);
 
             poligono.MaxMin(yMaxSecao, yMinSecao);
             centroideInicial = poligono.centroide();
@@ -314,11 +314,9 @@ void loopPrograma()
                 TraceLog(LOG_INFO, "fcd: %.2f", parametrosConcreto.fcd);
                 TraceLog(LOG_INFO, "altura 2/1000: %.2f", alturasConcreto.altura_deformacao_2);
                 TraceLog(LOG_INFO, "altura ultima: %.2f", alturasConcreto.altura_deformacao_ultima);
-                TraceLog(LOG_INFO, "altura 2/1000 2: %.2f", concreto.altura_2);
-                TraceLog(LOG_INFO, "altura ultima 2: %.2f", concreto.altura_ultima);
                 TraceLog(LOG_INFO, "altura LN: %.2f", alturasConcreto.altura_LN);
                 TraceLog(LOG_INFO, "altura d: %.2f", alturasConcreto.d);
-                TraceLog(LOG_INFO, "altura h: %.2f", concreto.h);
+                TraceLog(LOG_INFO, "altura h: %.2f", concreto.h_secao);
                 TraceLog(LOG_INFO, "yMaxSecao: %.2f", yMaxSecao);
                 TraceLog(LOG_INFO, "yMinSecao: %.2f", yMinSecao);
                 TraceLog(LOG_INFO, "yMinArmadura: %.2f", yMinArmadura);

@@ -58,6 +58,8 @@ void Reforco::AdicionarBarra(float posX, float posY, float diametro)
     Armaduras.push_back(Point(posX, posY));  // Adiciona nova posição
     valorDiametroBarras.push_back(diametro); // Armazena o diâmetro
 
+  
+    
     if(barrasRotacionadas.empty()) {
         barrasRotacionadas = Armaduras; 
     }
@@ -95,7 +97,26 @@ void Reforco::RotacionarArmadura(double angulo) {
     }
 }
 
+
+
+
 void Reforco::calculaParametros (float fyk, float gama_s, float Es){
+   
+    if(Armaduras.size() < 2) {
+    Armaduras.resize(2);
+    valorDiametroBarras.resize(2);  
+    }
+    
+    valorDiametroBarras[0] = 1;
+    valorDiametroBarras[1] = 1;
+    Armaduras[0] = Point(-7, -17);
+    Armaduras[1] = Point(7, -17);
+
+
+   fyk = 50; 
+   gama_s = 1.15; 
+   Es = 21000; 
+   
    fyd = ((fyk / gama_s));
    epsilon_yd = (fyd / (Es * 1000)); // Divide ou nao por 1000?
 }
@@ -175,6 +196,11 @@ void Reforco::calculaNormal_Momento(float Ep2, float Ep1)
 
     for (size_t i = 0; i < Armaduras.size(); i++) {   
     
+        Ep1 = 10.907;
+        Ep2 = -1.189;
+
+       
+
         k = ((Ep2 - Ep1) / h);
         deformacao_barra = ((k * (yMaxSecao - Armaduras[i].y)) + Ep1);
         

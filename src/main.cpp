@@ -11,6 +11,7 @@
 
 Reforco reforco;
 
+
 std::vector<Point> collectedPoints = {{-10, -20}, {10, -20}, {10, 20}, {-10, 20}}; 
 
 Poligono poligono;
@@ -53,28 +54,36 @@ float KeyDownDelay = 0.0f;
 float KeyDownDelayTime = 0.1f;
 int numBarras = 0;
 int barras = 0;
-static float VLN = 0;
-static float cortar = 0;
-static float diametroBarras = 0;
-static float barrasPosXi = 0;
-static float barrasPosYi = 0;
-static float barrasPosXf = 0;
-static float barrasPosYf = 0;
-static float fck = 0;
-static float gama_c = 0;
-static float eps1 = 0;
-static float eps2 = 0;
-static float x_d = 0;
-static float d = 0;
-static bool janelaGrafico = true;
-static bool janelaPoligono = true;
-static bool tabelaArmadura = true;
-static bool janelaConcreto = true;
-static bool janelaPoligonoComprimido = true;
-static bool janelaAcoPassivo = true; 
+float VLN = 0;
+float cortar = 0;
+float diametroBarras = 0;
+float barrasPosXi = 0;
+float barrasPosYi = 0;
+float barrasPosXf = 0;
+float barrasPosYf = 0;
+float fck = 0;
+float gama_c = 0;
+float eps1 = 0;
+float eps2 = 0;
+float x_d = 0;
+float d = 0;
+bool janelaGrafico = true;
+bool janelaPoligono = true;
+bool tabelaArmadura = true;
+bool janelaConcreto = true;
+bool janelaPoligonoComprimido = true;
+bool janelaAcoPassivo = true; 
+
+float fyk_variavel = 500.0f;
+float gama_s_variavel = 1.15f; 
+float Ep2_variavel = -10.907f;
+float Ep1_variavel = 1.189f;
+float Es_variavel = 210.0f;
 
 void loopPrograma()
 {
+    reforco.AdicionarBarra(-7.f, -17.f, 1.f);
+    reforco.AdicionarBarra(+7.f, -17.f, 1.f);
     while (!WindowShouldClose())
     {
         DrawFPS(20, 20);
@@ -339,13 +348,10 @@ void loopPrograma()
             ImGui::End();
         } */
 
-        float fyk_variavel;
-        float gama_s_variavel; 
-        float Es_variavel;
+
         float fyd_variavel; 
         float epsilon_yd_variavel; 
-        float Ep2_variavel;
-        float Ep1_variavel;
+
         float epi_variavel;
         
         if (janelaAcoPassivo)
@@ -362,8 +368,8 @@ void loopPrograma()
                     reforco.calculaParametros(fyk_variavel, gama_s_variavel, Es_variavel);
                     fyd_variavel = reforco.fyd;
                     epsilon_yd_variavel = reforco.epsilon_yd;
-                    TraceLog(LOG_INFO, "TraceLog", fyd_variavel);
-                    TraceLog(LOG_INFO, "TraceLog", epsilon_yd_variavel);                                     
+                    TraceLog(LOG_INFO, "fyd = %f", fyd_variavel);
+                    TraceLog(LOG_INFO, "epsilon_yd = %f", epsilon_yd_variavel);                                   
                     reforco.calculaNormal_Momento(Ep2_variavel, Ep1_variavel);
             }
 

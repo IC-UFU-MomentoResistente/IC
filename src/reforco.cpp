@@ -101,22 +101,6 @@ void Reforco::RotacionarArmadura(double angulo) {
 
 
 void Reforco::calculaParametros (float fyk, float gama_s, float Es){
-   
-    if(Armaduras.size() < 2) {
-    Armaduras.resize(2);
-    valorDiametroBarras.resize(2);  
-    }
-    
-    valorDiametroBarras[0] = 1;
-    valorDiametroBarras[1] = 1;
-    Armaduras[0] = Point(-7, -17);
-    Armaduras[1] = Point(7, -17);
-
-
-   fyk = 50; 
-   gama_s = 1.15; 
-   Es = 21000; 
-   
    fyd = ((fyk / gama_s));
    epsilon_yd = (fyd / (Es * 1000)); // Divide ou nao por 1000?
 }
@@ -141,7 +125,7 @@ void Reforco::calculaParametros (float fyk, float gama_s, float Es){
 }
 */
 
-void Reforco::tensao(float epi)
+float Reforco::tensao(float epi)
 {
    
     if (epi > 10.001 || epi < -10.001) 
@@ -160,6 +144,7 @@ void Reforco::tensao(float epi)
     {
         tensao_aco_passivo = (Es * epi / 1000);
     }
+    return tensao_aco_passivo;
 }
 
 
@@ -183,7 +168,7 @@ void Reforco::calculaNormal_Momento(float Ep2, float Ep1)
     
     float d = yMaxSecao - yMinArmadura;
     float h = yMaxSecao - yMinSecao; 
-    float k = 0; 
+
     
 
     //Epi[Armaduras.size()];
@@ -193,21 +178,16 @@ void Reforco::calculaNormal_Momento(float Ep2, float Ep1)
     //aco_passivo_normal[Armaduras.size()];
 
     // verificar unidades e verificar sinais de Ep1 e Ep2
+    float k = ((Ep2 - Ep1) / h);
 
     for (size_t i = 0; i < Armaduras.size(); i++) {   
-    
-        Ep1 = 10.907;
-        Ep2 = -1.189;
 
-       
-
-        k = ((Ep2 - Ep1) / h);
         deformacao_barra = ((k * (yMaxSecao - Armaduras[i].y)) + Ep1);
         
         // Adicionar deformação
         Epi.push_back(deformacao_barra); // EPI DE CADA BARRA
-        tensao(Epi.back()); // Usar o último valor adicionado
-        tensao_barra.push_back(tensao_aco_passivo); // TENSAO ACO PASSIVO DE CADA BARRA
+
+        tensao_barra.push_back(tensao(deformacao_barra)); // TENSAO ACO PASSIVO DE CADA BARRA
 
         // Calcular área
         area_barra_variavel = (pow(valorDiametroBarras[i], 2) * M_PI) / 4;

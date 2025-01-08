@@ -39,7 +39,7 @@ public:
     void translacaoCG(const std::vector<Point>& points, Point cg);
     void RotacionarArmadura(double angulo);
     void calculaParametros (float fyk, float gama_s, float Es);
-    void tensao (float epi);
+    float tensao (float epi);
     void calculaNormal_Momento(float Epap, float EpA);
 };
 

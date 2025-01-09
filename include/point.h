@@ -1,6 +1,8 @@
 #ifndef POINT_H
 #define POINT_H
 
+
+
 struct Point
 {
     float x;
@@ -11,6 +13,7 @@ struct Point
 
     // Operador de comparação para que o std::set funcione
     bool operator<(const Point &other) const;
-};
 
+};
+   
 #endif // POINT_H

@@ -38,7 +38,7 @@ public:
     void RemoverBarra();
     void translacaoCG(const std::vector<Point>& points, Point cg);
     void RotacionarArmadura(double angulo);
-    void calculaParametros (float fyk, float gama_s, float Es);
+    void calculaParametros (float fyk, float gama_s, float Es_interface);
     float tensao (float epi);
     void calculaNormal_Momento(float Epap, float EpA);
 };

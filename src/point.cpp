@@ -15,3 +15,5 @@ bool Point::operator<(const Point &other) const
     }
     return y < other.y;
 }
+
+

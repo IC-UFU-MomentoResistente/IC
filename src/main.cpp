@@ -71,7 +71,15 @@ static bool janelaPoligono = true;
 static bool tabelaArmadura = true;
 static bool janelaConcreto = true;
 static bool janelaPoligonoComprimido = true;
-static bool janelaAcoPassivo = true; 
+static bool janelaAcoPassivo = true;
+float fyk_variavel;
+float gama_s_variavel;
+float Es_variavel;
+float fyd_variavel;
+float epsilon_yd_variavel;
+float Ep2_variavel;
+float Ep1_variavel;
+float epi_variavel;
 
 void loopPrograma()
 {
@@ -339,15 +347,10 @@ void loopPrograma()
             ImGui::End();
         } */
 
-        float fyk_variavel;
-        float gama_s_variavel; 
-        float Es_variavel;
-        float fyd_variavel; 
-        float epsilon_yd_variavel; 
-        float Ep2_variavel;
-        float Ep1_variavel;
-        float epi_variavel;
-        
+       
+
+       
+
         if (janelaAcoPassivo)
         {
             ImGui::Begin("Parâmetros do Aço Passivo", &janelaAcoPassivo);
@@ -362,8 +365,8 @@ void loopPrograma()
                     reforco.calculaParametros(fyk_variavel, gama_s_variavel, Es_variavel);
                     fyd_variavel = reforco.fyd;
                     epsilon_yd_variavel = reforco.epsilon_yd;
-                    TraceLog(LOG_INFO, "TraceLog", fyd_variavel);
-                    TraceLog(LOG_INFO, "TraceLog", epsilon_yd_variavel);                                     
+                    TraceLog(LOG_INFO, "TraceLog %2.f", fyd_variavel);
+                    TraceLog(LOG_INFO, "TraceLog %2.f", epsilon_yd_variavel);                                     
                     reforco.calculaNormal_Momento(Ep2_variavel, Ep1_variavel);
             }
 

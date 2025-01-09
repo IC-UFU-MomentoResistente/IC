@@ -4,10 +4,13 @@
 #include "implot.h"
 #include "poligono.h"
 #include "concreto.h"
+#include "reforco.h"
 #include <iostream>
 #include <vector>
-#include "reforco.h"
+#include <string>
 
+void renderizacaoPoligonal(std::vector<Point>, std::string, std::string);
+void renderizacaoBarras(std::vector<Point>, std::string);
 
 Reforco reforco;
 
@@ -194,92 +197,20 @@ void loopPrograma()
             // Ajuste o código de desenho no gráfico
             if (numPoints >= 3)
             {
-                // Fechar os vetores adicionando o primeiro ponto ao final
-                std::vector<Point> rotacionadosFechados = Rot;
-                poligono.fecharPoligono(rotacionadosFechados);
-                std::vector<Point> collectedPointsFechados = collectedPoints;
-                poligono.fecharPoligono(collectedPointsFechados);
-                std::vector<Point> resultadoCorteFechado = poligono.resultadoCorte;
-                poligono.fecharPoligono(resultadoCorteFechado);
-                std::vector<Point> AreaSuperiorFechado = poligono.areaSuperior;
-                poligono.fecharPoligono(AreaSuperiorFechado);
-                std::vector<Point> AreaInferiorFechado = poligono.areaInferior;
-                poligono.fecharPoligono(AreaInferiorFechado);
-                std::vector<Point> ArmadurasFechadas = reforco.Armaduras;
-                poligono.fecharPoligono(ArmadurasFechadas);
-                std::vector<Point> ArmaduraRotFechada = reforco.barrasRotacionadas;
-                poligono.fecharPoligono(ArmaduraRotFechada);
-
-                // Converter para arrays de float para os gráficos
-                float x_data[collectedPointsFechados.size()];
-                float y_data[collectedPointsFechados.size()];
-                float x_corte[resultadoCorteFechado.size()];
-                float y_corte[resultadoCorteFechado.size()];
-                float x_superior[AreaSuperiorFechado.size()];
-                float y_superior[AreaSuperiorFechado.size()];
-                float x_inferior[AreaInferiorFechado.size()];
-                float y_inferior[AreaInferiorFechado.size()];
-                float xRot[rotacionadosFechados.size()];
-                float yRot[rotacionadosFechados.size()];
-                //float xArmadura[ArmadurasFechadas.size()]; 
-                //float yArmadura[ArmadurasFechadas.size()];
-                float xArmaduraRotacionada[ArmaduraRotFechada.size()];
-                float yArmaduraRotacionada[ArmaduraRotFechada.size()];
-
-                for (size_t i = 0; i < ArmaduraRotFechada.size(); i++)
-                {
-                    xArmaduraRotacionada[i] = ArmaduraRotFechada[i].x;
-                    yArmaduraRotacionada[i] = ArmaduraRotFechada[i].y;
-                }
-                for (size_t i = 0; i < rotacionadosFechados.size(); i++)
-                {
-                    xRot[i] = rotacionadosFechados[i].x;
-                    yRot[i] = rotacionadosFechados[i].y;
-                }
-
-                for (size_t i = 0; i < collectedPointsFechados.size(); i++)
-                {
-                    x_data[i] = collectedPointsFechados[i].x;
-                    y_data[i] = collectedPointsFechados[i].y;
-                }
-
-                for (size_t i = 0; i < resultadoCorteFechado.size(); i++)
-                {
-                    x_corte[i] = resultadoCorteFechado[i].x;
-                    y_corte[i] = resultadoCorteFechado[i].y;
-                }
-
-                for (size_t i = 0; i < AreaSuperiorFechado.size(); i++)
-                {
-                    x_superior[i] = AreaSuperiorFechado[i].x;
-                    y_superior[i] = AreaSuperiorFechado[i].y;
-                }
-
-                for (size_t i = 0; i < AreaInferiorFechado.size(); i++)
-                {
-                    x_inferior[i] = AreaInferiorFechado[i].x;
-                    y_inferior[i] = AreaInferiorFechado[i].y;
-                }
-
                 // Obter o tamanho disponível para o gráfico
                 ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
                 // Plota os pontos e desenha o polígono
                 if (ImPlot::BeginPlot("Gráfico", ImVec2(plotSize.x, plotSize.y)))
                 {
-                    ImPlot::PlotScatter("Vértices", x_data, y_data, collectedPointsFechados.size());
-                    ImPlot::PlotScatter("Vértices cortadas", x_corte, y_corte, resultadoCorteFechado.size());
-                    ImPlot::PlotScatter("Vértices superiores", x_superior, y_superior, AreaSuperiorFechado.size());
-                    ImPlot::PlotScatter("Vértices inferiores", x_inferior, y_inferior, AreaInferiorFechado.size());
-                    ImPlot::PlotScatter("Vértices Rotacionados", xRot, yRot, (rotacionadosFechados.size()));                     
-                    ImPlot::PlotScatter("Armadura Rotacionada", xArmaduraRotacionada, yArmaduraRotacionada, ArmaduraRotFechada.size());
-                    ImPlot::PlotLine("Polígono", x_data, y_data, collectedPointsFechados.size());
-                    ImPlot::PlotLine("Polígono cortado", x_corte, y_corte, resultadoCorteFechado.size());
-                    ImPlot::PlotLine("Polígono superior", x_superior, y_superior, AreaSuperiorFechado.size());
-                    ImPlot::PlotLine("Polígono inferior", x_inferior, y_inferior, AreaInferiorFechado.size());
-                    ImPlot::PlotLine("Linha de corte", x_values, y_values, 2);
-                    ImPlot::PlotLine("Polígono Rotacionado", xRot, yRot, rotacionadosFechados.size());
-                    ImPlot::EndPlot();
+					renderizacaoPoligonal(collectedPoints, "Vertices", "Poligono");
+					renderizacaoPoligonal(poligono.resultadoCorte, "Vertices cortados", "Poligono cortado");
+					renderizacaoBarras(reforco.barrasRotacionadas, "Barras");
+					renderizacaoPoligonal(poligono.areaSuperior, "vSuperior", "PoligonoSuperior");
+					renderizacaoPoligonal(poligono.areaInferior, "vInferior", "PoligonoInferior");
+					ImPlot::PlotLine("Linha de corte", x_values, y_values, 2);
+
+					ImPlot::EndPlot();
                 }
             }
             else
@@ -523,4 +454,77 @@ int main()
     std::cout << "Entrando no loop do programa..." << std::endl;
     loopPrograma();
     return 0;
+}
+
+void renderizacaoPoligonal(std::vector<Point> vertices, std::string nomeVertices, std::string nomePoligonal)
+{
+	// verificação se o vetor está vazio, prossegue se não
+	if (!vertices.empty())
+	{
+		// vetores temporários para usar no PlotScatter
+		// inicialização com o tamanho do vetor do parâmetro da função
+		// inicialização do tipo vector<float> nome(tamanho)
+		std::vector<float> xTemp(vertices.size());
+		std::vector<float> yTemp(vertices.size());
+
+		// alimentação dos vetores temporários
+		for (size_t i = 0; i < vertices.size(); i++)
+		{
+			xTemp[i] = vertices[i].x;
+			yTemp[i] = vertices[i].y;
+		}
+
+		// desenho dos pontos
+		// metodo data() para referenciar como ponteiro 
+		// static_cast é uma conversão de tipo size_t (unsigned inteiro) para int
+		// não está relacionada a variáveis estáticas
+		ImPlot::PlotScatter(nomeVertices.c_str(), xTemp.data(), yTemp.data(), static_cast<int>(vertices.size()));
+
+		// verificação se há três pontos para fechar uma poligonal
+		if (vertices.size() > 2)
+		{
+			std::vector<float> xTempAresta(vertices.size() + 1);
+			std::vector<float> yTempAresta(vertices.size() + 1);
+
+			// alimentação dos vetores temporários
+			for (size_t i = 0; i < vertices.size(); i++)
+			{
+				xTempAresta[i] = vertices[i].x;
+				yTempAresta[i] = vertices[i].y;
+			}
+
+			// fecha a poligonal ao fazer com que o último elemento seja igual ao primeiro
+			xTempAresta[vertices.size()] = vertices[0].x;
+			yTempAresta[vertices.size()] = vertices[0].y;
+
+			// desenho das arestas
+			ImPlot::PlotLine(nomePoligonal.c_str(), xTempAresta.data(), yTempAresta.data(), static_cast<int>(xTempAresta.size()));
+		}
+	}
+}
+
+void renderizacaoBarras(std::vector<Point> vertices, std::string nomeVerticesBarras)
+{
+	// verificação se o vetor está vazio, prossegue se não
+	if (!vertices.empty())
+	{
+		// vetores temporários para usar no PlotScatter
+		// inicialização com o tamanho do vetor do parâmetro da função
+		// inicialização do tipo vector<float> nome(tamanho)
+		std::vector<float> xTemp(vertices.size());
+		std::vector<float> yTemp(vertices.size());
+
+		// alimentação dos vetores temporários
+		for (size_t i = 0; i < vertices.size(); i++)
+		{
+			xTemp[i] = vertices[i].x;
+			yTemp[i] = vertices[i].y;
+		}
+
+		// desenho dos pontos
+		// metodo data() para referenciar como ponteiro 
+		// static_cast é uma conversão de tipo size_t (unsigned inteiro) para int
+		// não está relacionada a variáveis estáticas
+		ImPlot::PlotScatter(nomeVerticesBarras.c_str(), xTemp.data(), yTemp.data(), static_cast<int>(vertices.size()));
+	}
 }

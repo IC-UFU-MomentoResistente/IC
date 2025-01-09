@@ -97,14 +97,34 @@ void Reforco::RotacionarArmadura(double angulo) {
     }
 }
 
-void Reforco::calculaParametros (float fyk, float gama_s, float Es){
-       
+void Reforco::calculaParametros (float fyk, float gama_s, float Es_interface){
    fyd = ((fyk / gama_s));
-   epsilon_yd = (fyd / (Es * 1000)); // ES entrará em GPa - FYK EM MPa - ESCREVER NA INTERFACE
+   epsilon_yd = (fyd / (Es_interface * 1000)); // ES entrará em GPa - FYK EM MPa - ESCREVER NA INTERFACE
     epsilon_yd = epsilon_yd * 1000;
+    Es = Es_interface;
 }
 
-void Reforco::tensao(float epi)
+/* void Reforco::tensao (float epi){
+    if (epi>=epsilon_yd)
+    {
+        tensao_aco_passivo = fyd;
+    }
+    else if (epi <= -epsilon_yd) 
+    {
+        tensao_aco_passivo = -fyd;  
+    }
+    else if (epi > 10.001 || epi < -10.001) 
+    {
+        tensao_aco_passivo = 0;
+    }
+    else 
+    {
+        tensao_aco_passivo = (Es * epi/1000);
+    }
+}
+*/
+
+float Reforco::tensao(float epi) // TENSAO NEGATIVA PRA DEFORMAÇÃO NEGATIVA TENSAO POSITIVA PRA DEFORMAÇÃO POSITIVA 
 {
    
     if (epi > 10.001 || epi < -10.001) 
@@ -121,8 +141,9 @@ void Reforco::tensao(float epi)
     }
     else 
     {
-        tensao_aco_passivo = (Es * epi / 1000);
+        tensao_aco_passivo = (Es * (-epi) * 1000)/1000; // ES de GPa para MPa e EPI EM POR MIL PARA PURO
     }
+    return tensao_aco_passivo;
 }
 
 void Reforco::calculaNormal_Momento(float Ep2, float Ep1) 
@@ -144,8 +165,6 @@ void Reforco::calculaNormal_Momento(float Ep2, float Ep1)
     
     float d = yMaxSecao - yMinArmadura;
     float h = yMaxSecao - yMinSecao; 
-    float k = 0; 
-    k = ((Ep2 - Ep1) / h);
     
     //Epi[Armaduras.size()];
     //tensao_barra[Armaduras.size()];
@@ -154,16 +173,17 @@ void Reforco::calculaNormal_Momento(float Ep2, float Ep1)
     //aco_passivo_normal[Armaduras.size()];
 
     // verificar unidades e verificar sinais de Ep1 e Ep2
-    // EP2 E EP1 Oferecidos pelo OBLQCALC ESTÃO EM % PRA MIL
+    
+    float k = ((Ep2 - Ep1) / h);
 
-    for (size_t i = 0; i < Armaduras.size(); i++) {       
-        
+    for (size_t i = 0; i < Armaduras.size(); i++) {   
+
         deformacao_barra = ((k * (yMaxSecao - Armaduras[i].y)) + Ep1);
         
         // Adicionar deformação
         Epi.push_back(deformacao_barra); // EPI DE CADA BARRA
-        tensao(Epi.back()); // Usar o último valor adicionado
-        tensao_barra.push_back(tensao_aco_passivo); // TENSAO ACO PASSIVO DE CADA BARRA
+
+        tensao_barra.push_back(tensao(deformacao_barra)); // TENSAO ACO PASSIVO DE CADA BARRA
 
         // Calcular área
         area_barra_variavel = (pow(valorDiametroBarras[i], 2) * M_PI) / 4;
@@ -182,5 +202,7 @@ void Reforco::calculaNormal_Momento(float Ep2, float Ep1)
        
     }
     
+
+
 }
 

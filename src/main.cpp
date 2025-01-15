@@ -2,6 +2,7 @@
 // https://traineq.org/implot_demo/src/implot_demo.html
 
 #include <iostream>
+#include <cmath>
 #include <vector>
 #include <string>
 
@@ -44,10 +45,10 @@ struct Reforco
 
 struct ParametrosConcreto
 {
-	float fatorTensaoCompressao;
+	float multFcd;
 	float epsUltimo;
 	float epsLimite;
-	float expTensaoCompressao;
+	float nConc;
 	float fcd;
 };
 
@@ -56,6 +57,9 @@ struct AlturasDeformacao
 	float hLN;
 	float hEpsLimite;
 	float hEpsUltimo;
+	float xAlpha;
+	float xEpsLimite;
+	float xEpsUltimo;
 };
 
 struct SecaoComposta
@@ -65,6 +69,8 @@ struct SecaoComposta
 	Reforco armadura;
 	ParametrosConcreto parametos;
 	AlturasDeformacao alturasDeformacao;
+	float normal;
+	float momentoYY;
 };
 
 void renderizacaoPoligonal(vector<Ponto>, string, string);
@@ -77,6 +83,12 @@ float yMaximo(vector<Ponto>);
 float yMinimo(vector<Ponto>);
 ParametrosConcreto calculaParametrosConcreto(float, float);
 AlturasDeformacao calculaAlturasDeformacao(ParametrosConcreto, Poligonal, float, float);
+float normalConcretoRetangulo(SecaoComposta, float, float, float);
+float momentoConcretoRetangulo(SecaoComposta, float, float, float);
+float normalConcretoParabola(SecaoComposta, float, float, float, float);
+float momentoConcretoParabola(SecaoComposta, float, float, float, float);
+float forcaNormalConcreto(SecaoComposta);
+float momentoYYConcreto(SecaoComposta);
 
 int main()
 {
@@ -99,13 +111,13 @@ int main()
 	armadura.barras = verticesBarras;
 
 	// Declaração e inicialização para os parâmetros do concreto
-	float fck = 30;
+	float fck = 30; // MPa
 	float gamaC = 1.4;
 	parametrosConcreto = calculaParametrosConcreto(fck, gamaC);
 
 	// Declaração e inicialização para as alturas de deformação para um conjunto de deformações
-	float eps1 = -1.1892;
-	float eps2 = 10.907;
+	float eps1 = -2.1885;
+	float eps2 = 10.988;
 	retangulo.yMaximo = yMaximo(retangulo.verticesPoligonal);
 	retangulo.yMinimo = yMinimo(retangulo.verticesPoligonal);
 	retangulo.hSecao = retangulo.yMaximo - retangulo.yMinimo;
@@ -122,6 +134,8 @@ int main()
 	secaoComposta.armadura = armadura;
 	secaoComposta.parametos = parametrosConcreto;
 	secaoComposta.alturasDeformacao = alturasDeformacao;
+	secaoComposta.normal = -(forcaNormalConcreto(secaoComposta)); // qual unidade
+	secaoComposta.momentoYY = momentoYYConcreto(secaoComposta); // qual unidade
 
 	exibirDadosSecaoComposta(secaoComposta);
 
@@ -310,8 +324,8 @@ void exibirDadosSecaoComposta(SecaoComposta secaoComposta)
 	cout << "--------------------------------------------\n";
 	cout << "Parametros Concreto: \n";
 	cout << "fcd: " << secaoComposta.parametos.fcd << endl;
-	cout << "Fator mult: " << secaoComposta.parametos.fatorTensaoCompressao << endl;
-	cout << "Exp: " << secaoComposta.parametos.expTensaoCompressao << endl;
+	cout << "Fator mult: " << secaoComposta.parametos.multFcd << endl;
+	cout << "Exp: " << secaoComposta.parametos.nConc << endl;
 	cout << "Eps Ultimo: " << secaoComposta.parametos.epsUltimo << endl;
 	cout << "Eps Limite " << secaoComposta.parametos.epsLimite << endl;
 	cout << "--------------------------------------------\n";
@@ -321,6 +335,14 @@ void exibirDadosSecaoComposta(SecaoComposta secaoComposta)
 	cout << "hLN: " << secaoComposta.alturasDeformacao.hLN << endl;
 	cout << "hEpsLimite: " << secaoComposta.alturasDeformacao.hEpsLimite << endl;
 	cout << "hEpsUltimo: " << secaoComposta.alturasDeformacao.hEpsUltimo << endl;
+	cout << "--------------------------------------------\n";
+
+	cout << "--------------------------------------------\n";
+	cout << "Forca e Momento:\n";
+	cout << fixed;
+	cout.precision(4);
+	cout << "Normal: " << secaoComposta.normal << " qual unidade?" << endl;
+	cout << "Momento: " << secaoComposta.momentoYY << " qual unidade?" << endl;
 	cout << "--------------------------------------------\n";
 }
 
@@ -345,7 +367,6 @@ vector<Ponto> adicionaVertices(vector<Ponto> verticesColetados)
 	// retorno do vetor temporário
 	return verticesTemp;
 }
-
 
 // Função auxiliar para calcular o ponto de interseção entre um segmento e a linha horizontal
 Ponto calculaIntersecao(Ponto p1, Ponto p2, float yCorte) {
@@ -430,16 +451,16 @@ ParametrosConcreto calculaParametrosConcreto(float fck, float gamaC)
 	if (fck <= 50)
 	{
 		parametros.fcd = fck / gamaC;
-		parametros.fatorTensaoCompressao = 0.85;
-		parametros.expTensaoCompressao = 2;
+		parametros.multFcd = 0.85;
+		parametros.nConc = 2;
 		parametros.epsUltimo = 3.5;
 		parametros.epsLimite = 2;
 	}
 	else
 	{
 		parametros.fcd = fck / gamaC;
-		parametros.fatorTensaoCompressao = 0.85 * (1 - (fck - 50) / 200);
-		parametros.expTensaoCompressao = 2.6 + 35 * pow((90 - fck) / 100, 4);
+		parametros.multFcd = 0.85 * (1 - (fck - 50) / 200);
+		parametros.nConc = 2.6 + 35 * pow((90 - fck) / 100, 4);
 		parametros.epsUltimo = 1.4 + 23.4 * pow((90 - fck) / 100, 4);
 		parametros.epsLimite = 2 + 0.085 * pow(fck - 50, 0.53);
 
@@ -455,11 +476,233 @@ ParametrosConcreto calculaParametrosConcreto(float fck, float gamaC)
 AlturasDeformacao calculaAlturasDeformacao(ParametrosConcreto parametros, Poligonal secao, float eps1, float eps2)
 {
 	AlturasDeformacao alturasTemp;
-	float k = ((eps2 / 1000) - (eps1 / 1000)) * secao.hSecao;
+	float k = secao.hSecao / ((eps2 / 1000) - (eps1 / 1000));
 
-	alturasTemp.hLN = secao.yMaximo - (((-eps1 / 1000) / ((eps2 / 1000) - (eps1 / 1000))) * secao.hSecao);
-	alturasTemp.hEpsLimite = secao.yMaximo - ((((-parametros.epsLimite / 1000) - (eps1 / 1000)) / ((eps2 / 1000) - (eps1 / 1000))) * secao.hSecao);
-	alturasTemp.hEpsUltimo = secao.yMaximo - ((((-parametros.epsUltimo / 1000) - (eps1 / 1000)) / ((eps2 / 1000) - (eps1 / 1000))) * secao.hSecao);
+	alturasTemp.xAlpha = (-eps1 / 1000) * k;
+	alturasTemp.xEpsLimite = ((-parametros.epsLimite / 1000) - (eps1 / 1000)) * k;
+	alturasTemp.xEpsUltimo = ((-parametros.epsUltimo / 1000) - (eps1 / 1000)) * k;
+	alturasTemp.hLN = secao.yMaximo - alturasTemp.xAlpha;
+	alturasTemp.hEpsLimite = secao.yMaximo - alturasTemp.xEpsLimite;
+	alturasTemp.hEpsUltimo = secao.yMaximo - alturasTemp.xEpsUltimo;
 
 	return alturasTemp;
+}
+
+float normalConcretoRetangulo(SecaoComposta secao, float c1, float c2, float y)
+{
+	float nctr = secao.parametos.multFcd * secao.parametos.fcd *
+		(c1 * y + c2 * y * y / 2);
+
+	return nctr;
+}
+
+float momentoConcretoRetangulo(SecaoComposta secao, float c1, float c2, float y)
+{
+	float mctr = secao.parametos.multFcd * secao.parametos.fcd *
+		(c1 * y * y / 2 + c2 * y * y * y / 3);
+
+	return mctr;
+}
+
+float normalConcretoParabola(SecaoComposta secao, float xEps2, float c1, float c2, float y)
+{
+	float g = secao.secao.yMaximo - secao.alturasDeformacao.xAlpha;
+	float n1 = secao.parametos.nConc + 1;
+	float n2 = secao.parametos.nConc + 2;
+	float n3 = secao.parametos.nConc + 3;
+	float fcd = secao.parametos.fcd;
+	float multFcd = secao.parametos.fcd;
+	float nConc = secao.parametos.nConc;
+	float eexp = pow(((g + xEps2 - y) / xEps2), n1);
+
+	float nctp = -multFcd * fcd *
+		(-(((xEps2 * eexp) * (c1 * n2 + c2 * (g + xEps2 + nConc * y + y))) / (n1 * n2))
+			- (c1 * y - (c2 * y * y) / 2));
+
+	return nctp;
+}
+
+float momentoConcretoParabola(SecaoComposta secao, float xEps2, float c1, float c2, float y)
+{
+	float g = secao.secao.yMaximo - secao.alturasDeformacao.xAlpha;
+	float n1 = secao.parametos.nConc + 1;
+	float n2 = secao.parametos.nConc + 2;
+	float n3 = secao.parametos.nConc + 3;
+	float fcd = secao.parametos.fcd;
+	float multFcd = secao.parametos.fcd;
+	float nConc = secao.parametos.nConc;
+	float eexp = pow(((g + xEps2 - y) / xEps2), n1);
+
+	float mctp = ((multFcd * fcd) / (6 * n1 * n2 * n3));
+
+
+	float Mctp = (multFcd * fcd * (3 * c1 * ((n1) * (n2) * (n3)*y * y + 2 * xEps2 * eexp * (((g)
+		+xEps2) * (n3)+(3 + 4 * nConc + nConc * nConc) * y)) + 2 * c2 * ((n1) * (n2) * (n3)
+			*y * y * y + 3 * xEps2 * eexp * (2 * (g) * (g)+2 * xEps2 * xEps2 + 2 *
+				xEps2 * (n1)*y + (2 + 3 * nConc + nConc * nConc) * y * y + 2 * (g) * (2 *
+					xEps2 + (n1)*y))))) / (6 * (n1) * (n2) * (n3));
+
+	return Mctp;
+}
+
+float forcaNormalConcreto(SecaoComposta secao)
+{
+	vector<Ponto> vetTempAcima = secao.poligonoComprimido.vetoresAcimaAbaixo.verticesAcima;
+	vector<Ponto> vetTempAbaixo = secao.poligonoComprimido.vetoresAcimaAbaixo.verticesAbaixo;
+
+	float NC = 0;
+	float NCTP = 0;
+	float NCTR = 0;
+
+	if (vetTempAcima.empty() || vetTempAbaixo.empty())
+	{
+		NCTP = 0;
+		NCTR = 0;
+	}
+
+	for (int i = 0; i < vetTempAbaixo.size(); i++)
+	{
+		float x1 = vetTempAbaixo[i].x;
+		float y1 = vetTempAbaixo[i].y;
+		float x2;
+		float y2;
+
+		if (i + 1 < vetTempAbaixo.size())
+		{
+			x2 = vetTempAbaixo[i + 1].x;
+			y2 = vetTempAbaixo[i + 1].y;
+		}
+		else
+		{
+			x2 = vetTempAbaixo[0].x;
+			y2 = vetTempAbaixo[0].y;
+		}
+
+		if (y1 - y2 != 0)
+		{
+			float c1 = (y1 * x2 - y2 * x1) / (y1 - y2);
+			float c2 = (x1 - x2) / (y1 - y2);
+
+			float xEps2 = secao.alturasDeformacao.hEpsLimite - secao.alturasDeformacao.hLN;
+
+			float nc1 = normalConcretoParabola(secao, xEps2, c1, c2, y1);
+			float nc2 = normalConcretoParabola(secao, xEps2, c2, c2, y2);
+
+			NCTP = NCTP + nc2 - nc1;
+		}
+	}
+
+	for (int i = 0; i < vetTempAcima.size(); i++)
+	{
+		float x1 = vetTempAcima[i].x;
+		float y1 = vetTempAcima[i].y;
+		float x2;
+		float y2;
+
+		if (i + 1 < vetTempAcima.size())
+		{
+			x2 = vetTempAcima[i + 1].x;
+			y2 = vetTempAcima[i + 1].y;
+		}
+		else
+		{
+			x2 = vetTempAcima[0].x;
+			y2 = vetTempAcima[0].y;
+		}
+
+		if (y1 - y2 != 0)
+		{
+			float c1 = (y1 * x2 - y2 * x1) / (y1 - y2);
+			float c2 = (x1 - x2) / (y1 - y2);
+
+			float nc1 = normalConcretoRetangulo(secao, c1, c2, y1);
+			float nc2 = normalConcretoRetangulo(secao, c1, c2, y2);
+
+			NCTR = NCTR + nc2 - nc1;
+		}
+	}
+
+	return NC = NCTP + NCTR;
+}
+
+float momentoYYConcreto(SecaoComposta secao)
+{
+	vector<Ponto> vetTempAcima = secao.poligonoComprimido.vetoresAcimaAbaixo.verticesAcima;
+	vector<Ponto> vetTempAbaixo = secao.poligonoComprimido.vetoresAcimaAbaixo.verticesAbaixo;
+
+	float MC = 0;
+	float MCTR = 0;
+	float MCTP = 0;
+
+	if (vetTempAcima.empty() || vetTempAbaixo.empty())
+	{
+		MCTP = 0;
+		MCTR = 0;
+	}
+
+	for (int i = 0; i < vetTempAbaixo.size(); i++)
+	{
+		float x1 = vetTempAbaixo[i].x;
+		float y1 = vetTempAbaixo[i].y;
+		float x2;
+		float y2;
+
+		if (i + 1 < vetTempAbaixo.size())
+		{
+			x2 = vetTempAbaixo[i + 1].x;
+			y2 = vetTempAbaixo[i + 1].y;
+		}
+		else
+		{
+			x2 = vetTempAbaixo[0].x;
+			y2 = vetTempAbaixo[0].y;
+		}
+
+		if (y1 - y2 != 0)
+		{
+			float c1 = (y1 * x2 - y2 * x1) / (y1 - y2);
+			float c2 = (x1 - x2) / (y1 - y2);
+
+			float xEps2 = secao.alturasDeformacao.hEpsLimite - secao.alturasDeformacao.hLN;
+
+			float mc1 = momentoConcretoParabola(secao, xEps2, c1, c2, y1);
+			float mc2 = momentoConcretoParabola(secao, xEps2, c1, c2, y2);
+
+			MCTP = MCTP + mc2 - mc1;
+		}
+	}
+
+	for (int i = 0; i < vetTempAcima.size(); i++)
+	{
+		float x1 = vetTempAcima[i].x;
+		float y1 = vetTempAcima[i].y;
+		float x2;
+		float y2;
+
+		if (i + 1 < vetTempAcima.size())
+		{
+			x2 = vetTempAcima[i + 1].x;
+			y2 = vetTempAcima[i + 1].y;
+		}
+		else
+		{
+			x2 = vetTempAcima[0].x;
+			y2 = vetTempAcima[0].y;
+		}
+
+		if (y1 - y2 != 0)
+		{
+			float c1 = (y1 * x2 - y2 * x1) / (y1 - y2);
+			float c2 = (x1 - x2) / (y1 - y2);
+
+			float xEps2 = secao.alturasDeformacao.hEpsLimite - secao.alturasDeformacao.hLN;
+
+			float mc1 = momentoConcretoRetangulo(secao, c1, c2, y1);
+			float mc2 = momentoConcretoRetangulo(secao, c1, c2, y2);
+
+			MCTR = MCTR + mc2 - mc1;
+		}
+	}
+
+	return MC = MCTP + MCTR;
 }

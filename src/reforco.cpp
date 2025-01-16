@@ -190,11 +190,11 @@ void Reforco::calculaNormal_Momento(float Ep2, float Ep1)
         area_barra.push_back(area_barra_variavel);
 
         // Calcular normal e momento
-        normal_aco_passivo_variavel = tensao_aco_passivo * area_barra.back();
-        momento_aco_passivo_variavel = normal_aco_passivo_variavel * Armaduras[i].y;
+        normal_aco_passivo_variavel = (tensao_aco_passivo * area_barra.back())/1000;
+        momento_aco_passivo_variavel = (normal_aco_passivo_variavel * (Armaduras[i].y/100));
         
-        aco_passivo_normal.push_back(normal_aco_passivo_variavel);
-        aco_passivo_momento.push_back(momento_aco_passivo_variavel);
+        aco_passivo_normal.push_back(normal_aco_passivo_variavel); // FORÇA EM KN
+        aco_passivo_momento.push_back(momento_aco_passivo_variavel); // MOMENTO EM KN/M 
 
         // Soma normal e momento
         soma_normal_aco_passivo += normal_aco_passivo_variavel;

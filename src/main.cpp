@@ -7,11 +7,10 @@
 #include <iostream>
 #include <vector>
 #include "reforco.h"
+#include <string> 
 
 
 Reforco reforco;
-
-
 std::vector<Point> collectedPoints = {{-10, -20}, {10, -20}, {10, 20}, {-10, 20}}; 
 
 Poligono poligono;
@@ -21,11 +20,13 @@ Poligono poligonoAreaRetangulo;
 
 std::vector<Point> Rot = collectedPoints;
 std::vector<Point> pontosOriginais = collectedPoints;
-std::vector<float> EPIx = {-10.2, -10.0, -9, -8, -6, -4, -3, -2, -1, 0, 1, 2, 3, 4, 6, 8 , 9, 10, 10.1, 10.2};
 
- 
+std::vector<float> EPIx = {-10.2, -10.0, -9, -8, -6, -4, -3, -2, -1, 0, 1, 2, 3, 4, 6, 8 , 9, 10, 10.1, 10.2}; // DIAGRAMA DE DEFORMAÇÃO DO AÇO 
 
-
+std::vector<Point> NormalxEPI2; // DIAGRAMA NORMAL X EPI2
+std::vector<Point> MomentoxEPI2; // DIAGRAMA MOMENTO X EPI2
+std::vector<float> EPI2 = {-10.907, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1.1892, 2, 3, 4, 5, 6, 7, 8, 9, 10.907}; //  VARIAVEIS DE EPI2 PARA DIAGRAMA 
+float EPI1 = 1.1892; // VALOR FIXO DE EPI1 PARA DIAGRAMA 
 
 float graus = 0;
 float yMaxSecao = 0;
@@ -33,6 +34,8 @@ float yMinSecao = 0;
 float yMinArmadura = 0;
 
 Point centroideInicial;
+
+void renderizacaoBarras(std::vector<Point>, std::string);
 
 void IniciarInterface()
 {
@@ -79,6 +82,7 @@ bool janelaConcreto = true;
 bool janelaPoligonoComprimido = true;
 bool janelaAcoPassivo = true; 
 bool janelaDeformacaoAco = true; 
+bool janelaDiagramaNormalXMomento = true; 
 
 float fyk_variavel = 500.0f;
 float gama_s_variavel = 1.15f; 
@@ -91,8 +95,8 @@ float epsilon_yd_variavel;
 
     void loopPrograma()
     {
-        reforco.AdicionarBarra(-7.f, -17.f, 1.f);
-        reforco.AdicionarBarra(+7.f, -17.f, 1.f);
+        reforco.AdicionarBarra(-7.f, -17.f, 10.f);
+        reforco.AdicionarBarra(+7.f, -17.f, 10.f);
         while (!WindowShouldClose())
         {
             DrawFPS(20, 20);
@@ -379,10 +383,51 @@ float epsilon_yd_variavel;
                 ImGui::End();
             }
             
+            if (janelaDiagramaNormalXMomento)
+            {
+
+                ImGui::Begin("Janela de Diagramas de Normal e Momento por variação de EP2");
+                ImVec2 plotSize = ImGui::GetContentRegionAvail();
+
+                reforco.calculaParametros(fyk_variavel, gama_s_variavel, Es_variavel);
+                
+                std::vector<float> normal(EPI2.size());
+                std::vector<float> momento(EPI2.size());
+                std::vector<float> EP(EPI2.size());
+                for (size_t i = 0; i < EPI2.size(); i++)
+                {
+                
+                reforco.calculaNormal_Momento(EPI2[i], EPI1);
+                NormalxEPI2.emplace_back(EPI2[i], reforco.soma_normal_aco_passivo);
+                MomentoxEPI2.emplace_back(EPI2[i], reforco.momento_aco_passivo_variavel);
+                
+                TraceLog(LOG_INFO, "VALOR %2.f", i);
+                TraceLog(LOG_INFO, "Valor de EPI2 X %2.f e NORMAL %2.f", NormalxEPI2[i].x, NormalxEPI2[i].y);
+                TraceLog(LOG_INFO, "Valor de EPI2o X %2.f e MOMENTO %2.f", MomentoxEPI2[i].x, MomentoxEPI2[i].y);
+                TraceLog(LOG_INFO, "Valor de Deformação de Barra %.5f", reforco.deformacao_barra);
+                
+
+                normal[i] = NormalxEPI2[i].y;
+                momento[i] = MomentoxEPI2[i].y;
+                EP[i] = EPI2[i];
+
+                }
+
+                if(ImPlot::BeginPlot("Diagrama de Normal e Momento por variação de EPI2", ImVec2(plotSize.x, plotSize.y)))
+                {   
+                    
+                    ImPlot::PlotLine("Pontos Normal em kN",EP.data(), normal.data(), static_cast<int>(EPI2.size()));
+                    ImPlot::PlotLine("Pontos Momento em kN/m",EP.data(), momento.data(),  static_cast<int>(EPI2.size()));
+
+                    ImPlot::EndPlot();
+                }
+                ImGui::End();     
+            }
+            
 
 
             
-
+           /*
             if (janelaDeformacaoAco) 
             { 
                 ImGui::Begin("Janela do gráfico de Deformação do Aço", &janelaDeformacaoAco);
@@ -412,6 +457,7 @@ float epsilon_yd_variavel;
                                            
                 ImGui::End();
             }
+            */
      /*
         if (janelaPoligonoComprimido)
         {
@@ -609,4 +655,32 @@ int main()
    
    
     return 0;
+}
+
+void renderizacaoBarras(std::vector<Point> vertices, std::string nomeVerticesBarras)
+{
+	// verificação se o vetor está vazio, prossegue se não
+	if (!vertices.empty())
+	{
+		// vetores temporários para usar no PlotScatter
+		// inicialização com o tamanho do vetor do parâmetro da função
+		// inicialização do tipo vector<float> nome(tamanho)
+		std::vector<float> xTemp(vertices.size());
+		std::vector<float> yTemp(vertices.size());
+
+		// alimentação dos vetores temporários
+		for (size_t i = 0; i < vertices.size(); i++)
+		{
+			xTemp[i] = vertices[i].x;
+			yTemp[i] = vertices[i].y;
+		}
+
+		// desenho dos pontos
+		// metodo data() para referenciar como ponteiro 
+		// static_cast é uma conversão de tipo size_t (unsigned inteiro) para int
+		// não está relacionada a variáveis estáticas
+	       
+        ImPlot::PlotScatter(nomeVerticesBarras.c_str(), xTemp.data(), yTemp.data(), static_cast<int>(vertices.size()));
+       
+	}
 }

@@ -62,6 +62,7 @@ float KeyDownDelay = 0.0f;
 float KeyDownDelayTime = 0.1f;
 int numBarras = 0;
 int barras = 0;
+int opcao = 0;
 float VLN = 0;
 float cortar = 0;
 float diametroBarras = 0;
@@ -83,6 +84,8 @@ bool janelaPoligonoComprimido = true;
 bool janelaAcoPassivo = true; 
 bool janelaDeformacaoAco = true; 
 bool janelaDiagramaNormalXMomento = true; 
+bool entradaDeDadosMateriais = true; 
+
 
 float fyk_variavel = 500.0f;
 float gama_s_variavel = 1.15f; 
@@ -360,7 +363,7 @@ float epsilon_yd_variavel;
 
                  ImGui::End();
              } */
-
+            /*
             if (janelaAcoPassivo)
             {
                 ImGui::Begin("Parâmetros do Aço Passivo", &janelaAcoPassivo);
@@ -382,7 +385,8 @@ float epsilon_yd_variavel;
 
                 ImGui::End();
             }
-            
+            */
+            /*
             if (janelaDiagramaNormalXMomento)
             {
 
@@ -399,12 +403,12 @@ float epsilon_yd_variavel;
                 
                 reforco.calculaNormal_Momento(EPI2[i], EPI1);
                 NormalxEPI2.emplace_back(EPI2[i], reforco.soma_normal_aco_passivo);
-                MomentoxEPI2.emplace_back(EPI2[i], reforco.momento_aco_passivo_variavel);
+                MomentoxEPI2.emplace_back(EPI2[i], reforco.soma_momento_aco_passivo);
                 
                 TraceLog(LOG_INFO, "VALOR %2.f", i);
-                TraceLog(LOG_INFO, "Valor de EPI2 X %2.f e NORMAL %2.f", NormalxEPI2[i].x, NormalxEPI2[i].y);
-                TraceLog(LOG_INFO, "Valor de EPI2o X %2.f e MOMENTO %2.f", MomentoxEPI2[i].x, MomentoxEPI2[i].y);
-                TraceLog(LOG_INFO, "Valor de Deformação de Barra %.5f", reforco.deformacao_barra);
+                TraceLog(LOG_INFO, "Valor de EPI2 X %6.f e NORMAL %.6f", NormalxEPI2[i].x, NormalxEPI2[i].y);
+                TraceLog(LOG_INFO, "Valor de EPI2o X %6.f e MOMENTO %.6f", MomentoxEPI2[i].x, MomentoxEPI2[i].y);
+                TraceLog(LOG_INFO, "Valor de Deformação de Barra %6.f", reforco.deformacao_barra);
                 
 
                 normal[i] = NormalxEPI2[i].y;
@@ -423,11 +427,163 @@ float epsilon_yd_variavel;
                 }
                 ImGui::End();     
             }
-            
+            */
+            if (entradaDeDadosMateriais) 
+            {
+                ImGui::Begin("Entrada de Dados de Materiais");
+                ImVec2 plotSize = ImGui::GetContentRegionAvail();
+
+                if(ImGui::BeginTabBar("Tabela de Entrada de Dados de Materiais"))
+                {
+                    if(ImGui::BeginTabItem("Concreto"))
+                    
+
+                    // formula da tensao = 0.85 * Nc * Fcd (1 - (1 - (pow((Ec/Ec2), n))))
+
+                    /*
+                    
+                    if (fyk )
+
+                    
+                    
+                    
+                    */
+
+                    {
+                        
+                        ImGui::RadioButton("Parábola-Retangulo (NBR 6118:2023)", &opcao, 0);
+                        ImGui::SameLine();
+                        ImGui::RadioButton("Parábola-Retangulo (NBR 6118:2014)", &opcao, 1); 
+                        
+                        if(opcao == 0)
+                        {
+                            ImGui::Text("Parâmetros do Concreto");
+                            // organização Yc
+                            ImGui::SetNextItemWidth(100);
+                            ImGui::Text("yc   = ");
+                            ImGui::SameLine();
+                            ImGui::SetNextItemWidth(70);
+                            ImGui::InputFloat("##yc", &gama_s_variavel, 0.0f, 0.0f, "%.3f");
+                            // organização Beta
+                            ImGui::Text("Beta = ");
+                            ImGui::SameLine();
+                            ImGui::SetNextItemWidth(70);
+                            ImGui::InputFloat("##β", &fyk_variavel, 0.0f, 0.0f, "%.3f");
+
+                            // organização Ec2
+                            ImGui::Text("Ec2  = ");
+                            ImGui::SameLine();
+                            ImGui::SetNextItemWidth(70);
+                            ImGui::InputFloat("##Ec2", &Es_variavel, 0.0f, 0.0f, "%.3f");
+
+                            ImGui::Text("Ecu  = ");
+                            ImGui::SameLine();
+                            ImGui::SetNextItemWidth(70);
+                            ImGui::InputFloat("##Ecu", &Es_variavel, 0.0f, 0.0f, "%.3f");
+                        }
+
+                        if(opcao == 1)
+                        {
+                            ImGui::Text("Parâmetros do Concreto");
+                            // organização Yc
+                            ImGui::SetNextItemWidth(100);
+                            ImGui::Text("yc  = ");
+                            ImGui::SameLine();
+                            ImGui::SetNextItemWidth(70);
+                            ImGui::InputFloat("##yc", &gama_s_variavel, 0.0f, 0.0f, "%.3f");
+                            // organização Beta
+                            ImGui::Text("Beta = ");
+                            ImGui::SameLine();
+                            ImGui::SetNextItemWidth(70);
+                            ImGui::InputFloat("##β", &fyk_variavel, 0.0f, 0.0f, "%.3f");
+
+                        }
+                        
+                        ImGui::EndTabItem();
+                    }
+
+                    if(ImGui::BeginTabItem("Armadura Passiva")) 
+                    {
+                        // implot math symbol pesquisar latex
+                        // ajeitar concreto e simbolos
+                        // redimensionar o grafico do aço 
+                        // colocar os topicos embaixo
+                        // tentar deixar mais visivel a cor do grafico
+                        //
+                    
+
+                        ImGui::Text("Parâmetros do aço");
+                        // organização gama_s
+                        ImGui::SetNextItemWidth(100);
+                        ImGui::Text("ys  = ");
+                        ImGui::SameLine();
+                        ImGui::SetNextItemWidth(70);
+                        ImGui::InputFloat("##ys", &gama_s_variavel, 0.0f, 0.0f, "%.3f");
+                        // organização fyk                   
+                        ImGui::Text("fyk = ");
+                        ImGui::SameLine();
+                        ImGui::SetNextItemWidth(70);
+                        ImGui::InputFloat("##fyk", &fyk_variavel, 0.0f, 0.0f, "%.3f");
+                        ImGui::SameLine();
+                        ImGui::Text("MPa");
+                        // organização deformação do aço
+                        ImGui::Text("Es  = ");
+                        ImGui::SameLine();
+                        ImGui::SetNextItemWidth(70);
+                        ImGui::InputFloat("##Es", &Es_variavel, 0.0f, 0.0f, "%.3f");
+                        ImGui::SameLine(); 
+                        ImGui::Text("GPa");
+
+                        // ImPlot -- 
+                        ImGui::Dummy(ImVec2(0.0f, 20.0f)); // usado pra pular espaços, util dms
+                        
+                        reforco.calculaParametros(fyk_variavel, gama_s_variavel, Es_variavel);
+                        std::vector<float>EPItemp = {-10, -reforco.epsilon_yd, reforco.epsilon_yd, 10};
+                        float tensaoY[EPItemp.size()];
+                        float xEpi[EPItemp.size()];
+                        
+                        float resultado_positivo = reforco.epsilon_yd;
+                        float resultado_negativo = -resultado_positivo;
+
+
+                        for (size_t i = 0; i < EPItemp.size(); i++)
+                        {
+                           
+                            float EPIvariavel = EPItemp[i];
+                            xEpi[i] = EPItemp[i];
+                            tensaoY[i] = reforco.tensao(EPIvariavel);
+                        }
+
+                        if(ImPlot::BeginPlot("Diagrama Tensão-Deformação (Linear com patamar)", ImVec2(600, 400), ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_Invert | ImPlotFlags_NoLegend)) 
+                        {
+                            ImPlot::SetupAxisLimits(ImAxis_X1, -10.0, 10.0, ImGuiCond_Always); 
+                            ImPlot::SetupAxisLimits(ImAxis_Y1, -600, 600, ImGuiCond_Always);   
+
+                            ImPlot::SetupAxis(ImAxis_X1, " Deformação por mil");
+                            ImPlot::SetupAxis(ImAxis_Y1, " Tensão (MPa)");
+                           
+                            ImPlot::PlotText("-> (-fyk/ ys)", -reforco.epsilon_yd, tensaoY[0], ImVec2(60,0));
+                            ImPlot::PlotText("(fyk/ ys) <-", reforco.epsilon_yd, tensaoY[3], ImVec2(-60,0));
+                            
+                            ImPlot::Annotation(-reforco.epsilon_yd, tensaoY[0], ImVec4(1,0,1,0), ImVec2(0,10), resultado_negativo, "    def esp. %.2f", resultado_negativo);
+                            ImPlot::Annotation(reforco.epsilon_yd, tensaoY[3], ImVec4(1,0,1,0), ImVec2(0,-10), resultado_positivo, "    def esp. %.2f     ", resultado_positivo);
+                            
+                            ImPlot::PlotLine("Linha", xEpi, tensaoY, EPItemp.size());
+
+                            ImPlot::EndPlot();  
+                        }
+
+                        ImGui::EndTabItem();
+                    }
+                    ImGui::EndTabBar();
+                }
+
+                ImGui::End(); 
+            }
 
 
             
-           /*
+           
             if (janelaDeformacaoAco) 
             { 
                 ImGui::Begin("Janela do gráfico de Deformação do Aço", &janelaDeformacaoAco);
@@ -457,7 +613,7 @@ float epsilon_yd_variavel;
                                            
                 ImGui::End();
             }
-            */
+            
      /*
         if (janelaPoligonoComprimido)
         {

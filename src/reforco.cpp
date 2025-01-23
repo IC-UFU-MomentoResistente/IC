@@ -124,7 +124,7 @@ void Reforco::calculaParametros (float fyk, float gama_s, float Es_interface){
 }
 */
 
-float Reforco::tensao(float epi) // TENSAO NEGATIVA PRA DEFORMAÇÃO NEGATIVA TENSAO POSITIVA PRA DEFORMAÇÃO POSITIVA 
+float Reforco::tensao(float epi) // TENSAO NEGATIVA PRA DEFORMAÇÃO NEGATIVA TENSAO POSITIVA PRA DEFORMAÇÃO POSITIVA - CORRIGIDO 
 {
    
     if (epi > 10.001 || epi < -10.001) 
@@ -133,15 +133,15 @@ float Reforco::tensao(float epi) // TENSAO NEGATIVA PRA DEFORMAÇÃO NEGATIVA TE
     }
     else if (epi <= -epsilon_yd) 
     {
-        tensao_aco_passivo = fyd;
+        tensao_aco_passivo = -fyd;
     }
     else if (epi >= epsilon_yd) 
     {
-        tensao_aco_passivo = -fyd;  
+        tensao_aco_passivo = +fyd;  
     }
     else 
     {
-        tensao_aco_passivo = (Es * (-epi) * 1000)/1000; // ES de GPa para MPa e EPI EM POR MIL PARA PURO
+        tensao_aco_passivo = (Es * (epi) * 1000)/1000; // ES de GPa para MPa e EPI EM POR MIL PARA PURO
     }
     return tensao_aco_passivo;
 }

@@ -124,6 +124,8 @@ void Reforco::calculaParametros (float fyk, float gama_s, float Es_interface){
 }
 */
 
+
+
 float Reforco::tensao(float epi) // TENSAO NEGATIVA PRA DEFORMAÇÃO NEGATIVA TENSAO POSITIVA PRA DEFORMAÇÃO POSITIVA - CORRIGIDO 
 {
    

@@ -11,6 +11,7 @@
 
 
 Reforco reforco;
+// Concreto concreto;
 std::vector<Point> collectedPoints = {{-10, -20}, {10, -20}, {10, 20}, {-10, 20}}; 
 
 Poligono poligono;
@@ -94,7 +95,11 @@ float Ep1_variavel = -1.189f;
 float Es_variavel = 210.0f;
 float fyd_variavel;
 float epsilon_yd_variavel;
-
+float beta_variavel; 
+float yc_variavel;
+float ec2_variavel;
+float ecu_variavel; 
+float fck_variavel;
 
     void loopPrograma()
     {
@@ -428,74 +433,102 @@ float epsilon_yd_variavel;
                 ImGui::End();     
             }
             */
+
+            // Plotar os graficos do concreto 
+            // Adicionar latex
+            
+
             if (entradaDeDadosMateriais) 
             {
                 ImGui::Begin("Entrada de Dados de Materiais");
                 ImVec2 plotSize = ImGui::GetContentRegionAvail();
+                    
+
 
                 if(ImGui::BeginTabBar("Tabela de Entrada de Dados de Materiais"))
                 {
                     if(ImGui::BeginTabItem("Concreto"))
-                    
-
-                    // formula da tensao = 0.85 * Nc * Fcd (1 - (1 - (pow((Ec/Ec2), n))))
-
-                    /*
-                    
-                    if (fyk )
-
-                    
-                    
-                    
-                    */
-
+                                        
                     {
-                        
+                        ImGui::Text("Tipo de Diagrama:");
                         ImGui::RadioButton("Parábola-Retangulo (NBR 6118:2023)", &opcao, 0);
-                        ImGui::SameLine();
                         ImGui::RadioButton("Parábola-Retangulo (NBR 6118:2014)", &opcao, 1); 
                         
                         if(opcao == 0)
                         {
+                            ImGui::SetCursorPos(ImVec2(plotSize.x -150, 50));
                             ImGui::Text("Parâmetros do Concreto");
+                            
                             // organização Yc
+                            ImGui::SetCursorPos(ImVec2(plotSize.x -150, 70));
                             ImGui::SetNextItemWidth(100);
                             ImGui::Text("yc   = ");
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##yc", &gama_s_variavel, 0.0f, 0.0f, "%.3f");
+                            ImGui::InputFloat("##yc", &yc_variavel, 0.0f, 0.0f, "%.3f");
+                            
                             // organização Beta
+                            ImGui::SetCursorPos(ImVec2(plotSize.x -150, 90));
                             ImGui::Text("Beta = ");
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##β", &fyk_variavel, 0.0f, 0.0f, "%.3f");
+                            ImGui::InputFloat("##β", &beta_variavel, 0.0f, 0.0f, "%.3f");
 
                             // organização Ec2
+                            ImGui::SetCursorPos(ImVec2(plotSize.x -150, 110));
                             ImGui::Text("Ec2  = ");
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##Ec2", &Es_variavel, 0.0f, 0.0f, "%.3f");
+                            ImGui::InputFloat("##Ec2", &ec2_variavel, 0.0f, 0.0f, "%.3f");
 
+                            ImGui::SetCursorPos(ImVec2(plotSize.x -150, 130));
                             ImGui::Text("Ecu  = ");
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##Ecu", &Es_variavel, 0.0f, 0.0f, "%.3f");
+                            ImGui::InputFloat("##Ecu", &ecu_variavel, 0.0f, 0.0f, "%.3f");
+
+                            ImGui::SetCursorPos(ImVec2(plotSize.x -150, 150));
+                            ImGui::Text("Fck  = ");
+                            ImGui::SameLine();
+                            ImGui::SetNextItemWidth(70);
+                            ImGui::InputFloat("##Fck", &fck_variavel, 0.0f, 0.0f, "%.3f");
+                            
+                            
+                           
                         }
 
                         if(opcao == 1)
                         {
+                            ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 50));
                             ImGui::Text("Parâmetros do Concreto");
                             // organização Yc
+                            
+                            ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 70));
                             ImGui::SetNextItemWidth(100);
-                            ImGui::Text("yc  = ");
+                            ImGui::Text("yc   = ");
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##yc", &gama_s_variavel, 0.0f, 0.0f, "%.3f");
+                            ImGui::InputFloat("##yc", &yc_variavel, 0.0f, 0.0f, "%.3f");
                             // organização Beta
+
+                            ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 90));
                             ImGui::Text("Beta = ");
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##β", &fyk_variavel, 0.0f, 0.0f, "%.3f");
+                            ImGui::InputFloat("##β", &beta_variavel, 0.0f, 0.0f, "%.3f");
+
+                            ImGui::SetCursorPos(ImVec2(plotSize.x -150, 110));
+                            ImGui::Text("Fck  = ");
+                            ImGui::SameLine();
+                            ImGui::SetNextItemWidth(70);
+                            ImGui::InputFloat("##Fck", &fck_variavel, 0.0f, 0.0f, "%.3f");
+
+                            ImGui::Dummy(ImVec2(plotSize.x - (plotSize.x - 150), 0)); // usado pra pular espaços, util dms
+                            
+                            
+                            
+
+
 
                         }
                         
@@ -510,23 +543,30 @@ float epsilon_yd_variavel;
                         // colocar os topicos embaixo
                         // tentar deixar mais visivel a cor do grafico
                         //
-                    
 
+                        ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 50));
                         ImGui::Text("Parâmetros do aço");
                         // organização gama_s
+
+                        ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 70));
                         ImGui::SetNextItemWidth(100);
                         ImGui::Text("ys  = ");
                         ImGui::SameLine();
                         ImGui::SetNextItemWidth(70);
                         ImGui::InputFloat("##ys", &gama_s_variavel, 0.0f, 0.0f, "%.3f");
-                        // organização fyk                   
+                        // organização fyk    
+
+                        ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 90));
+
                         ImGui::Text("fyk = ");
                         ImGui::SameLine();
                         ImGui::SetNextItemWidth(70);
                         ImGui::InputFloat("##fyk", &fyk_variavel, 0.0f, 0.0f, "%.3f");
                         ImGui::SameLine();
                         ImGui::Text("MPa");
+
                         // organização deformação do aço
+                        ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 110));
                         ImGui::Text("Es  = ");
                         ImGui::SameLine();
                         ImGui::SetNextItemWidth(70);
@@ -535,7 +575,7 @@ float epsilon_yd_variavel;
                         ImGui::Text("GPa");
 
                         // ImPlot -- 
-                        ImGui::Dummy(ImVec2(0.0f, 20.0f)); // usado pra pular espaços, util dms
+                        ImGui::Dummy(ImVec2(plotSize.x - (plotSize.x - 150), 0)); // usado pra pular espaços, util dms
                         
                         reforco.calculaParametros(fyk_variavel, gama_s_variavel, Es_variavel);
                         std::vector<float>EPItemp = {-10, -reforco.epsilon_yd, reforco.epsilon_yd, 10};
@@ -544,7 +584,7 @@ float epsilon_yd_variavel;
                         
                         float resultado_positivo = reforco.epsilon_yd;
                         float resultado_negativo = -resultado_positivo;
-
+ 
 
                         for (size_t i = 0; i < EPItemp.size(); i++)
                         {
@@ -553,8 +593,8 @@ float epsilon_yd_variavel;
                             xEpi[i] = EPItemp[i];
                             tensaoY[i] = reforco.tensao(EPIvariavel);
                         }
-
-                        if(ImPlot::BeginPlot("Diagrama Tensão-Deformação (Linear com patamar)", ImVec2(600, 400), ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_Invert | ImPlotFlags_NoLegend)) 
+                        ImGui::SetCursorPos(ImVec2(0,50));
+                        if(ImPlot::BeginPlot("Diagrama Tensão-Deformação (Linear com patamar)", ImVec2((plotSize.x - 200), plotSize.y - 20), ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_Invert | ImPlotFlags_NoLegend)) 
                         {
                             ImPlot::SetupAxisLimits(ImAxis_X1, -10.0, 10.0, ImGuiCond_Always); 
                             ImPlot::SetupAxisLimits(ImAxis_Y1, -600, 600, ImGuiCond_Always);   
@@ -568,7 +608,8 @@ float epsilon_yd_variavel;
                             ImPlot::Annotation(-reforco.epsilon_yd, tensaoY[0], ImVec4(1,0,1,0), ImVec2(0,10), resultado_negativo, "    def esp. %.2f", resultado_negativo);
                             ImPlot::Annotation(reforco.epsilon_yd, tensaoY[3], ImVec4(1,0,1,0), ImVec2(0,-10), resultado_positivo, "    def esp. %.2f     ", resultado_positivo);
                             
-                            ImPlot::PlotLine("Linha", xEpi, tensaoY, EPItemp.size());
+                            ImPlot::SetNextLineStyle(ImVec4(0.53f, 0.81f, 0.98f, 1.0f));
+                            ImPlot::PlotLine("Linha", xEpi, tensaoY, EPItemp.size()); 
 
                             ImPlot::EndPlot();  
                         }

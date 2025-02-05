@@ -11,7 +11,6 @@
 
 
 Reforco reforco;
-// Concreto concreto;
 std::vector<Point> collectedPoints = {{-10, -20}, {10, -20}, {10, 20}, {-10, 20}}; 
 
 Poligono poligono;
@@ -35,6 +34,7 @@ float yMinSecao = 0;
 float yMinArmadura = 0;
 
 Point centroideInicial;
+ImFont *font = nullptr; 
 
 void renderizacaoBarras(std::vector<Point>, std::string);
 
@@ -43,9 +43,8 @@ void IniciarInterface()
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     int screenWidth = 1280;
     int screenHeight = 960;
-        
+
     InitWindow(screenWidth, screenHeight, "Software de cálculo de esforços em seções de concreto armado");
-    
 
     if (!IsWindowReady()) // Verifique se a janela foi criada com sucesso
     {
@@ -54,7 +53,17 @@ void IniciarInterface()
     }
 
     SetTargetFPS(60);
-    rlImGuiSetup(true);
+    rlImGuiBeginInitImGui();
+    ImGui::StyleColorsDark();
+    ImFontConfig fontConfig;
+    static const ImWchar customRange[] =
+        {
+            0x0020, 0x00FF, // Faixa básica (ASCII estendido)
+            0x0370, 0x03FF, // Faixa de grego
+            0};
+    font = ImGui::GetIO().Fonts->AddFontFromFileTTF("src/segoeuisl.ttf", 18.0f, &fontConfig, customRange);
+    
+    rlImGuiEndInitImGui();
     ImPlot::CreateContext();
     // centroideInicial = calcularCentroide(collectedPoints);
 }
@@ -112,7 +121,10 @@ float fck_variavel;
 
             BeginDrawing();
             ClearBackground(BLACK);
-            rlImGuiBegin();
+            rlImGuiBegin(); // substituir 
+
+            if(font)
+            ImGui::PushFont(font);
 
             if (janelaGrafico)
             {
@@ -459,17 +471,18 @@ float fck_variavel;
                             ImGui::SetCursorPos(ImVec2(plotSize.x -150, 50));
                             ImGui::Text("Parâmetros do Concreto");
                             
+                            
                             // organização Yc
                             ImGui::SetCursorPos(ImVec2(plotSize.x -150, 70));
                             ImGui::SetNextItemWidth(100);
-                            ImGui::Text("yc   = ");
+                            ImGui::Text("γc   = ");
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##yc", &yc_variavel, 0.0f, 0.0f, "%.3f");
+                            ImGui::InputFloat("##γc", &yc_variavel, 0.0f, 0.0f, "%.3f");
                             
                             // organização Beta
                             ImGui::SetCursorPos(ImVec2(plotSize.x -150, 90));
-                            ImGui::Text("Beta = ");
+                            ImGui::Text("β     = ");
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(70);
                             ImGui::InputFloat("##β", &beta_variavel, 0.0f, 0.0f, "%.3f");
@@ -492,9 +505,8 @@ float fck_variavel;
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(70);
                             ImGui::InputFloat("##Fck", &fck_variavel, 0.0f, 0.0f, "%.3f");
+    
                             
-                            
-                           
                         }
 
                         if(opcao == 1)
@@ -505,14 +517,14 @@ float fck_variavel;
                             
                             ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 70));
                             ImGui::SetNextItemWidth(100);
-                            ImGui::Text("yc   = ");
+                            ImGui::Text("γc   = ");
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##yc", &yc_variavel, 0.0f, 0.0f, "%.3f");
+                            ImGui::InputFloat("##γc", &yc_variavel, 0.0f, 0.0f, "%.3f");
                             // organização Beta
 
                             ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 90));
-                            ImGui::Text("Beta = ");
+                            ImGui::Text("β     = ");
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(70);
                             ImGui::InputFloat("##β", &beta_variavel, 0.0f, 0.0f, "%.3f");
@@ -524,9 +536,7 @@ float fck_variavel;
                             ImGui::InputFloat("##Fck", &fck_variavel, 0.0f, 0.0f, "%.3f");
 
                             ImGui::Dummy(ImVec2(plotSize.x - (plotSize.x - 150), 0)); // usado pra pular espaços, util dms
-                            
-                            
-                            
+
 
 
 
@@ -550,10 +560,10 @@ float fck_variavel;
 
                         ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 70));
                         ImGui::SetNextItemWidth(100);
-                        ImGui::Text("ys  = ");
+                        ImGui::Text("γs  = ");
                         ImGui::SameLine();
                         ImGui::SetNextItemWidth(70);
-                        ImGui::InputFloat("##ys", &gama_s_variavel, 0.0f, 0.0f, "%.3f");
+                        ImGui::InputFloat("##γs", &gama_s_variavel, 0.0f, 0.0f, "%.3f");
                         // organização fyk    
 
                         ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 90));
@@ -826,6 +836,9 @@ float fck_variavel;
 
             ImGui::End();
         }
+
+        if (font)
+            ImGui::PopFont();
 
         rlImGuiEnd();
         EndDrawing();

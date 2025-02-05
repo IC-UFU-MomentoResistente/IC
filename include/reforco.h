@@ -41,6 +41,7 @@ public:
     void calculaParametros (float fyk, float gama_s, float Es_interface);
     float tensao (float epi);
     void calculaNormal_Momento(float Epap, float EpA);
+    
 };
 
 

@@ -9,11 +9,13 @@ private:
     float epsilon_concreto_ultimo;
     float expoente_tensao_concreto;
     float epsilon_concreto_2;
+    float epsilon_c;
     float fcd;
     float altura_deformacao_2;
     float altura_deformacao_ultima;
     float altura_LN;
     float nc; 
+    float beta; 
 
 public:
     struct ParametrosConcreto {
@@ -37,11 +39,14 @@ public:
 
     ParametrosConcreto getParametros() const;
     AlturasConcreto getAlturas() const;
-
+    
 private:
     void calculaParametros(float fck, float gama_c);
     void calculaAlturaDeformacao (float eps1, float eps2, float x_por_d, float d);
-    float calculaCompressao(float nc, float fcd, float epsilon_c, float epsilon_concreto_2, float expoente_tensao_concreto);
+    float calculaCompressao(float beta, float nc, float fcd, float epsilon_c, float epsilon_concreto_2, float expoente_tensao_concreto);
+    float deformacaoABNT2023(float fck, float gama_c, float beta, float epsilon_concreto_ultimo, float epsilon_concreto_2);
+    float deformacaoABNT2014(float fck, float gama_c, float beta);
+    
 };
 
 #endif 

@@ -24,15 +24,7 @@ Concreto::AlturasConcreto Concreto::getAlturas() const {
 }
 
 void Concreto::calculaParametros(float fck, float gama_c) {
-    if(fck <= 40) 
-    {
-       nc = 1,0;
-    }
-    
-    else 
-    {
-        nc = (pow(40/fck,1/3));
-    }
+   
 
     if (fck <= 50) 
     // ATÉ CLASSE C50
@@ -55,11 +47,65 @@ void Concreto::calculaParametros(float fck, float gama_c) {
         }
     }
     fcd = fck / gama_c;
-    parametros.tensaoCompressao = calculaCompressao(nc, fcd, epsilon_c, epsilon_concreto_2, expoente_tensao_concreto);
+    // parametros.tensaoCompressao = calculaCompressao(beta, nc, fcd, epsilon_c, epsilon_concreto_2, expoente_tensao_concreto);
+}
+ 
+float Concreto::deformacaoABNT2023(float fck, float gama_c, float beta, float epsilon_concreto_ultimo, float epsilon_concreto_2) {
+
+ fcd = fck/gama_c;
+ beta = 0.85; 
+
+ if(fck <= 40) 
+    {
+       nc = 1,0;
+    }
     
+    else 
+    {
+        nc = (pow(40/fck,1/3));
+    }
+
+    if(fck <= 50) {
+        expoente_tensao_concreto = 2; 
+        epsilon_concreto_ultimo = 3.5; // c50 ecu
+        epsilon_concreto_2 = 2; // c50 ec2
+    }
+    
+    else 
+    {
+        expoente_tensao_concreto = 1.4 + 23.4 * pow((90 - fck) / 100, 4);
+        epsilon_concreto_2 = 2 + 0.085 * pow(fck - 50, 0.53);
+        epsilon_concreto_ultimo = 2.6 + 35 * pow((90 - fck) / 100, 4);
+    }
+
+    if (epsilon_concreto_2 > epsilon_concreto_ultimo) {
+            epsilon_concreto_2 = epsilon_concreto_ultimo;
+        }
+
+    parametros.tensaoCompressao = beta * nc * fcd * (1 - std::pow((1 - (epsilon_c / epsilon_concreto_2)), expoente_tensao_concreto));
+    return parametros.tensaoCompressao;
 }
 
 
+float Concreto::deformacaoABNT2014(float fck, float gama_c, float beta) {
+
+    fcd = fck / gama_c;
+    beta = 0.85; 
+    if(fck <= 50) {
+        expoente_tensao_concreto = 2; 
+        epsilon_concreto_ultimo = 3.5; // c50 ecu
+        epsilon_concreto_2 = 2; // c50 ec2
+    }
+    
+    else 
+    {
+        expoente_tensao_concreto = 1.4 + 23.4 * pow((90 - fck) / 100, 4);
+        epsilon_concreto_2 = 2 + 0.085 * pow(fck - 50, 0.53);
+        epsilon_concreto_ultimo = 2.6 + 35 * pow((90 - fck) / 100, 4);
+    }
+    parametros.tensaoCompressao = beta * fcd * (1 - std::pow((1 - (epsilon_c / epsilon_concreto_2)), expoente_tensao_concreto));
+    return parametros.tensaoCompressao;
+}
 
 void Concreto::calculaAlturaDeformacao (float eps1, float eps2, float x_por_d, float d)
 {
@@ -75,8 +121,8 @@ void Concreto::calculaAlturaDeformacao (float eps1, float eps2, float x_por_d, f
     }
 }
 
-float Concreto::calculaCompressao(float nc, float fcd, float epsilon_c, float epsilon_concreto_2, float expoente_tensao_concreto) 
+float Concreto::calculaCompressao(float beta, float nc, float fcd, float epsilon_c, float epsilon_concreto_2, float expoente_tensao_concreto) 
 {
-    parametros.tensaoCompressao = nc * fcd * (1 - std::pow((1 - (epsilon_c / epsilon_concreto_2)), expoente_tensao_concreto));
+    parametros.tensaoCompressao = beta * nc * fcd * (1 - std::pow((1 - (epsilon_c / epsilon_concreto_2)), expoente_tensao_concreto));
     return parametros.tensaoCompressao;
 }

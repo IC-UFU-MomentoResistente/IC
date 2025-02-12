@@ -469,43 +469,28 @@ float epsilon_concreto_2;
 
                         if (opcao == 0)
                         {
-                            ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 50));
+                            ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x - 150);
                             ImGui::Text("Parâmetros do Concreto");
 
-                            // organização Yc
-                            ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 70));
-                            ImGui::SetNextItemWidth(100);
+                            // Criar um grupo para alinhar os elementos automaticamente
+                            ImGui::PushItemWidth(70);
+                            float pos_x_direita = ImGui::GetWindowWidth() - 150;
+
+                            ImGui::SetCursorPosX(pos_x_direita);
                             ImGui::Text("γc   = ");
                             ImGui::SameLine();
-                            ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##γc", &yc_variavel, 0.0f, 0.0f, "%.3f");
+                            ImGui::InputFloat("##γc", &yc_variavel, 0.0f, 0.0f, "%.2f");
 
-                            // organização Beta
-                            ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 90));
+                            ImGui::SetCursorPosX(pos_x_direita);
                             ImGui::Text("β     = ");
                             ImGui::SameLine();
-                            ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##β", &beta_variavel, 0.0f, 0.0f, "%.3f");
-
-                            // organização Ec2
-                            ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 110));
-                            ImGui::Text("Ec2  = ");
-                            ImGui::SameLine();
-                            ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##Ec2", &ec2_variavel, 0.0f, 0.0f, "%.3f");
-
-                            ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 130));
-                            ImGui::Text("Ecu  = ");
-                            ImGui::SameLine();
-                            ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##Ecu", &ecu_variavel, 0.0f, 0.0f, "%.3f");
-
-                            ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 150));
+                            ImGui::InputFloat("##β", &beta_variavel, 0.0f, 0.0f, "%.2f");
+                            
+                            ImGui::SetCursorPosX(pos_x_direita);
                             ImGui::Text("Fck  = ");
                             ImGui::SameLine();
-                            ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##Fck", &fck_variavel, 0.0f, 0.0f, "%.3f");
-
+                            ImGui::InputFloat("##Fck", &fck_variavel, 0.0f, 0.0f, "%.2f");
+                            ImGui::PopItemWidth();
                             float fcd_variavel;
                             float expoente_tensao_concreto;
                             int i;
@@ -578,19 +563,63 @@ float epsilon_concreto_2;
                                 tensao[i] = tensaoDiagrama[i];
                                 epsilon[i] = epsilon_c[i];
                             }
+
                             ImGui::SetCursorPos(ImVec2(0, 150));
-                            if (ImPlot::BeginPlot("Diagrama Tensão-Deformação (ABNT 2023)", ImVec2((plotSize.x - 200), plotSize.y - 50)))
+                            if (ImPlot::BeginPlot("Diagrama Tensão-Deformação Concreto ABNT:6118:2023", ImVec2((plotSize.x - 200), plotSize.y - 50) , ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend)) 
                             {
-
-                                ImPlot::SetupAxis(ImAxis_X1, " εc");
-                                ImPlot::SetupAxis(ImAxis_Y1, " σ MPa)");
-
-                                ImPlot::SetNextLineStyle(ImVec4(0.53f, 0.81f, 0.98f, 1.0f));
-
-                                if (!epsilon.empty() && epsilon.size() > 1)
+                                if (fck_variavel > 0 && yc_variavel > 0 && beta_variavel > 0)
                                 {
-                                    ImPlot::PlotLine("Diagrama Tensão-Deformação ABNT 2023", epsilon.data(), tensao.data(), static_cast<int>(epsilon.size()));
-                                    ImPlot::PlotText("(β * fck/γc) - - - - -      ", ec2_variavel, maximo,  ImVec2(-50,0));
+                                    // eixos do grafico
+                                    ImPlot::SetupAxis(ImAxis_X1, " εc");
+                                    ImPlot::SetupAxis(ImAxis_Y1, " σ MPa)");
+
+                                    if (!epsilon.empty() && epsilon.size() > 1)
+                                    {
+                                        float max_ec = ecu_variavel * 1.1f; // 10% a mais para melhor visualização
+                                        float max_sigma = maximo * 1.2f;    // 20% a mais para evitar corte do gráfico
+
+                                        ImPlot::SetupAxesLimits(0, max_ec, 0, max_sigma, ImGuiCond_Always);
+                                    }
+
+                                    ImPlot::SetNextLineStyle(ImVec4(0.53f, 0.81f, 0.98f, 1.0f));
+
+                                    if (!epsilon.empty() && epsilon.size() > 1)
+                                    {
+
+                                        ImPlot::PlotLine("Diagrama Tensão-Deformação Concreto ABNT:6118:2023)", epsilon.data(), tensao.data(), static_cast<int>(epsilon.size()));
+                                        ImPlot::Annotation(ec2_variavel, maximo, ImVec4(1, 0, 1, 0), ImVec2(-20, -10), ec2_variavel, " (β *ηc * fck/γc)  = %.2f MPa", maximo);
+
+                                        float x_values[] = {0, ec2_variavel};
+                                        float y_values[] = {maximo, maximo};
+
+                                        ImPlot::SetNextLineStyle(ImVec4(1.0f, 1.0f, 1.0f, 0.2f));
+                                        ImPlot::PlotLine("", x_values, y_values, 2);
+
+                                        float x_ec2[] = {ec2_variavel, ec2_variavel};
+                                        float y_ec2[] = {0, maximo};
+                                        ImPlot::SetNextLineStyle(ImVec4(1.0f, 1.0f, 1.0f, 0.2f));
+                                        ImPlot::PlotLine("", x_ec2, y_ec2, 2);
+
+                                        float x_ecu[] = {ecu_variavel, ecu_variavel};
+                                        float y_ecu[] = {0, maximo};
+                                        ImPlot::SetNextLineStyle(ImVec4(1.0f, 1.0f, 1.0f, 0.2f));
+                                        ImPlot::PlotLine("", x_ecu, y_ecu, 2);
+
+                                        float ec2_offset = -20; // Posição normal do rótulo de ec2
+                                        float ecu_offset = 20;  // Posição normal do rótulo de ecu
+
+                                        // Se ec2 e ecu estiverem muito próximos, aumentar o espaçamento
+                                        if (fabs(ecu_variavel - ec2_variavel) < 0.5f)
+                                        {
+                                            ec2_offset -= 10; // Move ec2 mais para a esquerda
+                                            ecu_offset += 10; // Move ecu mais para a direita
+                                        }
+
+                                        ImPlot::Annotation(ec2_variavel, 0, ImVec4(1, 0, 1, 0), ImVec2(ec2_offset, 0), ec2_variavel, "    εc2 = %.2f", ec2_variavel);
+                                        ImPlot::Annotation(ecu_variavel, 0, ImVec4(1, 0, 1, 0), ImVec2(ecu_offset, 0), ecu_variavel, "   εcu = %.2f", ecu_variavel);
+
+                                       
+                                    }
                                 }
                                 else
                                 {
@@ -603,29 +632,32 @@ float epsilon_concreto_2;
 
                         if(opcao == 1)
                         {
-                            ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 50));
+                            ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x - 150);
                             ImGui::Text("Parâmetros do Concreto");
                             // organização Yc
                             
-                            ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 70));
+                            ImGui::PushItemWidth(70);
+                            float pos_x_direita = ImGui::GetWindowWidth() - 150;
+                            
+                            ImGui::SetCursorPosX(pos_x_direita);
                             ImGui::SetNextItemWidth(100);
                             ImGui::Text("γc   = ");
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##γc", &yc_variavel, 0.0f, 0.0f, "%.3f");
+                            ImGui::InputFloat("##γc", &yc_variavel, 0.0f, 0.0f, "%.2f");
                             // organização Beta
-
-                            ImGui::SetCursorPos(ImVec2(plotSize.x - 150, 90));
+                            
+                            ImGui::SetCursorPosX(pos_x_direita);
                             ImGui::Text("β     = ");
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##β", &beta_variavel, 0.0f, 0.0f, "%.3f");
+                            ImGui::InputFloat("##β", &beta_variavel, 0.0f, 0.0f, "%.2f");
 
-                            ImGui::SetCursorPos(ImVec2(plotSize.x -150, 110));
+                            ImGui::SetCursorPosX(pos_x_direita);
                             ImGui::Text("Fck  = ");
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(70);
-                            ImGui::InputFloat("##Fck", &fck_variavel, 0.0f, 0.0f, "%.3f");
+                            ImGui::InputFloat("##Fck", &fck_variavel, 0.0f, 0.0f, "%.2f");
 
                             float fcd_variavel; 
                             float expoente_tensao_concreto;
@@ -639,15 +671,15 @@ float epsilon_concreto_2;
                             if (fck_variavel <= 50)
                             {
                                 expoente_tensao_concreto = 2;
-                                epsilon_concreto_ultimo = 3.5; // c50 ecu
-                                epsilon_concreto_2 = 2;        // c50 ec2
+                                ecu_variavel = 3.5; // c50 ecu
+                                ec2_variavel = 2;        // c50 ec2
                             }
 
                             else
                             {
                                 expoente_tensao_concreto = 1.4 + 23.4 * pow((90 - fck_variavel) / 100, 4);
-                                epsilon_concreto_2 = 2 + 0.085 * pow(fck_variavel - 50, 0.53f);
-                                epsilon_concreto_ultimo = 2.6 + 35 * pow((90 - fck_variavel) / 100, 4);
+                                ec2_variavel = 2 + 0.085 * pow(fck_variavel - 50, 0.53f);
+                                ecu_variavel = 2.6 + 35 * pow((90 - fck_variavel) / 100, 4);
                             }
 
                             epsilon_c.clear();
@@ -669,6 +701,7 @@ float epsilon_concreto_2;
 
                                 // Exibir os valores para depuração
                                 TraceLog(LOG_INFO, "εc = %.2f | Tensão = %.2f", contador, tensaoy);
+                                
                                 }
                                 else 
                                 {
@@ -678,6 +711,7 @@ float epsilon_concreto_2;
                                 tensaoDiagrama.push_back(tensaoy);
                             }
                             }
+                            
                             std::vector<float> tensao(epsilon_c.size());
                             std::vector<float> epsilon(epsilon_c.size());
 
@@ -689,19 +723,59 @@ float epsilon_concreto_2;
                             }
 
                             ImGui::SetCursorPos(ImVec2(0, 150));
-                            if (ImPlot::BeginPlot("Diagrama Tensão-Deformação (ABNT 2014)", ImVec2((plotSize.x - 200), plotSize.y - 50)))
+                            if (ImPlot::BeginPlot("Diagrama Tensão-Deformação Concreto ABNT:6118:2014", ImVec2((plotSize.x - 200), plotSize.y - 20), ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_Invert | ImPlotFlags_NoLegend))
                             {
-                               
-                                
-                                ImPlot::SetupAxis(ImAxis_X1, " εc");
-                                ImPlot::SetupAxis(ImAxis_Y1, " σ MPa)");
-
-                                ImPlot::SetNextLineStyle(ImVec4(0.53f, 0.81f, 0.98f, 1.0f));
-                                
-                                if (!epsilon.empty() && epsilon.size() > 1)
+                                if (fck_variavel > 0 && yc_variavel > 0)
                                 {
-                                    ImPlot::PlotLine("Diagrama Tensão-Deformação (ABNT 2014)", epsilon.data(), tensao.data(), static_cast<int>(epsilon.size()));
-                                    ImPlot::PlotText("(β * fck/γc) - - - - -      ", ec2_variavel, maximo,  ImVec2(-50,0));
+
+                                    ImPlot::SetupAxis(ImAxis_X1, " εc");
+                                    ImPlot::SetupAxis(ImAxis_Y1, " σ MPa)");
+
+                                    if (!epsilon.empty() && epsilon.size() > 1)
+                                    {
+                                        float max_ec = ecu_variavel * 1.1f; // 10% a mais para melhor visualização
+                                        float max_sigma = maximo * 1.2f;    // 20% a mais para evitar corte do gráfico
+
+                                        ImPlot::SetupAxesLimits(0, max_ec, 0, max_sigma, ImGuiCond_Always);
+                                    }
+
+                                    ImPlot::SetNextLineStyle(ImVec4(0.53f, 0.81f, 0.98f, 1.0f));
+
+                                    if (!epsilon.empty() && epsilon.size() > 1)
+                                    {
+
+                                        ImPlot::PlotLine("Diagrama Tensão-Deformação (ABNT 2014)", epsilon.data(), tensao.data(), static_cast<int>(epsilon.size()));
+                                        ImPlot::Annotation(ec2_variavel, maximo, ImVec4(1, 0, 1, 0), ImVec2(-20, -10), ec2_variavel, " (β * fck/γc)  = %.2f MPa", maximo);
+
+                                        float x_values[] = {0, ec2_variavel};
+                                        float y_values[] = {maximo, maximo};
+
+                                        ImPlot::SetNextLineStyle(ImVec4(1.0f, 1.0f, 1.0f, 0.2f));
+                                        ImPlot::PlotLine("", x_values, y_values, 2);
+
+                                        float x_ec2[] = {ec2_variavel, ec2_variavel};
+                                        float y_ec2[] = {0, maximo};
+                                        ImPlot::SetNextLineStyle(ImVec4(1.0f, 1.0f, 1.0f, 0.2f));
+                                        ImPlot::PlotLine("", x_ec2, y_ec2, 2);
+
+                                        float x_ecu[] = {ecu_variavel, ecu_variavel};
+                                        float y_ecu[] = {0, maximo};
+                                        ImPlot::SetNextLineStyle(ImVec4(1.0f, 1.0f, 1.0f, 0.2f));
+                                        ImPlot::PlotLine("", x_ecu, y_ecu, 2);
+
+                                        float ec2_offset = -20; // Posição normal do rótulo de ec2
+                                        float ecu_offset = 20;  // Posição normal do rótulo de ecu
+
+                                        // Se ec2 e ecu estiverem muito próximos, aumentar o espaçamento
+                                        if (fabs(ecu_variavel - ec2_variavel) < 0.5f)
+                                        {
+                                            ec2_offset -= 10; // Move ec2 mais para a esquerda
+                                            ecu_offset += 10; // Move ecu mais para a direita
+                                        }
+
+                                        ImPlot::Annotation(ec2_variavel, 0, ImVec4(1, 0, 1, 0), ImVec2(ec2_offset, 0), ec2_variavel, "    εc2 = %.2f", ec2_variavel);
+                                        ImPlot::Annotation(ecu_variavel, 0, ImVec4(1, 0, 1, 0), ImVec2(ecu_offset, 0), ecu_variavel, "   εcu = %.2f", ecu_variavel);
+                                    }
                                 }
                                 else
                                 {

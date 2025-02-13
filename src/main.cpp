@@ -1,6 +1,6 @@
 #include "raylib.h"
 #include "imgui.h"
-#include "rlImGui.h"
+#include "../lib/rlImGui/rlImGui.h"
 #include "implot.h"
 #include "poligono.h"
 #include "concreto.h"
@@ -8,6 +8,11 @@
 #include <vector>
 #include "reforco.h"
 #include <string> 
+#include <fstream>
+#include <cereal/types/vector.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/archives/json.hpp>
+
 
 
 Reforco reforco;
@@ -97,6 +102,7 @@ bool janelaAcoPassivo = true;
 bool janelaDeformacaoAco = true; 
 bool janelaDiagramaNormalXMomento = true; 
 bool entradaDeDadosMateriais = true; 
+bool janelaSalvar = true;
 
 
 float fyk_variavel = 500.0f;
@@ -113,7 +119,24 @@ float ecu_variavel;
 float fck_variavel;
 float epsilon_concreto_ultimo; 
 float epsilon_concreto_2;
-    void loopPrograma()
+
+struct dadosCereal 
+{
+
+float variavel_fck, variavel_gama, variavel_beta;
+
+template <class Archive> 
+void serialize(Archive &ar) 
+{
+
+    ar(CEREAL_NVP(variavel_fck), CEREAL_NVP(variavel_gama), CEREAL_NVP(variavel_beta));
+
+}
+
+};
+
+
+void loopPrograma()
     {
         reforco.AdicionarBarra(-7.f, -17.f, 10.f);
         reforco.AdicionarBarra(+7.f, -17.f, 10.f);
@@ -337,6 +360,55 @@ float epsilon_concreto_2;
 
                 ImGui::End(); // Finaliza a janela do gráfico
             }
+            dadosCereal salvar;
+            if(janelaSalvar) 
+            {   
+                
+                
+                ImGui::Begin("Aba de Salvamento de Informações");   
+
+                ImGui::InputFloat("FCK", &salvar.variavel_fck);
+                ImGui::InputFloat("BETA", &salvar.variavel_beta);
+                ImGui::InputFloat("GAMA", &salvar.variavel_gama);
+
+               
+                    if(ImGui::Button("Salvar")) 
+                    {
+                        std::ofstream file("dados.json");
+                        cereal::JSONOutputArchive archive(file);
+
+                        archive(CEREAL_NVP(salvar));
+
+                        
+                    }
+
+                    if(ImGui::Button("Carregar"))
+                    {
+                        std::ifstream file("dados.json");
+                        
+                        if(file) {
+                            cereal::JSONInputArchive archive(file);
+                            archive(CEREAL_NVP(salvar));
+                        }
+                        std::cout << "FCK: " << salvar.variavel_fck 
+                        << " | BETA: " << salvar.variavel_beta 
+                        << " | GAMA: " << salvar.variavel_gama << std::endl;
+                        
+                        
+                    }
+
+
+                   
+
+                
+
+                
+                ImGui::End(); // Finaliza a janela do gráfico
+                    
+
+            }
+            
+
 
             /* if (janelaConcreto)
              {

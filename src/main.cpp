@@ -117,50 +117,396 @@ struct GraficoEsfxDef
 	vector<float> momento;
 };
 
-void renderizacaoPoligonal(vector<Ponto>, string, string);
-void renderizacaoBarras(vector<Ponto>, string);
-void exibirDadosSecaoComposta(Secao);
-vector<Ponto> adicionaVertices(vector<Ponto>);
-Ponto calculaIntersecao(Ponto, Ponto, float);
-VetoresAcimaAbaixo corteLinha(vector<Ponto>, float);
-float yMaximo(vector<Ponto>);
-float yMinimo(vector<Ponto>);
-float area(vector<Ponto>, vector<Ponto>);
-ParametrosConcreto calculaParametrosConcreto(float, float);
-ParametrosAcoPassivo calculaParametrosAcoPassivo(float, float, float);
-AlturasDeformacao calculaAlturasDeformacao(Materiais, Poligonal, float, float);
-float normalConcretoRetangulo(Materiais, float, float, float);
-float momentoConcretoRetangulo(Materiais, float, float, float);
-float normalConcretoParabola(Materiais, AlturasDeformacao, float, float, float);
-float momentoConcretoParabola(Materiais, AlturasDeformacao, float, float, float);
-float forcaNormalConcreto(Materiais, GeometriaSecao, AlturasDeformacao);
-float momentoConcreto(Materiais, GeometriaSecao, AlturasDeformacao);
-float tensaoAcoPassivo(Materiais, float);
-float forcaNormalAcoPassivo(Materiais, GeometriaSecao, float, float);
-float momentoAcoPassivo(Materiais, GeometriaSecao, float, float);
-float forcaMaximaCompressao(Materiais, GeometriaSecao);
-float forcaMaximaTracao(Materiais, GeometriaSecao);
-float equilibrioNormalSecao(EsforcosInternos, float);
-float equilibrioMomentoSecao(EsforcosInternos, float);
-GraficoEsfxDef graficoEsforcoDeformacao(Secao, float);
+void renderizacaoPoligonal(vector<Ponto> vertices, string nomeVertices, string nomePoligonal);
+void renderizacaoBarras(vector<Ponto> vertices, string nomeVerticesBarras);
+void exibirDadosSecaoComposta(Secao secaoComposta);
+vector<Ponto> adicionaVertices(vector<Ponto> verticesColetados);
+Ponto calculaIntersecao(Ponto p1, Ponto p2, float yCorte);
+VetoresAcimaAbaixo corteLinha(vector<Ponto> vertices, float yCorte);
+float yMaximo(vector<Ponto> verticesPoligonal);
+float yMinimo(vector<Ponto> verticesPoligonal);
+float area(vector<Ponto> verticesPoligonal, vector<Ponto> verticesPoligonalVazada);
+ParametrosConcreto calculaParametrosConcreto(float fck, float gamaC);
+ParametrosAcoPassivo calculaParametrosAcoPassivo(float fyk, float gamaY, float esY);
+AlturasDeformacao calculaAlturasDeformacao(Materiais materiais, Poligonal poligono, float eps1, float eps2);
+float normalConcretoRetangulo(Materiais materiais, float c1, float c2, float y);
+float momentoConcretoRetangulo(Materiais materiais, float c1, float c2, float y);
+float normalConcretoParabola(Materiais materiais, AlturasDeformacao alturas, float c1, float c2, float y);
+float momentoConcretoParabola(Materiais materiais, AlturasDeformacao alturas, float c1, float c2, float y);
+float forcaNormalConcreto(Materiais materiais, Poligonal pComprimido, AlturasDeformacao alturas);
+float calcularMomentoConcreto(Materiais materiais, Poligonal pComprimido, AlturasDeformacao alturas);
+float tensaoAcoPassivo(Materiais materiais, float epi);
+float forcaNormalAcoPassivo(Materiais materiais, Poligonal secao, Reforco reforco, float eps1, float eps2);
+float calcularMomentoAcoPassivo(Materiais materiais, Poligonal secao, Reforco reforco, float eps1, float eps2);
+float forcaMaximaCompressao(Materiais materiais, Poligonal secao, Reforco reforco);
+float forcaMaximaTracao(Materiais materiais, Reforco reforco);
+float equilibrioNormalSecao(float normalConcreto, float normalAcoPassivo, float Nsd);
+float equilibrioMomentoSecao(float normalConcreto, float momentoAcoPassivo, float Msd);
+GraficoEsfxDef graficoEsforcoDeformacao(Secao secaoComposta, float eps2);
 Materiais construtorFck30CA50();
-Secao construtorSecao(vector<Ponto>, vector<Ponto>, vector<Ponto>, vector<float>, float, float, float);
-Secao construtorTriangulo(float, float, float);
-Secao construtorSecaoT(float, float, float);
+Secao construtorSecao(vector<Ponto> vertices, vector<Ponto> vVazados, vector<Ponto> vBarras,
+	vector<float> dBarras, float Nsd, float eps1, float eps2);
+Secao construtorTriangulo(float Nsd, float eps1, float eps2);
+Secao construtorSecaoT(float Nsd, float eps1, float eps2);
+float calcularSomatorioNormal(Materiais materiais, Poligonal secao, Reforco armadura, float epsA, float epsB, float Nsd);
+float calcularSomatorioMomento(Materiais materiais, Poligonal secao, Reforco armadura, float epsA, float epsB);
 
 int main()
 {
+	// Comparação conjunto de deformações e esforço normal
 	float Nsd = -1600;
-	float eps1 = -3.5;
-	float eps2 = 1.1154;
+	float eps1 = -3.5; // -3.5 N1600 // -3.4397 N2000 // -0.49159 N+100
+	float eps2 = 1.1154; // 1.1154 N1600 // -0.0800436 N2000 //  N+100
 	Secao secaoComposta = construtorSecaoT(Nsd, eps1, eps2);
 
 	exibirDadosSecaoComposta(secaoComposta);
 
 	GraficoEsfxDef esfXdef = graficoEsforcoDeformacao(secaoComposta, eps2);
 
+	// Busca do conjunto de deformações 
+	Materiais materiais = construtorFck30CA50();
+	Poligonal secao;
+	Poligonal secaoComprimida;
+	Reforco armadura;
+	EsforcosInternos esforcos;
+
+	// Declaração e inicialização dos vértices
+	vector<Ponto> vColetados =
+	{ {7.5,0 - 30.1}, {10,30 - 30.1}, {20, 40 - 30.1}, {20, 50 - 30.1}, {-20, 50 - 30.1},
+		{-20, 40 - 30.1}, {-10,30 - 30.1}, {-7.5,0 - 30.1} };
+	vector<Ponto> vVazados = { {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0} };
+	vector<Ponto> vBarras = { {5,2.5 - 30.1}, {5,7.5 - 30.1}, {-5, 7.5 - 30.1}, {-5,2.5 - 30.1} };
+	vector<float> dBarras = { 1, 1, 1, 1 }; // em cm
+
+	// Declaração e inicialização da poligonal e reforco
+	secao.verticesPoligonal = vColetados;
+	secao.verticesPoligonalVazada = vVazados;
+	secao.yMaximo = yMaximo(secao.verticesPoligonal);
+	secao.yMinimo = yMinimo(secao.verticesPoligonal);
+	secao.hSecao = secao.yMaximo - secao.yMinimo;
+	secao.area = area(secao.verticesPoligonal, secao.verticesPoligonalVazada);
+	armadura.barras = vBarras;
+	armadura.diametros = dBarras;
+
+	// Compressão e tração máximas
+	esforcos.maxCompressao = forcaMaximaCompressao(materiais, secao, armadura);
+	esforcos.maxTracao = forcaMaximaTracao(materiais, armadura);
+
+	if (Nsd >= esforcos.maxCompressao && Nsd <= esforcos.maxTracao)
+	{
+		Materiais materiaisMrd = construtorFck30CA50();
+		Poligonal secaoMrd;
+		Poligonal secaoComprimidaMrd;
+		Reforco armaduraMrd;
+
+		cout << "\nNsd dentro do limite: "
+			<< esforcos.maxCompressao << " <= " << Nsd << " <= " << esforcos.maxTracao << endl;
+
+		secaoMrd.verticesPoligonal = vColetados;
+		secaoMrd.verticesPoligonalVazada = vVazados;
+		secaoMrd.yMaximo = yMaximo(secaoMrd.verticesPoligonal);
+		secaoMrd.yMinimo = yMinimo(secaoMrd.verticesPoligonal);
+		secaoMrd.hSecao = secaoMrd.yMaximo - secaoMrd.yMinimo;
+		secaoMrd.area = area(secaoMrd.verticesPoligonal, secaoMrd.verticesPoligonalVazada);
+		armaduraMrd.barras = vBarras;
+		armaduraMrd.diametros = dBarras;
+
+
+		// =================== Verificação somatorio entre a regiao 1-2 ===================
+		// Determinação das deformações da curvatura limite entre a região 1-2
+		float eps1 = -(materiaisMrd.concreto.epsUltimo);
+		float eps2 = 0;
+
+		cout << "\n--------------------------------------------" << endl;
+		cout << "Regiao 1-2" << endl;
+		cout << "eps1: " << eps1 << endl;
+		cout << "eps2: " << eps2 << endl;
+
+		float somatorioNormal12 = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, eps1, eps2, Nsd);
+
+		cout << "sN1-2: " << somatorioNormal12 << endl;
+
+
+		// =================== Verificação somatorio regiao 2-3 ===================
+		// Calculo da dimensao d 
+		float yBarrasMin = 0;
+		for (size_t i = 0; i < armadura.barras.size(); i++)
+		{
+			if (armadura.barras[i].y <= yBarrasMin)
+				yBarrasMin = vBarras[i].y;
+		}
+
+		float d = secaoMrd.yMaximo - yBarrasMin;
+		cout << "\n--------------------------------------------" << endl;
+		cout << "Regiao 2-3" << endl;
+		cout << "d: " << d << endl;
+
+		// Determinação das deformações da curvatura limite entre a região 2-3 
+		// eps2 = (eps(Min ap.y) - eps1) * (hSecao/d) + eps1;
+		eps1 = -(materiais.concreto.epsUltimo);
+		eps2 = ((10 - eps1) * (secaoMrd.hSecao / d)) + eps1;
+
+		cout << "eps1: " << eps1 << endl;
+		cout << "eps2: " << eps2 << endl;
+
+		float somatorioNormal23 = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, eps1, eps2, Nsd);
+
+		cout << "sN2-3: " << somatorioNormal23 << endl;
+
+
+		// =================== Aplicação do método numérico da falsa posição ===================
+		int contIteracoes = 0;
+		int limiteIteracoes = 100;
+		float precisaoSoma = 0.001;
+		float somatorioNormal = precisaoSoma + 1;
+		float momentoResistente = 0;
+
+		if (somatorioNormal23 <= 0)
+		{
+			// falsa posição da região III
+			// fixa-se eps2 = ((10 - 3.5) * (secaoMrd.hSecao / d)) + 3.5;
+			// e varia eps1
+
+			cout << "\n--------------------------------------------" << endl;
+			cout << "Regiao III" << endl;
+
+			float epsB = ((10 - (-materiais.concreto.epsUltimo)) * (secaoMrd.hSecao / d)) + (-materiais.concreto.epsUltimo);
+			float ak = -(materiais.concreto.epsUltimo);
+			float bk = 10;
+			float ck = 0;
+
+			float fak = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, ak, epsB, Nsd);
+			float fbk = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, bk, epsB, Nsd);
+			//float fbk = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, bk, epsB, Nsd);
+			// float fbk = forcaMaximaTracao(materiais, armaduraMrd);
+
+			cout << "\nak: " << ak << endl;
+			cout << "bk: " << bk << endl;
+			cout << "fak: " << fak << endl;
+			cout << "fbk: " << fbk << endl;
+			cout << endl;
+
+			// variavel booleana para verificar se há uma raiz entre o intervalo de deformações
+			bool valido = (fak * fbk < 0);
+
+			if (!valido)
+				cout << "Erro: Metodo da falsa posicao requer fak*fbk < 0 para garantir uma raiz no intervalo";
+
+			while (valido && contIteracoes < limiteIteracoes && abs(somatorioNormal) > precisaoSoma)
+			{
+				contIteracoes++;
+
+				ck = bk - ((fbk * (bk - ak)) / (fbk - fak));
+
+				float fck = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, ck, epsB, Nsd);
+
+				bool verificaSinal = (fak * fck > 0);
+
+				if (verificaSinal)
+				{
+					ak = ck;
+					fak = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, ak, epsB, Nsd);
+				}
+				else
+				{
+					bk = ck;
+					fbk = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, bk, epsB, Nsd);
+				}
+
+				somatorioNormal = fck;
+
+				cout << "\nsN: " << somatorioNormal << endl;
+				cout << "ak: " << ak << endl;
+				cout << "bk: " << bk << endl;
+				cout << "ck: " << ck << endl;
+			}
+
+			momentoResistente = calcularSomatorioMomento(materiais, secaoMrd, armaduraMrd, ck, epsB);
+
+			cout << "\n------------------RESULTADOS------------------" << endl;
+			cout << "contIter: " << contIteracoes << endl;
+			cout << "epsA: " << ck << endl;
+			cout << "epsB: " << epsB << endl;
+			cout << "Mrd: " << momentoResistente << endl;
+
+		}
+		else if (somatorioNormal12 <= 0)
+		{
+			// falsa posição da região II
+			// fixa-se eps1 = -3.5
+			// e varia eps2 entre eps2 = ((10 - 3.5) * (secaoMrd.hSecao / d)) + 3.5 e eps = 0
+
+			cout << "\n--------------------------------------------" << endl;
+			cout << "Regiao II" << endl;
+
+			// Valores para ak e bk iniciais 
+			float epsA = -(materiais.concreto.epsUltimo);
+			float ak = 0;
+			float bk = 10;
+			float ck = 0;
+
+			float fak = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, epsA, ak, Nsd);
+			float fbk = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, epsA, bk, Nsd);
+
+			cout << "\nak: " << ak << endl;
+			cout << "bk: " << bk << endl;
+			cout << "fak: " << fak << endl;
+			cout << "fbk: " << fbk << endl;
+			cout << endl;
+
+			// variavel booleana para verificar se há uma raiz entre o intervalo de deformações
+			bool valido = (fak * fbk < 0);
+
+			if (!valido)
+				cout << "Erro: Metodo da falsa posicao requer fak*fbk < 0 para garantir uma raiz no intervalo";
+
+			while (valido && contIteracoes < limiteIteracoes && abs(somatorioNormal) > precisaoSoma)
+			{
+				contIteracoes++;
+
+				ck = bk - ((fbk * (bk - ak)) / (fbk - fak));
+
+				float fck = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, epsA, ck, Nsd);
+
+				bool verificaSinal = (fak * fck > 0);
+
+				if (verificaSinal)
+				{
+					ak = ck;
+					fak = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, epsA, ak, Nsd);
+				}
+				else
+				{
+					bk = ck;
+					fbk = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, epsA, bk, Nsd);
+				}
+
+				somatorioNormal = fck;
+
+				cout << "\nsN: " << somatorioNormal << endl;
+				cout << "ak: " << ak << endl;
+				cout << "bk: " << bk << endl;
+				cout << "ck: " << ck << endl;
+			}
+
+			momentoResistente = calcularSomatorioMomento(materiais, secaoMrd, armaduraMrd, epsA, ck);
+
+			cout << "\n------------------RESULTADOS------------------" << endl;
+			cout << "contIter: " << contIteracoes << endl;
+			cout << "epsA: " << epsA << endl;
+			cout << "epsB: " << ck << endl;
+			cout << "Mrd: " << momentoResistente << endl;
+		}
+		else
+		{
+			// falsa posição da região I
+			// varia-se a inclinação da reta de deformação
+			// eps1 varia entre -3.5 e -2
+			// eps2 varia entre 0 e -2
+
+			cout << "\n--------------------------------------------" << endl;
+			cout << "Regiao I" << endl;
+
+			// Regiao I, o polo de ruina B está sempre encurtado em 2 por mil
+			// y - yp = a(x-xp)
+			// xp,yp (3*h/7, -2)
+			// y1 = yp + a(x-150/7) = -2 + a(-150/7)
+			// y2 = yp + a(x-150/7) = -2 + a(50 - 150/7)
+
+			// a0 = 0 - (-3.5) / 50 = 0.07
+			// a1 = -2 - (-2) / 50 = 0 
+
+			// Inicializa as variáveis do método numérico
+			float ak = 0.07;
+			float bk = 0;
+			float ck = 0;
+
+			float epsAak = -2 + ak * (-secaoMrd.hSecao * 3 / 7);
+			float epsBak = -2 + ak * (secaoMrd.hSecao - secaoMrd.hSecao * 3 / 7);
+			float fak = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, epsAak, epsBak, Nsd);
+
+			float epsAbk = -2 + bk * (-secaoMrd.hSecao * 3 / 7);
+			float epsBbk = -2 + bk * (secaoMrd.hSecao - secaoMrd.hSecao * 3 / 7);
+			float fbk = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, epsAbk, epsBbk, Nsd);
+
+			float epsAck = 0;
+			float epsBck = 0;
+
+			cout << "\nak: " << ak << endl;
+			cout << "bk: " << bk << endl;
+			cout << "epsAak: " << epsAak << endl;
+			cout << "epsBak: " << epsAbk << endl;
+			cout << "epsAbk: " << epsAbk << endl;
+			cout << "epsBbk: " << epsBbk << endl;
+			cout << "fak: " << fak << endl;
+			cout << "fbk: " << fbk << endl;
+			cout << endl;
+
+			// Verifica se há raiz no intervalo
+			bool valido = (fak * fbk < 0);
+
+			if (!valido)
+				cout << "Erro: Metodo da falsa posicao requer fak*fbk < 0 para garantir uma raiz no intervalo";
+
+			while (valido && contIteracoes < limiteIteracoes && abs(somatorioNormal) > precisaoSoma)
+			{
+				contIteracoes++;
+
+				// Atualiza ck
+				ck = bk - ((fbk * (bk - ak)) / (fbk - fak));
+				epsAck = -2 + ck * (-secaoMrd.hSecao * 3 / 7);
+				epsBck = -2 + ck * (secaoMrd.hSecao - secaoMrd.hSecao * 3 / 7);
+
+				float fck = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, epsAck, epsBck, Nsd);
+
+				// Verifica o sinal e ajusta os limites
+				if (fak * fck > 0)
+				{
+					ak = ck;
+					float epsAak = -2 + ak * (-secaoMrd.hSecao * 3 / 7);
+					float epsBak = -2 + ak * (secaoMrd.hSecao - secaoMrd.hSecao * 3 / 7);
+					fak = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, epsAak, epsBak, Nsd);
+				}
+				else
+				{
+					float epsAbk = -2 + bk * (-secaoMrd.hSecao * 3 / 7);
+					float epsBbk = -2 + bk * (secaoMrd.hSecao - secaoMrd.hSecao * 3 / 7);
+					float fbk = calcularSomatorioNormal(materiais, secaoMrd, armaduraMrd, epsAbk, epsBbk, Nsd);
+				}
+
+				somatorioNormal = fck;
+
+				cout << "\nsN: " << somatorioNormal << endl;
+				cout << "ak: " << ak << endl;
+				cout << "bk: " << bk << endl;
+				cout << "ck: " << ck << endl;
+			}
+
+			epsAck = -2 + ck * (-secaoMrd.hSecao * 3 / 7);
+			epsBck = -2 + ck * (secaoMrd.hSecao - secaoMrd.hSecao * 3 / 7);
+
+			// Cálculo do momento resistente
+			momentoResistente = calcularSomatorioMomento(materiais, secaoMrd, armaduraMrd, epsAck, epsBck);
+
+			cout << "\n------------------RESULTADOS------------------" << endl;
+			cout << "contIter: " << contIteracoes << endl;
+			cout << "ck: " << ck << endl;
+			cout << "epsA: " << epsAck << endl;
+			cout << "epsB: " << epsBck << endl;
+			cout << "Mrd: " << momentoResistente << endl;
+		}
+
+		if (contIteracoes == limiteIteracoes)
+			cout << "Equacao de equilibrio nao convergiu dentro do limite de iteracoes" << endl;
+	}
+	else
+	{
+		cout << "Esforco normal inadimissivel" << endl;
+	}
+
 	// Initialization
 	//--------------------------------------------------------------------------------------
+	cout << endl;
 	int screenWidth = 1280;
 	int screenHeight = 800;
 
@@ -662,10 +1008,10 @@ float momentoConcretoParabola(Materiais materiais, AlturasDeformacao alturas, fl
 	return mctp * 1000;
 }
 
-float forcaNormalConcreto(Materiais materiais, GeometriaSecao geometria, AlturasDeformacao alturas)
+float forcaNormalConcreto(Materiais materiais, Poligonal pComprimido, AlturasDeformacao alturas)
 {
-	vector<Ponto> vetTempAcima = geometria.poligonoComprimido.vetoresAcimaAbaixo.verticesAcima;
-	vector<Ponto> vetTempAbaixo = geometria.poligonoComprimido.vetoresAcimaAbaixo.verticesAbaixo;
+	vector<Ponto> vetTempAcima = pComprimido.vetoresAcimaAbaixo.verticesAcima;
+	vector<Ponto> vetTempAbaixo = pComprimido.vetoresAcimaAbaixo.verticesAbaixo;
 
 	float NC = 0;
 	float NCTP = 0;
@@ -748,10 +1094,10 @@ float forcaNormalConcreto(Materiais materiais, GeometriaSecao geometria, Alturas
 	return NC = -(NCTP + NCTR);
 }
 
-float momentoConcreto(Materiais materiais, GeometriaSecao geometria, AlturasDeformacao alturas)
+float calcularMomentoConcreto(Materiais materiais, Poligonal pComprimido, AlturasDeformacao alturas)
 {
-	vector<Ponto> vetTempAcima = geometria.poligonoComprimido.vetoresAcimaAbaixo.verticesAcima;
-	vector<Ponto> vetTempAbaixo = geometria.poligonoComprimido.vetoresAcimaAbaixo.verticesAbaixo;
+	vector<Ponto> vetTempAcima = pComprimido.vetoresAcimaAbaixo.verticesAcima;
+	vector<Ponto> vetTempAbaixo = pComprimido.vetoresAcimaAbaixo.verticesAbaixo;
 
 	float MC = 0;
 	float MCTR = 0;
@@ -849,19 +1195,31 @@ float tensaoAcoPassivo(Materiais materiais, float epi)
 	return tensaoAcoPassivo;
 }
 
-float forcaNormalAcoPassivo(Materiais materiais, GeometriaSecao geometria, float eps1, float eps2)
+float forcaNormalAcoPassivo(Materiais materiais, Poligonal secao, Reforco reforco, float eps1, float eps2)
 {
 	float NY = 0;
 
-	float k = (eps2 - eps1) / geometria.secao.hSecao;
+	float k = (eps2 - eps1) / secao.hSecao;
 
-	for (size_t i = 0; i < geometria.reforco.barras.size(); i++)
+	float deformacaoBarra = 0;
+
+	for (size_t i = 0; i < reforco.barras.size(); i++)
 	{
-		float deformacaoBarra = (k * (geometria.secao.yMaximo - geometria.reforco.barras[i].y)) + eps1;
+		if (eps2 < 10)
+		{
+			deformacaoBarra = (k * (secao.yMaximo - reforco.barras[i].y)) + eps1;
+		}
+		else
+		{
+			deformacaoBarra = (k * (secao.yMaximo - reforco.barras[i].y)) + eps1;
+
+			if (deformacaoBarra > 10)
+				deformacaoBarra = 10;
+		}
 
 		float tensao = tensaoAcoPassivo(materiais, deformacaoBarra); // MPa
 
-		float areaBarra = pow(geometria.reforco.diametros[i], 2) * M_PI / 4; // cm^2
+		float areaBarra = pow(reforco.diametros[i], 2) * M_PI / 4; // cm^2
 
 		float ny = tensao * areaBarra / 10; // kN
 
@@ -871,22 +1229,34 @@ float forcaNormalAcoPassivo(Materiais materiais, GeometriaSecao geometria, float
 	return NY;
 }
 
-float momentoAcoPassivo(Materiais materiais, GeometriaSecao geometria, float eps1, float eps2)
+float calcularMomentoAcoPassivo(Materiais materiais, Poligonal secao, Reforco reforco, float eps1, float eps2)
 {
 	float MY = 0;
 
-	float k = (eps2 - eps1) / geometria.secao.hSecao;
+	float k = (eps2 - eps1) / secao.hSecao;
 
-	for (size_t i = 0; i < geometria.reforco.barras.size(); i++)
+	float deformacaoBarra = 0;
+
+	for (size_t i = 0; i < reforco.barras.size(); i++)
 	{
-		float deformacaoBarra = (k * (geometria.secao.yMaximo - geometria.reforco.barras[i].y)) + eps1;
+		if (eps2 < 10)
+		{
+			deformacaoBarra = (k * (secao.yMaximo - reforco.barras[i].y)) + eps1;
+		}
+		else
+		{
+			deformacaoBarra = (k * (secao.yMaximo - reforco.barras[i].y)) + eps1;
+
+			if (deformacaoBarra > 10)
+				deformacaoBarra = 10;
+		}
 
 		float tensao = tensaoAcoPassivo(materiais, deformacaoBarra);
 
-		float areaBarra = pow(geometria.reforco.diametros[i], 2) * M_PI / 4;
+		float areaBarra = pow(reforco.diametros[i], 2) * M_PI / 4;
 
 		float ny = tensao * areaBarra / 10; // kN
-		float my = -ny * (geometria.reforco.barras[i].y / 100); // kN*cm^2/100 = kN*m
+		float my = -ny * (reforco.barras[i].y / 100); // kN*cm^2/100 = kN*m
 
 		MY += my; // kN*m
 	}
@@ -894,35 +1264,35 @@ float momentoAcoPassivo(Materiais materiais, GeometriaSecao geometria, float eps
 	return MY;
 }
 
-float forcaMaximaCompressao(Materiais materiais, GeometriaSecao geometria)
+float forcaMaximaCompressao(Materiais materiais, Poligonal secao, Reforco reforco)
 {
 	float NMIN = 0;
 	float Nap = 0;
 
-	for (size_t i = 0; i < geometria.reforco.barras.size(); i++)
+	for (size_t i = 0; i < reforco.barras.size(); i++)
 	{
 		float tensao = tensaoAcoPassivo(materiais, -(materiais.concreto.epsLimite));
 
-		float areaBarra = pow(geometria.reforco.diametros[i], 2) * M_PI / 4; // cm^2
+		float areaBarra = pow(reforco.diametros[i], 2) * M_PI / 4; // cm^2
 
 		float nap = tensao * areaBarra / 10; // kN
 
 		Nap += nap;
 	}
 
-	return NMIN = -(geometria.secao.area * materiais.concreto.fcd * materiais.concreto.multFcd) * 1000 + Nap;
+	return NMIN = -(secao.area * materiais.concreto.fcd * materiais.concreto.multFcd) * 1000 + Nap;
 }
 
-float forcaMaximaTracao(Materiais materiais, GeometriaSecao geometria)
+float forcaMaximaTracao(Materiais materiais, Reforco reforco)
 {
 	float NMAX = 0;
 	float Nap = 0;
 
-	for (size_t i = 0; i < geometria.reforco.barras.size(); i++)
+	for (size_t i = 0; i < reforco.barras.size(); i++)
 	{
 		float tensao = tensaoAcoPassivo(materiais, 10.0f);
 
-		float areaBarra = pow(geometria.reforco.diametros[i], 2) * M_PI / 4; // cm^2
+		float areaBarra = pow(reforco.diametros[i], 2) * M_PI / 4; // cm^2
 
 		float nap = tensao * areaBarra / 10; // kN
 
@@ -932,14 +1302,14 @@ float forcaMaximaTracao(Materiais materiais, GeometriaSecao geometria)
 	return NMAX = Nap;
 }
 
-float equilibrioNormalSecao(EsforcosInternos esforcos, float Nsd)
+float equilibrioNormalSecao(float normalConcreto, float normalAcoPassivo, float Nsd)
 {
-	return esforcos.normalConcreto + esforcos.normalAcoPassivo - Nsd;
+	return normalConcreto + normalAcoPassivo - Nsd;
 }
 
-float equilibrioMomentoSecao(EsforcosInternos esforcos, float Msd)
+float equilibrioMomentoSecao(float momentoConcreto, float momentoAcoPassivo, float Msd)
 {
-	return esforcos.momentoConcreto + esforcos.momentoAcoPassivo - Msd;
+	return momentoConcreto + momentoAcoPassivo - Msd;
 }
 
 GraficoEsfxDef graficoEsforcoDeformacao(Secao secaoComposta, float eps2)
@@ -968,8 +1338,8 @@ GraficoEsfxDef graficoEsforcoDeformacao(Secao secaoComposta, float eps2)
 		secaoComposta.geometria.poligonoComprimido.vetoresAcimaAbaixo =
 			corteLinha(secaoComposta.geometria.poligonoComprimido.verticesPoligonal, secaoComposta.alturas.hEpsLimite);
 
-		normal[i] = forcaNormalConcreto(secaoComposta.materiais, secaoComposta.geometria, secaoComposta.alturas);
-		momento[i] = momentoConcreto(secaoComposta.materiais, secaoComposta.geometria, secaoComposta.alturas);
+		normal[i] = forcaNormalConcreto(secaoComposta.materiais, secaoComposta.geometria.poligonoComprimido, secaoComposta.alturas);
+		momento[i] = calcularMomentoConcreto(secaoComposta.materiais, secaoComposta.geometria.poligonoComprimido, secaoComposta.alturas);
 	}
 
 	temp.eps1 = EPS1;
@@ -1026,15 +1396,19 @@ Secao construtorSecao(vector<Ponto> vertices, vector<Ponto> vVazados, vector<Pon
 
 	// Declaração e inicialização para o corte nas alturas de inicialização
 	poligono.vetoresAcimaAbaixo = corteLinha(poligono.verticesPoligonal, alturasDeformacao.hLN);
-	poligonoComprimido.verticesPoligonal = poligono.vetoresAcimaAbaixo.verticesAcima;
-	poligonoComprimido.vetoresAcimaAbaixo = corteLinha(poligonoComprimido.verticesPoligonal, alturasDeformacao.hEpsLimite);
-	poligonoComprimido.verticesPoligonalVazada = { {0,0} };
-	poligonoComprimido.vetoresAcimaAbaixoVazada.verticesAcima = { {0,0} };
-	poligonoComprimido.vetoresAcimaAbaixoVazada.verticesAbaixo = { {0,0} };
-	poligonoComprimido.yMaximo = yMaximo(poligonoComprimido.verticesPoligonal);
-	poligonoComprimido.yMinimo = yMinimo(poligonoComprimido.verticesPoligonal);
-	poligonoComprimido.hSecao = poligonoComprimido.yMaximo - poligonoComprimido.yMinimo;
-	poligonoComprimido.area = area(poligonoComprimido.verticesPoligonal, poligonoComprimido.verticesPoligonalVazada);
+
+	if (eps1 < 0)
+	{
+		poligonoComprimido.verticesPoligonal = poligono.vetoresAcimaAbaixo.verticesAcima;
+		poligonoComprimido.vetoresAcimaAbaixo = corteLinha(poligonoComprimido.verticesPoligonal, alturasDeformacao.hEpsLimite);
+		poligonoComprimido.verticesPoligonalVazada = { {0,0} };
+		poligonoComprimido.vetoresAcimaAbaixoVazada.verticesAcima = { {0,0} };
+		poligonoComprimido.vetoresAcimaAbaixoVazada.verticesAbaixo = { {0,0} };
+		poligonoComprimido.yMaximo = yMaximo(poligonoComprimido.verticesPoligonal);
+		poligonoComprimido.yMinimo = yMinimo(poligonoComprimido.verticesPoligonal);
+		poligonoComprimido.hSecao = poligonoComprimido.yMaximo - poligonoComprimido.yMinimo;
+		poligonoComprimido.area = area(poligonoComprimido.verticesPoligonal, poligonoComprimido.verticesPoligonalVazada);
+	}
 
 	// Declaração e inicialização da geometria
 	geometria.secao = poligono;
@@ -1042,16 +1416,16 @@ Secao construtorSecao(vector<Ponto> vertices, vector<Ponto> vVazados, vector<Pon
 	geometria.poligonoComprimido = poligonoComprimido;
 
 	// Declaração e inicialização dos esforços
-	esforcos.maxCompressao = forcaMaximaCompressao(materiais, geometria);
-	esforcos.maxTracao = forcaMaximaTracao(materiais, geometria);
-	esforcos.normalConcreto = forcaNormalConcreto(materiais, geometria, alturasDeformacao);
-	esforcos.momentoConcreto = momentoConcreto(materiais, geometria, alturasDeformacao);
-	esforcos.normalAcoPassivo = forcaNormalAcoPassivo(materiais, geometria, eps1, eps2);
-	esforcos.momentoAcoPassivo = momentoAcoPassivo(materiais, geometria, eps1, eps2);
+	esforcos.maxCompressao = forcaMaximaCompressao(materiais, poligono, armadura);
+	esforcos.maxTracao = forcaMaximaTracao(materiais, armadura);
+	esforcos.normalConcreto = forcaNormalConcreto(materiais, poligonoComprimido, alturasDeformacao);
+	esforcos.momentoConcreto = calcularMomentoConcreto(materiais, poligonoComprimido, alturasDeformacao);
+	esforcos.normalAcoPassivo = forcaNormalAcoPassivo(materiais, poligono, armadura, eps1, eps2);
+	esforcos.momentoAcoPassivo = calcularMomentoAcoPassivo(materiais, poligono, armadura, eps1, eps2);
 
 	// Declaração e inicialização dos somatorios
-	somatorios.somatorioNormal = equilibrioNormalSecao(esforcos, Nsd);
-	somatorios.somatorioMomento = equilibrioMomentoSecao(esforcos, 0);
+	somatorios.somatorioNormal = equilibrioNormalSecao(esforcos.normalConcreto, esforcos.normalAcoPassivo, Nsd);
+	somatorios.somatorioMomento = equilibrioMomentoSecao(esforcos.momentoConcreto, esforcos.momentoAcoPassivo, 0);
 
 	// Declaração e inicialização do registro Secao
 	secaoComposta = { materiais, geometria, alturasDeformacao, esforcos, somatorios };
@@ -1080,6 +1454,12 @@ Secao construtorTriangulo(float Nsd, float eps1, float eps2)
 
 Secao construtorSecaoT(float Nsd, float eps1, float eps2)
 {
+	/*
+	float Nsd = -1600;
+	float eps1 = -3.5;
+	float eps2 = 1.1154;
+	*/
+
 	// Declaração e inicialização dos vértices
 	vector<Ponto> vColetados =
 	{ {7.5,0 - 30.1}, {10,30 - 30.1}, {20, 40 - 30.1}, {20, 50 - 30.1}, {-20, 50 - 30.1},
@@ -1091,4 +1471,73 @@ Secao construtorSecaoT(float Nsd, float eps1, float eps2)
 	Secao secaoComposta = construtorSecao(vColetados, vVazados, vBarras, dBarras, Nsd, eps1, eps2);
 
 	return secaoComposta;
+}
+
+float calcularSomatorioNormal(Materiais materiais, Poligonal secao, Reforco armadura, float epsA, float epsB, float Nsd)
+{
+	float somatorioNormal = 0;
+
+	if (epsA == epsB)
+	{
+		return somatorioNormal = forcaMaximaCompressao(materiais, secao, armadura);
+	}
+
+	// Determinação das alturas relativas à curvatura limite entre a região
+	AlturasDeformacao alturas = calculaAlturasDeformacao(materiais, secao, epsA, epsB);
+
+	//cout << "\nxln: " << alturas.xAlpha << endl;
+	//cout << "xEpc2: " << alturas.xEpsLimite << endl;
+	//cout << "xEpcu: " << alturas.xEpsUltimo << endl;
+	//cout << "hln: " << alturas.hLN << endl;
+	//cout << "hEpc2: " << alturas.hEpsLimite << endl;
+	//cout << "hEcpu: " << alturas.hEpsUltimo << endl;
+
+	// Divisão da secao entre as áreas comprimidas, comprimidas parabola e comprimidas retangulo da regiao
+	Poligonal secaoComprimida;
+	secao.vetoresAcimaAbaixo = corteLinha(secao.verticesPoligonal, alturas.hLN);
+	secaoComprimida.verticesPoligonal = secao.vetoresAcimaAbaixo.verticesAcima;
+	secaoComprimida.vetoresAcimaAbaixo = corteLinha(secaoComprimida.verticesPoligonal, alturas.hEpsLimite);
+
+	// Verificação do esforco normal e somatorio no limite entre a regiao
+
+	float normalConcreto = forcaNormalConcreto(materiais, secaoComprimida, alturas);
+	float normalAcoPassivo = forcaNormalAcoPassivo(materiais, secao, armadura, epsA, epsB);
+	somatorioNormal = equilibrioNormalSecao(normalConcreto, normalAcoPassivo, Nsd);
+
+	//cout << "normal concreto: " << normalConcreto << endl;
+	//cout << "normal aco: " << normalAcoPassivo << endl;
+	//cout << "somatorio: " << somatorioNormal << endl;
+
+	return somatorioNormal;
+}
+
+float calcularSomatorioMomento(Materiais materiais, Poligonal secao, Reforco armadura, float epsA, float epsB)
+{
+	// Determinação das alturas relativas à curvatura limite entre a região
+	AlturasDeformacao alturas = calculaAlturasDeformacao(materiais, secao, epsA, epsB);
+
+	//cout << "\nxln: " << alturas.xAlpha << endl;
+	//cout << "xEpc2: " << alturas.xEpsLimite << endl;
+	//cout << "xEpcu: " << alturas.xEpsUltimo << endl;
+	//cout << "hln: " << alturas.hLN << endl;
+	//cout << "hEpc2: " << alturas.hEpsLimite << endl;
+	//cout << "hEcpu: " << alturas.hEpsUltimo << endl;
+
+	// Divisão da secao entre as áreas comprimidas, comprimidas parabola e comprimidas retangulo da regiao
+	Poligonal secaoComprimida;
+	secao.vetoresAcimaAbaixo = corteLinha(secao.verticesPoligonal, alturas.hLN);
+	secaoComprimida.verticesPoligonal = secao.vetoresAcimaAbaixo.verticesAcima;
+	secaoComprimida.vetoresAcimaAbaixo = corteLinha(secaoComprimida.verticesPoligonal, alturas.hEpsLimite);
+
+	// Verificação do esforco normal e somatorio no limite entre a regiao
+
+	float momentoConcreto = calcularMomentoConcreto(materiais, secaoComprimida, alturas);
+	float momentoAcoPassivo = calcularMomentoAcoPassivo(materiais, secao, armadura, epsA, epsB);
+	float somatorioMomento = equilibrioMomentoSecao(momentoConcreto, momentoAcoPassivo, 0);
+
+	//cout << "normal concreto: " << normalConcreto << endl;
+	//cout << "normal aco: " << normalAcoPassivo << endl;
+	//cout << "somatorio: " << somatorioNormal << endl;
+
+	return somatorioMomento;
 }

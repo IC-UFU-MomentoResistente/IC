@@ -115,6 +115,81 @@ void tamanhoDinamico(const char* nomeJanela, float fatorX, float fatorY, float p
     ImGui::Begin(nomeJanela, nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration);
 
 }
+        
+void cantoDireito(const char* nome, float altura, float posY) {
+    ImGuiIO& io = ImGui::GetIO(); // Obtém as dimensões da tela
+
+    // Calcula a largura disponível para a tabela (máximo espaço da tela preta)
+    float larguraDisponivel = io.DisplaySize.x * 0.15f; // Ocupa 30% da largura da tela
+    float larguraMinima = 150.0f; // Largura mínima da tabela
+    float larguraTabela = (larguraDisponivel > larguraMinima) ? larguraDisponivel : larguraMinima;
+
+    // Define a posição no canto superior direito
+    ImVec2 posicaoTopoDireito = ImVec2(
+        io.DisplaySize.x - larguraTabela, // Move 10px para dentro da borda direita
+        posY  // Mantém a posição Y fixa
+    );
+
+    // Define a posição e o tamanho da janela
+    ImGui::SetNextWindowPos(posicaoTopoDireito, ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(larguraTabela, altura), ImGuiCond_Always);
+
+    // Criar a janela fixa no canto superior direito
+    ImGui::Begin(nome, nullptr,
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoTitleBar);
+
+    // Criando a tabela de pontos da seção transversal
+    if (ImGui::BeginTable("TabelaPontos", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, larguraTabela * 0.20f);
+        ImGui::TableSetupColumn("EIXO X", ImGuiTableColumnFlags_WidthFixed, larguraTabela * 0.40f);
+        ImGui::TableSetupColumn("EIXO Y", ImGuiTableColumnFlags_WidthFixed, larguraTabela * 0.40f);
+        ImGui::TableHeadersRow();
+
+        // Exemplo de dados (substitua com seus valores reais)
+        for (size_t i = 0; i < collectedPoints.size(); i++) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%d", static_cast<int>(i + 1));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("%.2f", collectedPoints[i].x);
+            ImGui::TableSetColumnIndex(2);
+            ImGui::Text("%.2f", collectedPoints[i].y);
+        }
+        ImGui::EndTable();
+    }
+
+    ImGui::End();
+}
+
+
+
+/* void cantoDireito(const char* nome, float x, float y, float posY) {
+    ImGuiIO& io = ImGui::GetIO(); // Obtém as dimensões da tela
+
+    // Defina o tamanho da janela
+    ImVec2 windowSize = ImVec2(x, y); // Ajuste o tamanho conforme necessário
+
+    // Calcula a posição para o canto superior direito
+    ImVec2 topRightPos = ImVec2(
+        io.DisplaySize.x - windowSize.x, // Largura da tela menos a largura da janela
+        posY  // Alinhado ao topo (sem margem)
+    );
+
+    // Define a posição e o tamanho da janela
+    ImGui::SetNextWindowPos(topRightPos, ImGuiCond_Always);
+    ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
+
+    // Criar a janela fixa no canto superior direito
+    ImGui::Begin(nome, nullptr, 
+        ImGuiWindowFlags_NoMove | 
+        ImGuiWindowFlags_NoResize | 
+        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
+
+        
+} */
 
 
 void IniciarInterface()
@@ -123,7 +198,7 @@ void IniciarInterface()
     int screenWidth = 1280;
     int screenHeight = 960;
 
-    InitWindow(screenWidth, screenHeight, "Software de cálculo de esforços em seções de concreto armado");
+    InitWindow(screenWidth, screenHeight, "SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO");
 
     if (!IsWindowReady()) // Verifique se a janela foi criada com sucesso
     {
@@ -161,11 +236,11 @@ void ShowAboutWindow()
     // Define fundo mais suave
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.15f, 0.15f, 0.15f, 0.9f)); // Cinza escuro
     float windowWidth = ImGui::GetWindowSize().x;
-    float textWidth = ImGui::CalcTextSize("SOFTWARE DE CÁLCULO DE ESFORÇOS EM SEÇÕES DE CONCRETO ARMADO").x;
+    float textWidth = ImGui::CalcTextSize("SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO").x;
     ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
 
     // Exibe o título
-    ImGui::Text("SOFTWARE DE CÁLCULO DE ESFORÇOS EM SEÇÕES DE CONCRETO ARMADO");
+    ImGui::Text("SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO");
 
     // Linha separadora estética
     ImGui::Spacing();
@@ -220,36 +295,54 @@ void ShowSecondaryMenuBar()
     {
         if (ImGui::BeginMenu("Seção Transversal"))
         {
-            ImGui::Begin("Inserir Dados", nullptr, ImGuiWindowFlags_NoTitleBar);
-            
-            ImGui::Text("Seção Transversal");
-            ImGui::SetNextItemWidth(50);
+            ImGui::Begin("Inserir Dados da Seção Transversal", nullptr, 
+                ImGuiWindowFlags_NoCollapse | 
+                ImGuiWindowFlags_NoResize | 
+                ImGuiWindowFlags_NoMove);
+        
+            // Input para número de pontos
+            ImGui::SetNextItemWidth(80);
             ImGui::InputInt("Número de Pontos", &numVertices);
-
-            if (numVertices != collectedPoints.size()) {
+        
+            // Impede valores negativos e ajuste de tamanho do vetor apenas quando necessário
+            if (numVertices < 0) numVertices = 0;
+            if (numVertices != static_cast<int>(collectedPoints.size())) {
                 collectedPoints.resize(numVertices);
             }
-
-            // Tabela de Coordenadas de Pontos
-            if (ImGui::BeginTable("Table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-                ImGui::SetNextItemWidth(50);
-                ImGui::TableSetupColumn("x");
-                ImGui::TableSetupColumn("y");
+        
+            ImGui::Spacing(); // Dá um pequeno espaçamento para organização
+        
+            // Botão para limpar todos os pontos
+            if (ImGui::Button("Limpar")) {
+                collectedPoints.clear();
+                numVertices = 0;
+            }
+        
+            ImGui::Spacing(); // Adiciona um espaçamento antes da tabela
+        
+            // Criando a tabela de pontos
+            if (ImGui::BeginTable("Tabela", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+                ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 50.0f);
+                ImGui::TableSetupColumn("EIXO X", ImGuiTableColumnFlags_WidthFixed, 120.0f);
+                ImGui::TableSetupColumn("EIXO Y", ImGuiTableColumnFlags_WidthFixed, 120.0f);
                 ImGui::TableHeadersRow();
-
-                for (int i = 0; i < collectedPoints.size(); i++) {
+        
+                for (size_t i = 0; i < collectedPoints.size(); i++) {
                     ImGui::TableNextRow();
-                    ImGui::SetNextItemWidth(50);
                     ImGui::TableSetColumnIndex(0);
-                    ImGui::InputFloat(("x" + std::to_string(i + 1)).c_str(), &collectedPoints[i].x);
+                    ImGui::Text("%d", static_cast<int>(i + 1));
+        
                     ImGui::TableSetColumnIndex(1);
-                    ImGui::SetNextItemWidth(50);
-                    ImGui::InputFloat(("y" + std::to_string(i + 1)).c_str(), &collectedPoints[i].y);
+                    ImGui::SetNextItemWidth(100);
+                    ImGui::InputFloat(("##X" + std::to_string(i)).c_str(), &collectedPoints[i].x, 0.1f, 1.0f, "%.2f");
+        
+                    ImGui::TableSetColumnIndex(2);
+                    ImGui::SetNextItemWidth(100);
+                    ImGui::InputFloat(("##Y" + std::to_string(i)).c_str(), &collectedPoints[i].y, 0.1f, 1.0f, "%.2f");
                 }
                 ImGui::EndTable();
             }
             ImGui::End();
-        
             ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("Materiais"))
@@ -867,6 +960,7 @@ void loopPrograma()
 {
     reforco.AdicionarBarra(-7.f, -17.f, 10.f);
     reforco.AdicionarBarra(+7.f, -17.f, 10.f);
+    
     while (!WindowShouldClose())
     {
         DrawFPS(20, 20);
@@ -905,7 +999,7 @@ void loopPrograma()
         }
 
         ShowSecondaryMenuBar();
-        tamanhoDinamico("Grafico", 0.9, 1, 0, 50);
+        tamanhoDinamico("Grafico", 0.85, 1, 0, 50);
         int ARR_SIZE = 2;
         float x_values[ARR_SIZE]; // teste
         float y_values[ARR_SIZE];
@@ -1011,8 +1105,7 @@ void loopPrograma()
         x_values[1] = valorMaior + (valorMaior - valorMenor) * 0.1;
 
         // Ajuste o código de desenho no gráfico
-        if (numPoints >= 3)
-        {
+       
             // Fechar os vetores adicionando o primeiro ponto ao final
             std::vector<Point> rotacionadosFechados = Rot;
             poligono.fecharPoligono(rotacionadosFechados);
@@ -1103,16 +1196,14 @@ void loopPrograma()
                 ImPlot::PlotLine("Polígono Rotacionado", xRot, yRot, rotacionadosFechados.size());
                 ImPlot::EndPlot();
             }
-        }
-        else
-        {
-            ImGui::Text("Insira pelo menos 3 vértices para formar um polígono.");
-        }
+        
 
         ImGui::End(); // Finaliza a janela do gráfico
 
-        dadosCereal salvar;
-        if (janelaSalvar)
+        cantoDireito("Pontos da Secao Transversal", 200, 50);
+            
+        // dadosCereal salvar;
+        /* if (janelaSalvar)
         {
 
             ImGui::Begin("Aba de Salvamento de Informações");
@@ -1143,7 +1234,7 @@ void loopPrograma()
                           << " | GAMA: " << salvar.variavel_gama << std::endl;
             }
             ImGui::End(); // Finaliza a janela do gráfico
-        }
+        } */
 
         /* if (janelaConcreto)
          {
@@ -1256,6 +1347,7 @@ void loopPrograma()
         }
         */
 
+        /*
         if (janelaDeformacaoAco)
         {
             ImGui::Begin("Janela do gráfico de Deformação do Aço", &janelaDeformacaoAco);
@@ -1284,7 +1376,7 @@ void loopPrograma()
 
             ImGui::End();
         }
-
+*/
         /*
            if (janelaPoligonoComprimido)
            {

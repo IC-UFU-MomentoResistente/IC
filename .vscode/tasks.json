@@ -7,8 +7,6 @@
             "command": "g++",
             "args": [
                 "-std=c++17",
-                "-g",
-                "-O0",
                 "-I", "include",
                 "-I", "lib/raylib/src",
                 "-I", "lib/imgui",
@@ -20,16 +18,15 @@
                 "-L", "lib/rlImGui/build",
                 "-o", "build/main.exe",
                 "src/main.cpp",
-                "src/poligono.cpp",
-                "src/concreto.cpp",
-                "src/reforco.cpp",
-                "src/point.cpp",
+                "src/view.cpp",
+                "src/controller.cpp",
+                "src/model.cpp",
                 "-l:libimgui.a",
                 "-l:libimplot.a",
                 "-l:libraylib.a",
                 "-l:librlImGui.a",
-                "-lwinmm",   // Adicionado para corrigir o erro
-                "-lgdi32"    // Adicionado para corrigir o erro
+                "-lwinmm",   
+                "-lgdi32"    
             ],
             "group": {
                 "kind": "build",

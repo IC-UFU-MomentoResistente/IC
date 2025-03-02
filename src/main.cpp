@@ -156,9 +156,9 @@ double calcularSomatorioMomento(Materiais materiais, Poligonal secao, Reforco ar
 int main()
 {
 	// Comparação conjunto de deformações e esforço normal
-	double Nsd = -2000;
-	double eps1 = -3.4397; // -3.5 N1600 // -3.4397 N2000 // -0.49159 N+100
-	double eps2 = -0.080436; //  N1600 // -0.080436 N2000 // 10.552 N+100
+	double Nsd = 100;
+	double eps1 = -0.49159; // -3.5 N1600 // -3.4397 N2000 // -0.49159 N+100
+	double eps2 = 10.552; //  N1600 // -0.080436 N2000 // 10.552 N+100
 	Secao secaoComposta = construtorSecaoT(Nsd, eps1, eps2);
 
 	exibirDadosSecaoComposta(secaoComposta);
@@ -258,41 +258,35 @@ int main()
 
 			double d = secao.yMaximo - yBarrasMin;
 
-			// Inicializa as coordenadas do polo da regiao I
 			double epcu = -(materiais.concreto.epsUltimo);
 			double epsu = 10;
-			double epsB = ((10 - epcu) * (secao.hSecao / d)) + epcu;
-			double xpRegiaoIII = d;
-			double ypRegiaoIII = epsu; // epsu
 
-			// Inicializa as variáveis do método numérico
-			double ak = 0;
-			double epsAak = ypRegiaoIII + ak * (-xpRegiaoIII);
-			double epsBak = ypRegiaoIII + ak * (secao.hSecao - xpRegiaoIII);
-			double fak = calcularSomatorioNormal(materiais, secao, armadura, epsAak, epsBak, Nsd);
+			// -3.5 <= epsA <= 10
+			// 10 <= epsB <= ((epsu - epcu) * (secao.hSecao / d)) + epcu;
 
-			double bk = (epsB - (-materiais.concreto.epsUltimo)) / secao.hSecao;
-			double epsAbk = ypRegiaoIII + bk * (-xpRegiaoIII);
-			double epsBbk = ypRegiaoIII + bk * (secao.hSecao - xpRegiaoIII);
-			double fbk = calcularSomatorioNormal(materiais, secao, armadura, epsAbk, epsBbk, Nsd);
+			double epsAminimo = epcu;
+			double epsBminimo = ((epsu - epsAminimo) * (secao.hSecao / d)) + epsAminimo;
+			double somatorioMinimo = calcularSomatorioNormal(materiais, secao, armadura, epsAminimo, epsBminimo, Nsd);
+
+			double epsAmaximo = epsu;
+			double epsBmaximo = ((epsu - epsAmaximo) * (secao.hSecao / d)) + epsAmaximo;
+			double somatorioMaximo = calcularSomatorioNormal(materiais, secao, armadura, epsAmaximo, epsBminimo, Nsd);
+
+			double ak = epsAminimo;
+			double epsAak = epsAminimo;
+			double epsBak = epsBminimo;
+			double fak = somatorioMinimo;
+
+			double bk = epsAmaximo;
+			double epsAbk = epsAmaximo;
+			double epsBbk = epsBmaximo;
+			double fbk = somatorioMaximo;
 
 			double ck = 0;
 			double epsAck = 0;
 			double epsBck = 0;
+			double fck = 0;
 
-			cout << "\n--------------------------------------------" << endl;
-			cout << "Regiao III" << endl;
-			cout << "\nak: " << ak << endl;
-			cout << "epsAak: " << epsAak << endl;
-			cout << "epsBak: " << epsBak << endl;
-			cout << "fak: " << fak << endl;
-			cout << "\nbk: " << bk << endl;
-			cout << "epsAbk: " << epsAbk << endl;
-			cout << "epsBbk: " << epsBbk << endl;
-			cout << "fbk: " << fbk << endl;
-			cout << endl;
-
-			// variavel booleana para verificar se há uma raiz entre o intervalo de deformações
 			bool valido = (fak * fbk < 0);
 
 			if (!valido)
@@ -303,48 +297,33 @@ int main()
 				contIteracoes++;
 
 				ck = bk - ((fbk * (bk - ak)) / (fbk - fak));
-				epsAck = ypRegiaoIII + ck * (-xpRegiaoIII);
-				epsBck = ypRegiaoIII + ck * (secao.hSecao - xpRegiaoIII);
-				double fck = calcularSomatorioNormal(materiais, secao, armadura, epsAck, epsBck, Nsd);
+				epsAck = ck;
+				epsBck = ((epsu - epsAck) * (secao.hSecao / d)) + epsAck;
+				fck = calcularSomatorioNormal(materiais, secao, armadura, epsAck, epsBck, Nsd);
 
 				bool verificaSinal = (fak * fck > 0);
 
 				if (verificaSinal)
 				{
 					ak = ck;
-					epsAak = ypRegiaoIII + ak * (-xpRegiaoIII);
-					epsBak = ypRegiaoIII + ak * (secao.hSecao - xpRegiaoIII);
+					epsAak = ak;
+					epsBak = ((epsu - epsAak) * (secao.hSecao / d)) + epsAak;
 					fak = calcularSomatorioNormal(materiais, secao, armadura, epsAak, epsBak, Nsd);
 				}
 				else
 				{
 					bk = ck;
-					epsAbk = ypRegiaoIII + bk * (-xpRegiaoIII);
-					epsBbk = ypRegiaoIII + bk * (secao.hSecao - xpRegiaoIII);
+					epsAbk = bk;
+					epsBbk = ((epsu - epsAbk) * (secao.hSecao / d)) + epsAbk;
 					fbk = calcularSomatorioNormal(materiais, secao, armadura, epsAbk, epsBbk, Nsd);
 				}
 
 				somatorioNormal = fck;
-
-				cout << "\nsN: " << somatorioNormal << endl;
-				cout << "\nak: " << ak << endl;
-				cout << "epsAak: " << epsAak << endl;
-				cout << "epsBak: " << epsBak << endl;
-				cout << "fak: " << fak << endl;
-				cout << "\nbk: " << bk << endl;
-				cout << "epsAbk: " << epsAbk << endl;
-				cout << "epsBbk: " << epsBbk << endl;
-				cout << "fbk: " << fbk << endl;
-				cout << "\nck: " << ck << endl;
-				cout << "epsAck: " << epsAck << endl;
-				cout << "epsBck: " << epsBck << endl;
-				cout << "fck: " << fck << endl;
-				cout << endl;
 			}
 
-			// Cálculo do momento resistente
-			epsAck = ypRegiaoIII + ck * (-xpRegiaoIII);
-			epsBck = ypRegiaoIII + ck * (secao.hSecao - xpRegiaoIII);
+			//// Cálculo do momento resistente
+			epsAck = ck;
+			epsBck = ((epsu - epsAck) * (secao.hSecao / d)) + epsAck;
 			momentoResistente = calcularSomatorioMomento(materiais, secao, armadura, epsAck, epsBck);
 
 			cout << "\n------------------RESULTADOS------------------" << endl;
@@ -352,6 +331,101 @@ int main()
 			cout << "epsA: " << epsAck << endl;
 			cout << "epsB: " << epsBck << endl;
 			cout << "Mrd: " << momentoResistente << endl;
+
+			//// Inicializa as coordenadas do polo da regiao I
+			//double epcu = -(materiais.concreto.epsUltimo);
+			//double epsu = 10;
+			//double epsB = ((10 - epcu) * (secao.hSecao / d)) + epcu;
+			//double xpRegiaoIII = d;
+			//double ypRegiaoIII = epsu; // epsu
+
+			//// Inicializa as variáveis do método numérico
+			//double ak = 0;
+			//double epsAak = ypRegiaoIII + ak * (-xpRegiaoIII);
+			//double epsBak = ypRegiaoIII + ak * (secao.hSecao - xpRegiaoIII);
+			//double fak = calcularSomatorioNormal(materiais, secao, armadura, epsAak, epsBak, Nsd);
+
+			//double bk = (epsB - (-materiais.concreto.epsUltimo)) / secao.hSecao;
+			//double epsAbk = ypRegiaoIII + bk * (-xpRegiaoIII);
+			//double epsBbk = ypRegiaoIII + bk * (secao.hSecao - xpRegiaoIII);
+			//double fbk = calcularSomatorioNormal(materiais, secao, armadura, epsAbk, epsBbk, Nsd);
+
+			//double ck = 0;
+			//double epsAck = 0;
+			//double epsBck = 0;
+
+			//cout << "\n--------------------------------------------" << endl;
+			//cout << "Regiao III" << endl;
+			//cout << "\nak: " << ak << endl;
+			//cout << "epsAak: " << epsAak << endl;
+			//cout << "epsBak: " << epsBak << endl;
+			//cout << "fak: " << fak << endl;
+			//cout << "\nbk: " << bk << endl;
+			//cout << "epsAbk: " << epsAbk << endl;
+			//cout << "epsBbk: " << epsBbk << endl;
+			//cout << "fbk: " << fbk << endl;
+			//cout << endl;
+
+			//// variavel booleana para verificar se há uma raiz entre o intervalo de deformações
+			//bool valido = (fak * fbk < 0);
+
+			//if (!valido)
+			//	cout << "Erro: Metodo da falsa posicao requer fak*fbk < 0 para garantir uma raiz no intervalo";
+
+			//while (valido && contIteracoes < limiteIteracoes && abs(somatorioNormal) > precisaoSoma)
+			//{
+			//	contIteracoes++;
+
+			//	ck = bk - ((fbk * (bk - ak)) / (fbk - fak));
+			//	epsAck = ypRegiaoIII + ck * (-xpRegiaoIII);
+			//	epsBck = ypRegiaoIII + ck * (secao.hSecao - xpRegiaoIII);
+			//	double fck = calcularSomatorioNormal(materiais, secao, armadura, epsAck, epsBck, Nsd);
+
+			//	bool verificaSinal = (fak * fck > 0);
+
+			//	if (verificaSinal)
+			//	{
+			//		ak = ck;
+			//		epsAak = ypRegiaoIII + ak * (-xpRegiaoIII);
+			//		epsBak = ypRegiaoIII + ak * (secao.hSecao - xpRegiaoIII);
+			//		fak = calcularSomatorioNormal(materiais, secao, armadura, epsAak, epsBak, Nsd);
+			//	}
+			//	else
+			//	{
+			//		bk = ck;
+			//		epsAbk = ypRegiaoIII + bk * (-xpRegiaoIII);
+			//		epsBbk = ypRegiaoIII + bk * (secao.hSecao - xpRegiaoIII);
+			//		fbk = calcularSomatorioNormal(materiais, secao, armadura, epsAbk, epsBbk, Nsd);
+			//	}
+
+			//	somatorioNormal = fck;
+
+			//	cout << "\nsN: " << somatorioNormal << endl;
+			//	cout << "\nak: " << ak << endl;
+			//	cout << "epsAak: " << epsAak << endl;
+			//	cout << "epsBak: " << epsBak << endl;
+			//	cout << "fak: " << fak << endl;
+			//	cout << "\nbk: " << bk << endl;
+			//	cout << "epsAbk: " << epsAbk << endl;
+			//	cout << "epsBbk: " << epsBbk << endl;
+			//	cout << "fbk: " << fbk << endl;
+			//	cout << "\nck: " << ck << endl;
+			//	cout << "epsAck: " << epsAck << endl;
+			//	cout << "epsBck: " << epsBck << endl;
+			//	cout << "fck: " << fck << endl;
+			//	cout << endl;
+			//}
+
+			//// Cálculo do momento resistente
+			//epsAck = ypRegiaoIII + ck * (-xpRegiaoIII);
+			//epsBck = ypRegiaoIII + ck * (secao.hSecao - xpRegiaoIII);
+			//momentoResistente = calcularSomatorioMomento(materiais, secao, armadura, epsAck, epsBck);
+
+			//cout << "\n------------------RESULTADOS------------------" << endl;
+			//cout << "contIter: " << contIteracoes << endl;
+			//cout << "epsA: " << epsAck << endl;
+			//cout << "epsB: " << epsBck << endl;
+			//cout << "Mrd: " << momentoResistente << endl;
 
 		}
 		else if (somatorioNormal12 <= 0)

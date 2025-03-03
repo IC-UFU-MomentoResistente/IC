@@ -13,26 +13,29 @@
 #include <cereal/types/string.hpp>
 #include <cereal/archives/json.hpp>
 
-
 /*
 - Tem que colocar unidade em tudo, tudo tem que ter a unidade, até os campos que o usuário digita. Eu prefiro que a unidade fique depoius do campo;
 - Tem que ficar tudo padrão tbm. Por exemplo, tem lugar que o eixo x do gráfico ta escrito epsilon, e tem lugar que ta escrito deformação;
 - tem que arrumar o desengho do grafico tbm, em vez de fazer de 0,1 em 0,1 a deformação, faz tipo, 60 intervalos;
 - Todo campo tem que ter um valor máximo e mínimo de entrada. Se o usuario digita fora desse valor, vc volta e coloca dentro.
 - Tem que dar uma passada geral e ir arrumando essas coisinhas.
-*/
 
+- ID FIXO E REDIMENSIONAR A JANELA
+- COLOCAR COMBINACAO
+- MUDAR AS POSIÇÕES DO DIAGRAMA DE TENSAO DEFORMAÇÃO
+- CONSOLE OUTPUT NORMAL - MOMENTO
+
+*/
 
 Reforco reforco;
 std::vector<Point> collectedPoints = {{-10, -20}, {10, -20}, {10, 20}, {-10, 20}};
 
-struct Combinacao 
+struct Combinacao
 {
     float Normal;
     float MsdX;
     float MsdY;
 };
-
 
 Poligono poligono;
 Poligono poligonoComprimido;
@@ -109,35 +112,35 @@ ImFont *font = nullptr;
 
 void renderizacaoBarras(std::vector<Point>, std::string);
 
-void tamanhoDinamico(const char* nomeJanela, float fatorX, float fatorY, float posX, float posY) 
+void tamanhoDinamico(const char *nomeJanela, float fatorX, float fatorY, float posX, float posY)
 {
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO &io = ImGui::GetIO();
 
     float screenWidth = io.DisplaySize.x;
     float screenHeight = io.DisplaySize.y;
 
     float janelaWidght = (io.DisplaySize.x * fatorX) - posX;
     float janelaHeight = (io.DisplaySize.y * fatorY) - posY;
-    
+
     ImGui::SetNextWindowSize(ImVec2(janelaWidght, janelaHeight), ImGuiCond_Always);
-    ImGui::SetNextWindowPos(ImVec2(posX,posY), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(posX, posY), ImGuiCond_Always);
 
     ImGui::Begin(nomeJanela, nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration);
-
 }
-        
-void cantoDireito(const char* nome, float altura, float posY) {
-    ImGuiIO& io = ImGui::GetIO(); // Obtém as dimensões da tela
+
+void cantoDireito(const char *nome, float altura, float posY)
+{
+    ImGuiIO &io = ImGui::GetIO(); // Obtém as dimensões da tela
 
     // Calcula a largura disponível para a tabela (máximo espaço da tela preta)
     float larguraDisponivel = io.DisplaySize.x * 0.15f; // Ocupa 30% da largura da tela
-    float larguraMinima = 150.0f; // Largura mínima da tabela
+    float larguraMinima = 150.0f;                       // Largura mínima da tabela
     float larguraTabela = (larguraDisponivel > larguraMinima) ? larguraDisponivel : larguraMinima;
 
     // Define a posição no canto superior direito
     ImVec2 posicaoTopoDireito = ImVec2(
         io.DisplaySize.x - larguraTabela, // Move 10px para dentro da borda direita
-        posY  // Mantém a posição Y fixa
+        posY                              // Mantém a posição Y fixa
     );
 
     // Define a posição e o tamanho da janela
@@ -146,20 +149,22 @@ void cantoDireito(const char* nome, float altura, float posY) {
 
     // Criar a janela fixa no canto superior direito
     ImGui::Begin(nome, nullptr,
-        ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_NoCollapse |
-        ImGuiWindowFlags_NoTitleBar);
+                 ImGuiWindowFlags_NoMove |
+                     ImGuiWindowFlags_NoResize |
+                     ImGuiWindowFlags_NoCollapse |
+                     ImGuiWindowFlags_NoTitleBar);
 
     // Criando a tabela de pontos da seção transversal
-    if (ImGui::BeginTable("TabelaPontos", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (ImGui::BeginTable("TabelaPontos", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+    {
         ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, larguraTabela * 0.20f);
         ImGui::TableSetupColumn("x (cm)", ImGuiTableColumnFlags_WidthFixed, larguraTabela * 0.40f);
         ImGui::TableSetupColumn("y (cm)", ImGuiTableColumnFlags_WidthFixed, larguraTabela * 0.40f);
         ImGui::TableHeadersRow();
 
         // Exemplo de dados (substitua com seus valores reais)
-        for (size_t i = 0; i < collectedPoints.size(); i++) {
+        for (size_t i = 0; i < collectedPoints.size(); i++)
+        {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("%d", static_cast<int>(i + 1));
@@ -173,8 +178,6 @@ void cantoDireito(const char* nome, float altura, float posY) {
 
     ImGui::End();
 }
-
-
 
 /* void cantoDireito(const char* nome, float x, float y, float posY) {
     ImGuiIO& io = ImGui::GetIO(); // Obtém as dimensões da tela
@@ -193,14 +196,13 @@ void cantoDireito(const char* nome, float altura, float posY) {
     ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
 
     // Criar a janela fixa no canto superior direito
-    ImGui::Begin(nome, nullptr, 
-        ImGuiWindowFlags_NoMove | 
-        ImGuiWindowFlags_NoResize | 
+    ImGui::Begin(nome, nullptr,
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
 
-        
-} */
 
+} */
 
 void IniciarInterface()
 {
@@ -232,8 +234,8 @@ void IniciarInterface()
 
 void ShowAboutWindow()
 {
-    ImGuiIO& io = ImGui::GetIO();
-    
+    ImGuiIO &io = ImGui::GetIO();
+
     float width = io.DisplaySize.x;
     float height = io.DisplaySize.y;
 
@@ -305,47 +307,52 @@ void ShowSecondaryMenuBar()
     {
         if (ImGui::BeginMenu("Seção Transversal"))
         {
-            ImGui::Begin("Inserir Dados da Seção Transversal", nullptr, 
-                ImGuiWindowFlags_NoCollapse | 
-                ImGuiWindowFlags_NoResize | 
-                ImGuiWindowFlags_NoMove);
-        
+            ImGui::Begin("Inserir Dados da Seção Transversal", nullptr,
+                         ImGuiWindowFlags_NoCollapse |
+                             ImGuiWindowFlags_NoResize |
+                             ImGuiWindowFlags_NoMove);
+
             // Input para número de pontos
             ImGui::SetNextItemWidth(80);
             ImGui::InputInt("Número de Pontos", &numVertices);
-        
+
             // Impede valores negativos e ajuste de tamanho do vetor apenas quando necessário
-            if (numVertices < 0) numVertices = 0;
-            if (numVertices != static_cast<int>(collectedPoints.size())) {
+            if (numVertices < 0)
+                numVertices = 0;
+            if (numVertices != static_cast<int>(collectedPoints.size()))
+            {
                 collectedPoints.resize(numVertices);
             }
-        
+
             ImGui::Spacing(); // Dá um pequeno espaçamento para organização
-        
+
             // Botão para limpar todos os pontos
-            if (ImGui::Button("Limpar")) {
+            if (ImGui::Button("Limpar"))
+            {
                 collectedPoints.clear();
                 numVertices = 0;
             }
-        
+
             ImGui::Spacing(); // Adiciona um espaçamento antes da tabela
-        
+
             // Criando a tabela de pontos
-            if (ImGui::BeginTable("Tabela", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+            if (ImGui::BeginTable("Tabela", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+            {
                 ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 50.0f);
                 ImGui::TableSetupColumn("x (cm)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
                 ImGui::TableSetupColumn("y (cm)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
                 ImGui::TableHeadersRow();
-        
-                for (size_t i = 0; i < collectedPoints.size(); i++) {
+
+                for (size_t i = 0; i < collectedPoints.size(); i++)
+                {
                     ImGui::TableNextRow();
                     ImGui::TableSetColumnIndex(0);
                     ImGui::Text("%d", static_cast<int>(i + 1));
-        
+
                     ImGui::TableSetColumnIndex(1);
                     ImGui::SetNextItemWidth(100);
                     ImGui::InputFloat(("##X" + std::to_string(i)).c_str(), &collectedPoints[i].x, 0.1f, 1.0f, "%.2f");
-        
+
                     ImGui::TableSetColumnIndex(2);
                     ImGui::SetNextItemWidth(100);
                     ImGui::InputFloat(("##Y" + std::to_string(i)).c_str(), &collectedPoints[i].y, 0.1f, 1.0f, "%.2f");
@@ -381,25 +388,34 @@ void ShowSecondaryMenuBar()
                         float pos_x_direita = ImGui::GetWindowWidth() - 160;
 
                         ImGui::SetCursorPosX(pos_x_direita);
+                        ImGui::Text("Fck  = ");
+                        ImGui::SameLine();
+                        ImGui::SetNextItemWidth(70);
+                        ImGui::InputFloat("##Fck", &fck_variavel, 0.0f, 0.0f, "%.2f");
+                        ImGui::SameLine();
+                        ImGui::Text("MPa");
+
+                        ImGui::SetCursorPosX(pos_x_direita);
+                        ImGui::SetNextItemWidth(100);
                         ImGui::Text("γc   = ");
                         ImGui::SameLine();
+                        ImGui::SetNextItemWidth(70);
                         ImGui::InputFloat("##γc", &yc_variavel, 0.0f, 0.0f, "%.2f");
-                        if(yc_variavel < 0) yc_variavel = 0;
 
                         ImGui::SetCursorPosX(pos_x_direita);
                         ImGui::Text("β     = ");
                         ImGui::SameLine();
+                        ImGui::SetNextItemWidth(70);
                         ImGui::InputFloat("##β", &beta_variavel, 0.0f, 0.0f, "%.2f");
-                        if(beta_variavel < 0) beta_variavel = 0;
 
-                        ImGui::SetCursorPosX(pos_x_direita);
-                        ImGui::Text("Fck  = ");
-                        ImGui::SameLine();
-                        ImGui::InputFloat("##Fck", &fck_variavel, 0.0f, 0.0f, "%.2f");
-                        ImGui::SameLine();
-                        ImGui::Text("MPa");
-                        ImGui::PopItemWidth();
-                        if(fck_variavel < 0) fck_variavel = 0;
+                        if (fck_variavel < 0)
+                            fck_variavel = 0;
+
+                        if (beta_variavel < 0)
+                            beta_variavel = 0;
+
+                        if (yc_variavel < 0)
+                            yc_variavel = 0;
 
                         float fcd_variavel;
                         float expoente_tensao_concreto;
@@ -464,7 +480,7 @@ void ShowSecondaryMenuBar()
                             }
                             tensaoDiagrama.push_back(tensaoy);
                         }
-                        
+
                         tensaoDiagrama.push_back(tensao_maxima);
                         epsilon_c.push_back(ecu_variavel);
 
@@ -484,7 +500,7 @@ void ShowSecondaryMenuBar()
                             {
                                 // eixos do grafico
                                 ImPlot::SetupAxis(ImAxis_X1, " εc");
-                                ImPlot::SetupAxis(ImAxis_Y1, " σ MPa)");
+                                ImPlot::SetupAxis(ImAxis_Y1, " σ (MPa)");
 
                                 if (!epsilon.empty() && epsilon.size() > 1)
                                 {
@@ -500,7 +516,7 @@ void ShowSecondaryMenuBar()
                                 {
 
                                     ImPlot::PlotLine("Diagrama Tensão-Deformação Concreto ABNT:6118:2023)", epsilon.data(), tensao.data(), static_cast<int>(epsilon.size()));
-                                    ImPlot::Annotation(ec2_variavel, maximo, ImVec4(1, 0, 1, 0), ImVec2(-20, -10), ec2_variavel, " (β *ηc * fck/γc)  = %.2f MPa", maximo);
+                                    ImPlot::Annotation(ec2_variavel, maximo, ImVec4(1, 0, 1, 0), ImVec2(-20, -10), ec2_variavel, " (β *ηc * fcd)  = %.2f MPa", maximo);
 
                                     float x_values[] = {0, ec2_variavel};
                                     float y_values[] = {maximo, maximo};
@@ -517,7 +533,6 @@ void ShowSecondaryMenuBar()
                                     float y_ecu[] = {0, maximo};
                                     ImPlot::SetNextLineStyle(ImVec4(1.0f, 1.0f, 1.0f, 0.2f));
                                     ImPlot::PlotLine("", x_ecu, y_ecu, 2);
-                                    
 
                                     float ec2_offset = -20; // Posição normal do rótulo de ec2
                                     float ecu_offset = 20;  // Posição normal do rótulo de ecu
@@ -552,30 +567,33 @@ void ShowSecondaryMenuBar()
                         float pos_x_direita = ImGui::GetWindowWidth() - 160;
 
                         ImGui::SetCursorPosX(pos_x_direita);
-                        ImGui::SetNextItemWidth(100);
-                        ImGui::Text("γc   = ");
-                        ImGui::SameLine();
-                        ImGui::SetNextItemWidth(70);
-                        ImGui::InputFloat("##γc", &yc_variavel, 0.0f, 0.0f, "%.2f");
-                        if(yc_variavel < 0) yc_variavel = 0;
-                        // organização Beta
-
-                        ImGui::SetCursorPosX(pos_x_direita);
-                        ImGui::Text("β     = ");
-                        ImGui::SameLine();
-                        ImGui::SetNextItemWidth(70);
-                        ImGui::InputFloat("##β", &beta_variavel, 0.0f, 0.0f, "%.2f");
-                        if(beta_variavel < 0) beta_variavel = 0;
-
-                        ImGui::SetCursorPosX(pos_x_direita);
                         ImGui::Text("Fck  = ");
                         ImGui::SameLine();
                         ImGui::SetNextItemWidth(70);
                         ImGui::InputFloat("##Fck", &fck_variavel, 0.0f, 0.0f, "%.2f");
                         ImGui::SameLine();
                         ImGui::Text("MPa");
-                        if(fck_variavel < 0) fck_variavel = 0;
-    
+
+                        ImGui::SetCursorPosX(pos_x_direita);
+                        ImGui::SetNextItemWidth(100);
+                        ImGui::Text("γc   = ");
+                        ImGui::SameLine();
+                        ImGui::SetNextItemWidth(70);
+                        ImGui::InputFloat("##γc", &yc_variavel, 0.0f, 0.0f, "%.2f");
+
+                        ImGui::SetCursorPosX(pos_x_direita);
+                        ImGui::Text("β     = ");
+                        ImGui::SameLine();
+                        ImGui::SetNextItemWidth(70);
+                        ImGui::InputFloat("##β", &beta_variavel, 0.0f, 0.0f, "%.2f");
+                        if (beta_variavel < 0)
+                            beta_variavel = 0;
+
+                        if (fck_variavel < 0)
+                            fck_variavel = 0;
+
+                        if (yc_variavel < 0)
+                            yc_variavel = 0;
 
                         float fcd_variavel;
                         float expoente_tensao_concreto;
@@ -605,7 +623,7 @@ void ShowSecondaryMenuBar()
                             tensaoDiagrama.clear();
                             float tensaoy;
                             float tensao_maxima;
-                             
+
                             for (float contador = 0; contador < ecu_variavel; contador += 0.1f)
                             {
                                 epsilon_c.push_back(contador);
@@ -642,13 +660,13 @@ void ShowSecondaryMenuBar()
                         }
 
                         ImGui::SetCursorPos(ImVec2(0, 135));
-                        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação Concreto ABNT:6118:2014", ImVec2(425, 225), ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_Invert | ImPlotFlags_NoLegend))
+                        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação Concreto ABNT:6118:2023", ImVec2(425, 225), ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
                         {
-                            if (fck_variavel > 0 && yc_variavel > 0)
+                            if (fck_variavel > 0 && yc_variavel > 0 && beta_variavel > 0)
                             {
-
+                                // eixos do grafico
                                 ImPlot::SetupAxis(ImAxis_X1, " εc");
-                                ImPlot::SetupAxis(ImAxis_Y1, " σ MPa)");
+                                ImPlot::SetupAxis(ImAxis_Y1, " σ (MPa)");
 
                                 if (!epsilon.empty() && epsilon.size() > 1)
                                 {
@@ -663,8 +681,8 @@ void ShowSecondaryMenuBar()
                                 if (!epsilon.empty() && epsilon.size() > 1)
                                 {
 
-                                    ImPlot::PlotLine("Diagrama Tensão-Deformação (ABNT 2014)", epsilon.data(), tensao.data(), static_cast<int>(epsilon.size()));
-                                    ImPlot::Annotation(ec2_variavel, maximo, ImVec4(1, 0, 1, 0), ImVec2(-20, -10), ec2_variavel, " (β * fck/γc)  = %.2f MPa", maximo);
+                                    ImPlot::PlotLine("Diagrama Tensão-Deformação Concreto ABNT:6118:2023)", epsilon.data(), tensao.data(), static_cast<int>(epsilon.size()));
+                                    ImPlot::Annotation(ec2_variavel, maximo, ImVec4(1, 0, 1, 0), ImVec2(-20, -10), ec2_variavel, " (β * fcd)  = %.2f MPa", maximo);
 
                                     float x_values[] = {0, ec2_variavel};
                                     float y_values[] = {maximo, maximo};
@@ -723,22 +741,25 @@ void ShowSecondaryMenuBar()
                     // organização gama_s
 
                     ImGui::SetCursorPosX(pos_x_direita);
-                    ImGui::SetNextItemWidth(100);
-                    ImGui::Text("γs  = ");
-                    ImGui::SameLine();
-                    ImGui::SetNextItemWidth(70);
-                    ImGui::InputFloat("##γs", &gama_s_variavel, 0.0f, 0.0f, "%.3f");
-                    if(gama_s_variavel < 0) gama_s_variavel = 0;
-                    // organização fyk
-
-                    ImGui::SetCursorPosX(pos_x_direita);
                     ImGui::Text("fyk = ");
                     ImGui::SameLine();
                     ImGui::SetNextItemWidth(70);
                     ImGui::InputFloat("##fyk", &fyk_variavel, 0.0f, 0.0f, "%.3f");
                     ImGui::SameLine();
                     ImGui::Text("MPa");
-                    if(fyk_variavel < 0) fyk_variavel = 0;
+
+                    ImGui::SetCursorPosX(pos_x_direita);
+                    ImGui::SetNextItemWidth(100);
+                    ImGui::Text("γs  = ");
+                    ImGui::SameLine();
+                    ImGui::SetNextItemWidth(70);
+                    ImGui::InputFloat("##γs", &gama_s_variavel, 0.0f, 0.0f, "%.3f");
+                    if (gama_s_variavel < 0)
+                        gama_s_variavel = 0;
+                    // organização fyk
+
+                    if (fyk_variavel < 0)
+                        fyk_variavel = 0;
 
                     // organização deformação do aço
                     ImGui::SetCursorPosX(pos_x_direita);
@@ -748,7 +769,8 @@ void ShowSecondaryMenuBar()
                     ImGui::InputFloat("##Es", &Es_variavel, 0.0f, 0.0f, "%.3f");
                     ImGui::SameLine();
                     ImGui::Text("GPa");
-                    if(Es_variavel < 0) Es_variavel = 0;
+                    if (Es_variavel < 0)
+                        Es_variavel = 0;
 
                     // ImPlot --
                     ImGui::Dummy(ImVec2(plotSize.x - (plotSize.x - 150), 0)); // usado pra pular espaços, util dms
@@ -777,15 +799,32 @@ void ShowSecondaryMenuBar()
                         ImPlot::SetupAxis(ImAxis_X1, " ε por mil");
                         ImPlot::SetupAxis(ImAxis_Y1, " σ (MPa)");
 
-                       // ImPlot::PlotText("-> (-fyk/ ys)", -reforco.epsilon_yd, tensaoY[0], ImVec2(60, 0));
+                        // ImPlot::PlotText("-> (-fyk/ ys)", -reforco.epsilon_yd, tensaoY[0], ImVec2(60, 0));
                         // ImPlot::PlotText("(fyk/ ys) <-", reforco.epsilon_yd, tensaoY[3], ImVec2(-60, 0));
 
+                        // -10 -reforco.epsilon_yd -2.5 - tensão[0]
+                        // 10 - reforco.espilon_yd, 2.5 - tensaoY[3]
 
+                        float annotation_offset_x = 10; // Ajuste horizontal das anotações
+                        float annotation_offset_y = 5;  // Ajuste vertical das anotações
 
-                        ImPlot::Annotation(-reforco.epsilon_yd, tensaoY[0], ImVec4(1, 0, 1, 0), ImVec2(40,0), tensaoY[0], "-fyk / ys = %.2f MPa", tensaoY[0]);
-                        ImPlot::Annotation(reforco.epsilon_yd, tensaoY[3], ImVec4(1, 0, 1, 0), ImVec2(-40,0), tensaoY[3], "fyk / ys = %.2f MPa", tensaoY[3]);
-                        ImPlot::Annotation(-reforco.epsilon_yd, tensaoY[0], ImVec4(1, 0, 1, 0), ImVec2(0, 10), resultado_negativo, "    εyd = %.2f", resultado_negativo);
-                        ImPlot::Annotation(reforco.epsilon_yd, tensaoY[3], ImVec4(1, 0, 1, 0), ImVec2(0, -10), resultado_positivo, "    εyd = %.2f", resultado_positivo);
+                        // Anotações das tensões fyd e -fyd
+                        ImPlot::Annotation(-reforco.epsilon_yd, tensaoY[0], ImVec4(1, 1, 1, 0.4), ImVec2(-annotation_offset_x, -annotation_offset_y), tensaoY[0], "-fyd = %.2f MPa", tensaoY[0]);
+                        ImPlot::Annotation(reforco.epsilon_yd, tensaoY[3], ImVec4(1, 1, 1, 0.4), ImVec2(annotation_offset_x, annotation_offset_y), tensaoY[3], "fyd = %.2f MPa", tensaoY[3]);
+
+                        // Anotações das deformações εyd e -εyd
+                        ImPlot::Annotation(-reforco.epsilon_yd, 0, ImVec4(1, 1, 1, 0.4), ImVec2(-annotation_offset_x / 2, -10), resultado_negativo, "εyd = %.2f", resultado_negativo);
+                        ImPlot::Annotation(reforco.epsilon_yd, 0, ImVec4(1, 1, 1, 0.4), ImVec2(annotation_offset_x / 2, 10), resultado_positivo, "εyd = %.2f", resultado_positivo);
+
+                        float x_eyd[] = {-reforco.epsilon_yd, -reforco.epsilon_yd};
+                        float y_eyd[] = {0, tensaoY[0]};
+                        ImPlot::SetNextLineStyle(ImVec4(1.0f, 1.0f, 1.0f, 0.4f));
+                        ImPlot::PlotLine("", x_eyd, y_eyd, 2);
+
+                        float x_eyd2[] = {reforco.epsilon_yd, reforco.epsilon_yd};
+                        float y_eyd2[] = {0, tensaoY[3]};
+                        ImPlot::SetNextLineStyle(ImVec4(1.0f, 1.0f, 1.0f, 0.4f));
+                        ImPlot::PlotLine("", x_eyd2, y_eyd2, 2);
 
                         ImPlot::SetNextLineStyle(ImVec4(0.53f, 0.81f, 0.98f, 1.0f));
                         ImPlot::PlotLine("Linha", xEpi, tensaoY, EPItemp.size());
@@ -814,9 +853,10 @@ void ShowSecondaryMenuBar()
                 numBarras = 1;
                 ImGui::PushItemWidth(50);
                 ImGui::InputFloat("Diâmetro das Barras (mm)", &diametroBarras);
-                ImGui::InputFloat("Posição X (cm)", &barrasPosXi);
-                ImGui::InputFloat("Posição Y (cm)", &barrasPosYi);
-                if(diametroBarras < 0) diametroBarras = 0; 
+                ImGui::InputFloat("x (cm)", &barrasPosXi);
+                ImGui::InputFloat("y (cm)", &barrasPosYi);
+                if (diametroBarras < 0)
+                    diametroBarras = 0;
                 if (ImGui::Button("Adicionar"))
                 {
                     if (diametroBarras <= 0)
@@ -851,13 +891,14 @@ void ShowSecondaryMenuBar()
                 }
                 ImGui::PushItemWidth(50);
                 ImGui::InputFloat("Diâmetro das Barras (mm)", &diametroBarras);
-                ImGui::InputFloat("Posição Xi (cm)", &barrasPosXi);
+                ImGui::InputFloat("Xi (cm)", &barrasPosXi);
                 ImGui::SameLine();
-                ImGui::InputFloat("Posição Yi (cm)", &barrasPosYi);
-                ImGui::InputFloat("Posição Xf (cm)", &barrasPosXf);
+                ImGui::InputFloat("Yi (cm)", &barrasPosYi);
+                ImGui::InputFloat("Xf (cm)", &barrasPosXf);
                 ImGui::SameLine();
-                ImGui::InputFloat("Posição Yf (cm)", &barrasPosYf);
-                if(diametroBarras < 0) diametroBarras = 0; 
+                ImGui::InputFloat("Yf (cm)", &barrasPosYf);
+                if (diametroBarras < 0)
+                    diametroBarras = 0;
 
                 float xAdicionado = (barrasPosXf - barrasPosXi) / (numBarras - 1);
                 float yAdicionado = (barrasPosYf - barrasPosYi) / (numBarras - 1);
@@ -928,27 +969,26 @@ void ShowSecondaryMenuBar()
             ImGui::Begin("Esforços", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
             ImGui::PushItemWidth(50);
-            ImGui::InputFloat("Nsd", &nsd); 
+            ImGui::InputFloat("Nsd", &nsd);
             ImGui::SameLine();
             ImGui::Text("(kN)");
             ImGui::InputFloat("Msd,x", &msdx);
             ImGui::SameLine();
             ImGui::Text("(kN.m)");
 
-            if(ImGui::Button("Adicionar")) 
+            if (ImGui::Button("Adicionar"))
             {
-                combinacao.push_back({nsd,msdx,msdy});
-            } 
+                combinacao.push_back({nsd, msdx, msdy});
+            }
             ImGui::SameLine();
-            if(ImGui::Button("Remover")) 
+            if (ImGui::Button("Remover"))
             {
-                
+
                 if (!combinacao.empty())
                 {
-                    combinacao.pop_back();           // Remove a última barra
+                    combinacao.pop_back(); // Remove a última barra
                 }
-
-            } 
+            }
 
             ImGui::BeginTable("Tabela", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg);
             ImGui::TableSetupColumn("Combinacao");
@@ -957,16 +997,15 @@ void ShowSecondaryMenuBar()
             ImGui::TableHeadersRow();
 
             for (size_t i = 0; i < combinacao.size(); ++i)
-                {
-                    ImGui::TableNextRow();
-                    ImGui::TableSetColumnIndex(0);
-                    ImGui::Text("%d", static_cast<int>(i + 1));
-                    ImGui::TableSetColumnIndex(1);
-                    ImGui::Text("%.2f", combinacao[i].Normal);
-                    ImGui::TableSetColumnIndex(2);
-                    ImGui::Text("%.2f", combinacao[i].MsdX);
-                    
-                }
+            {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%d", static_cast<int>(i + 1));
+                ImGui::TableSetColumnIndex(1);
+                ImGui::Text("%.2f", combinacao[i].Normal);
+                ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%.2f", combinacao[i].MsdX);
+            }
             ImGui::EndTable();
             ImGui::End();
             ImGui::EndMenu();
@@ -993,7 +1032,7 @@ void loopPrograma()
 {
     reforco.AdicionarBarra(-7.f, -17.f, 10.f);
     reforco.AdicionarBarra(+7.f, -17.f, 10.f);
-    
+
     while (!WindowShouldClose())
     {
         DrawFPS(20, 20);
@@ -1138,103 +1177,102 @@ void loopPrograma()
         x_values[1] = valorMaior + (valorMaior - valorMenor) * 0.1;
 
         // Ajuste o código de desenho no gráfico
-       
-            // Fechar os vetores adicionando o primeiro ponto ao final
-            std::vector<Point> rotacionadosFechados = Rot;
-            poligono.fecharPoligono(rotacionadosFechados);
-            std::vector<Point> collectedPointsFechados = collectedPoints;
-            poligono.fecharPoligono(collectedPointsFechados);
-            std::vector<Point> resultadoCorteFechado = poligono.resultadoCorte;
-            poligono.fecharPoligono(resultadoCorteFechado);
-            std::vector<Point> AreaSuperiorFechado = poligono.areaSuperior;
-            poligono.fecharPoligono(AreaSuperiorFechado);
-            std::vector<Point> AreaInferiorFechado = poligono.areaInferior;
-            poligono.fecharPoligono(AreaInferiorFechado);
-            std::vector<Point> ArmadurasFechadas = reforco.Armaduras;
-            poligono.fecharPoligono(ArmadurasFechadas);
-            std::vector<Point> ArmaduraRotFechada = reforco.barrasRotacionadas;
-            poligono.fecharPoligono(ArmaduraRotFechada);
 
-            // Converter para arrays de float para os gráficos
-            float x_data[collectedPointsFechados.size()];
-            float y_data[collectedPointsFechados.size()];
-            float x_corte[resultadoCorteFechado.size()];
-            float y_corte[resultadoCorteFechado.size()];
-            float x_superior[AreaSuperiorFechado.size()];
-            float y_superior[AreaSuperiorFechado.size()];
-            float x_inferior[AreaInferiorFechado.size()];
-            float y_inferior[AreaInferiorFechado.size()];
-            float xRot[rotacionadosFechados.size()];
-            float yRot[rotacionadosFechados.size()];
-            // float xArmadura[ArmadurasFechadas.size()];
-            // float yArmadura[ArmadurasFechadas.size()];
-            float xArmaduraRotacionada[ArmaduraRotFechada.size()];
-            float yArmaduraRotacionada[ArmaduraRotFechada.size()];
+        // Fechar os vetores adicionando o primeiro ponto ao final
+        std::vector<Point> rotacionadosFechados = Rot;
+        poligono.fecharPoligono(rotacionadosFechados);
+        std::vector<Point> collectedPointsFechados = collectedPoints;
+        poligono.fecharPoligono(collectedPointsFechados);
+        std::vector<Point> resultadoCorteFechado = poligono.resultadoCorte;
+        poligono.fecharPoligono(resultadoCorteFechado);
+        std::vector<Point> AreaSuperiorFechado = poligono.areaSuperior;
+        poligono.fecharPoligono(AreaSuperiorFechado);
+        std::vector<Point> AreaInferiorFechado = poligono.areaInferior;
+        poligono.fecharPoligono(AreaInferiorFechado);
+        std::vector<Point> ArmadurasFechadas = reforco.Armaduras;
+        poligono.fecharPoligono(ArmadurasFechadas);
+        std::vector<Point> ArmaduraRotFechada = reforco.barrasRotacionadas;
+        poligono.fecharPoligono(ArmaduraRotFechada);
 
-            for (size_t i = 0; i < ArmaduraRotFechada.size(); i++)
-            {
-                xArmaduraRotacionada[i] = ArmaduraRotFechada[i].x;
-                yArmaduraRotacionada[i] = ArmaduraRotFechada[i].y;
-            }
-            for (size_t i = 0; i < rotacionadosFechados.size(); i++)
-            {
-                xRot[i] = rotacionadosFechados[i].x;
-                yRot[i] = rotacionadosFechados[i].y;
-            }
+        // Converter para arrays de float para os gráficos
+        float x_data[collectedPointsFechados.size()];
+        float y_data[collectedPointsFechados.size()];
+        float x_corte[resultadoCorteFechado.size()];
+        float y_corte[resultadoCorteFechado.size()];
+        float x_superior[AreaSuperiorFechado.size()];
+        float y_superior[AreaSuperiorFechado.size()];
+        float x_inferior[AreaInferiorFechado.size()];
+        float y_inferior[AreaInferiorFechado.size()];
+        float xRot[rotacionadosFechados.size()];
+        float yRot[rotacionadosFechados.size()];
+        // float xArmadura[ArmadurasFechadas.size()];
+        // float yArmadura[ArmadurasFechadas.size()];
+        float xArmaduraRotacionada[ArmaduraRotFechada.size()];
+        float yArmaduraRotacionada[ArmaduraRotFechada.size()];
 
-            for (size_t i = 0; i < collectedPointsFechados.size(); i++)
-            {
-                x_data[i] = collectedPointsFechados[i].x;
-                y_data[i] = collectedPointsFechados[i].y;
-            }
+        for (size_t i = 0; i < ArmaduraRotFechada.size(); i++)
+        {
+            xArmaduraRotacionada[i] = ArmaduraRotFechada[i].x;
+            yArmaduraRotacionada[i] = ArmaduraRotFechada[i].y;
+        }
+        for (size_t i = 0; i < rotacionadosFechados.size(); i++)
+        {
+            xRot[i] = rotacionadosFechados[i].x;
+            yRot[i] = rotacionadosFechados[i].y;
+        }
 
-            for (size_t i = 0; i < resultadoCorteFechado.size(); i++)
-            {
-                x_corte[i] = resultadoCorteFechado[i].x;
-                y_corte[i] = resultadoCorteFechado[i].y;
-            }
+        for (size_t i = 0; i < collectedPointsFechados.size(); i++)
+        {
+            x_data[i] = collectedPointsFechados[i].x;
+            y_data[i] = collectedPointsFechados[i].y;
+        }
 
-            for (size_t i = 0; i < AreaSuperiorFechado.size(); i++)
-            {
-                x_superior[i] = AreaSuperiorFechado[i].x;
-                y_superior[i] = AreaSuperiorFechado[i].y;
-            }
+        for (size_t i = 0; i < resultadoCorteFechado.size(); i++)
+        {
+            x_corte[i] = resultadoCorteFechado[i].x;
+            y_corte[i] = resultadoCorteFechado[i].y;
+        }
 
-            for (size_t i = 0; i < AreaInferiorFechado.size(); i++)
-            {
-                x_inferior[i] = AreaInferiorFechado[i].x;
-                y_inferior[i] = AreaInferiorFechado[i].y;
-            }
+        for (size_t i = 0; i < AreaSuperiorFechado.size(); i++)
+        {
+            x_superior[i] = AreaSuperiorFechado[i].x;
+            y_superior[i] = AreaSuperiorFechado[i].y;
+        }
 
-            // Obter o tamanho disponível para o gráfico
-            ImVec2 plotSize = ImGui::GetContentRegionAvail();
+        for (size_t i = 0; i < AreaInferiorFechado.size(); i++)
+        {
+            x_inferior[i] = AreaInferiorFechado[i].x;
+            y_inferior[i] = AreaInferiorFechado[i].y;
+        }
 
-            // Plota os pontos e desenha o polígono
-            if (ImPlot::BeginPlot("Seção Transversal", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
-            {
-                ImPlot::SetupAxis(ImAxis_X1, " x (cm)");
-                ImPlot::SetupAxis(ImAxis_Y1, " y (cm))");
-                
-                ImPlot::PlotScatter("Vértices", x_data, y_data, collectedPointsFechados.size());
-                ImPlot::PlotScatter("Vértices cortadas", x_corte, y_corte, resultadoCorteFechado.size());
-                ImPlot::PlotScatter("Vértices superiores", x_superior, y_superior, AreaSuperiorFechado.size());
-                ImPlot::PlotScatter("Vértices inferiores", x_inferior, y_inferior, AreaInferiorFechado.size());
-                ImPlot::PlotScatter("Vértices Rotacionados", xRot, yRot, (rotacionadosFechados.size()));
-                ImPlot::PlotScatter("Armadura Rotacionada", xArmaduraRotacionada, yArmaduraRotacionada, ArmaduraRotFechada.size());
-                ImPlot::PlotLine("Polígono", x_data, y_data, collectedPointsFechados.size());
-                ImPlot::PlotLine("Polígono cortado", x_corte, y_corte, resultadoCorteFechado.size());
-                ImPlot::PlotLine("Polígono superior", x_superior, y_superior, AreaSuperiorFechado.size());
-                ImPlot::PlotLine("Polígono inferior", x_inferior, y_inferior, AreaInferiorFechado.size());
-                ImPlot::PlotLine("Linha de corte", x_values, y_values, 2);
-                ImPlot::PlotLine("Polígono Rotacionado", xRot, yRot, rotacionadosFechados.size());
-                ImPlot::EndPlot();
-            }
-        
+        // Obter o tamanho disponível para o gráfico
+        ImVec2 plotSize = ImGui::GetContentRegionAvail();
+
+        // Plota os pontos e desenha o polígono
+        if (ImPlot::BeginPlot("Seção Transversal", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
+        {
+            ImPlot::SetupAxis(ImAxis_X1, " x (cm)");
+            ImPlot::SetupAxis(ImAxis_Y1, " y (cm))");
+
+            ImPlot::PlotScatter("Vértices", x_data, y_data, collectedPointsFechados.size());
+            ImPlot::PlotScatter("Vértices cortadas", x_corte, y_corte, resultadoCorteFechado.size());
+            ImPlot::PlotScatter("Vértices superiores", x_superior, y_superior, AreaSuperiorFechado.size());
+            ImPlot::PlotScatter("Vértices inferiores", x_inferior, y_inferior, AreaInferiorFechado.size());
+            ImPlot::PlotScatter("Vértices Rotacionados", xRot, yRot, (rotacionadosFechados.size()));
+            ImPlot::PlotScatter("Armadura Rotacionada", xArmaduraRotacionada, yArmaduraRotacionada, ArmaduraRotFechada.size());
+            ImPlot::PlotLine("Polígono", x_data, y_data, collectedPointsFechados.size());
+            ImPlot::PlotLine("Polígono cortado", x_corte, y_corte, resultadoCorteFechado.size());
+            ImPlot::PlotLine("Polígono superior", x_superior, y_superior, AreaSuperiorFechado.size());
+            ImPlot::PlotLine("Polígono inferior", x_inferior, y_inferior, AreaInferiorFechado.size());
+            ImPlot::PlotLine("Linha de corte", x_values, y_values, 2);
+            ImPlot::PlotLine("Polígono Rotacionado", xRot, yRot, rotacionadosFechados.size());
+            ImPlot::EndPlot();
+        }
 
         ImGui::End(); // Finaliza a janela do gráfico
 
         cantoDireito("Pontos da Secao Transversal", 200, 50);
-            
+
         // dadosCereal salvar;
         /* if (janelaSalvar)
         {

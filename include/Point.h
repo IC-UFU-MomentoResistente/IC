@@ -16,7 +16,9 @@ public:
 
     double getX() const;
     double getY() const;
+    Point getPoint() const;
 
     double setX(double coordX);
     double setY(double coordY);
+    Point setPoint(double coordX, double coordY); 
 };

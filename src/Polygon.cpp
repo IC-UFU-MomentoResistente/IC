@@ -136,8 +136,7 @@ void Polygon::computeCentroid()
 	computeStaticMomentX();
 	computeStaticMomentY();
 
-	geometricCenter.setX(staticMomentY / polygonArea);
-	geometricCenter.setY(staticMomentX / polygonArea);
+	geometricCenter.setPoint((staticMomentX/polygonArea), (staticMomentY/polygonArea));
 }
 
 void Polygon::translateToCentroid()
@@ -149,8 +148,7 @@ void Polygon::translateToCentroid()
 		double coordX = polygonVertices[i].getX() - geometricCenter.getX();
 		double coordY = polygonVertices[i].getY() - geometricCenter.getY();
 
-		polygonVertices[i].setX(coordX);
-		polygonVertices[i].setY(coordY);
+		polygonVertices[i].setPoint(coordX, coordY);
 	}
 }
 
@@ -167,8 +165,7 @@ void Polygon::rotateAroundCentroid(double angle)
 		double rotateX = (polygonVertices[i].getX() * cosAngle) - (polygonVertices[i].getY() * sinAngle);
 		double rotateY = (polygonVertices[i].getX() * sinAngle) + (polygonVertices[i].getY() * cosAngle);
 
-		polygonVertices[i].setX(rotateX);
-		polygonVertices[i].setY(rotateY);
+		polygonVertices[i].setPoint(rotateX, rotateY);
 	}
 }
 

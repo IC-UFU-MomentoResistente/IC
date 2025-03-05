@@ -7,14 +7,13 @@
 
 #include "Point.h"
 #include "Polygon.h"
-#include "AppController.h"
 #include "AppView.h"
 
 using std::cout;
 
 int main()
 {
-    AppController app; 
+    Polygon polygon;
     AppView view;
 
     int screenWidth = 1280;
@@ -57,7 +56,7 @@ int main()
 
         if (ImGui::Button("Adicionar Ponto"))
         {
-            app.addVertice(x, y);
+            polygon.addVertice(x, y);
         }
 
         ImVec2 plotSize = ImGui::GetContentRegionAvail();
@@ -65,8 +64,8 @@ int main()
         // inicialização do gráfico com os eixos
         if (ImPlot::BeginPlot("Grafico", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
         {
-            if (app.getPolygonVertices().size() > 2)
-                view.renderPolygon(app.getPolygonVertices(), "Vertices", "Polygon");
+            if (polygon.getPolygonVertices().size() > 2)
+                view.renderPolygon(polygon.getPolygonVertices(), "Vertices", "Polygon");
         }
 
         ImPlot::EndPlot();

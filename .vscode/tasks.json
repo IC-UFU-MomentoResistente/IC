@@ -18,7 +18,6 @@
                 "-L", "lib/rlImGui/build",
                 "-o", "build/main.exe",
                 "src/main.cpp",
-                "src/AppController.cpp",
                 "src/AppView.cpp",
                 "src/Point.cpp",
                 "src/Polygon.cpp",

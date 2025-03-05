@@ -113,83 +113,78 @@
 --- 
 # Estrutura desejada de pastas do projeto
  ```
-    /src
-    |-- main.cpp                        # Ponto de entrada do programa
-    |
-    |-- /models
-    |   |-- Projeto.h
-    |   |-- Projeto.cpp
-    |   |-- SecaoTransversal.h
-    |   |-- SecaoTransversal.cpp
-    |   |-- Material.h
-    |   |-- Material.cpp
-    |   |-- Armadura.h
-    |   |-- Armadura.cpp
-    |   |-- Esforco.h
-    |   |-- Esforco.cpp
-    |   |-- Resultado.h
-    |   |-- Resultado.cpp
-    |
-    |-- /views
-    |   |-- AppView.h                   # Interface principal
-    |   |-- AppView.cpp
-    |   |-- SecaoView.h                 # Visualização da seção transversal
-    |   |-- SecaoView.cpp
-    |   |-- ArmaduraView.h              # Visualização das armaduras
-    |   |-- ArmaduraView.cpp
-    |   |-- ResultadoView.h             # Visualização dos resultados
-    |   |-- ResultadoView.cpp
-    |   |-- DialogoView.h               # Diálogos (salvar, abrir, etc)
-    |   |-- DialogoView.cpp
-    |
-    |-- /controllers
-    |   |-- AppController.h             # Controlador principal
-    |   |-- AppController.cpp
-    |   |-- SecaoController.h           # Gerencia a seção
-    |   |-- SecaoController.cpp
-    |   |-- MaterialController.h        # Gerencia os materiais
-    |   |-- MaterialController.cpp
-    |   |-- ArmaduraController.h        # Gerencia as armaduras
-    |   |-- ArmaduraController.cpp
-    |   |-- CalculoController.h         # Executa os cálculos
-    |   |-- CalculoController.cpp
-    |
-    |-- /domain
-    |   |-- EstadoLimiteUltimo.h        # Regras do ELU
-    |   |-- EstadoLimiteUltimo.cpp
-    |   |-- EquilibrioForcas.h          # Equilíbrio de forças
-    |   |-- EquilibrioForcas.cpp
-    |   |-- RelacaoConstitutiva.h       # Relações constitutivas
-    |   |-- RelacaoConstitutiva.cpp
-    |   |-- ValidadorSecao.h            # Validação da seção
-    |   |-- ValidadorSecao.cpp
-    |
-    |-- /utils
-    |   |-- Ponto.h                     # Classe para pontos 2D
-    |   |-- Ponto.cpp
-    |   |-- Geometria.h                 # Funções geométricas
-    |   |-- Geometria.cpp
-    |   |-- FileManager.h               # Gerenciamento de arquivos
-    |   |-- FileManager.cpp
-    |   |-- Logger.h                    # Sistema de log
-    |   |-- Logger.cpp
-    |
-    |-- /lib
-    |   |-- /raylib                     # Biblioteca Raylib
-    |   |-- /imgui                      # Biblioteca ImGui
-    |   |-- /implot                     # Biblioteca ImPlot
-    |
-    |-- /tests
-    |   |-- TestSecaoTransversal.cpp
-    |   |-- TestArmadura.cpp
-    |   |-- TestCalculos.cpp
-    |
-    |-- /resources
-    |   |-- /icons                      # Ícones para interface
-    |   |-- /fonts                      # Fontes para interface
-    |
-    |-- /docs
-        |-- manual.md                   # Documentação do uso
-        |-- algoritmos.md               # Descrição dos algoritmos
+ /core
+ |-- Geometria.h/.cpp
+  - Cálculos geométricos
+  - Operações com pontos/vetores
+  - Verificações de polígonos
+
+ |-- SecaoTransversal.h/.cpp
+  - Representação geométrica da seção
+  - Cálculos de propriedades geométricas
+  - Verificação de validade da seção
+
+ |-- Armadura.h/.cpp
+  - Modelagem das armaduras
+  - Propriedades individuais de cada barra de aço
+  - Cálculo de tensões e deformações
+
+ |-- Material.h/.cpp
+  - Propriedades do concreto
+  - Propriedades do aço
+  - Relações constitutivas
+  - Cálculo de resistências de cálculo
+
+ |-- CalculadorMomentoResistente.h/.cpp
+  - Algoritmo da falsa posição
+  - Métodos de equilíbrio de forças
+  - Cálculo iterativo da linha neutra
+  - Verificação de convergência
+  - Cálculo do momento resistente
+
+ |-- EstadoLimiteUltimo.h/.cpp
+  - Hipóteses normativas
+  - Verificações de domínios de deformação
+  - Critérios de ruína
+
+ /ui
+ |-- MainWindow.h/.cpp
+  - Janela principal
+  - Layout geral da aplicação
+
+ |-- SecaoTransversalWidget.h/.cpp
+  - Desenho da seção transversal
+  - Edição interativa de vértices
+  - Feedback visual de propriedades
+
+ |-- ArmaduraWidget.h/.cpp
+  - Configuração de armaduras
+  - Visualização do posicionamento
+  - Edição de diâmetros e coordenadas
+
+ |-- MaterialWidget.h/.cpp
+  - Entrada de propriedades de materiais
+  - Seleção de tipos de concreto/aço
+  - Visualização de parâmetros
+
+ |-- ResultadosWidget.h/.cpp
+  - Exibição de resultados de cálculo
+  - Gráficos de deformações
+  - Relatórios detalhados
+
+ /io
+ |-- GerenciadorProjeto.h/.cpp
+  - Salvar/Carregar configurações
+  - Serialização de dados
+  - Controle de versões de projeto
+
+ |-- ExportadorRelatorio.h/.cpp
+  - Geração de PDFs
+  - Exportação para planilhas
+  - Criação de relatórios técnicos
+
+ |-- ImportadorDados.h/.cpp
+  - Leitura de arquivos de configuração
+  - Importação de dados de outras fontes
  ```
 

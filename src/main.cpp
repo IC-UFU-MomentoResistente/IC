@@ -59,6 +59,31 @@ int main()
             polygon.addVertice(x, y);
         }
 
+        ImGui::SameLine();
+
+        if (ImGui::Button("Remover Ponto"))
+        {
+            if(!polygon.getPolygonVertices().empty())
+                polygon.removeLastVertice();
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Calcular parametros"))
+        {
+            polygon.computeArea();
+            polygon.computeCentroid();
+            polygon.computeMaxCoordY();
+            polygon.computeMinCoordY();
+            polygon.computeHeight();
+        }
+
+        ImGui::Text("Area: %.2f", polygon.getPolygonArea());
+        ImGui::Text("MaxY: %.2f", polygon.getMaxY());
+        ImGui::Text("MinY: %.2f", polygon.getMinY());
+        ImGui::Text("Height: %.2f", polygon.getMaxY());
+        ImGui::Text("CG: %.2f, %.2f", polygon.getGeometricCenter().getX(), polygon.getGeometricCenter().getY());
+
         ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
         // inicialização do gráfico com os eixos

@@ -86,7 +86,7 @@ void Polygon::computeArea()
 		int j = (i + 1) % polygonSize;
 
 		double factor = polygonVertices[i].getX() * polygonVertices[j].getY() 
-		- polygonVertices[j].getX() * polygonVertices[i].getX();;
+		- polygonVertices[j].getX() * polygonVertices[i].getY();;
 
 		polygonArea += factor;
 	}
@@ -104,7 +104,7 @@ void Polygon::computeStaticMomentX()
 		int j = (i + 1) % polygonSize;
 
 		double factor = polygonVertices[i].getX() * polygonVertices[j].getY() 
-		- polygonVertices[j].getX() * polygonVertices[i].getX();;
+		- polygonVertices[j].getX() * polygonVertices[i].getY();;
 
 		staticMomentX += (polygonVertices[i].getY() + polygonVertices[j].getY()) * factor;
 	}
@@ -122,7 +122,7 @@ void Polygon::computeStaticMomentY()
 		int j = (i + 1) % polygonSize;
 
 		double factor = polygonVertices[i].getX() * polygonVertices[j].getY() 
-		- polygonVertices[j].getX() * polygonVertices[i].getX();;
+		- polygonVertices[j].getX() * polygonVertices[i].getY();;
 
 		staticMomentY += (polygonVertices[i].getX() + polygonVertices[j].getX()) * factor;
 	}
@@ -136,7 +136,9 @@ void Polygon::computeCentroid()
 	computeStaticMomentX();
 	computeStaticMomentY();
 
-	geometricCenter.setPoint((staticMomentX/polygonArea), (staticMomentY/polygonArea));
+	geometricCenter.setX(staticMomentY/polygonArea);
+	geometricCenter.setY(staticMomentX/polygonArea);
+	//geometricCenter.setPoint((staticMomentY/polygonArea), (staticMomentX/polygonArea));
 }
 
 void Polygon::translateToCentroid()

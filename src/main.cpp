@@ -87,6 +87,7 @@ bool janelaDiagramaNormalXMomento = true;
 bool entradaDeDadosMateriais = true;
 bool janelaSalvar = true;
 bool janelaSobre = true;
+bool antiAliasing = true;
 
 int numVertices;
 float nsd;
@@ -112,15 +113,31 @@ ImFont *font = nullptr;
 
 void renderizacaoBarras(std::vector<Point>, std::string);
 
+void ativarAntiAliasing()
+{
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.AntiAliasedLines = true;  // Habilita AntiAliasing para linhas
+    style.AntiAliasedLinesUseTex = true; // Usa textura para AntiAliasing
+    style.AntiAliasedFill = true;   // Habilita AntiAliasing para preenchimentos
+}
+
+
+float espacoDisponivel()
+{
+    ImGuiIO &io = ImGui::GetIO();
+    float larguraCantoDireito = 300.0f;
+    return io.DisplaySize.x - larguraCantoDireito; // Retorna a largura disponível na tela sem a aba do canto direito
+}
+
 void tamanhoDinamico(const char *nomeJanela, float fatorX, float fatorY, float posX, float posY)
 {
     ImGuiIO &io = ImGui::GetIO();
 
-    float screenWidth = io.DisplaySize.x;
+    float screenWidth = espacoDisponivel(); // Usa a função para calcular o espaço disponível
     float screenHeight = io.DisplaySize.y;
 
-    float janelaWidght = (io.DisplaySize.x * fatorX) - posX;
-    float janelaHeight = (io.DisplaySize.y * fatorY) - posY;
+    float janelaWidght = (screenWidth * fatorX) - posX;
+    float janelaHeight = (screenHeight * fatorY) - posY;
 
     ImGui::SetNextWindowSize(ImVec2(janelaWidght, janelaHeight), ImGuiCond_Always);
     ImGui::SetNextWindowPos(ImVec2(posX, posY), ImGuiCond_Always);
@@ -128,24 +145,24 @@ void tamanhoDinamico(const char *nomeJanela, float fatorX, float fatorY, float p
     ImGui::Begin(nomeJanela, nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration);
 }
 
-void cantoDireito(const char *nome, float altura, float posY)
+
+void cantoDireito(const char *nome, float posY)
 {
     ImGuiIO &io = ImGui::GetIO(); // Obtém as dimensões da tela
 
-    // Calcula a largura disponível para a tabela (máximo espaço da tela preta)
-    float larguraDisponivel = io.DisplaySize.x * 0.15f; // Ocupa 30% da largura da tela
-    float larguraMinima = 150.0f;                       // Largura mínima da tabela
-    float larguraTabela = (larguraDisponivel > larguraMinima) ? larguraDisponivel : larguraMinima;
+    // Define um tamanho fixo para a janela
+    float larguraFixa = 300.0f;
+    float alturaFixa = 150.0f;
 
     // Define a posição no canto superior direito
     ImVec2 posicaoTopoDireito = ImVec2(
-        io.DisplaySize.x - larguraTabela, // Move 10px para dentro da borda direita
-        posY                              // Mantém a posição Y fixa
+        io.DisplaySize.x - larguraFixa, // Move para o canto direito
+        posY                             // Mantém a posição Y fixa
     );
 
-    // Define a posição e o tamanho da janela
+    // Define a posição e o tamanho fixo da janela
     ImGui::SetNextWindowPos(posicaoTopoDireito, ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(larguraTabela, altura), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(larguraFixa, alturaFixa), ImGuiCond_Always);
 
     // Criar a janela fixa no canto superior direito
     ImGui::Begin(nome, nullptr,
@@ -157,9 +174,9 @@ void cantoDireito(const char *nome, float altura, float posY)
     // Criando a tabela de pontos da seção transversal
     if (ImGui::BeginTable("TabelaPontos", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
     {
-        ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, larguraTabela * 0.20f);
-        ImGui::TableSetupColumn("x (cm)", ImGuiTableColumnFlags_WidthFixed, larguraTabela * 0.40f);
-        ImGui::TableSetupColumn("y (cm)", ImGuiTableColumnFlags_WidthFixed, larguraTabela * 0.40f);
+        ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, larguraFixa * 0.20f);
+        ImGui::TableSetupColumn("x (cm)", ImGuiTableColumnFlags_WidthFixed, larguraFixa * 0.40f);
+        ImGui::TableSetupColumn("y (cm)", ImGuiTableColumnFlags_WidthFixed, larguraFixa * 0.40f);
         ImGui::TableHeadersRow();
 
         // Exemplo de dados (substitua com seus valores reais)
@@ -176,8 +193,70 @@ void cantoDireito(const char *nome, float altura, float posY)
         ImGui::EndTable();
     }
 
+    
     ImGui::End();
 }
+void combinacaoDireita(const char *nome, float posY)
+{
+    ImGuiIO &io = ImGui::GetIO(); // Obtém as dimensões da tela
+
+    // Define um tamanho fixo para a janela
+    float larguraFixa = 300.0f;
+    float alturaFixa = 150.0f;
+
+    // Define a posição no canto superior direito
+    ImVec2 posicaoTopoDireito = ImVec2(
+        io.DisplaySize.x - larguraFixa, // Move para o canto direito
+        posY                             // Mantém a posição Y fixa
+    );
+
+    // Define a posição e o tamanho fixo da janela
+    ImGui::SetNextWindowPos(posicaoTopoDireito, ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(larguraFixa, alturaFixa), ImGuiCond_Always);
+
+    // Criar a janela fixa no canto superior direito
+    ImGui::Begin(nome, nullptr,
+                 ImGuiWindowFlags_NoMove |
+                     ImGuiWindowFlags_NoResize |
+                     ImGuiWindowFlags_NoCollapse |
+                     ImGuiWindowFlags_NoTitleBar);
+
+    // Criando a tabela de pontos da seção transversal
+    if (ImGui::BeginTable("Esforços", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+    {
+        ImGui::TableSetupColumn("Combinação", ImGuiTableColumnFlags_WidthFixed, larguraFixa * 0.20f);
+        ImGui::TableSetupColumn("Nsd (kN)", ImGuiTableColumnFlags_WidthFixed, larguraFixa * 0.40f);
+        ImGui::TableSetupColumn("Msd,x (kN.m)", ImGuiTableColumnFlags_WidthFixed, larguraFixa * 0.40f);
+        ImGui::TableHeadersRow();
+
+        // Exemplo de dados (substitua com seus valores reais)
+        for (size_t i = 0; i < combinacao.size(); ++i)
+            {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%d", static_cast<int>(i + 1));
+                ImGui::TableSetColumnIndex(1);
+                ImGui::Text("%.2f", combinacao[i].Normal);
+                ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%.2f", combinacao[i].MsdX);
+            }
+        ImGui::EndTable();
+    }
+
+    
+    ImGui::End();
+}
+
+
+
+
+/* ImGuiStyle& style = ImGui::GetStyle();
+static ImGuiStyle ref_saved_style;
+
+ImGui::Checkbox("Anti-aliased lines", &style.AntiAliasedLines);
+ImGui::Checkbox("Anti-aliased lines use texture", &style.AntiAliasedLinesUseTex);
+ImGui::Checkbox("Anti-aliased fill", &style.AntiAliasedFill);
+*/ 
 
 /* void cantoDireito(const char* nome, float x, float y, float posY) {
     ImGuiIO& io = ImGui::GetIO(); // Obtém as dimensões da tela
@@ -209,7 +288,7 @@ void IniciarInterface()
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     int screenWidth = 1280;
     int screenHeight = 960;
-
+    
     InitWindow(screenWidth, screenHeight, "SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO");
 
     if (!IsWindowReady()) // Verifique se a janela foi criada com sucesso
@@ -217,7 +296,8 @@ void IniciarInterface()
         std::cerr << "Erro ao criar a janela!" << std::endl;
         return; // Saia da função se a janela não foi criada
     }
-
+    
+    
     rlImGuiBeginInitImGui();
     ImGui::StyleColorsDark();
     ImFontConfig fontConfig;
@@ -227,7 +307,8 @@ void IniciarInterface()
             0x0370, 0x03FF, // Faixa de grego
             0};
     font = ImGui::GetIO().Fonts->AddFontFromFileTTF("src/segoeuisl.ttf", 18.0f, &fontConfig, customRange);
-
+            
+    
     rlImGuiEndInitImGui();
     ImPlot::CreateContext();
 }
@@ -1071,7 +1152,7 @@ void loopPrograma()
         }
 
         ShowSecondaryMenuBar();
-        tamanhoDinamico("Grafico", 0.85, 1, 0, 50);
+        tamanhoDinamico("Grafico", 1, 1, 0, 55);
         int ARR_SIZE = 2;
         float x_values[ARR_SIZE]; // teste
         float y_values[ARR_SIZE];
@@ -1268,10 +1349,10 @@ void loopPrograma()
             ImPlot::PlotLine("Polígono Rotacionado", xRot, yRot, rotacionadosFechados.size());
             ImPlot::EndPlot();
         }
-
         ImGui::End(); // Finaliza a janela do gráfico
 
-        cantoDireito("Pontos da Secao Transversal", 200, 50);
+        cantoDireito("Pontos da Secao Transversal", 55);
+        combinacaoDireita("Combinação", 205);
 
         // dadosCereal salvar;
         /* if (janelaSalvar)

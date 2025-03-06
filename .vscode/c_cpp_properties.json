@@ -7,7 +7,9 @@
                 "${workspaceFolder}/lib/raylib/src",
                 "${workspaceFolder}/lib/imgui",
                 "${workspaceFolder}/lib/implot",
-                "${workspaceFolder}/lib/rlImGui"
+                "${workspaceFolder}/lib/rlImGui",
+                "${workspaceFolder}/lib/cereal/include",
+                "C:/vcpkg/installed/x64-windows/include"
             ],
             "defines": [
                 "_DEBUG",

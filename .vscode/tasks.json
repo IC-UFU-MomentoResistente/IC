@@ -12,10 +12,12 @@
                 "-I", "lib/imgui",
                 "-I", "lib/implot",
                 "-I", "lib/rlImGui",
+                "-I", "C:/vcpkg/installed/x64-windows/include",
                 "-L", "lib/raylib/build",
                 "-L", "lib/imgui/build",
                 "-L", "lib/implot/build",
                 "-L", "lib/rlImGui/build",
+                "-L", "C:/vcpkg/installed/x64-windows/lib",
                 "-o", "build/main.exe",
                 "src/main.cpp",
                 "src/AppView.cpp",
@@ -25,8 +27,8 @@
                 "-l:libimplot.a",
                 "-l:libraylib.a",
                 "-l:librlImGui.a",
-                "-lwinmm",   
-                "-lgdi32"    
+                "-lwinmm",
+                "-lgdi32", 
             ],
             "group": {
                 "kind": "build",
@@ -34,6 +36,7 @@
             },
             "problemMatcher": ["$gcc"],
             "detail": "Compilação do projeto com raylib, imgui, implot e rlImGui"
-        }
+        },
+             
     ]
 }

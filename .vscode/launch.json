@@ -26,6 +26,6 @@
                 "engineLogging": true
             },
             "internalConsoleOptions": "openOnSessionStart"
-        }
+        },
     ]
 }

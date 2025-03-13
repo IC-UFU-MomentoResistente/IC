@@ -152,7 +152,7 @@ void cantoDireito(const char *nome, float posY)
 
     // Define um tamanho fixo para a janela
     float larguraFixa = 300.0f;
-    float alturaFixa = 150.0f;
+    float alturaFixa = 170.0f;
 
     // Define a posição no canto superior direito
     ImVec2 posicaoTopoDireito = ImVec2(
@@ -163,8 +163,6 @@ void cantoDireito(const char *nome, float posY)
     // Define a posição e o tamanho fixo da janela
     ImGui::SetNextWindowPos(posicaoTopoDireito, ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(larguraFixa, alturaFixa), ImGuiCond_Always);
-
-    // Criar a janela fixa no canto superior direito
     ImGui::Begin(nome, nullptr,
                  ImGuiWindowFlags_NoMove |
                      ImGuiWindowFlags_NoResize |
@@ -202,7 +200,7 @@ void combinacaoDireita(const char *nome, float posY)
 
     // Define um tamanho fixo para a janela
     float larguraFixa = 300.0f;
-    float alturaFixa = 150.0f;
+    float alturaFixa = 163.0f;
 
     // Define a posição no canto superior direito
     ImVec2 posicaoTopoDireito = ImVec2(
@@ -222,11 +220,11 @@ void combinacaoDireita(const char *nome, float posY)
                      ImGuiWindowFlags_NoTitleBar);
 
     // Criando a tabela de pontos da seção transversal
-    if (ImGui::BeginTable("Esforços", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+    if (ImGui::BeginTable("Esforços", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg ))
     {
-        ImGui::TableSetupColumn("Combinação", ImGuiTableColumnFlags_WidthFixed, larguraFixa * 0.20f);
-        ImGui::TableSetupColumn("Nsd (kN)", ImGuiTableColumnFlags_WidthFixed, larguraFixa * 0.40f);
-        ImGui::TableSetupColumn("Msd,x (kN.m)", ImGuiTableColumnFlags_WidthFixed, larguraFixa * 0.40f);
+        ImGui::TableSetupColumn("Combinação", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+        ImGui::TableSetupColumn("       Nsd (kN)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+        ImGui::TableSetupColumn("Msd,x (kN.m)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
         ImGui::TableHeadersRow();
 
         // Exemplo de dados (substitua com seus valores reais)
@@ -315,54 +313,30 @@ void IniciarInterface()
 
 void ShowAboutWindow()
 {
-    ImGuiIO &io = ImGui::GetIO();
-
-    float width = io.DisplaySize.x;
-    float height = io.DisplaySize.y;
-
-    ImVec2 posCentral = ImVec2((io.DisplaySize.x - 500) * 0.5, (io.DisplaySize.y - 300) * 0.5);
-
-    ImGui::SetNextWindowSize(ImVec2(500, 300), ImGuiCond_Appearing);
-    ImGui::SetNextWindowPos(posCentral, ImGuiCond_Always);
-    tamanhoDinamico("Autores", 0.5, 0.25, 0, 0);
-
-    // Define fundo mais suave
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.15f, 0.15f, 0.15f, 0.9f)); // Cinza escuro
-    float windowWidth = ImGui::GetWindowSize().x;
-    float textWidth = ImGui::CalcTextSize("SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO").x;
-    ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
-
-    // Exibe o título
+    
+    ImGui::SetNextWindowPos(ImVec2(140,20));
+    ImGui::SetNextWindowSize(ImVec2(600,250));
+    ImGui::Begin("Autores", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration);
     ImGui::Text("SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO");
-
-    // Linha separadora estética
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::Spacing();
-
-    // Usa a fonte do texto
-
-    // Exibe os nomes e emails com negrito
     ImGui::Text("Desenvolvido por:");
     ImGui::BulletText("Arthur C. Pena - arthur.cunha.pena@ufu.br");
     ImGui::BulletText("Gabriel A. P. Lunarti - gabriel.lunarti@ufu.br");
-
     ImGui::Spacing();
-
     ImGui::Text("Orientador:");
     ImGui::BulletText("Prof Dr Eduardo Vicente Wolf Trentini");
-
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::Spacing();
 
-    ImGui::SetCursorPosX((windowWidth - 80) * 0.5f); // Centraliza o botão
-    if (ImGui::Button("Fechar", ImVec2(80, 30)))
+    ImGui::SetCursorPosX(25); // Centraliza o botão
+    if (ImGui::Button("Fechar", ImVec2(100, 30)))
     {
         ImGui::CloseCurrentPopup();
     }
 
-    ImGui::PopStyleColor(); // Restaura a cor original
     ImGui::End();
 }
 
@@ -380,7 +354,7 @@ void ShowSecondaryMenuBar()
     // Cria uma janela sem decorações com uma barra de menu
     ImGui::Begin("##SecondaryMenuBar", nullptr,
                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
-                     ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
+                     ImGuiWindowFlags_NoMove |
                      ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar);
 
     // Cria a barra de menu dentro da janela
@@ -388,12 +362,16 @@ void ShowSecondaryMenuBar()
     {
         if (ImGui::BeginMenu("Seção Transversal"))
         {
+
+            ImGui::SetNextWindowPos(ImVec2(4,47));
+            ImGui::SetNextWindowSize(ImVec2(420,270));
             ImGui::Begin("Inserir Dados da Seção Transversal", nullptr,
                          ImGuiWindowFlags_NoCollapse |
                              ImGuiWindowFlags_NoResize |
                              ImGuiWindowFlags_NoMove);
 
             // Input para número de pontos
+            
             ImGui::SetNextItemWidth(80);
             ImGui::InputInt("Número de Pontos", &numVertices);
 
@@ -446,7 +424,7 @@ void ShowSecondaryMenuBar()
         if (ImGui::BeginMenu("Materiais"))
         {
             ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always);    // Ajuste os valores conforme necessário
-            ImGui::SetNextWindowPos(ImVec2(50, 50), ImGuiCond_FirstUseEver); // Posição inicial
+            ImGui::SetNextWindowPos(ImVec2(123, 47)); // Posição inicial
             ImGui::Begin("Entrada de Dados de Materiais", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
             ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
@@ -817,39 +795,24 @@ void ShowSecondaryMenuBar()
                     //
 
                     float pos_x_direita = ImGui::GetWindowWidth() - 150;
+                    
                     ImGui::SetCursorPosX(pos_x_direita);
-                    ImGui::Text("Parâmetros do aço");
-                    // organização gama_s
-
-                    ImGui::SetCursorPosX(pos_x_direita);
-                    ImGui::Text("fyk = ");
-                    ImGui::SameLine();
+                    ImGui::BeginGroup();
                     ImGui::SetNextItemWidth(70);
                     ImGui::InputFloat("##fyk", &fyk_variavel, 0.0f, 0.0f, "%.3f");
-                    ImGui::SameLine();
-                    ImGui::Text("MPa");
-
-                    ImGui::SetCursorPosX(pos_x_direita);
-                    ImGui::SetNextItemWidth(100);
-                    ImGui::Text("γs  = ");
-                    ImGui::SameLine();
+                    ImGui::SetNextItemWidth(70);
                     ImGui::SetNextItemWidth(70);
                     ImGui::InputFloat("##γs", &gama_s_variavel, 0.0f, 0.0f, "%.3f");
+                    ImGui::SetNextItemWidth(70);
+                    ImGui::InputFloat("##Es", &Es_variavel, 0.0f, 0.0f, "%.3f");
+                    ImGui::EndGroup();
+
                     if (gama_s_variavel < 0)
-                        gama_s_variavel = 0;
+                    gama_s_variavel = 0;
                     // organização fyk
 
                     if (fyk_variavel < 0)
-                        fyk_variavel = 0;
-
-                    // organização deformação do aço
-                    ImGui::SetCursorPosX(pos_x_direita);
-                    ImGui::Text("Es  = ");
-                    ImGui::SameLine();
-                    ImGui::SetNextItemWidth(70);
-                    ImGui::InputFloat("##Es", &Es_variavel, 0.0f, 0.0f, "%.3f");
-                    ImGui::SameLine();
-                    ImGui::Text("GPa");
+                    fyk_variavel = 0;
                     if (Es_variavel < 0)
                         Es_variavel = 0;
 
@@ -872,7 +835,7 @@ void ShowSecondaryMenuBar()
                         tensaoY[i] = reforco.tensao(EPIvariavel);
                     }
                     ImGui::SetCursorPos(ImVec2(0, 60));
-                    if (ImPlot::BeginPlot("Diagrama Tensão-Deformação (Linear com patamar)", ImVec2((plotSize.x - 200), plotSize.y - 20), ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_Invert | ImPlotFlags_NoLegend))
+                    if (ImPlot::BeginPlot("Diagrama Tensão-Deformação (Linear com patamar)", ImVec2(425, 225), ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_Invert | ImPlotFlags_NoLegend))
                     {
                         ImPlot::SetupAxisLimits(ImAxis_X1, -10.0, 10.0, ImGuiCond_Always);
                         ImPlot::SetupAxisLimits(ImAxis_Y1, -800, 800, ImGuiCond_Always);
@@ -925,7 +888,11 @@ void ShowSecondaryMenuBar()
         if (ImGui::BeginMenu("Armadura Passiva"))
         {
 
-            ImGui::Begin("Entrada de Dados: Armadura Passiva", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+
+            ImGui::SetNextWindowPos(ImVec2(192,47));
+            ImGui::SetNextWindowSize(ImVec2(420,270));
+            ImGui::Begin("Entrada de Dados: Armadura Passiva", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+            
             ImGui::RadioButton("Uma Barra", &barras, 0);
             ImGui::RadioButton("Linha de Barras", &barras, 1);
 
@@ -1047,8 +1014,9 @@ void ShowSecondaryMenuBar()
         if (ImGui::BeginMenu("Esforços"))
         {
 
-            ImGui::Begin("Esforços", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-
+            ImGui::SetNextWindowPos(ImVec2(311,47));
+            ImGui::SetNextWindowSize(ImVec2(420,270));
+            ImGui::Begin("Entrada dos dados dos esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
             ImGui::PushItemWidth(50);
             ImGui::InputFloat("Nsd", &nsd);
             ImGui::SameLine();
@@ -1352,7 +1320,7 @@ void loopPrograma()
         ImGui::End(); // Finaliza a janela do gráfico
 
         cantoDireito("Pontos da Secao Transversal", 55);
-        combinacaoDireita("Combinação", 205);
+        combinacaoDireita("Combinação", 217);
 
         // dadosCereal salvar;
         /* if (janelaSalvar)

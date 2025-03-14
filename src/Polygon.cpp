@@ -1,6 +1,6 @@
 #include "Polygon.h"
 
-#define _USE_MATH_DEFINES
+#include <iostream>
 #include <cmath>
 #include <vector>
 #include <stdexcept>
@@ -10,7 +10,7 @@ using std::invalid_argument;
 
 Polygon::Polygon()
 {
-    polygonVertices = {};
+	polygonVertices = {};
 	geometricCenter;
 	intersectionPoint;
 	maxY = 0;
@@ -27,7 +27,7 @@ void Polygon::setVertices(vector<Point> collectedVertices)
 	{
 		double coordX = collectedVertices[i].getX();
 		double coordY = collectedVertices[i].getY();
-		
+
 		polygonVertices.push_back(Point(coordX, coordY));
 	}
 }
@@ -85,13 +85,13 @@ void Polygon::computeArea()
 	{
 		int j = (i + 1) % polygonSize;
 
-		double factor = polygonVertices[i].getX() * polygonVertices[j].getY() 
-		- polygonVertices[j].getX() * polygonVertices[i].getY();;
+		double factor = polygonVertices[i].getX() * polygonVertices[j].getY()
+			- polygonVertices[j].getX() * polygonVertices[i].getY();;
 
 		polygonArea += factor;
 	}
 
-	polygonArea = abs(polygonArea) / 2; 
+	polygonArea = (polygonArea) / 2;
 }
 
 void Polygon::computeStaticMomentX()
@@ -103,13 +103,13 @@ void Polygon::computeStaticMomentX()
 	{
 		int j = (i + 1) % polygonSize;
 
-		double factor = polygonVertices[i].getX() * polygonVertices[j].getY() 
-		- polygonVertices[j].getX() * polygonVertices[i].getY();;
+		double factor = polygonVertices[i].getX() * polygonVertices[j].getY()
+			- polygonVertices[j].getX() * polygonVertices[i].getY();;
 
 		staticMomentX += (polygonVertices[i].getY() + polygonVertices[j].getY()) * factor;
 	}
 
-	staticMomentX /= 6; 
+	staticMomentX /= 6;
 }
 
 void Polygon::computeStaticMomentY()
@@ -121,13 +121,13 @@ void Polygon::computeStaticMomentY()
 	{
 		int j = (i + 1) % polygonSize;
 
-		double factor = polygonVertices[i].getX() * polygonVertices[j].getY() 
-		- polygonVertices[j].getX() * polygonVertices[i].getY();;
+		double factor = polygonVertices[i].getX() * polygonVertices[j].getY()
+			- polygonVertices[j].getX() * polygonVertices[i].getY();;
 
 		staticMomentY += (polygonVertices[i].getX() + polygonVertices[j].getX()) * factor;
 	}
 
-	staticMomentY /= 6; 
+	staticMomentY /= 6;
 }
 
 void Polygon::computeCentroid()
@@ -136,8 +136,8 @@ void Polygon::computeCentroid()
 	computeStaticMomentX();
 	computeStaticMomentY();
 
-	geometricCenter.setX(staticMomentY/polygonArea);
-	geometricCenter.setY(staticMomentX/polygonArea);
+	geometricCenter.setX(staticMomentY / polygonArea);
+	geometricCenter.setY(staticMomentX / polygonArea);
 	//geometricCenter.setPoint((staticMomentY/polygonArea), (staticMomentX/polygonArea));
 }
 
@@ -150,15 +150,15 @@ void Polygon::translateToCentroid()
 		double coordX = polygonVertices[i].getX() - geometricCenter.getX();
 		double coordY = polygonVertices[i].getY() - geometricCenter.getY();
 
-		polygonVertices[i].setPoint(coordX, coordY);
+		polygonVertices[i].setX(coordX);
+		polygonVertices[i].setY(coordY);
+		//polygonVertices[i].setPoint(coordX, coordY);
 	}
 }
 
 void Polygon::rotateAroundCentroid(double angle)
 {
-	translateToCentroid();
-
-	double rad = angle * M_PI / 180;
+	double rad = angle * 3.14159265358979323846 / 180;
 	double cosAngle = cos(rad);
 	double sinAngle = sin(rad);
 
@@ -167,7 +167,9 @@ void Polygon::rotateAroundCentroid(double angle)
 		double rotateX = (polygonVertices[i].getX() * cosAngle) - (polygonVertices[i].getY() * sinAngle);
 		double rotateY = (polygonVertices[i].getX() * sinAngle) + (polygonVertices[i].getY() * cosAngle);
 
-		polygonVertices[i].setPoint(rotateX, rotateY);
+		polygonVertices[i].setX(rotateX);
+		polygonVertices[i].setY(rotateY);
+		//polygonVertices[i].setPoint(rotateX, rotateY);
 	}
 }
 
@@ -178,41 +180,57 @@ void Polygon::computeIntersection(Point firstPoint, Point secondPoint, double cu
 
 	double t = (cutCoordY - firstPoint.getY()) / dy;
 
-    intersectionPoint.setX(firstPoint.getX() + t * dx);
-    intersectionPoint.setY(cutCoordY);
+	intersectionPoint.setX(firstPoint.getX() + t * dx);
+	intersectionPoint.setY(cutCoordY);
 }
 
 vector<Point> Polygon::getPolygonVertices() const
 {
-    return polygonVertices;
+	return polygonVertices;
 }
 
 Point Polygon::getGeometricCenter() const
 {
-    return geometricCenter;
+	return geometricCenter;
 }
 
 Point Polygon::getIntersectionPoint() const
 {
-    return intersectionPoint;
+	return intersectionPoint;
 }
 
 double Polygon::getMaxY() const
 {
-    return maxY;
+	return maxY;
 }
 
 double Polygon::getMinY() const
 {
-    return minY;
+	return minY;
 }
 
 double Polygon::getPolygonHeight() const
 {
-    return polygonHeight;
+	return polygonHeight;
 }
 
 double Polygon::getPolygonArea() const
 {
-    return polygonArea;
+	return polygonArea;
+}
+
+double Polygon::getVet0X() const
+{
+	if (!polygonVertices.empty())
+		return polygonVertices[0].getX();
+	else
+		return 1;
+}
+
+double Polygon::getVet0Y() const
+{
+	if (!polygonVertices.empty())
+		return polygonVertices[0].getY();
+	else
+		return 1;
 }

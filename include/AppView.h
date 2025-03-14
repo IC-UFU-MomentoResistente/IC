@@ -16,5 +16,6 @@ using std::string;
 class AppView
 {
 public:
-    void renderPolygon(const vector<Point>& polygonVertices, string nameVertices, string namePolygon);
+	void renderPolygon(const vector<Point>& polygonVertices, string nameVertices, string namePolygon);
+	void renderReinforcement(const vector<Point>& reinforcement, string nameReinforcement);
 };

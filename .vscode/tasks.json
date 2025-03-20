@@ -23,6 +23,7 @@
                 "src/Polygon.cpp",
                 "src/Reinforcement.cpp",
                 "src/Interface.cpp",
+                "src/ConcreteProperties.cpp",
                 "lib/imgui/imgui.cpp",
                 "lib/imgui/imgui_demo.cpp",
                 "lib/imgui/imgui_draw.cpp",

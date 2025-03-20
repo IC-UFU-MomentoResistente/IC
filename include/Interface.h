@@ -13,9 +13,9 @@ public:
     void InterfaceLoop();
     void AutorsWindow();
     void ShowPrimaryMenuBar();
-    void ShowSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcement);
+    void ShowSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &ConcreteProperties, AppView &view);
     void CrossSectionData(Polygon &polygon, Reinforcement &reinforcement);
-    void InterfaceMaterials();
+    void InterfaceMaterials(ConcreteProperties &concrete, AppView &view);
     void ReinforcementInterface(Reinforcement &reinforcement);
     void EffortSectionInterface();
     void crossSectionPlotInterface(AppView & view, Polygon & polygon, Reinforcement & reinforcement);

@@ -8,6 +8,7 @@
 #include "Point.h"
 #include "Polygon.h"
 #include "Reinforcement.h"
+#include "ConcreteProperties.h"
 #include "AppView.h"
 #include "interface.h"
 
@@ -115,7 +116,7 @@ void Interface::AutorsWindow() {
 
 
 
-void Interface::ShowSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcement)	 
+void Interface::ShowSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, AppView &view)	 
 {
     ImGuiIO &io = ImGui::GetIO();
     ImVec2 window_pos = ImVec2(0, ImGui::GetFrameHeight());
@@ -134,7 +135,7 @@ void Interface::ShowSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcem
     if(ImGui::BeginMenuBar()) 
     {
         CrossSectionData(polygon, reinforcement);
-        InterfaceMaterials();
+        InterfaceMaterials(concrete, view);
         ReinforcementInterface(reinforcement);
         EffortSectionInterface();
 
@@ -214,7 +215,7 @@ void Interface::CrossSectionData(Polygon &polygon, Reinforcement &reinforcement)
     }
 }
 
-void Interface::InterfaceMaterials()
+void Interface::InterfaceMaterials(ConcreteProperties &concrete, AppView &view)
 {
 
     int option = 0;
@@ -232,7 +233,79 @@ void Interface::InterfaceMaterials()
         ImGui::Begin("Entrada de Dados de Materiais", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
         ImVec2 plotSize = ImGui::GetContentRegionAvail();
         ImGui::Text("εc");
-        
+
+        static int constitutiveModel = 0;
+        static double collectedFck, collectedGammaC, stress;
+
+        ImGui::RadioButton("ABNT NBR 6118:2014", &constitutiveModel, 0);
+        ImGui::RadioButton("ABNT NBR 6118:2023", &constitutiveModel, 1);
+
+        if (constitutiveModel == 0)
+        {
+            ImGui::InputDouble("fck (MPa):", &collectedFck);
+            ImGui::InputDouble("gammaC: ", &collectedGammaC);
+
+            if (collectedFck < 0 || collectedGammaC < 0)
+            {
+                collectedFck = 0;
+                collectedGammaC = 1;
+            }
+
+            if (ImGui::Button("Adicionar"))
+            {
+                concrete.getCurveStressStrain().clear();
+
+                StressStrainModelType model = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2014;
+
+                concrete.setParameters(collectedFck, collectedGammaC);
+
+                concrete.setCurveStressStrain(model);
+            }
+
+            ImVec2 plotSize = ImGui::GetContentRegionAvail();
+
+            // inicialização do gráfico com os eixos
+            if (ImPlot::BeginPlot("Concreto", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
+            {
+                ImPlot::SetupAxesLimits(0, (concrete.getStrainConcreteRupture() * 1.1), 0, concrete.getFcd(), ImGuiCond_Always);
+                view.renderReinforcement(concrete.getCurveStressStrain(), "TensaoxDef");
+            }
+
+            ImPlot::EndPlot();
+        }
+
+        if (constitutiveModel == 1)
+        {
+            ImGui::InputDouble("fck (MPa):", &collectedFck);
+            ImGui::InputDouble("gammaC: ", &collectedGammaC);
+
+            if (collectedFck < 0 || collectedGammaC < 0)
+            {
+                collectedFck = 0;
+                collectedGammaC = 1;
+            }
+
+            if (ImGui::Button("Adicionar"))
+            {
+                StressStrainModelType model = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2014;
+
+                concrete.setParameters(collectedFck, collectedGammaC);
+
+                concrete.setCurveStressStrain(model);
+            }
+
+            ImVec2 plotSize = ImGui::GetContentRegionAvail();
+
+            // inicialização do gráfico com os eixos
+            if (ImPlot::BeginPlot("Concreto", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
+            {
+                ImPlot::SetupAxesLimits(0, (concrete.getStrainConcreteRupture() * 1.1), 0, concrete.getFcd(), ImGuiCond_Always);
+                view.renderReinforcement(concrete.getCurveStressStrain(), "TensaoxDef");
+            }
+
+            ImPlot::EndPlot();
+        }
+
         ImGui::End();
         ImGui::EndMenu();
     }

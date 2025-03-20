@@ -8,6 +8,7 @@
 #include "Point.h"
 #include "Polygon.h"
 #include "Reinforcement.h"
+#include "ConcreteProperties.h"
 #include "AppView.h"
 #include "Interface.h"
 
@@ -19,6 +20,7 @@ int main()
 	
 	Polygon polygon;
 	Reinforcement reinforcement;
+	ConcreteProperties concrete;
 	AppView view;
 	Interface interface;
 	
@@ -52,7 +54,7 @@ int main()
 		ImGui::PushFont(font);
 		*/
 		interface.ShowPrimaryMenuBar();
-		interface.ShowSecondaryMenuBar(polygon, reinforcement);
+		interface.ShowSecondaryMenuBar(polygon, reinforcement, concrete, view);
 		interface.crossSectionPlotInterface(view, polygon, reinforcement);
 
 		/*if (ImGui::BeginMainMenuBar())

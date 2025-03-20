@@ -11,8 +11,6 @@
 #include "AppView.h"
 #include "interface.h"
 
-Polygon polygon;
-ImFont *font = nullptr;
 
 void Interface::InitInterface() 
 {
@@ -32,14 +30,15 @@ void Interface::InitInterface()
     
     rlImGuiBeginInitImGui();
     ImGui::StyleColorsDark();
-    ImFontConfig fontConfig;
+    
+    /* ImFontConfig fontConfig;
     static const ImWchar customRange[] =
         {
             0x0020, 0x00FF, // Faixa básica (ASCII estendido)
             0x0370, 0x03FF, // Faixa de grego
             0};
     font = ImGui::GetIO().Fonts->AddFontFromFileTTF("src/segoeuisl.ttf", 18.0f, &fontConfig, customRange);
-            
+            */
     
     rlImGuiEndInitImGui();
     ImPlot::CreateContext();
@@ -48,11 +47,41 @@ void Interface::InitInterface()
 void Interface::InterfaceLoop() 
 {
   
+}
 
+
+
+void Interface::ShowPrimaryMenuBar() 
+{
+    if (ImGui::BeginMainMenuBar())
+        {
+            if (ImGui::BeginMenu("Arquivo"))
+            {
+                ImGui::MenuItem("Salvar");
+                ImGui::MenuItem("Carregar");
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Resultado"))
+            {
+                ImGui::MenuItem("Gerar relatório");
+                ImGui::MenuItem("Visualizar Gráficos");
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Autores"))
+            {
+                AutorsWindow();
+                ImGui::EndMenu();
+            }
+
+            ImGui::EndMainMenuBar();
+        }
 }
 
 void Interface::AutorsWindow() {
-    ImGui::SetNextWindowPos(ImVec2(140, 20));
+   
+    ImGui::SetNextWindowPos(ImVec2(145, 20));
     ImGui::SetNextWindowSize(ImVec2(600, 250));
     ImGui::Begin("Autores", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration);
     ImGui::Text("SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO");
@@ -64,7 +93,7 @@ void Interface::AutorsWindow() {
     ImGui::BulletText("Gabriel A. P. Lunarti - gabriel.lunarti@ufu.br");
     ImGui::Spacing();
     ImGui::Text("Orientador:");
-    ImGui::BulletText("Prof Dr Eduardo Vicente Wolf Trentini");
+    ImGui::BulletText("Prof Dr Eduardo Vicente Wolf Trentini - etrentini@ufu.br ");
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::Spacing();
@@ -78,7 +107,15 @@ void Interface::AutorsWindow() {
     ImGui::End();
 }
 
-void Interface::ShowSecondaryMenuBar() 
+
+
+
+
+
+
+
+
+void Interface::ShowSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcement)	 
 {
     ImGuiIO &io = ImGui::GetIO();
     ImVec2 window_pos = ImVec2(0, ImGui::GetFrameHeight());
@@ -96,26 +133,24 @@ void Interface::ShowSecondaryMenuBar()
     
     if(ImGui::BeginMenuBar()) 
     {
-        CrossSectionData();
-        
-
-
+        CrossSectionData(polygon, reinforcement);
+        InterfaceMaterials();
+        ReinforcementInterface(reinforcement);
+        EffortSectionInterface();
 
         ImGui::EndMenuBar();
-        
     }
-                    
-    ImGui::End();
+    
+    ImGui::End(); // Finaliza a janela
 }
 
-void Interface::CrossSectionData() 
+void Interface::CrossSectionData(Polygon &polygon, Reinforcement &reinforcement) 
 {
-    
     if (ImGui::BeginMenu("Seção Transversal")) // Primeira versão, não é a final - precisa incrementar vértices temporarios - não adicionar vertices negativos e tal   
     {
         static double coordXPolygon, coordYPolygon;
                 
-        ImGui::SetNextWindowPos(ImVec2(4,47));
+        ImGui::SetNextWindowPos(ImVec2(4,35));
         ImGui::SetNextWindowSize(ImVec2(420,270));
         ImGui::Begin("Inserir Dados da Seção Transversal", nullptr,
                      ImGuiWindowFlags_NoCollapse |
@@ -123,27 +158,58 @@ void Interface::CrossSectionData()
                          ImGuiWindowFlags_NoMove);
 
         // Input para número de pontos
-        
         ImGui::SetNextItemWidth(80);
-
         ImGui::Spacing(); // Adiciona um espaçamento antes da tabela
+        ImGui::Text("Vertices");
+        ImGui::InputDouble("x (cm)", &coordXPolygon);
+        ImGui::InputDouble("y (cm)", &coordYPolygon);
 
         if (ImGui::Button("Adicionar Ponto"))
-			{
-				polygon.addVertice(coordXPolygon, coordYPolygon);
-			}
+        {
+            polygon.addVertice(coordXPolygon, coordYPolygon);
+        }
 
-			ImGui::SameLine();
+        ImGui::SameLine();
 
-			if (ImGui::Button("Remover Ponto"))
-			{
-				if (!polygon.getPolygonVertices().empty())
-					polygon.removeLastVertice();
-			}
+        if (ImGui::Button("Remover Ponto"))
+        {
+            if (!polygon.getPolygonVertices().empty())
+                polygon.removeLastVertice();
+        }
 
-			ImGui::SameLine();
+        ImGui::SameLine();
 
-        ImGui::End();
+        if (ImGui::Button("Calcular parametros"))
+        {
+            polygon.computeArea();
+            polygon.computeCentroid();
+            polygon.computeMaxCoordY();
+            polygon.computeMinCoordY();
+            polygon.computeHeight();
+        }
+
+        if (ImGui::Button("Transladar"))
+        {
+            polygon.translateToCentroid();
+            reinforcement.translateToCentroidPolygon(polygon.getGeometricCenter());
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Rotacionar"))
+        {
+            polygon.rotateAroundCentroid(10);
+            reinforcement.rotateAroundCentroidPolygon(10, polygon.getGeometricCenter());
+        }
+
+        ImGui::Text("Area: %.2f", polygon.getPolygonArea());
+        ImGui::Text("MaxY: %.2f", polygon.getMaxY());
+        ImGui::Text("MinY: %.2f", polygon.getMinY());
+        ImGui::Text("Height: %.2f", polygon.getMaxY());
+        ImGui::Text("CG: %.2f, %.2f", polygon.getGeometricCenter().getX(), polygon.getGeometricCenter().getY());
+        ImGui::Text("Vet0: %.2f, %.2f", polygon.getVet0X(), polygon.getVet0Y());
+
+        ImGui::End(); // Finaliza a janela
         ImGui::EndMenu();
     }
 }
@@ -151,48 +217,146 @@ void Interface::CrossSectionData()
 void Interface::InterfaceMaterials()
 {
 
-    ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always);    // Ajuste os valores conforme necessário
-    ImGui::SetNextWindowPos(ImVec2(123, 47)); // Posição inicial
-    ImGui::Begin("Entrada de Dados de Materiais", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    int option = 0;
+    float fck_variable;
+    float yc_variable;
+    float beta_variable;
+    float fyk_variable; 
+    float gama_s_variable;
+    float es_variable;
+
+    if(ImGui::BeginMenu("Materiais")) 
+    {
+        ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always);    // Ajuste os valores conforme necessário
+        ImGui::SetNextWindowPos(ImVec2(138, 35)); // Posição inicial
+        ImGui::Begin("Entrada de Dados de Materiais", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImVec2 plotSize = ImGui::GetContentRegionAvail();
+        ImGui::Text("εc");
+        
+        ImGui::End();
+        ImGui::EndMenu();
+    }
+}
+
+void Interface::ReinforcementInterface(Reinforcement &reinforcement)
+{
+    if (ImGui::BeginMenu("Armadura"))
+    {
+        ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always); // Ajuste os valores conforme necessário
+        ImGui::SetNextWindowPos(ImVec2(200, 35));                     // Posição inicial
+        static int barMode, numBar = 0;
+        static double coordXBar, coordYBar, diameterBar, coordXiBar, coordXfBar, coordYiBar, coordYfBar;
+
+        ImGui::Begin("Entrada de dados: Armadura Passiva", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::RadioButton("Uma barra", &barMode, 0);
+        ImGui::RadioButton("Linha de barras", &barMode, 1);
+
+        if (barMode == 0)
+        {
+            ImGui::InputDouble("Diametro da barra (mm)", &diameterBar);
+            ImGui::InputDouble("x (cm)", &coordXBar);
+            ImGui::InputDouble("y (cm)", &coordYBar);
+
+            if (diameterBar < 0)
+                diameterBar = 0;
+
+            if (ImGui::Button("Adicionar"))
+                reinforcement.addReinforcement(coordXBar, coordYBar, diameterBar);
+
+            ImGui::SameLine();
+
+            if (ImGui::Button("Remover"))
+            {
+                if (!reinforcement.getReinforcement().empty())
+                    reinforcement.removeLastBar();
+            }
+        }
+
+        if (barMode == 1)
+        {
+            ImGui::InputInt("Numero de barras na linha", &numBar);
+            ImGui::InputDouble("Diametro das barras (mm)", &diameterBar);
+            ImGui::InputDouble("xi (cm)", &coordXiBar);
+            ImGui::InputDouble("xf (cm)", &coordXfBar);
+            ImGui::InputDouble("yi (cm)", &coordYiBar);
+            ImGui::InputDouble("yf (cm)", &coordYfBar);
+
+            if (diameterBar < 0)
+                diameterBar = 0;
+
+            if (numBar < 2)
+                numBar = 2;
+
+            double stepX = (coordXfBar - coordXiBar) / (numBar - 1);
+            double stepY = (coordYfBar - coordYiBar) / (numBar - 1);
+
+            if (ImGui::Button("Adicionar"))
+            {
+                for (int i = 0; i < numBar; i++)
+                {
+                    double coordX = coordXiBar + stepX * i;
+                    double coordY = coordYiBar + stepY * i;
+
+                    reinforcement.addReinforcement(coordX, coordY, diameterBar);
+                }
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::Button("Remover"))
+            {
+                if (!reinforcement.getReinforcement().empty())
+                    reinforcement.removeLastBar();
+            }
+        }
+
+        ImGui::End();
+        ImGui::EndMenu();
+    }
+}
+
+void Interface::EffortSectionInterface()
+{
+    if (ImGui::BeginMenu("Esforços"))
+    {
+        ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always); // Ajuste os valores conforme necessário
+        ImGui::SetNextWindowPos(ImVec2(200, 35));                     // Posição inicial
+        static double N, Mx, My;
+
+        ImGui::Begin("Entrada de Dados: Esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::InputDouble("N (kN)", &N);
+        ImGui::InputDouble("Mx (kN.m)", &Mx);
+        ImGui::InputDouble("My (kN.m)", &My);
+
+        if (ImGui::Button("Calcular"))
+        {
+            // Calcular o momento resistente
+        }
+
+        ImGui::End();
+        ImGui::EndMenu();
+    }   
+}
+
+void Interface::crossSectionPlotInterface(AppView &view, Polygon &polygon, Reinforcement &reinforcement) 
+{
+
+    ImGui::Begin("Grafico da Secao Transversal");
+
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
-    int opcao; 
-
-    if (ImGui::BeginTabBar("Tabela de Entrada de Dados de Materiais"))
+    // inicialização do gráfico com os eixos
+    if (ImPlot::BeginPlot("Grafico", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
     {
-
-    if (ImGui::BeginMenu("Materiais"))
-    {
-        if (ImGui::BeginTabItem("Concreto"))
+        if (polygon.getPolygonVertices().size() > 2)
         {
-            ImGui::Text("Tipo de Diagrama:");
-            ImGui::RadioButton("Parábola-Retangulo (NBR 6118:2023)", &opcao, 0);
-            ImGui::RadioButton("Parábola-Retangulo (NBR 6118:2014)", &opcao, 1);
-
-            if(opcao == 0)
-            {
-                ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x - 160);
-                ImGui::Text("Parâmetros do Concreto");
-            }
-
-            if(opcao == 1) 
-            {
-                ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x - 160);
-                ImGui::Text("Parâmetros do Concreto");
-            }
-
-            ImGui::EndTabItem();
+            view.renderPolygon(polygon.getPolygonVertices(), "Vertices", "Polygon");
+            view.renderReinforcement(reinforcement.getReinforcement(), "Barras");
         }
-
-        if (ImGui::BeginTabItem("Armadura Passiva"))
-        {
-            ImGui::EndTabItem();
-        }
-
-        ImGui::EndMenuBar();
     }
-    
-    
-    ImGui::EndTabBar();
-    }
+
+    ImPlot::EndPlot();
+
+    ImGui::End();
+
 }

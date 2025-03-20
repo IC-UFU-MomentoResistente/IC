@@ -16,11 +16,13 @@ using std::endl;
 
 int main()
 {
+	
 	Polygon polygon;
 	Reinforcement reinforcement;
 	AppView view;
 	Interface interface;
 	
+
 	interface.InitInterface();
 
 	/*
@@ -44,8 +46,14 @@ int main()
 		ClearBackground(DARKGRAY);
 		rlImGuiBegin();
 
-		
-		interface.ShowSecondaryMenuBar();
+
+
+		/*if (font)
+		ImGui::PushFont(font);
+		*/
+		interface.ShowPrimaryMenuBar();
+		interface.ShowSecondaryMenuBar(polygon, reinforcement);
+		interface.crossSectionPlotInterface(view, polygon, reinforcement);
 
 		/*if (ImGui::BeginMainMenuBar())
 		{
@@ -65,7 +73,7 @@ int main()
 			ImGui::EndMainMenuBar();
 		}
 			*/
-		bool sectionWindow = true;
+		// bool sectionWindow = true;
 
 		
 
@@ -131,10 +139,10 @@ int main()
 			ImGui::End();
 		}
 */
-		bool reinforcementWindow = true;
+		// bool reinforcementWindow = true;
 
-		static int barMode, numBar = 0;
-		static double coordXBar, coordYBar, diameterBar, coordXiBar, coordXfBar, coordYiBar, coordYfBar;
+		// static int barMode, numBar = 0;
+		// static double coordXBar, coordYBar, diameterBar, coordXiBar, coordXfBar, coordYiBar, coordYfBar;
 
 		/*
 		if (reinforcementWindow)
@@ -206,34 +214,39 @@ int main()
 			ImGui::End();
 		}*/
 
-		bool crossSectionPlotWindow = true;
+		// bool crossSectionPlotWindow = true;
 		
-		/*
-		if (crossSectionPlotWindow)
-		{
-			ImGui::Begin("Grafico da Secao Transversal");
+		
+		// if (crossSectionPlotWindow)
+		// {
+		// 	ImGui::Begin("Grafico da Secao Transversal");
 
-			ImVec2 plotSize = ImGui::GetContentRegionAvail();
+		// 	ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
-			// inicialização do gráfico com os eixos
-			if (ImPlot::BeginPlot("Grafico", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
-			{
-				if (polygon.getPolygonVertices().size() > 2)
-				{
-					view.renderPolygon(polygon.getPolygonVertices(), "Vertices", "Polygon");
-					view.renderReinforcement(reinforcement.getReinforcement(), "Barras");
-				}
-			}
+		// 	// inicialização do gráfico com os eixos
+		// 	if (ImPlot::BeginPlot("Grafico", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
+		// 	{
+		// 		if (polygon.getPolygonVertices().size() > 2)
+		// 		{
+		// 			view.renderPolygon(polygon.getPolygonVertices(), "Vertices", "Polygon");
+		// 			view.renderReinforcement(reinforcement.getReinforcement(), "Barras");
+		// 		}
+		// 	}
 
-			ImPlot::EndPlot();
+		// 	ImPlot::EndPlot();
 
-			ImGui::End();
-		}*/
+		// 	ImGui::End();
+		// }
 
 		bool showDemoWindow = true;
 
 		if (showDemoWindow)
 			ImGui::ShowDemoWindow(&showDemoWindow);
+
+			/*
+			if (font)
+			ImGui::PopFont();
+		*/
 
 		rlImGuiEnd();
 		EndDrawing();

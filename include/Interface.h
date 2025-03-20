@@ -12,7 +12,11 @@ public:
     void InitInterface();
     void InterfaceLoop();
     void AutorsWindow();
-    void ShowSecondaryMenuBar();
-    void CrossSectionData();
+    void ShowPrimaryMenuBar();
+    void ShowSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcement);
+    void CrossSectionData(Polygon &polygon, Reinforcement &reinforcement);
     void InterfaceMaterials();
+    void ReinforcementInterface(Reinforcement &reinforcement);
+    void EffortSectionInterface();
+    void crossSectionPlotInterface(AppView & view, Polygon & polygon, Reinforcement & reinforcement);
 };

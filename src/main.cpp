@@ -9,6 +9,7 @@
 #include "Polygon.h"
 #include "Reinforcement.h"
 #include "AppView.h"
+#include "Interface.h"
 
 using std::cout;
 using std::endl;
@@ -18,7 +19,11 @@ int main()
 	Polygon polygon;
 	Reinforcement reinforcement;
 	AppView view;
+	Interface interface;
+	
+	interface.InitInterface();
 
+	/*
 	int screenWidth = 1280;
 	int screenHeight = 800;
 
@@ -32,12 +37,17 @@ int main()
 
 	ImPlot::CreateContext();
 
+	*/
+
 	while (!WindowShouldClose()) {
 		BeginDrawing();
 		ClearBackground(DARKGRAY);
 		rlImGuiBegin();
 
-		if (ImGui::BeginMainMenuBar())
+		
+		interface.ShowSecondaryMenuBar();
+
+		/*if (ImGui::BeginMainMenuBar())
 		{
 			if (ImGui::BeginMenu("Arquivo"))
 			{
@@ -54,10 +64,14 @@ int main()
 
 			ImGui::EndMainMenuBar();
 		}
-
+			*/
 		bool sectionWindow = true;
 
-		if (sectionWindow)
+		
+
+		//interface.CrossSectionData();
+
+		/* if (sectionWindow)
 		{
 			ImGui::Begin("Secao Transversal");
 
@@ -116,12 +130,13 @@ int main()
 			// finaliza a janela no ImGui
 			ImGui::End();
 		}
-
+*/
 		bool reinforcementWindow = true;
 
 		static int barMode, numBar = 0;
 		static double coordXBar, coordYBar, diameterBar, coordXiBar, coordXfBar, coordYiBar, coordYfBar;
 
+		/*
 		if (reinforcementWindow)
 		{
 			ImGui::Begin("Entrada de dados: Armadura Passiva");
@@ -189,10 +204,11 @@ int main()
 			}
 
 			ImGui::End();
-		}
+		}*/
 
 		bool crossSectionPlotWindow = true;
-
+		
+		/*
 		if (crossSectionPlotWindow)
 		{
 			ImGui::Begin("Grafico da Secao Transversal");
@@ -212,7 +228,7 @@ int main()
 			ImPlot::EndPlot();
 
 			ImGui::End();
-		}
+		}*/
 
 		bool showDemoWindow = true;
 

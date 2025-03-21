@@ -2,7 +2,7 @@
 
 #include "Point.h"
 
-#include <cmath>;
+#include <cmath>
 #include <vector>
 
 ConcreteProperties::ConcreteProperties()
@@ -83,7 +83,7 @@ double ConcreteProperties::computeStress(double strain)
 void ConcreteProperties::setCurveStressStrain()
 {
 	curveStressStrain.clear();
-	
+
 	double step = (strainConcreteRupture - 0) / 60;
 
 	for (double strain = 0; strain > -strainConcreteRupture; strain -= step)

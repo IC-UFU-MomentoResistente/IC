@@ -2,7 +2,7 @@
 
 #include "Point.h"
 
-#include <cmath>;
+#include <cmath>
 #include <vector>
 
 enum class StressStrainModelType

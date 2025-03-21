@@ -12,7 +12,7 @@
       "environment": [],
       "externalConsole": false,
       "MIMode": "gdb",
-      "miDebuggerPath": "C:/raylib/w64devkit/bin/gdb.exe",
+      "miDebuggerPath": "C:/raylib/w64devkit/bin/gdb.exe", // ou C:/msys64/ucrt64/bin/gdb.exe
       "setupCommands": [
         {
           "description": "Habilitar formatação para gdb",

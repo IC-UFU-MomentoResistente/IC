@@ -9,7 +9,7 @@
         "_DEBUG",
         "UNICODE"
       ],
-      "compilerPath": "C:/raylib/w64devkit/bin/gdb.exe",
+      "compilerPath": "C:/raylib/w64devkit/bin/gcc.exe", //ou C:/msys64/ucrt64/bin/gcc.exe
       "cStandard": "${default}",
       "cppStandard": "${default}",
       "intelliSenseMode": "windows-gcc-x64"

@@ -13,7 +13,7 @@
 #include "interface.h"
 
 
-void Interface::InitInterface() 
+void Interface::initInterface() 
 {
    
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
@@ -45,14 +45,14 @@ void Interface::InitInterface()
     ImPlot::CreateContext();
 }
 
-void Interface::InterfaceLoop() 
+void Interface::interfaceLoop() 
 {
   
 }
 
 
 
-void Interface::ShowPrimaryMenuBar() 
+void Interface::showPrimaryMenuBar() 
 {
     if (ImGui::BeginMainMenuBar())
         {
@@ -72,7 +72,7 @@ void Interface::ShowPrimaryMenuBar()
 
             if (ImGui::BeginMenu("Autores"))
             {
-                AutorsWindow();
+                autorsWindow();
                 ImGui::EndMenu();
             }
 
@@ -80,7 +80,7 @@ void Interface::ShowPrimaryMenuBar()
         }
 }
 
-void Interface::AutorsWindow() {
+void Interface::autorsWindow() {
    
     ImGui::SetNextWindowPos(ImVec2(145, 20));
     ImGui::SetNextWindowSize(ImVec2(600, 250));
@@ -108,15 +108,7 @@ void Interface::AutorsWindow() {
     ImGui::End();
 }
 
-
-
-
-
-
-
-
-
-void Interface::ShowSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, AppView &view)	 
+void Interface::showSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, AppView &view)	 
 {
     ImGuiIO &io = ImGui::GetIO();
     ImVec2 window_pos = ImVec2(0, ImGui::GetFrameHeight());
@@ -134,10 +126,10 @@ void Interface::ShowSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcem
     
     if(ImGui::BeginMenuBar()) 
     {
-        CrossSectionData(polygon, reinforcement);
-        InterfaceMaterials(concrete, view);
-        ReinforcementInterface(reinforcement);
-        EffortSectionInterface();
+        crossSectionData(polygon, reinforcement);
+        interfaceMaterials(concrete, view);
+        reinforcementInterface(reinforcement);
+        effortSectionInterface();
 
         ImGui::EndMenuBar();
     }
@@ -145,7 +137,7 @@ void Interface::ShowSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcem
     ImGui::End(); // Finaliza a janela
 }
 
-void Interface::CrossSectionData(Polygon &polygon, Reinforcement &reinforcement) 
+void Interface::crossSectionData(Polygon &polygon, Reinforcement &reinforcement) 
 {
     if (ImGui::BeginMenu("Seção Transversal")) // Primeira versão, não é a final - precisa incrementar vértices temporarios - não adicionar vertices negativos e tal   
     {
@@ -215,7 +207,7 @@ void Interface::CrossSectionData(Polygon &polygon, Reinforcement &reinforcement)
     }
 }
 
-void Interface::InterfaceMaterials(ConcreteProperties &concrete, AppView &view)
+void Interface::interfaceMaterials(ConcreteProperties &concrete, AppView &view)
 {
 
     int option = 0;
@@ -242,6 +234,7 @@ void Interface::InterfaceMaterials(ConcreteProperties &concrete, AppView &view)
 
         if (constitutiveModel == 0)
         {
+            StressStrainModelType model61182014 = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2014;
             ImGui::InputDouble("fck (MPa):", &collectedFck);
             ImGui::InputDouble("gammaC: ", &collectedGammaC);
 
@@ -253,13 +246,9 @@ void Interface::InterfaceMaterials(ConcreteProperties &concrete, AppView &view)
 
             if (ImGui::Button("Adicionar"))
             {
-                concrete.getCurveStressStrain().clear();
+                concrete.setParameters(model61182014, collectedFck, collectedGammaC);
 
-                StressStrainModelType model = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2014;
-
-                concrete.setParameters(collectedFck, collectedGammaC);
-
-                concrete.setCurveStressStrain(model);
+                concrete.setCurveStressStrain();
             }
 
             ImVec2 plotSize = ImGui::GetContentRegionAvail();
@@ -276,6 +265,7 @@ void Interface::InterfaceMaterials(ConcreteProperties &concrete, AppView &view)
 
         if (constitutiveModel == 1)
         {
+            StressStrainModelType model61182023 = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2023;
             ImGui::InputDouble("fck (MPa):", &collectedFck);
             ImGui::InputDouble("gammaC: ", &collectedGammaC);
 
@@ -287,11 +277,9 @@ void Interface::InterfaceMaterials(ConcreteProperties &concrete, AppView &view)
 
             if (ImGui::Button("Adicionar"))
             {
-                StressStrainModelType model = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2014;
+                concrete.setParameters(model61182023, collectedFck, collectedGammaC);
 
-                concrete.setParameters(collectedFck, collectedGammaC);
-
-                concrete.setCurveStressStrain(model);
+                concrete.setCurveStressStrain();
             }
 
             ImVec2 plotSize = ImGui::GetContentRegionAvail();
@@ -311,7 +299,7 @@ void Interface::InterfaceMaterials(ConcreteProperties &concrete, AppView &view)
     }
 }
 
-void Interface::ReinforcementInterface(Reinforcement &reinforcement)
+void Interface::reinforcementInterface(Reinforcement &reinforcement)
 {
     if (ImGui::BeginMenu("Armadura"))
     {
@@ -388,7 +376,7 @@ void Interface::ReinforcementInterface(Reinforcement &reinforcement)
     }
 }
 
-void Interface::EffortSectionInterface()
+void Interface::effortSectionInterface()
 {
     if (ImGui::BeginMenu("Esforços"))
     {

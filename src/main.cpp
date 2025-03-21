@@ -17,7 +17,6 @@ using std::endl;
 
 int main()
 {
-	
 	Polygon polygon;
 	Reinforcement reinforcement;
 	ConcreteProperties concrete;
@@ -25,7 +24,7 @@ int main()
 	Interface interface;
 	
 
-	interface.InitInterface();
+	interface.initInterface();
 
 	/*
 	int screenWidth = 1280;
@@ -43,7 +42,8 @@ int main()
 
 	*/
 
-	while (!WindowShouldClose()) {
+	while (!WindowShouldClose()) 
+    {
 		BeginDrawing();
 		ClearBackground(DARKGRAY);
 		rlImGuiBegin();
@@ -53,8 +53,8 @@ int main()
 		/*if (font)
 		ImGui::PushFont(font);
 		*/
-		interface.ShowPrimaryMenuBar();
-		interface.ShowSecondaryMenuBar(polygon, reinforcement, concrete, view);
+		interface.showPrimaryMenuBar();
+		interface.showSecondaryMenuBar(polygon, reinforcement, concrete, view);
 		interface.crossSectionPlotInterface(view, polygon, reinforcement);
 
 		/*if (ImGui::BeginMainMenuBar())

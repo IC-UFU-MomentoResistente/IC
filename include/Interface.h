@@ -9,14 +9,14 @@ class Interface
 
 
 public:
-    void InitInterface();
-    void InterfaceLoop();
-    void AutorsWindow();
-    void ShowPrimaryMenuBar();
-    void ShowSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &ConcreteProperties, AppView &view);
-    void CrossSectionData(Polygon &polygon, Reinforcement &reinforcement);
-    void InterfaceMaterials(ConcreteProperties &concrete, AppView &view);
-    void ReinforcementInterface(Reinforcement &reinforcement);
-    void EffortSectionInterface();
+    void initInterface();
+    void interfaceLoop();
+    void autorsWindow();
+    void showPrimaryMenuBar();
+    void showSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &ConcreteProperties, AppView &view);
+    void crossSectionData(Polygon &polygon, Reinforcement &reinforcement);
+    void interfaceMaterials(ConcreteProperties &concrete, AppView &view);
+    void reinforcementInterface(Reinforcement &reinforcement);
+    void effortSectionInterface();
     void crossSectionPlotInterface(AppView & view, Polygon & polygon, Reinforcement & reinforcement);
 };

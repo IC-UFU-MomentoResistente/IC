@@ -22,13 +22,14 @@ private:
 	double strengthReductionFactor;
 	double stressStrainExponent;
 	vector<Point> curveStressStrain;
+	StressStrainModelType modelType;
 
 public:
 	ConcreteProperties();
 
-	void setParameters(double collectedFck, double collectedGammaC);
-	double computeStress(StressStrainModelType model, double strain);
-	void setCurveStressStrain(StressStrainModelType model);
+	void setParameters(StressStrainModelType model, double collectedFck, double collectedGammaC);
+	double computeStress(double strain);
+	void setCurveStressStrain();
 
 	double getFck() const;
 	double getGammaC() const;

@@ -5,18 +5,15 @@
 
 class Interface 
 {
-
-
-
 public:
     void initInterface();
     void interfaceLoop();
     void autorsWindow();
     void showPrimaryMenuBar();
-    void showSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &ConcreteProperties, AppView &view);
-    void crossSectionData(Polygon &polygon, Reinforcement &reinforcement);
-    void interfaceMaterials(ConcreteProperties &concrete, AppView &view);
-    void reinforcementInterface(Reinforcement &reinforcement);
+    void showSecondaryMenuBar(Section &section, AppView &view);
+    void crossSectionData(Section &section);
+    void interfaceMaterials(Section &section, AppView &view);
+    void reinforcementInterface(Section &section);
     void effortSectionInterface();
-    void crossSectionPlotInterface(AppView & view, Polygon & polygon, Reinforcement & reinforcement);
+    void crossSectionPlotInterface(Section &section, AppView & view);
 };

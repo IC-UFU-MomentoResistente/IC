@@ -15,6 +15,7 @@ ConcreteProperties::ConcreteProperties()
 	strengthReductionFactor = 0;
 	stressStrainExponent = 0;
 	curveStressStrain = {};
+	modelType = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2023;
 }
 
 void ConcreteProperties::setParameters(StressStrainModelType model, double collectedFck, double collectedGammaC)

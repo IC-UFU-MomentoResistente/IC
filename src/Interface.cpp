@@ -9,6 +9,7 @@
 #include "Polygon.h"
 #include "Reinforcement.h"
 #include "ConcreteProperties.h"
+#include "Section.h"
 #include "AppView.h"
 #include "interface.h"
 
@@ -108,7 +109,7 @@ void Interface::autorsWindow() {
     ImGui::End();
 }
 
-void Interface::showSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, AppView &view)	 
+void Interface::showSecondaryMenuBar(Section &section, AppView &view)	 
 {
     ImGuiIO &io = ImGui::GetIO();
     ImVec2 window_pos = ImVec2(0, ImGui::GetFrameHeight());
@@ -126,9 +127,9 @@ void Interface::showSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcem
     
     if(ImGui::BeginMenuBar()) 
     {
-        crossSectionData(polygon, reinforcement);
-        interfaceMaterials(concrete, view);
-        reinforcementInterface(reinforcement);
+        crossSectionData(section);
+        interfaceMaterials(section, view);
+        reinforcementInterface(section);
         effortSectionInterface();
 
         ImGui::EndMenuBar();
@@ -137,7 +138,7 @@ void Interface::showSecondaryMenuBar(Polygon &polygon, Reinforcement &reinforcem
     ImGui::End(); // Finaliza a janela
 }
 
-void Interface::crossSectionData(Polygon &polygon, Reinforcement &reinforcement) 
+void Interface::crossSectionData(Section &section) 
 {
     if (ImGui::BeginMenu("Seção Transversal")) // Primeira versão, não é a final - precisa incrementar vértices temporarios - não adicionar vertices negativos e tal   
     {
@@ -159,55 +160,55 @@ void Interface::crossSectionData(Polygon &polygon, Reinforcement &reinforcement)
 
         if (ImGui::Button("Adicionar Ponto"))
         {
-            polygon.addVertice(coordXPolygon, coordYPolygon);
+            section.polygon.addVertice(coordXPolygon, coordYPolygon);
         }
 
         ImGui::SameLine();
 
         if (ImGui::Button("Remover Ponto"))
         {
-            if (!polygon.getPolygonVertices().empty())
-                polygon.removeLastVertice();
+            if (!section.polygon.getPolygonVertices().empty())
+                section.polygon.removeLastVertice();
         }
 
         ImGui::SameLine();
 
         if (ImGui::Button("Calcular parametros"))
         {
-            polygon.computeArea();
-            polygon.computeCentroid();
-            polygon.computeMaxCoordY();
-            polygon.computeMinCoordY();
-            polygon.computeHeight();
+            section.polygon.computeArea();
+            section.polygon.computeCentroid();
+            section.polygon.computeMaxCoordY();
+            section.polygon.computeMinCoordY();
+            section.polygon.computeHeight();
         }
 
         if (ImGui::Button("Transladar"))
         {
-            polygon.translateToCentroid();
-            reinforcement.translateToCentroidPolygon(polygon.getGeometricCenter());
+            section.polygon.translateToCentroid();
+            section.reinforcement.translateToCentroidPolygon(section.polygon.getGeometricCenter());
         }
 
         ImGui::SameLine();
 
         if (ImGui::Button("Rotacionar"))
         {
-            polygon.rotateAroundCentroid(10);
-            reinforcement.rotateAroundCentroidPolygon(10, polygon.getGeometricCenter());
+            section.polygon.rotateAroundCentroid(10);
+            section.reinforcement.rotateAroundCentroidPolygon(10, section.polygon.getGeometricCenter());
         }
 
-        ImGui::Text("Area: %.2f", polygon.getPolygonArea());
-        ImGui::Text("MaxY: %.2f", polygon.getMaxY());
-        ImGui::Text("MinY: %.2f", polygon.getMinY());
-        ImGui::Text("Height: %.2f", polygon.getMaxY());
-        ImGui::Text("CG: %.2f, %.2f", polygon.getGeometricCenter().getX(), polygon.getGeometricCenter().getY());
-        ImGui::Text("Vet0: %.2f, %.2f", polygon.getVet0X(), polygon.getVet0Y());
+        ImGui::Text("Area: %.2f", section.polygon.getPolygonArea());
+        ImGui::Text("MaxY: %.2f", section.polygon.getMaxY());
+        ImGui::Text("MinY: %.2f", section.polygon.getMinY());
+        ImGui::Text("Height: %.2f", section.polygon.getMaxY());
+        ImGui::Text("CG: %.2f, %.2f", section.polygon.getGeometricCenter().getX(), section.polygon.getGeometricCenter().getY());
+        ImGui::Text("Vet0: %.2f, %.2f", section.polygon.getVet0X(), section.polygon.getVet0Y());
 
         ImGui::End(); // Finaliza a janela
         ImGui::EndMenu();
     }
 }
 
-void Interface::interfaceMaterials(ConcreteProperties &concrete, AppView &view)
+void Interface::interfaceMaterials(Section &section, AppView &view)
 {
 
     int option = 0;
@@ -246,18 +247,18 @@ void Interface::interfaceMaterials(ConcreteProperties &concrete, AppView &view)
 
             if (ImGui::Button("Adicionar"))
             {
-                concrete.setParameters(model61182014, collectedFck, collectedGammaC);
+                section.concrete.setParameters(model61182014, collectedFck, collectedGammaC);
 
-                concrete.setCurveStressStrain();
+                section.concrete.setCurveStressStrain();
             }
 
             ImVec2 plotSize = ImGui::GetContentRegionAvail();
-
+            
             // inicialização do gráfico com os eixos
             if (ImPlot::BeginPlot("Concreto", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
             {
-                ImPlot::SetupAxesLimits(0, (concrete.getStrainConcreteRupture() * 1.1), 0, concrete.getFcd(), ImGuiCond_Always);
-                view.renderReinforcement(concrete.getCurveStressStrain(), "TensaoxDef");
+                ImPlot::SetupAxesLimits(0, (section.concrete.getStrainConcreteRupture() * 1.1), 0, section.concrete.getFcd(), ImGuiCond_Always);
+                view.renderReinforcement(section.concrete.getCurveStressStrain(), "TensaoxDef");
             }
 
             ImPlot::EndPlot();
@@ -277,9 +278,9 @@ void Interface::interfaceMaterials(ConcreteProperties &concrete, AppView &view)
 
             if (ImGui::Button("Adicionar"))
             {
-                concrete.setParameters(model61182023, collectedFck, collectedGammaC);
+                section.concrete.setParameters(model61182023, collectedFck, collectedGammaC);
 
-                concrete.setCurveStressStrain();
+                section.concrete.setCurveStressStrain();
             }
 
             ImVec2 plotSize = ImGui::GetContentRegionAvail();
@@ -287,8 +288,8 @@ void Interface::interfaceMaterials(ConcreteProperties &concrete, AppView &view)
             // inicialização do gráfico com os eixos
             if (ImPlot::BeginPlot("Concreto", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
             {
-                ImPlot::SetupAxesLimits(0, (concrete.getStrainConcreteRupture() * 1.1), 0, concrete.getFcd(), ImGuiCond_Always);
-                view.renderReinforcement(concrete.getCurveStressStrain(), "TensaoxDef");
+                ImPlot::SetupAxesLimits(0, (section.concrete.getStrainConcreteRupture() * 1.1), 0, section.concrete.getFcd(), ImGuiCond_Always);
+                view.renderReinforcement(section.concrete.getCurveStressStrain(), "TensaoxDef");
             }
 
             ImPlot::EndPlot();
@@ -299,7 +300,7 @@ void Interface::interfaceMaterials(ConcreteProperties &concrete, AppView &view)
     }
 }
 
-void Interface::reinforcementInterface(Reinforcement &reinforcement)
+void Interface::reinforcementInterface(Section &section)
 {
     if (ImGui::BeginMenu("Armadura"))
     {
@@ -322,14 +323,14 @@ void Interface::reinforcementInterface(Reinforcement &reinforcement)
                 diameterBar = 0;
 
             if (ImGui::Button("Adicionar"))
-                reinforcement.addReinforcement(coordXBar, coordYBar, diameterBar);
+                section.reinforcement.addReinforcement(coordXBar, coordYBar, diameterBar);
 
             ImGui::SameLine();
 
             if (ImGui::Button("Remover"))
             {
-                if (!reinforcement.getReinforcement().empty())
-                    reinforcement.removeLastBar();
+                if (!section.reinforcement.getReinforcement().empty())
+                    section.reinforcement.removeLastBar();
             }
         }
 
@@ -358,7 +359,7 @@ void Interface::reinforcementInterface(Reinforcement &reinforcement)
                     double coordX = coordXiBar + stepX * i;
                     double coordY = coordYiBar + stepY * i;
 
-                    reinforcement.addReinforcement(coordX, coordY, diameterBar);
+                    section.reinforcement.addReinforcement(coordX, coordY, diameterBar);
                 }
             }
 
@@ -366,8 +367,8 @@ void Interface::reinforcementInterface(Reinforcement &reinforcement)
 
             if (ImGui::Button("Remover"))
             {
-                if (!reinforcement.getReinforcement().empty())
-                    reinforcement.removeLastBar();
+                if (!section.reinforcement.getReinforcement().empty())
+                    section.reinforcement.removeLastBar();
             }
         }
 
@@ -399,7 +400,7 @@ void Interface::effortSectionInterface()
     }   
 }
 
-void Interface::crossSectionPlotInterface(AppView &view, Polygon &polygon, Reinforcement &reinforcement) 
+void Interface::crossSectionPlotInterface(Section &section, AppView &view) 
 {
 
     ImGui::Begin("Grafico da Secao Transversal");
@@ -409,10 +410,10 @@ void Interface::crossSectionPlotInterface(AppView &view, Polygon &polygon, Reinf
     // inicialização do gráfico com os eixos
     if (ImPlot::BeginPlot("Grafico", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
     {
-        if (polygon.getPolygonVertices().size() > 2)
+        if (section.polygon.getPolygonVertices().size() > 2)
         {
-            view.renderPolygon(polygon.getPolygonVertices(), "Vertices", "Polygon");
-            view.renderReinforcement(reinforcement.getReinforcement(), "Barras");
+            view.renderPolygon(section.polygon.getPolygonVertices(), "Vertices", "Polygon");
+            view.renderReinforcement(section.reinforcement.getReinforcement(), "Barras");
         }
     }
 

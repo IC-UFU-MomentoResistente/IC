@@ -115,12 +115,12 @@ void renderizacaoBarras(std::vector<Point>, std::string);
 
 void ativarAntiAliasing()
 {
-    ImGuiStyle& style = ImGui::GetStyle();
-    style.AntiAliasedLines = true;  // Habilita AntiAliasing para linhas
-    style.AntiAliasedLinesUseTex = true; // Usa textura para AntiAliasing
-    style.AntiAliasedFill = true;   // Habilita AntiAliasing para preenchimentos
-}
 
+    ImGuiStyle &style = ImGui::GetStyle();
+    style.AntiAliasedLines = true;        // Habilita AntiAliasing para linhas
+    style.AntiAliasedLinesUseTex = false; // Usa textura para AntiAliasing
+    style.AntiAliasedFill = true;         // Habilita AntiAliasing para preenchimentos
+}
 
 float espacoDisponivel()
 {
@@ -145,7 +145,6 @@ void tamanhoDinamico(const char *nomeJanela, float fatorX, float fatorY, float p
     ImGui::Begin(nomeJanela, nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration);
 }
 
-
 void cantoDireito(const char *nome, float posY)
 {
     ImGuiIO &io = ImGui::GetIO(); // Obtém as dimensões da tela
@@ -157,7 +156,7 @@ void cantoDireito(const char *nome, float posY)
     // Define a posição no canto superior direito
     ImVec2 posicaoTopoDireito = ImVec2(
         io.DisplaySize.x - larguraFixa, // Move para o canto direito
-        posY                             // Mantém a posição Y fixa
+        posY                            // Mantém a posição Y fixa
     );
 
     // Define a posição e o tamanho fixo da janela
@@ -191,7 +190,6 @@ void cantoDireito(const char *nome, float posY)
         ImGui::EndTable();
     }
 
-    
     ImGui::End();
 }
 void combinacaoDireita(const char *nome, float posY)
@@ -205,7 +203,7 @@ void combinacaoDireita(const char *nome, float posY)
     // Define a posição no canto superior direito
     ImVec2 posicaoTopoDireito = ImVec2(
         io.DisplaySize.x - larguraFixa, // Move para o canto direito
-        posY                             // Mantém a posição Y fixa
+        posY                            // Mantém a posição Y fixa
     );
 
     // Define a posição e o tamanho fixo da janela
@@ -220,7 +218,7 @@ void combinacaoDireita(const char *nome, float posY)
                      ImGuiWindowFlags_NoTitleBar);
 
     // Criando a tabela de pontos da seção transversal
-    if (ImGui::BeginTable("Esforços", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg ))
+    if (ImGui::BeginTable("Esforços", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg))
     {
         ImGui::TableSetupColumn("Combinação", ImGuiTableColumnFlags_WidthFixed, 80.0f);
         ImGui::TableSetupColumn("       Nsd (kN)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
@@ -229,24 +227,20 @@ void combinacaoDireita(const char *nome, float posY)
 
         // Exemplo de dados (substitua com seus valores reais)
         for (size_t i = 0; i < combinacao.size(); ++i)
-            {
-                ImGui::TableNextRow();
-                ImGui::TableSetColumnIndex(0);
-                ImGui::Text("%d", static_cast<int>(i + 1));
-                ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%.2f", combinacao[i].Normal);
-                ImGui::TableSetColumnIndex(2);
-                ImGui::Text("%.2f", combinacao[i].MsdX);
-            }
+        {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%d", static_cast<int>(i + 1));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("%.2f", combinacao[i].Normal);
+            ImGui::TableSetColumnIndex(2);
+            ImGui::Text("%.2f", combinacao[i].MsdX);
+        }
         ImGui::EndTable();
     }
 
-    
     ImGui::End();
 }
-
-
-
 
 /* ImGuiStyle& style = ImGui::GetStyle();
 static ImGuiStyle ref_saved_style;
@@ -254,7 +248,7 @@ static ImGuiStyle ref_saved_style;
 ImGui::Checkbox("Anti-aliased lines", &style.AntiAliasedLines);
 ImGui::Checkbox("Anti-aliased lines use texture", &style.AntiAliasedLinesUseTex);
 ImGui::Checkbox("Anti-aliased fill", &style.AntiAliasedFill);
-*/ 
+*/
 
 /* void cantoDireito(const char* nome, float x, float y, float posY) {
     ImGuiIO& io = ImGui::GetIO(); // Obtém as dimensões da tela
@@ -286,7 +280,7 @@ void IniciarInterface()
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     int screenWidth = 1280;
     int screenHeight = 960;
-    
+
     InitWindow(screenWidth, screenHeight, "SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO");
 
     if (!IsWindowReady()) // Verifique se a janela foi criada com sucesso
@@ -294,10 +288,9 @@ void IniciarInterface()
         std::cerr << "Erro ao criar a janela!" << std::endl;
         return; // Saia da função se a janela não foi criada
     }
-    
-    
+
     rlImGuiBeginInitImGui();
-    ImGui::StyleColorsDark();
+
     ImFontConfig fontConfig;
     static const ImWchar customRange[] =
         {
@@ -305,17 +298,16 @@ void IniciarInterface()
             0x0370, 0x03FF, // Faixa de grego
             0};
     font = ImGui::GetIO().Fonts->AddFontFromFileTTF("src/segoeuisl.ttf", 18.0f, &fontConfig, customRange);
-            
-    
+
     rlImGuiEndInitImGui();
     ImPlot::CreateContext();
 }
 
 void ShowAboutWindow()
 {
-    
-    ImGui::SetNextWindowPos(ImVec2(140,20));
-    ImGui::SetNextWindowSize(ImVec2(600,250));
+
+    ImGui::SetNextWindowPos(ImVec2(140, 20));
+    ImGui::SetNextWindowSize(ImVec2(600, 250));
     ImGui::Begin("Autores", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration);
     ImGui::Text("SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO");
     ImGui::Spacing();
@@ -363,15 +355,15 @@ void ShowSecondaryMenuBar()
         if (ImGui::BeginMenu("Seção Transversal"))
         {
 
-            ImGui::SetNextWindowPos(ImVec2(4,47));
-            ImGui::SetNextWindowSize(ImVec2(420,270));
+            ImGui::SetNextWindowPos(ImVec2(4, 47));
+            ImGui::SetNextWindowSize(ImVec2(420, 270));
             ImGui::Begin("Inserir Dados da Seção Transversal", nullptr,
                          ImGuiWindowFlags_NoCollapse |
                              ImGuiWindowFlags_NoResize |
                              ImGuiWindowFlags_NoMove);
 
             // Input para número de pontos
-            
+
             ImGui::SetNextItemWidth(80);
             ImGui::InputInt("Número de Pontos", &numVertices);
 
@@ -423,8 +415,8 @@ void ShowSecondaryMenuBar()
         }
         if (ImGui::BeginMenu("Materiais"))
         {
-            ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always);    // Ajuste os valores conforme necessário
-            ImGui::SetNextWindowPos(ImVec2(123, 47)); // Posição inicial
+            ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always); // Ajuste os valores conforme necessário
+            ImGui::SetNextWindowPos(ImVec2(123, 47));                     // Posição inicial
             ImGui::Begin("Entrada de Dados de Materiais", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
             ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
@@ -435,38 +427,50 @@ void ShowSecondaryMenuBar()
                 {
                     ImGui::Text("Tipo de Diagrama:");
                     ImGui::RadioButton("Parábola-Retangulo (NBR 6118:2023)", &opcao, 0);
+                    ImGui::SameLine();
                     ImGui::RadioButton("Parábola-Retangulo (NBR 6118:2014)", &opcao, 1);
 
                     if (opcao == 0)
                     {
+
+                        fck_variavel = 50;
+                        yc_variavel = 1.4;
+
+                        ImGui::PushItemWidth(70);
+                        float pos_x_direita = ImGui::GetWindowWidth() - 120;
+                        float pos_y_cima = ImGui::GetWindowHeight();
+
                         ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x - 160);
+                        ImGui::SetCursorPosX(pos_x_direita - 50);
+                        ImGui::SetCursorPosY(pos_y_cima - 265);
                         ImGui::Text("Parâmetros do Concreto");
 
-                        // Criar um grupo para alinhar os elementos automaticamente
-                        ImGui::PushItemWidth(70);
-                        float pos_x_direita = ImGui::GetWindowWidth() - 160;
-
                         ImGui::SetCursorPosX(pos_x_direita);
-                        ImGui::Text("Fck  = ");
-                        ImGui::SameLine();
-                        ImGui::SetNextItemWidth(70);
+                        ImGui::BeginGroup();
                         ImGui::InputFloat("##Fck", &fck_variavel, 0.0f, 0.0f, "%.2f");
-                        ImGui::SameLine();
-                        ImGui::Text("MPa");
-
-                        ImGui::SetCursorPosX(pos_x_direita);
-                        ImGui::SetNextItemWidth(100);
-                        ImGui::Text("γc   = ");
-                        ImGui::SameLine();
-                        ImGui::SetNextItemWidth(70);
                         ImGui::InputFloat("##γc", &yc_variavel, 0.0f, 0.0f, "%.2f");
-
-                        ImGui::SetCursorPosX(pos_x_direita);
-                        ImGui::Text("β     = ");
-                        ImGui::SameLine();
-                        ImGui::SetNextItemWidth(70);
                         ImGui::InputFloat("##β", &beta_variavel, 0.0f, 0.0f, "%.2f");
+                        ImGui::EndGroup();
 
+                        //
+                        ImGui::SetCursorPosY(pos_y_cima - 240);
+                        ImGui::SetCursorPosX(pos_x_direita - 50);
+                        ImGui::BeginGroup();
+                        ImGui::SetNextItemWidth(70);
+                        ImGui::Text("Fck  = ");
+                        ImGui::Spacing();
+                        ImGui::SetNextItemWidth(70);
+                        ImGui::Text("γc   = ");
+                        ImGui::Spacing();
+                        ImGui::SetNextItemWidth(70);
+                        ImGui::Text("β     = ");
+                        ImGui::EndGroup();
+
+                        ImGui::SetCursorPosY(pos_y_cima - 240);
+                        ImGui::SetCursorPosX(pos_x_direita + 80);
+                        ImGui::Text("Mpa");
+
+                        // condições para evitar valores negativos //
                         if (fck_variavel < 0)
                             fck_variavel = 0;
 
@@ -475,6 +479,8 @@ void ShowSecondaryMenuBar()
 
                         if (yc_variavel < 0)
                             yc_variavel = 0;
+
+                        // condições para evitar valores negativos //
 
                         float fcd_variavel;
                         float expoente_tensao_concreto;
@@ -553,12 +559,12 @@ void ShowSecondaryMenuBar()
                         }
 
                         ImGui::SetCursorPos(ImVec2(0, 135));
-                        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação Concreto ABNT:6118:2023", ImVec2(425, 225), ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
+                        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação Concreto ABNT NBR 6118:2023", ImVec2(425, 225), ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
                         {
                             if (fck_variavel > 0 && yc_variavel > 0 && beta_variavel > 0)
                             {
                                 // eixos do grafico
-                                ImPlot::SetupAxis(ImAxis_X1, " εc");
+                                ImPlot::SetupAxis(ImAxis_X1, " ε por mil");
                                 ImPlot::SetupAxis(ImAxis_Y1, " σ (MPa)");
 
                                 if (!epsilon.empty() && epsilon.size() > 1)
@@ -618,33 +624,44 @@ void ShowSecondaryMenuBar()
 
                     if (opcao == 1)
                     {
-                        ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x - 160);
-                        ImGui::Text("Parâmetros do Concreto");
-                        // organização Yc
+
+                        fck_variavel = 50;
+                        yc_variavel = 1.4;
 
                         ImGui::PushItemWidth(70);
-                        float pos_x_direita = ImGui::GetWindowWidth() - 160;
+                        float pos_x_direita = ImGui::GetWindowWidth() - 120;
+                        float pos_y_cima = ImGui::GetWindowHeight();
+
+                        ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x - 160);
+                        ImGui::SetCursorPosX(pos_x_direita - 50);
+                        ImGui::SetCursorPosY(pos_y_cima - 265);
+                        ImGui::Text("Parâmetros do Concreto");
 
                         ImGui::SetCursorPosX(pos_x_direita);
-                        ImGui::Text("Fck  = ");
-                        ImGui::SameLine();
-                        ImGui::SetNextItemWidth(70);
+                        ImGui::BeginGroup();
                         ImGui::InputFloat("##Fck", &fck_variavel, 0.0f, 0.0f, "%.2f");
-                        ImGui::SameLine();
-                        ImGui::Text("MPa");
-
-                        ImGui::SetCursorPosX(pos_x_direita);
-                        ImGui::SetNextItemWidth(100);
-                        ImGui::Text("γc   = ");
-                        ImGui::SameLine();
-                        ImGui::SetNextItemWidth(70);
                         ImGui::InputFloat("##γc", &yc_variavel, 0.0f, 0.0f, "%.2f");
-
-                        ImGui::SetCursorPosX(pos_x_direita);
-                        ImGui::Text("β     = ");
-                        ImGui::SameLine();
-                        ImGui::SetNextItemWidth(70);
                         ImGui::InputFloat("##β", &beta_variavel, 0.0f, 0.0f, "%.2f");
+                        ImGui::EndGroup();
+
+                        //
+                        ImGui::SetCursorPosY(pos_y_cima - 240);
+                        ImGui::SetCursorPosX(pos_x_direita - 50);
+                        ImGui::BeginGroup();
+                        ImGui::SetNextItemWidth(70);
+                        ImGui::Text("Fck  =");
+                        ImGui::Spacing();
+                        ImGui::SetNextItemWidth(70);
+                        ImGui::Text("γc   =");
+                        ImGui::Spacing();
+                        ImGui::SetNextItemWidth(70);
+                        ImGui::Text("β     =");
+                        ImGui::EndGroup();
+
+                        ImGui::SetCursorPosY(pos_y_cima - 240);
+                        ImGui::SetCursorPosX(pos_x_direita + 80);
+                        ImGui::Text("Mpa");
+
                         if (beta_variavel < 0)
                             beta_variavel = 0;
 
@@ -719,12 +736,12 @@ void ShowSecondaryMenuBar()
                         }
 
                         ImGui::SetCursorPos(ImVec2(0, 135));
-                        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação Concreto ABNT:6118:2023", ImVec2(425, 225), ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
+                        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação Concreto ABNT NBR 6118:2014", ImVec2(425, 225), ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
                         {
                             if (fck_variavel > 0 && yc_variavel > 0 && beta_variavel > 0)
                             {
                                 // eixos do grafico
-                                ImPlot::SetupAxis(ImAxis_X1, " εc");
+                                ImPlot::SetupAxis(ImAxis_X1, " ε por mil");
                                 ImPlot::SetupAxis(ImAxis_Y1, " σ (MPa)");
 
                                 if (!epsilon.empty() && epsilon.size() > 1)
@@ -759,7 +776,7 @@ void ShowSecondaryMenuBar()
                                     ImPlot::SetNextLineStyle(ImVec4(1.0f, 1.0f, 1.0f, 0.2f));
                                     ImPlot::PlotLine("", x_ecu, y_ecu, 2);
 
-                                    float ec2_offset = -20; // Posição normal do rótulo de ec2
+                                    float ec2_offset = -10; // Posição normal do rótulo de ec2
                                     float ecu_offset = 20;  // Posição normal do rótulo de ecu
 
                                     // Se ec2 e ecu estiverem muito próximos, aumentar o espaçamento
@@ -793,26 +810,48 @@ void ShowSecondaryMenuBar()
                     // colocar os topicos embaixo
                     // tentar deixar mais visivel a cor do grafico
                     //
+                    ImGui::Text("Tipo de Diagrama: Linear com Patamar");
 
-                    float pos_x_direita = ImGui::GetWindowWidth() - 150;
-                    
+                    ImGui::PushItemWidth(70);
+                    float pos_x_direita = ImGui::GetWindowWidth() - 120;
+                    float pos_y_cima = ImGui::GetWindowHeight();
+
+                    ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x - 160);
+                    ImGui::SetCursorPosX(pos_x_direita - 50);
+                    ImGui::SetCursorPosY(pos_y_cima - 265);
+                    ImGui::Text("Parâmetros do Aço");
+
                     ImGui::SetCursorPosX(pos_x_direita);
                     ImGui::BeginGroup();
-                    ImGui::SetNextItemWidth(70);
-                    ImGui::InputFloat("##fyk", &fyk_variavel, 0.0f, 0.0f, "%.3f");
-                    ImGui::SetNextItemWidth(70);
-                    ImGui::SetNextItemWidth(70);
-                    ImGui::InputFloat("##γs", &gama_s_variavel, 0.0f, 0.0f, "%.3f");
-                    ImGui::SetNextItemWidth(70);
-                    ImGui::InputFloat("##Es", &Es_variavel, 0.0f, 0.0f, "%.3f");
+                    ImGui::InputFloat("##Fyk", &fyk_variavel, 0.0f, 0.0f, "%.2f");
+                    ImGui::InputFloat("##γs", &gama_s_variavel, 0.0f, 0.0f, "%.2f");
+                    ImGui::InputFloat("##Es", &Es_variavel, 0.0f, 0.0f, "%.2f");
                     ImGui::EndGroup();
 
+                    //
+                    ImGui::SetCursorPosY(pos_y_cima - 240);
+                    ImGui::SetCursorPosX(pos_x_direita - 50);
+                    ImGui::BeginGroup();
+                    ImGui::SetNextItemWidth(70);
+                    ImGui::Text("Fyk  = ");
+                    ImGui::Spacing();
+                    ImGui::SetNextItemWidth(70);
+                    ImGui::Text("γs    = ");
+                    ImGui::Spacing();
+                    ImGui::SetNextItemWidth(70);
+                    ImGui::Text("Es    = ");
+                    ImGui::EndGroup();
+
+                    ImGui::SetCursorPosY(pos_y_cima - 240);
+                    ImGui::SetCursorPosX(pos_x_direita + 80);
+                    ImGui::Text("Mpa");
+
                     if (gama_s_variavel < 0)
-                    gama_s_variavel = 0;
+                        gama_s_variavel = 0;
                     // organização fyk
 
                     if (fyk_variavel < 0)
-                    fyk_variavel = 0;
+                        fyk_variavel = 0;
                     if (Es_variavel < 0)
                         Es_variavel = 0;
 
@@ -834,8 +873,8 @@ void ShowSecondaryMenuBar()
                         xEpi[i] = EPItemp[i];
                         tensaoY[i] = reforco.tensao(EPIvariavel);
                     }
-                    ImGui::SetCursorPos(ImVec2(0, 60));
-                    if (ImPlot::BeginPlot("Diagrama Tensão-Deformação (Linear com patamar)", ImVec2(425, 225), ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_Invert | ImPlotFlags_NoLegend))
+                    ImGui::SetCursorPos(ImVec2(0, 135));
+                    if (ImPlot::BeginPlot("Diagrama Tensão-Deformação do aço ABNT NBR 6118:2023", ImVec2(425, 225), ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
                     {
                         ImPlot::SetupAxisLimits(ImAxis_X1, -10.0, 10.0, ImGuiCond_Always);
                         ImPlot::SetupAxisLimits(ImAxis_Y1, -800, 800, ImGuiCond_Always);
@@ -850,15 +889,15 @@ void ShowSecondaryMenuBar()
                         // 10 - reforco.espilon_yd, 2.5 - tensaoY[3]
 
                         float annotation_offset_x = 10; // Ajuste horizontal das anotações
-                        float annotation_offset_y = 5;  // Ajuste vertical das anotações
+                        float annotation_offset_y = 2;  // Ajuste vertical das anotações
 
                         // Anotações das tensões fyd e -fyd
-                        ImPlot::Annotation(-reforco.epsilon_yd, tensaoY[0], ImVec4(1, 1, 1, 0.4), ImVec2(-annotation_offset_x, -annotation_offset_y), tensaoY[0], "-fyd = %.2f MPa", tensaoY[0]);
-                        ImPlot::Annotation(reforco.epsilon_yd, tensaoY[3], ImVec4(1, 1, 1, 0.4), ImVec2(annotation_offset_x, annotation_offset_y), tensaoY[3], "fyd = %.2f MPa", tensaoY[3]);
+                        ImPlot::Annotation(-reforco.epsilon_yd, tensaoY[0], ImVec4(1, 1, 1, 0), ImVec2(-annotation_offset_x, -1), tensaoY[0], "-fyd = %.2f MPa", tensaoY[0]);
+                        ImPlot::Annotation(reforco.epsilon_yd, tensaoY[3], ImVec4(1, 1, 1, 0), ImVec2(annotation_offset_x, 1), tensaoY[3], "fyd = %.2f MPa", tensaoY[3]);
 
                         // Anotações das deformações εyd e -εyd
-                        ImPlot::Annotation(-reforco.epsilon_yd, 0, ImVec4(1, 1, 1, 0.4), ImVec2(-annotation_offset_x / 2, -10), resultado_negativo, "εyd = %.2f", resultado_negativo);
-                        ImPlot::Annotation(reforco.epsilon_yd, 0, ImVec4(1, 1, 1, 0.4), ImVec2(annotation_offset_x / 2, 10), resultado_positivo, "εyd = %.2f", resultado_positivo);
+                        ImPlot::Annotation(-reforco.epsilon_yd, 0, ImVec4(1, 1, 1, 0), ImVec2(-annotation_offset_x / 2, -1), resultado_negativo, "εyd = %.2f", resultado_negativo);
+                        ImPlot::Annotation(reforco.epsilon_yd, 0, ImVec4(1, 1, 1, 0), ImVec2(annotation_offset_x / 2, 1), resultado_positivo, "εyd = %.2f", resultado_positivo);
 
                         float x_eyd[] = {-reforco.epsilon_yd, -reforco.epsilon_yd};
                         float y_eyd[] = {0, tensaoY[0]};
@@ -885,14 +924,14 @@ void ShowSecondaryMenuBar()
 
             ImGui::EndMenu();
         }
+
         if (ImGui::BeginMenu("Armadura Passiva"))
         {
 
-
-            ImGui::SetNextWindowPos(ImVec2(192,47));
-            ImGui::SetNextWindowSize(ImVec2(420,270));
+            ImGui::SetNextWindowPos(ImVec2(192, 47));
+            ImGui::SetNextWindowSize(ImVec2(420, 275));
             ImGui::Begin("Entrada de Dados: Armadura Passiva", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-            
+
             ImGui::RadioButton("Uma Barra", &barras, 0);
             ImGui::RadioButton("Linha de Barras", &barras, 1);
 
@@ -987,8 +1026,8 @@ void ShowSecondaryMenuBar()
             if (ImGui::BeginTable("Tabela", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
             {
                 ImGui::TableSetupColumn("ID");
-                ImGui::TableSetupColumn("Posição X (cm)");
-                ImGui::TableSetupColumn("Posição Y (cm)");
+                ImGui::TableSetupColumn("x (cm)");
+                ImGui::TableSetupColumn("y (cm)");
                 ImGui::TableSetupColumn("Diâmetro (mm)");
                 ImGui::TableHeadersRow();
 
@@ -1014,8 +1053,8 @@ void ShowSecondaryMenuBar()
         if (ImGui::BeginMenu("Esforços"))
         {
 
-            ImGui::SetNextWindowPos(ImVec2(311,47));
-            ImGui::SetNextWindowSize(ImVec2(420,270));
+            ImGui::SetNextWindowPos(ImVec2(311, 47));
+            ImGui::SetNextWindowSize(ImVec2(420, 270));
             ImGui::Begin("Entrada dos dados dos esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
             ImGui::PushItemWidth(50);
             ImGui::InputFloat("Nsd", &nsd);

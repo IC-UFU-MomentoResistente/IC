@@ -1,12 +1,4 @@
 #include "Reinforcement.h"
-#include "Point.h"
-
-#define _USE_MATH_DEFINES
-#include <iostream>
-#include <cmath>
-#include <vector>
-
-using std::vector;
 
 Reinforcement::Reinforcement()
 {

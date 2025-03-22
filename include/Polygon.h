@@ -1,13 +1,18 @@
 #pragma once
 
-#include "Point.h"
-
 #define _USE_MATH_DEFINES
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include <stdexcept>
 #include <cmath>
 #include <vector>
 #include <stdexcept>
 
+#include "Point.h"
+
 using std::vector;
+using std::invalid_argument;
 
 class Polygon
 {

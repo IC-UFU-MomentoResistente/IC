@@ -1,13 +1,5 @@
 #include "Polygon.h"
 
-#include <iostream>
-#include <cmath>
-#include <vector>
-#include <stdexcept>
-
-using std::vector;
-using std::invalid_argument;
-
 Polygon::Polygon()
 {
 	polygonVertices = {};

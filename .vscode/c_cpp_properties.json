@@ -3,7 +3,12 @@
     {
       "name": "windows-gcc-x64",
       "includePath": [
-        "${workspaceFolder}/**"
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/include",
+        "${workspaceFolder}/lib/raylib/src",
+        "${workspaceFolder}/lib/imgui",
+        "${workspaceFolder}/lib/implot",
+        "${workspaceFolder}/lib/rlImGui"
       ],
       "defines": [
         "_DEBUG",

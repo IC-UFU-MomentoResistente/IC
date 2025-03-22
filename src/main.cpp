@@ -10,7 +10,6 @@
 #include "Reinforcement.h"
 #include "ConcreteProperties.h"
 #include "Section.h"
-#include "AppView.h"
 #include "Interface.h"
 
 using std::cout;
@@ -19,7 +18,6 @@ using std::endl;
 int main()
 {
 	Section section;
-	AppView view;
 	Interface interface;
 
 	interface.initInterface();
@@ -31,8 +29,8 @@ int main()
 		rlImGuiBegin();
 
 		interface.showPrimaryMenuBar();
-		interface.showSecondaryMenuBar(section, view);
-		interface.crossSectionPlotInterface(section, view);
+		interface.showSecondaryMenuBar(section);
+		interface.crossSectionPlotInterface(section);
 
 		bool showDemoWindow = true;
 

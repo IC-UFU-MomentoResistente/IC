@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Point.h"
-
 #define _USE_MATH_DEFINES
 #include <iostream>
 #include <cmath>
 #include <vector>
+
+#include "Point.h"
 
 using std::vector;
 

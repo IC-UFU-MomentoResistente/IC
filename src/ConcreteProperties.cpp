@@ -1,10 +1,5 @@
 #include "ConcreteProperties.h"
 
-#include "Point.h"
-
-#include <cmath>
-#include <vector>
-
 ConcreteProperties::ConcreteProperties()
 {
 	fck = 0;

@@ -1,18 +1,4 @@
-#include <iostream>
-
-#include "raylib.h"
-#include "imgui.h"
-#include "implot.h"
-#include "rlImGui.h"
-
-#include "Point.h"
-#include "Polygon.h"
-#include "Reinforcement.h"
-#include "ConcreteProperties.h"
-#include "Section.h"
-#include "AppView.h"
-#include "interface.h"
-
+#include "Interface.h"
 
 void Interface::initInterface() 
 {
@@ -50,8 +36,6 @@ void Interface::interfaceLoop()
 {
   
 }
-
-
 
 void Interface::showPrimaryMenuBar() 
 {
@@ -109,7 +93,7 @@ void Interface::autorsWindow() {
     ImGui::End();
 }
 
-void Interface::showSecondaryMenuBar(Section &section, AppView &view)	 
+void Interface::showSecondaryMenuBar(Section &section)	 
 {
     ImGuiIO &io = ImGui::GetIO();
     ImVec2 window_pos = ImVec2(0, ImGui::GetFrameHeight());
@@ -128,7 +112,7 @@ void Interface::showSecondaryMenuBar(Section &section, AppView &view)
     if(ImGui::BeginMenuBar()) 
     {
         crossSectionData(section);
-        interfaceMaterials(section, view);
+        interfaceMaterials(section);
         reinforcementInterface(section);
         effortSectionInterface();
 
@@ -208,7 +192,7 @@ void Interface::crossSectionData(Section &section)
     }
 }
 
-void Interface::interfaceMaterials(Section &section, AppView &view)
+void Interface::interfaceMaterials(Section &section)
 {
 
     int option = 0;
@@ -258,7 +242,7 @@ void Interface::interfaceMaterials(Section &section, AppView &view)
             if (ImPlot::BeginPlot("Concreto", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
             {
                 ImPlot::SetupAxesLimits(0, (section.concrete.getStrainConcreteRupture() * 1.1), 0, section.concrete.getFcd(), ImGuiCond_Always);
-                view.renderReinforcement(section.concrete.getCurveStressStrain(), "TensaoxDef");
+                renderVectorPoint(section.concrete.getCurveStressStrain(), "TensaoxDef");                
             }
 
             ImPlot::EndPlot();
@@ -289,7 +273,7 @@ void Interface::interfaceMaterials(Section &section, AppView &view)
             if (ImPlot::BeginPlot("Concreto", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
             {
                 ImPlot::SetupAxesLimits(0, (section.concrete.getStrainConcreteRupture() * 1.1), 0, section.concrete.getFcd(), ImGuiCond_Always);
-                view.renderReinforcement(section.concrete.getCurveStressStrain(), "TensaoxDef");
+                renderVectorPoint(section.concrete.getCurveStressStrain(), "TensaoxDef");
             }
 
             ImPlot::EndPlot();
@@ -400,7 +384,7 @@ void Interface::effortSectionInterface()
     }   
 }
 
-void Interface::crossSectionPlotInterface(Section &section, AppView &view) 
+void Interface::crossSectionPlotInterface(Section &section) 
 {
 
     ImGui::Begin("Grafico da Secao Transversal");
@@ -412,8 +396,8 @@ void Interface::crossSectionPlotInterface(Section &section, AppView &view)
     {
         if (section.polygon.getPolygonVertices().size() > 2)
         {
-            view.renderPolygon(section.polygon.getPolygonVertices(), "Vertices", "Polygon");
-            view.renderReinforcement(section.reinforcement.getReinforcement(), "Barras");
+            renderPolygon(section.polygon.getPolygonVertices(), "Vertices", "Polygon");
+            renderVectorPoint(section.reinforcement.getReinforcement(), "Barras");
         }
     }
 
@@ -421,4 +405,55 @@ void Interface::crossSectionPlotInterface(Section &section, AppView &view)
 
     ImGui::End();
 
+}
+
+void Interface::renderPolygon(const vector<Point> &polygonVertices, string nameVertices, string namePolygon)
+{
+    if (!polygonVertices.empty())
+	{
+		vector<double> xTemp(polygonVertices.size());
+		vector<double> yTemp(polygonVertices.size());
+
+		for (size_t i = 0; i < polygonVertices.size(); i++)
+		{
+			xTemp[i] = polygonVertices[i].getX();
+			yTemp[i] = polygonVertices[i].getY();
+		}
+
+		ImPlot::PlotScatter(nameVertices.c_str(), xTemp.data(), yTemp.data(), static_cast<int>(polygonVertices.size()));
+
+		if (polygonVertices.size() > 2)
+		{
+			vector<double> xTempEdge(polygonVertices.size() + 1);
+			vector<double> yTempEdge(polygonVertices.size() + 1);
+
+			for (size_t i = 0; i < polygonVertices.size(); i++)
+			{
+				xTempEdge[i] = polygonVertices[i].getX();
+				yTempEdge[i] = polygonVertices[i].getY();
+			}
+
+			xTempEdge[polygonVertices.size()] = polygonVertices[0].getX();
+			yTempEdge[polygonVertices.size()] = polygonVertices[0].getY();
+
+			ImPlot::PlotLine(namePolygon.c_str(), xTempEdge.data(), yTempEdge.data(), static_cast<int>(xTempEdge.size()));
+		}
+	}
+}
+
+void Interface::renderVectorPoint(const vector<Point> &vectorPoint, string nameVectorPoint)
+{
+    if (!vectorPoint.empty())
+    {
+        vector<double> xTemp(vectorPoint.size());
+        vector<double> yTemp(vectorPoint.size());
+
+        for (size_t i = 0; i < vectorPoint.size(); i++)
+        {
+            xTemp[i] = vectorPoint[i].getX();
+            yTemp[i] = vectorPoint[i].getY();
+        }
+
+        ImPlot::PlotScatter(nameVectorPoint.c_str(), xTemp.data(), yTemp.data(), static_cast<int>(vectorPoint.size()));
+    }
 }

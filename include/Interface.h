@@ -11,6 +11,7 @@
 #include "Polygon.h"
 #include "Reinforcement.h"
 #include "ConcreteProperties.h"
+#include "SteelProperties.h"
 #include "Section.h"
 
 using std::vector;
@@ -26,6 +27,8 @@ public:
     void showSecondaryMenuBar(Section &section);
     void crossSectionData(Section &section);
     void interfaceMaterials(Section &section);
+    void concreteInterface(Section &section);
+    void steelInterface(Section &section);
     void reinforcementInterface(Section &section);
     void effortSectionInterface();
     void crossSectionPlotInterface(Section &section);

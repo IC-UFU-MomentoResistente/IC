@@ -6,4 +6,5 @@ Section::Section()
     polygon = Polygon();
     reinforcement = Reinforcement();
     concrete = ConcreteProperties();
+    steel = SteelProperties();
 }

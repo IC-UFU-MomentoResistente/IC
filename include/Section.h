@@ -4,6 +4,7 @@
 #include "Polygon.h"
 #include "Reinforcement.h"
 #include "ConcreteProperties.h"
+#include "SteelProperties.h"
 
 class Section
 {
@@ -12,6 +13,7 @@ public:
     Polygon polygon;
     Reinforcement reinforcement;
     ConcreteProperties concrete;
+    SteelProperties steel;
 
     Section();
 };

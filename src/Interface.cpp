@@ -1,12 +1,12 @@
 #include "Interface.h"
 
-void Interface::initInterface() 
+void Interface::initInterface()
 {
-   
+
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     int screenWidth = 1280;
     int screenHeight = 960;
-    
+
     InitWindow(screenWidth, screenHeight, "SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO");
 
     if (!IsWindowReady()) // Verifique se a janela foi criada com sucesso
@@ -14,11 +14,10 @@ void Interface::initInterface()
         std::cerr << "Erro ao criar a janela!" << std::endl;
         return; // Saia da função se a janela não foi criada
     }
-    
-    
+
     rlImGuiBeginInitImGui();
     ImGui::StyleColorsDark();
-    
+
     /* ImFontConfig fontConfig;
     static const ImWchar customRange[] =
         {
@@ -27,46 +26,46 @@ void Interface::initInterface()
             0};
     font = ImGui::GetIO().Fonts->AddFontFromFileTTF("src/segoeuisl.ttf", 18.0f, &fontConfig, customRange);
             */
-    
+
     rlImGuiEndInitImGui();
     ImPlot::CreateContext();
 }
 
-void Interface::interfaceLoop() 
+void Interface::interfaceLoop()
 {
-  
 }
 
-void Interface::showPrimaryMenuBar() 
+void Interface::showPrimaryMenuBar()
 {
     if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("Arquivo"))
         {
-            if (ImGui::BeginMenu("Arquivo"))
-            {
-                ImGui::MenuItem("Salvar");
-                ImGui::MenuItem("Carregar");
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Resultado"))
-            {
-                ImGui::MenuItem("Gerar relatório");
-                ImGui::MenuItem("Visualizar Gráficos");
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Autores"))
-            {
-                autorsWindow();
-                ImGui::EndMenu();
-            }
-
-            ImGui::EndMainMenuBar();
+            ImGui::MenuItem("Salvar");
+            ImGui::MenuItem("Carregar");
+            ImGui::EndMenu();
         }
+
+        if (ImGui::BeginMenu("Resultado"))
+        {
+            ImGui::MenuItem("Gerar relatório");
+            ImGui::MenuItem("Visualizar Gráficos");
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Autores"))
+        {
+            autorsWindow();
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
 }
 
-void Interface::autorsWindow() {
-   
+void Interface::autorsWindow()
+{
+
     ImGui::SetNextWindowPos(ImVec2(145, 20));
     ImGui::SetNextWindowSize(ImVec2(600, 250));
     ImGui::Begin("Autores", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration);
@@ -93,7 +92,7 @@ void Interface::autorsWindow() {
     ImGui::End();
 }
 
-void Interface::showSecondaryMenuBar(Section &section)	 
+void Interface::showSecondaryMenuBar(Section &section)
 {
     ImGuiIO &io = ImGui::GetIO();
     ImVec2 window_pos = ImVec2(0, ImGui::GetFrameHeight());
@@ -108,8 +107,8 @@ void Interface::showSecondaryMenuBar(Section &section)
                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                      ImGuiWindowFlags_NoMove |
                      ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar);
-    
-    if(ImGui::BeginMenuBar()) 
+
+    if (ImGui::BeginMenuBar())
     {
         crossSectionData(section);
         interfaceMaterials(section);
@@ -118,18 +117,18 @@ void Interface::showSecondaryMenuBar(Section &section)
 
         ImGui::EndMenuBar();
     }
-    
+
     ImGui::End(); // Finaliza a janela
 }
 
-void Interface::crossSectionData(Section &section) 
+void Interface::crossSectionData(Section &section)
 {
-    if (ImGui::BeginMenu("Seção Transversal")) // Primeira versão, não é a final - precisa incrementar vértices temporarios - não adicionar vertices negativos e tal   
+    if (ImGui::BeginMenu("Seção Transversal")) // Primeira versão, não é a final - precisa incrementar vértices temporarios - não adicionar vertices negativos e tal
     {
         static double coordXPolygon, coordYPolygon;
-                
-        ImGui::SetNextWindowPos(ImVec2(4,35));
-        ImGui::SetNextWindowSize(ImVec2(420,270));
+
+        ImGui::SetNextWindowPos(ImVec2(4, 35));
+        ImGui::SetNextWindowSize(ImVec2(420, 270));
         ImGui::Begin("Inserir Dados da Seção Transversal", nullptr,
                      ImGuiWindowFlags_NoCollapse |
                          ImGuiWindowFlags_NoResize |
@@ -194,94 +193,142 @@ void Interface::crossSectionData(Section &section)
 
 void Interface::interfaceMaterials(Section &section)
 {
-
-    int option = 0;
-    float fck_variable;
-    float yc_variable;
-    float beta_variable;
-    float fyk_variable; 
-    float gama_s_variable;
-    float es_variable;
-
-    if(ImGui::BeginMenu("Materiais")) 
+    if (ImGui::BeginMenu("Materiais"))
     {
-        ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always);    // Ajuste os valores conforme necessário
-        ImGui::SetNextWindowPos(ImVec2(138, 35)); // Posição inicial
+        ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always); // Ajuste os valores conforme necessário
+        ImGui::SetNextWindowPos(ImVec2(123, 47));                     // Posição inicial
         ImGui::Begin("Entrada de Dados de Materiais", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
         ImVec2 plotSize = ImGui::GetContentRegionAvail();
-        ImGui::Text("εc");
 
-        static int constitutiveModel = 0;
-        static double collectedFck, collectedGammaC, stress;
-
-        ImGui::RadioButton("ABNT NBR 6118:2014", &constitutiveModel, 0);
-        ImGui::RadioButton("ABNT NBR 6118:2023", &constitutiveModel, 1);
-
-        if (constitutiveModel == 0)
+        if (ImGui::BeginTabBar("Tabela de Entrada de Dados de Materiais"))
         {
-            StressStrainModelType model61182014 = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2014;
-            ImGui::InputDouble("fck (MPa):", &collectedFck);
-            ImGui::InputDouble("gammaC: ", &collectedGammaC);
-
-            if (collectedFck < 0 || collectedGammaC < 0)
+            if (ImGui::BeginTabItem("Concreto"))
             {
-                collectedFck = 0;
-                collectedGammaC = 1;
+                concreteInterface(section);
+                ImGui::EndTabItem();
             }
 
-            if (ImGui::Button("Adicionar"))
+            if (ImGui::BeginTabItem("Armadura Passiva"))
             {
-                section.concrete.setParameters(model61182014, collectedFck, collectedGammaC);
-
-                section.concrete.setCurveStressStrain();
+                steelInterface(section);
+                ImGui::EndTabItem();
             }
 
-            ImVec2 plotSize = ImGui::GetContentRegionAvail();
-            
-            // inicialização do gráfico com os eixos
-            if (ImPlot::BeginPlot("Concreto", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
-            {
-                ImPlot::SetupAxesLimits(0, (section.concrete.getStrainConcreteRupture() * 1.1), 0, section.concrete.getFcd(), ImGuiCond_Always);
-                renderVectorPoint(section.concrete.getCurveStressStrain(), "TensaoxDef");                
-            }
-
-            ImPlot::EndPlot();
-        }
-
-        if (constitutiveModel == 1)
-        {
-            StressStrainModelType model61182023 = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2023;
-            ImGui::InputDouble("fck (MPa):", &collectedFck);
-            ImGui::InputDouble("gammaC: ", &collectedGammaC);
-
-            if (collectedFck < 0 || collectedGammaC < 0)
-            {
-                collectedFck = 0;
-                collectedGammaC = 1;
-            }
-
-            if (ImGui::Button("Adicionar"))
-            {
-                section.concrete.setParameters(model61182023, collectedFck, collectedGammaC);
-
-                section.concrete.setCurveStressStrain();
-            }
-
-            ImVec2 plotSize = ImGui::GetContentRegionAvail();
-
-            // inicialização do gráfico com os eixos
-            if (ImPlot::BeginPlot("Concreto", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
-            {
-                ImPlot::SetupAxesLimits(0, (section.concrete.getStrainConcreteRupture() * 1.1), 0, section.concrete.getFcd(), ImGuiCond_Always);
-                renderVectorPoint(section.concrete.getCurveStressStrain(), "TensaoxDef");
-            }
-
-            ImPlot::EndPlot();
+            ImGui::EndTabBar();
         }
 
         ImGui::End();
+
         ImGui::EndMenu();
     }
+}
+
+void Interface::concreteInterface(Section &section)
+{
+    static int constitutiveModel = 0;
+    static double collectedFck, collectedGammaC, stress;
+
+    ImGui::RadioButton("ABNT NBR 6118:2014", &constitutiveModel, 0);
+    ImGui::RadioButton("ABNT NBR 6118:2023", &constitutiveModel, 1);
+
+    if (constitutiveModel == 0)
+    {
+        StressStrainModelType model61182014 = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2014;
+        ImGui::InputDouble("fck (MPa):", &collectedFck);
+        ImGui::InputDouble("gammaC: ", &collectedGammaC);
+
+        if (collectedFck < 0 || collectedGammaC < 0)
+        {
+            collectedFck = 0;
+            collectedGammaC = 1;
+        }
+
+        if (ImGui::Button("Adicionar"))
+        {
+            section.concrete.setParameters(model61182014, collectedFck, collectedGammaC);
+
+            section.concrete.setCurveStressStrain();
+        }
+
+        ImVec2 plotSize = ImGui::GetContentRegionAvail();
+
+        // inicialização do gráfico com os eixos
+        if (ImPlot::BeginPlot("Concreto", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
+        {
+            ImPlot::SetupAxesLimits(0, (section.concrete.getStrainConcreteRupture() * 1.1), 0, section.concrete.getFcd(), ImGuiCond_Always);
+            renderVectorPoint(section.concrete.getCurveStressStrain(), "TensaoxDef");
+        }
+
+        ImPlot::EndPlot();
+    }
+
+    if (constitutiveModel == 1)
+    {
+        StressStrainModelType model61182023 = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2023;
+        ImGui::InputDouble("fck (MPa):", &collectedFck);
+        ImGui::InputDouble("gammaC: ", &collectedGammaC);
+
+        if (collectedFck < 0 || collectedGammaC < 0)
+        {
+            collectedFck = 0;
+            collectedGammaC = 1;
+        }
+
+        if (ImGui::Button("Adicionar"))
+        {
+            section.concrete.setParameters(model61182023, collectedFck, collectedGammaC);
+
+            section.concrete.setCurveStressStrain();
+        }
+
+        ImVec2 plotSize = ImGui::GetContentRegionAvail();
+
+        // inicialização do gráfico com os eixos
+        if (ImPlot::BeginPlot("Concreto", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
+        {
+            ImPlot::SetupAxesLimits(0, (section.concrete.getStrainConcreteRupture() * 1.1), 0, section.concrete.getFcd(), ImGuiCond_Always);
+            renderVectorPoint(section.concrete.getCurveStressStrain(), "TensaoxDef");
+        }
+
+        ImPlot::EndPlot();
+    }
+}
+
+void Interface::steelInterface(Section &section)
+{
+    static double collectedFyk, collectedGammaS, collectedE, stress;
+
+    ImGui::InputDouble("fyk (MPa):", &collectedFyk);
+    ImGui::InputDouble("gammaC: ", &collectedGammaS);
+    ImGui::InputDouble("E (GPa)", &collectedE);
+
+    if (collectedFyk < 0 || collectedGammaS < 0 || collectedE < 0)
+    {
+        collectedFyk = 0;
+        collectedGammaS = 1;
+        collectedE = 1;
+    }
+
+    if (ImGui::Button("Adicionar"))
+    {
+        StressStrainSteelModelType modelPassive = StressStrainSteelModelType::PASSIVE_REINFORCEMENT;
+
+        section.steel.setParameters(modelPassive, collectedFyk, collectedGammaS, collectedE);
+
+        section.steel.setCurveStressStrain();
+    }
+
+    ImVec2 plotSize = ImGui::GetContentRegionAvail();
+
+    // inicialização do gráfico com os eixos
+    if (ImPlot::BeginPlot("Aço", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
+    {
+        ImPlot::SetupAxesLimits((-section.steel.getStrainSteelRupture() * 1.1), (section.steel.getStrainSteelRupture() * 1.1), 
+        (-section.steel.getFyd() * 1.1), (section.steel.getFyd() * 1.1), ImGuiCond_Always);
+        renderVectorPoint(section.steel.getCurveStressStrain(), "TensaoxDef");
+    }
+
+    ImPlot::EndPlot();
 }
 
 void Interface::reinforcementInterface(Section &section)
@@ -381,12 +428,11 @@ void Interface::effortSectionInterface()
 
         ImGui::End();
         ImGui::EndMenu();
-    }   
+    }
 }
 
-void Interface::crossSectionPlotInterface(Section &section) 
+void Interface::crossSectionPlotInterface(Section &section)
 {
-
     ImGui::Begin("Grafico da Secao Transversal");
 
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
@@ -404,41 +450,40 @@ void Interface::crossSectionPlotInterface(Section &section)
     ImPlot::EndPlot();
 
     ImGui::End();
-
 }
 
 void Interface::renderPolygon(const vector<Point> &polygonVertices, string nameVertices, string namePolygon)
 {
     if (!polygonVertices.empty())
-	{
-		vector<double> xTemp(polygonVertices.size());
-		vector<double> yTemp(polygonVertices.size());
+    {
+        vector<double> xTemp(polygonVertices.size());
+        vector<double> yTemp(polygonVertices.size());
 
-		for (size_t i = 0; i < polygonVertices.size(); i++)
-		{
-			xTemp[i] = polygonVertices[i].getX();
-			yTemp[i] = polygonVertices[i].getY();
-		}
+        for (size_t i = 0; i < polygonVertices.size(); i++)
+        {
+            xTemp[i] = polygonVertices[i].getX();
+            yTemp[i] = polygonVertices[i].getY();
+        }
 
-		ImPlot::PlotScatter(nameVertices.c_str(), xTemp.data(), yTemp.data(), static_cast<int>(polygonVertices.size()));
+        ImPlot::PlotScatter(nameVertices.c_str(), xTemp.data(), yTemp.data(), static_cast<int>(polygonVertices.size()));
 
-		if (polygonVertices.size() > 2)
-		{
-			vector<double> xTempEdge(polygonVertices.size() + 1);
-			vector<double> yTempEdge(polygonVertices.size() + 1);
+        if (polygonVertices.size() > 2)
+        {
+            vector<double> xTempEdge(polygonVertices.size() + 1);
+            vector<double> yTempEdge(polygonVertices.size() + 1);
 
-			for (size_t i = 0; i < polygonVertices.size(); i++)
-			{
-				xTempEdge[i] = polygonVertices[i].getX();
-				yTempEdge[i] = polygonVertices[i].getY();
-			}
+            for (size_t i = 0; i < polygonVertices.size(); i++)
+            {
+                xTempEdge[i] = polygonVertices[i].getX();
+                yTempEdge[i] = polygonVertices[i].getY();
+            }
 
-			xTempEdge[polygonVertices.size()] = polygonVertices[0].getX();
-			yTempEdge[polygonVertices.size()] = polygonVertices[0].getY();
+            xTempEdge[polygonVertices.size()] = polygonVertices[0].getX();
+            yTempEdge[polygonVertices.size()] = polygonVertices[0].getY();
 
-			ImPlot::PlotLine(namePolygon.c_str(), xTempEdge.data(), yTempEdge.data(), static_cast<int>(xTempEdge.size()));
-		}
-	}
+            ImPlot::PlotLine(namePolygon.c_str(), xTempEdge.data(), yTempEdge.data(), static_cast<int>(xTempEdge.size()));
+        }
+    }
 }
 
 void Interface::renderVectorPoint(const vector<Point> &vectorPoint, string nameVectorPoint)

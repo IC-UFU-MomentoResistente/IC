@@ -35,7 +35,6 @@ int main()
 		interface.crossSectionPlotInterface(section);
 
 		bool showDemoWindow = true;
-
 		if (showDemoWindow)
 			ImGui::ShowDemoWindow(&showDemoWindow);
 

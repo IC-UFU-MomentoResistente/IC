@@ -183,8 +183,11 @@ void Interface::crossSectionData(Section &section)
 
         if (ImGui::Button("SecaoT"))
         {
-            vector<Point> temp = {{7.5,0}, {10,30}, {20,40}, {20,50}, {-20, 50}, {-20, 40}, {-10, 30}, {-7.5, 0}};
-            section.polygon.setVertices(temp);
+            vector<Point> collectedPoints = {{7.5,0}, {10,30}, {20,40}, {20,50}, {-20, 50}, {-20, 40}, {-10, 30}, {-7.5, 0}};
+            vector<Point> collectedReinforcement = { {5,2.5}, {5,7.5}, {-5, 7.5}, {-5,2.5}, };
+            vector<double> collectedDiameters = { 10, 10, 10, 10 };
+            section.polygon.setVertices(collectedPoints);
+            section.reinforcement.setReinforcement(collectedReinforcement, collectedDiameters);
         }
 
         ImGui::Text("Area: %.2f", section.polygon.getPolygonArea());
@@ -241,7 +244,7 @@ void Interface::concreteInterface(Section &section)
 
     if (constitutiveModel == 0)
     {
-        StressStrainModelType model61182014 = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2014;
+        StressStrainConcreteModelType model61182014 = StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2014;
         ImGui::InputDouble("fck (MPa):", &collectedFck);
         ImGui::InputDouble("gammaC: ", &collectedGammaC);
 
@@ -272,7 +275,7 @@ void Interface::concreteInterface(Section &section)
 
     if (constitutiveModel == 1)
     {
-        StressStrainModelType model61182023 = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2023;
+        StressStrainConcreteModelType model61182023 = StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2023;
         ImGui::InputDouble("fck (MPa):", &collectedFck);
         ImGui::InputDouble("gammaC: ", &collectedGammaC);
 
@@ -369,7 +372,7 @@ void Interface::reinforcementInterface(Section &section)
             if (ImGui::Button("Remover"))
             {
                 if (!section.reinforcement.getReinforcement().empty())
-                    section.reinforcement.removeLastBar();
+                    section.reinforcement.removeLastReinforcement();
             }
         }
 
@@ -400,6 +403,8 @@ void Interface::reinforcementInterface(Section &section)
 
                     section.reinforcement.addReinforcement(coordX, coordY, diameterBar);
                 }
+
+                section.reinforcement.computeArea();
             }
 
             ImGui::SameLine();
@@ -407,7 +412,7 @@ void Interface::reinforcementInterface(Section &section)
             if (ImGui::Button("Remover"))
             {
                 if (!section.reinforcement.getReinforcement().empty())
-                    section.reinforcement.removeLastBar();
+                    section.reinforcement.removeLastReinforcement();
             }
         }
 
@@ -433,44 +438,15 @@ void Interface::effortSectionInterface(Section &section)
 
         if (ImGui::Button("Calcular"))
         {
-            section.strainDistribution.setStrain(eps1, eps2);
-            section.strainDistribution.computeStrainDistribution(section.concrete.getStrainConcretePlastic(), 
-            section.concrete.getStrainConcreteRupture(), section.polygon.getPolygonHeight());
-
-            cout << "LN: " << section.strainDistribution.getNeutralAxisCoord() << endl;
-            cout << "LP: " << section.strainDistribution.getPlasticStrainCoord() << endl;
-            cout << "LR: " << section.strainDistribution.getRuptureStrainCoord() << endl;
-
-            section.stressRegions.setOriginalPolygon(section.polygon);
-
-            section.stressRegions.setDeformationHeight(section.strainDistribution.getNeutralAxisCoord(),
-            section.strainDistribution.getPlasticStrainCoord(), section.strainDistribution.getRuptureStrainCoord());
-
-            section.stressRegions.generateStressRegions();
-
-            cout << "Neutral Axis: " << section.stressRegions.getNeutralAxisHeight() << endl;
-            cout << "Plastic Height: " << section.stressRegions.getPlasticHeight() << endl;
-            cout << "Rupture Height: " << section.stressRegions.getRuptureHeight() << endl;
-
-            for (size_t i = 0; i < section.stressRegions.getOriginalPolygon().getPolygonVertices().size(); i++)
-            {
-                cout << "Original Polygon: " << section.stressRegions.getOriginalPolygon().getPolygonVertices()[i].getX() << " " << section.stressRegions.getOriginalPolygon().getPolygonVertices()[i].getY() << endl;
-            }
-
-            for (size_t i = 0; i < section.stressRegions.getCompressedRegion().getPolygonVertices().size(); i++)
-            {
-                cout << "Compressed Region: " << section.stressRegions.getCompressedRegion().getPolygonVertices()[i].getX() << " " << section.stressRegions.getCompressedRegion().getPolygonVertices()[i].getY() << endl;
-            }
-
-            for (size_t i = 0; i < section.stressRegions.getPlasticRegion().getPolygonVertices().size(); i++)
-            {
-                cout << "Plastic Region: " << section.stressRegions.getPlasticRegion().getPolygonVertices()[i].getX() << " " << section.stressRegions.getPlasticRegion().getPolygonVertices()[i].getY() << endl;
-            }
-
-            for (size_t i = 0; i < section.stressRegions.getNonLinearRegion().getPolygonVertices().size(); i++)
-            {
-                cout << "Non Linear Region: " << section.stressRegions.getNonLinearRegion().getPolygonVertices()[i].getX() << " " << section.stressRegions.getNonLinearRegion().getPolygonVertices()[i].getY() << endl;
-            }
+            section.setPolygon(section.polygon);
+            section.setReinforcement(section.reinforcement);
+            section.setConcrete(section.concrete);
+            section.setSteel(section.steel);
+            section.setStrainDistribution(eps1, eps2);
+            section.setStressRegions();
+            section.setIntegrationVersion(NormativeIntegrationVersion::ABNT_NBR6118_2014);
+            section.computeInternalForces(N);
+            section.printSectionData();
         }
 
         ImGui::End();
@@ -491,8 +467,8 @@ void Interface::crossSectionPlotInterface(Section &section)
         {
             renderPolygon(section.polygon.getPolygonVertices(), "Vertices", "Polygon");
             renderPolygon(section.stressRegions.getCompressedRegion().getPolygonVertices(), "vComp", "pComp");
-            renderPolygon(section.stressRegions.getPlasticRegion().getPolygonVertices(), "vPlastic", "pPlastic");
-            renderPolygon(section.stressRegions.getNonLinearRegion().getPolygonVertices(), "vNonLinear", "pNonLinear");      
+            renderPolygon(section.stressRegions.getParabolicRegion().getPolygonVertices(), "vParab", "pParab");
+            renderPolygon(section.stressRegions.getRectangularRegion().getPolygonVertices(), "vRec", "pRec");      
             renderVectorPoint(section.reinforcement.getReinforcement(), "Barras");
         }
     }

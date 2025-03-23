@@ -80,14 +80,35 @@ void ConcreteProperties::setCurveStressStrain()
 {
 	curveStressStrain.clear();
 
-	double step = (strainConcreteRupture - 0) / 60;
+    double step = 0.05; // passo de deformação desejado (ex: 0.05 ‰ = 0.00005)
+    int numPoints = static_cast<int>(strainConcreteRupture / step) + 1;
 
-	for (double strain = 0; strain > -strainConcreteRupture; strain -= step)
-	{
-		double stress = computeStress(strain);
+    for (int i = 0; i < numPoints; ++i)
+    {
+        double strain = -i * step;
+        double stress = computeStress(strain);
+        curveStressStrain.push_back(Point(-strain, stress));
+    }
 
-		curveStressStrain.push_back(Point(-strain, stress));
-	}
+    // Garante o último ponto, se necessário (por causa de arredondamentos)
+    if (curveStressStrain.back().getX() < strainConcreteRupture)
+    {
+        double stress = computeStress(-strainConcreteRupture);
+        curveStressStrain.push_back(Point(strainConcreteRupture, stress));
+    }
+
+
+
+	// curveStressStrain.clear();
+
+	// double step = (strainConcreteRupture - 0) / 60;
+
+	// for (double strain = 0; strain > -strainConcreteRupture; strain -= step)
+	// {
+	// 	double stress = computeStress(strain);
+
+	// 	curveStressStrain.push_back(Point(-strain, stress));
+	// }
 }
 
 double ConcreteProperties::getFck() const

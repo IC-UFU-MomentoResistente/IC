@@ -14,6 +14,8 @@
 #include "SteelProperties.h"
 #include "Section.h"
 
+using std::cout;
+using std::endl;
 using std::vector;
 using std::string;
 
@@ -30,7 +32,7 @@ public:
     void concreteInterface(Section &section);
     void steelInterface(Section &section);
     void reinforcementInterface(Section &section);
-    void effortSectionInterface();
+    void effortSectionInterface(Section &section);
     void crossSectionPlotInterface(Section &section);
     void renderPolygon(const vector<Point>& polygonVertices, string nameVertices, string namePolygon);
 	void renderVectorPoint(const vector<Point>& vector, string nameReinforcement);

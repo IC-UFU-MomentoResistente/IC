@@ -5,6 +5,8 @@
 #include "Reinforcement.h"
 #include "ConcreteProperties.h"
 #include "SteelProperties.h"
+#include "StrainDistribution.h"
+#include "PolygonStressRegions.h"
 
 class Section
 {
@@ -14,6 +16,8 @@ public:
     Reinforcement reinforcement;
     ConcreteProperties concrete;
     SteelProperties steel;
+    StrainDistribution strainDistribution;
+    PolygonStressRegions stressRegions;
 
     Section();
 };

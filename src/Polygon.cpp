@@ -4,7 +4,6 @@ Polygon::Polygon()
 {
 	polygonVertices = {};
 	geometricCenter;
-	intersectionPoint;
 	maxY = 0;
 	minY = 0;
 	polygonHeight = 0;
@@ -165,17 +164,6 @@ void Polygon::rotateAroundCentroid(double angle)
 	}
 }
 
-void Polygon::computeIntersection(Point firstPoint, Point secondPoint, double cutCoordY)
-{
-	double dx = secondPoint.getX() - firstPoint.getX();
-	double dy = secondPoint.getY() - firstPoint.getY();
-
-	double t = (cutCoordY - firstPoint.getY()) / dy;
-
-	intersectionPoint.setX(firstPoint.getX() + t * dx);
-	intersectionPoint.setY(cutCoordY);
-}
-
 vector<Point> Polygon::getPolygonVertices() const
 {
 	return polygonVertices;
@@ -184,11 +172,6 @@ vector<Point> Polygon::getPolygonVertices() const
 Point Polygon::getGeometricCenter() const
 {
 	return geometricCenter;
-}
-
-Point Polygon::getIntersectionPoint() const
-{
-	return intersectionPoint;
 }
 
 double Polygon::getMaxY() const

@@ -7,4 +7,6 @@ Section::Section()
     reinforcement = Reinforcement();
     concrete = ConcreteProperties();
     steel = SteelProperties();
+    strainDistribution = StrainDistribution();
+    stressRegions = PolygonStressRegions();
 }

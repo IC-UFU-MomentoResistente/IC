@@ -4,8 +4,8 @@ PolygonStressRegions::PolygonStressRegions()
 {
     originalPolygon = Polygon();
     compressedRegion = Polygon();
-    plasticRegion = Polygon();
-    nonLinearRegion = Polygon();
+    parabolicRegion = Polygon();
+    rectangularRegion = Polygon();
     neutralAxisHeight = 0.0;
     plasticHeight = 0.0;
     ruptureHeight = 0.0;
@@ -40,19 +40,19 @@ Polygon PolygonStressRegions::regionAboveHeight(Polygon polygon, bool upperCut, 
     vector<Point> resultVertices;
     const auto& vertices = polygon.getPolygonVertices();
 
-    for (size_t i = 0; i < vertices.size(); ++i) {
+    for (size_t i = 0; i < vertices.size(); ++i) 
+    {
         Point current = vertices[i];
         Point next = vertices[(i + 1) % vertices.size()];
 
-        bool currentKeep = upperCut ? current.getY() >= cutCoordY
-                                    : current.getY() <= cutCoordY;
-        bool nextKeep = upperCut ? next.getY() >= cutCoordY
-                                 : next.getY() <= cutCoordY;
+        bool currentKeep = upperCut ? current.getY() >= cutCoordY : current.getY() <= cutCoordY;
+        bool nextKeep = upperCut ? next.getY() >= cutCoordY : next.getY() <= cutCoordY;
 
         if (currentKeep)
             resultVertices.push_back(current);
 
-        if (currentKeep != nextKeep) {
+        if (currentKeep != nextKeep) 
+        {
             Point intersection = computeIntersection(current, next, cutCoordY);
             resultVertices.push_back(intersection);
         }
@@ -61,63 +61,20 @@ Polygon PolygonStressRegions::regionAboveHeight(Polygon polygon, bool upperCut, 
     Polygon result;
     result.setVertices(resultVertices);
     return result;
-
-
-    // Polygon tempPolygon = Polygon();
-    // vector<Point> resultVerticesAbove;
-    // vector<Point> resultVerticesBelow;
-
-    // for (size_t i = 0; i < vertices.size(); i++)
-    // {
-    //     Point current = vertices[i];
-    //     Point next = vertices[(i + 1) % vertices.size()];
-
-    //     bool isCurrentInCut = current.getY() == cutCoordY;
-    //     bool isCurrentAbove = current.getY() > cutCoordY;
-    //     bool isNextAbove = next.getY() > cutCoordY;  
-
-    //     if (isCurrentInCut)
-    //     {
-    //         resultVerticesAbove.push_back(current);
-    //         resultVerticesBelow.push_back(current);
-    //     }
-    //     else if (isCurrentAbove)
-    //     {
-    //         resultVerticesAbove.push_back(current);
-    //     }
-    //     else
-    //     {
-    //         resultVerticesBelow.push_back(current);
-    //     }
-
-    //     if (isCurrentAbove != isNextAbove)
-    //     {
-    //         Point intersection = computeIntersection(current, next, cutCoordY);
-    //         resultVerticesAbove.push_back(intersection);
-    //         resultVerticesBelow.push_back(intersection);
-    //     }
-    // }
-
-    // if (upperCut)
-    //     tempPolygon.setVertices(resultVerticesAbove);
-    // else
-    //     tempPolygon.setVertices(resultVerticesBelow);
-
-    // return tempPolygon;
 }
 
 Polygon PolygonStressRegions::regionBetweenHeights(Polygon polygon, double upper, double lower)
 {
-    Polygon lowerCut = regionAboveHeight(polygon, true, lower);   // corta abaixo de lower
-    Polygon between = regionAboveHeight(lowerCut, false, upper); // corta acima de upper
+    Polygon lowerCut = regionAboveHeight(polygon, true, lower);   // remove o que está abaixo de lower
+    Polygon between = regionAboveHeight(lowerCut, false, upper); // remove o que está acima de upper
     return between;
 }
 
 void PolygonStressRegions::generateStressRegions()
 {
     compressedRegion = regionAboveHeight(originalPolygon, true, neutralAxisHeight);
-    plasticRegion = regionBetweenHeights(originalPolygon, plasticHeight, neutralAxisHeight);
-    nonLinearRegion = regionBetweenHeights(originalPolygon, ruptureHeight, plasticHeight);
+    parabolicRegion = regionBetweenHeights(originalPolygon, plasticHeight, neutralAxisHeight);
+    rectangularRegion = regionBetweenHeights(originalPolygon, ruptureHeight, plasticHeight);
 }
 
 Polygon PolygonStressRegions::getOriginalPolygon() const
@@ -130,14 +87,14 @@ Polygon PolygonStressRegions::getCompressedRegion() const
     return compressedRegion;
 }
 
-Polygon PolygonStressRegions::getPlasticRegion() const
+Polygon PolygonStressRegions::getParabolicRegion() const
 {
-    return plasticRegion;
+    return parabolicRegion;
 }
 
-Polygon PolygonStressRegions::getNonLinearRegion() const
+Polygon PolygonStressRegions::getRectangularRegion() const
 {
-    return nonLinearRegion;
+    return rectangularRegion;
 }
 
 double PolygonStressRegions::getNeutralAxisHeight() const

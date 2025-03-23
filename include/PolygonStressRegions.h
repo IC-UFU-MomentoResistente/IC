@@ -8,8 +8,8 @@ class PolygonStressRegions
 private:
     Polygon originalPolygon;
     Polygon compressedRegion;
-    Polygon plasticRegion;
-    Polygon nonLinearRegion;
+    Polygon parabolicRegion;
+    Polygon rectangularRegion;
     double neutralAxisHeight;
     double plasticHeight;
     double ruptureHeight;
@@ -26,8 +26,8 @@ public:
     
     Polygon getOriginalPolygon() const;
     Polygon getCompressedRegion() const;
-    Polygon getPlasticRegion() const;
-    Polygon getNonLinearRegion() const;
+    Polygon getParabolicRegion() const;
+    Polygon getRectangularRegion() const;
     double getNeutralAxisHeight() const;
     double getPlasticHeight() const;
     double getRuptureHeight() const;

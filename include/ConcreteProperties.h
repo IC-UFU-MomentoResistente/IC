@@ -5,7 +5,7 @@
 #include <cmath>
 #include <vector>
 
-enum class StressStrainModelType
+enum class StressStrainConcreteModelType
 {
 	PARABOLA_RECTANGLE_NBR6118_2014,
 	PARABOLA_RECTANGLE_NBR6118_2023
@@ -17,23 +17,25 @@ private:
 	double fck;
 	double gammaC;
 	double fcd;
+	double factorMultiplierFcd;
 	double strainConcretePlastic;
 	double strainConcreteRupture;
 	double strengthReductionFactor;
 	double stressStrainExponent;
 	vector<Point> curveStressStrain;
-	StressStrainModelType modelType;
+	StressStrainConcreteModelType modelType;
 
 public:
 	ConcreteProperties();
 
-	void setParameters(StressStrainModelType model, double collectedFck, double collectedGammaC);
+	void setParameters(StressStrainConcreteModelType model, double collectedFck, double collectedGammaC);
 	double computeStress(double strain);
 	void setCurveStressStrain();
 
 	double getFck() const;
 	double getGammaC() const;
 	double getFcd() const;
+	double getFactorMultiplierFcd() const;
 	double getStrainConcretePlastic() const;
 	double getStrainConcreteRupture() const;
 	double getStrenghtReductionFactor() const;

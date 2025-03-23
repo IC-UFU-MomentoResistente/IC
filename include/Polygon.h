@@ -11,8 +11,8 @@
 
 #include "Point.h"
 
-using std::vector;
 using std::invalid_argument;
+using std::vector;
 
 class Polygon
 {

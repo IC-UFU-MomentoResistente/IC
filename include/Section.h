@@ -5,6 +5,7 @@
 #include "Reinforcement.h"
 #include "ConcreteProperties.h"
 #include "SteelProperties.h"
+#include "Combination.h"
 
 class Section
 {
@@ -14,7 +15,6 @@ public:
     Reinforcement reinforcement;
     ConcreteProperties concrete;
     SteelProperties steel;
-
+    std::vector<Combination> combinations;
     Section();
 };
-

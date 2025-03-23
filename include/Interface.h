@@ -14,10 +14,10 @@
 #include "SteelProperties.h"
 #include "Section.h"
 
-using std::vector;
 using std::string;
+using std::vector;
 
-class Interface 
+class Interface
 {
 public:
     void initInterface();
@@ -30,8 +30,12 @@ public:
     void concreteInterface(Section &section);
     void steelInterface(Section &section);
     void reinforcementInterface(Section &section);
-    void effortSectionInterface();
+    void effortSectionInterface(Section &section);
     void crossSectionPlotInterface(Section &section);
-    void renderPolygon(const vector<Point>& polygonVertices, string nameVertices, string namePolygon);
-	void renderVectorPoint(const vector<Point>& vector, string nameReinforcement);
+    void renderPolygon(const vector<Point> &polygonVertices, string nameVertices, string namePolygon);
+    void renderVectorPoint(const vector<Point> &vector, string nameReinforcement);
+    void renderStrainConcreteRuptureDiagram(const vector<Point> &vectorPoint, string nameVectorPoint);
+    void renderStrainSteelDiagram(const vector<Point> &vectorPoint, string nameVectorPoint);
+    void EffortsTable(Section &section);
+    void crossSectionTable(Section &section);
 };

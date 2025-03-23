@@ -7,4 +7,5 @@ Section::Section()
     reinforcement = Reinforcement();
     concrete = ConcreteProperties();
     steel = SteelProperties();
+    combinations = std::vector<Combination>();
 }

@@ -52,6 +52,7 @@ double ConcreteProperties::computeStress(double strain)
 	case StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2014:
 
 		if (absStrain <= strainConcretePlastic)
+
 			return 0.85 * fcd * (1 - (pow((1 - (absStrain / strainConcretePlastic)), stressStrainExponent)));
 		else if (absStrain <= strainConcreteRupture)
 			return 0.85 * fcd;
@@ -80,13 +81,21 @@ void ConcreteProperties::setCurveStressStrain()
 {
 	curveStressStrain.clear();
 
-	double step = (strainConcreteRupture - 0) / 60;
+	double step = 0.05; // passo de deformação desejado (ex: 0.05 ‰ = 0.00005)
+	int numPoints = static_cast<int>(strainConcreteRupture / step) + 1;
 
-	for (double strain = 0; strain > -strainConcreteRupture; strain -= step)
+	for (int i = 0; i < numPoints; ++i)
 	{
+		double strain = -i * step;
 		double stress = computeStress(strain);
-
 		curveStressStrain.push_back(Point(-strain, stress));
+	}
+
+	// Garante o último ponto, se necessário (por causa de arredondamentos)
+	if (curveStressStrain.back().getX() < strainConcreteRupture)
+	{
+		double stress = computeStress(-strainConcreteRupture);
+		curveStressStrain.push_back(Point(strainConcreteRupture, stress));
 	}
 }
 

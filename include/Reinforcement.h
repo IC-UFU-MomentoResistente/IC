@@ -22,6 +22,7 @@ public:
 	void setBars(vector<Point> collectedBars, vector<double> collectedDiameters);
 	void addReinforcement(double coordX, double coordY, double diameter);
 	void removeLastBar();
+	void clearReinforcement();
 	void computeArea();
 	void translateToCentroidPolygon(Point centroid);
 	void rotateAroundCentroidPolygon(double angle, Point centroid);

@@ -7,16 +7,16 @@ Reinforcement::Reinforcement()
 	vector<double> areas = {};
 }
 
-void Reinforcement::setBars(vector<Point> collectedBars, vector<double> collectedDiameters)
+void Reinforcement::setReinforcement(vector<Point> collectedReinforcement, vector<double> collectedDiameters)
 {
-	for (size_t i = 0; i < collectedBars.size(); i++)
+	for (size_t i = 0; i < collectedReinforcement.size(); i++)
 	{
-		double coordX = collectedBars[i].getX();
-		double coordY = collectedBars[i].getY();
+		double coordX = collectedReinforcement[i].getX();
+		double coordY = collectedReinforcement[i].getY();
 
 		reinforcement.push_back(Point(coordX, coordY));
 
-		double diameter = collectedDiameters[i];
+		double diameter = collectedDiameters[i]; // mm
 
 		diameters.push_back(diameter);
 	}
@@ -28,17 +28,18 @@ void Reinforcement::addReinforcement(double coordX, double coordY, double diamet
 	diameters.push_back(diameter);
 }
 
-void Reinforcement::removeLastBar()
+void Reinforcement::removeLastReinforcement()
 {
 	reinforcement.pop_back();
 	diameters.pop_back();
+	areas.pop_back();
 }
 
 void Reinforcement::computeArea()
 {
 	for (size_t i = 0; i < reinforcement.size(); i++)
 	{
-		double tempDiameter = diameters[i];
+		double tempDiameter = diameters[i] / 10; // cm
 		double tempArea = pow(tempDiameter, 2) * 3.141592653589793 / 4;
 		areas.push_back(tempArea);
 	}

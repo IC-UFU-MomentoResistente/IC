@@ -19,9 +19,8 @@ void InternalForces::setNormalSolicitation(double Nsd)
 void InternalForces::computeNormalConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
 PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
 {
-    double coordLN = strainDistribution.getNeutralAxisCoord(); // mm/m
-    double coordEpc2 = strainDistribution.getPlasticStrainCoord(); // mm/m
-    double coordEcpu = strainDistribution.getRuptureStrainCoord(); // mm/m
+    double coordLN = stressRegions.getNeutralAxisHeight(); // cm
+    double coordEpc2 = stressRegions.getPlasticHeight(); // cm
     double fcd = concrete.getFcd(); // MPa
     double multFcd = concrete.getFactorMultiplierFcd();
     double nConc = concrete.getStressStrainExponent();
@@ -50,6 +49,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
             double nc2 = analyticalIntegration.computeNormalConcreteParabolic(coordLN, coordEpc2, nConc, fcd, multFcd, coef1, coef2, y2);
 
             NCTP = NCTP + nc2 - nc1;
+
+            std::cout << "\nNctp: " << NCTP << " kN" << std::endl;
         }
     }
 
@@ -71,6 +72,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
             double nc2 = analyticalIntegration.computeNormalConcreteRectangular(multFcd, fcd, coef1, coef2, y2);
 
             NCTR = NCTR + nc2 - nc1;
+
+            std::cout << "\nNctr: " << NCTR << " kN" << std::endl;
         }
     }
 
@@ -80,9 +83,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
 void InternalForces::computeMomentConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
 PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
 {
-    double coordLN = strainDistribution.getNeutralAxisCoord(); // mm/m
-    double coordEpc2 = strainDistribution.getPlasticStrainCoord(); // mm/m
-    double coordEcpu = strainDistribution.getRuptureStrainCoord(); // mm/m
+    double coordLN = stressRegions.getNeutralAxisHeight(); // cm
+    double coordEpc2 = stressRegions.getPlasticHeight(); // cm
     double fcd = concrete.getFcd(); // MPa
     double multFcd = concrete.getFactorMultiplierFcd();
     double nConc = concrete.getStressStrainExponent();
@@ -111,6 +113,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
             double mc2 = analyticalIntegration.computeMomentConcreteParabolic(coordLN, coordEpc2, nConc, fcd, multFcd, coef1, coef2, y2);
 
             MCTP = MCTP + mc2 - mc1;
+
+            std::cout << "\nMctp: " << MCTP << " kN*m" << std::endl;
         }
     }
 
@@ -132,6 +136,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
             double mc2 = analyticalIntegration.computeMomentConcreteRectangular(multFcd, fcd, coef1, coef2, y2);
 
             MCTR = MCTR + mc2 - mc1;
+
+            std::cout << "\nMctr: " << MCTR << " kN*m" << std::endl;
         }
     }
 
@@ -234,7 +240,7 @@ void InternalForces::computeMaxTraction(Polygon &polygon, Reinforcement &reinfor
         Nap += stressReinforcement * areas[i] / 10; // kN
     }
 
-    maxNormalTraction = normalSteel;
+    maxNormalTraction = Nap;
 }
 
 double InternalForces::getNormalSection() const

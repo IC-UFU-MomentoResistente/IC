@@ -179,4 +179,5 @@ void Section::printSectionData()
     cout << "Normal: " << internalForces.getNormalSection() << " kN" << endl;
     cout << "Momento: " << internalForces.getMomentSection() << " kN*m" << endl;
     cout << "--------------------------------------------\n";
+    combinations = std::vector<Combination>();
 }

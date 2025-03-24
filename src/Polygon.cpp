@@ -42,7 +42,8 @@ void Polygon::computeMaxCoordY()
 
 	for (size_t i = 0; i < polygonVertices.size(); i++)
 	{
-		if (polygonVertices[i].getY() > maxY) maxY = polygonVertices[i].getY();
+		if (polygonVertices[i].getY() > maxY)
+			maxY = polygonVertices[i].getY();
 	}
 }
 
@@ -55,7 +56,8 @@ void Polygon::computeMinCoordY()
 
 	for (size_t i = 0; i < polygonVertices.size(); i++)
 	{
-		if (polygonVertices[i].getY() < minY) minY = polygonVertices[i].getY();
+		if (polygonVertices[i].getY() < minY)
+			minY = polygonVertices[i].getY();
 	}
 }
 
@@ -76,8 +78,8 @@ void Polygon::computeArea()
 	{
 		int j = (i + 1) % polygonSize;
 
-		double factor = polygonVertices[i].getX() * polygonVertices[j].getY()
-			- polygonVertices[j].getX() * polygonVertices[i].getY();;
+		double factor = polygonVertices[i].getX() * polygonVertices[j].getY() - polygonVertices[j].getX() * polygonVertices[i].getY();
+		;
 
 		polygonArea += factor;
 	}
@@ -94,8 +96,8 @@ void Polygon::computeStaticMomentX()
 	{
 		int j = (i + 1) % polygonSize;
 
-		double factor = polygonVertices[i].getX() * polygonVertices[j].getY()
-			- polygonVertices[j].getX() * polygonVertices[i].getY();;
+		double factor = polygonVertices[i].getX() * polygonVertices[j].getY() - polygonVertices[j].getX() * polygonVertices[i].getY();
+		;
 
 		staticMomentX += (polygonVertices[i].getY() + polygonVertices[j].getY()) * factor;
 	}
@@ -112,8 +114,8 @@ void Polygon::computeStaticMomentY()
 	{
 		int j = (i + 1) % polygonSize;
 
-		double factor = polygonVertices[i].getX() * polygonVertices[j].getY()
-			- polygonVertices[j].getX() * polygonVertices[i].getY();;
+		double factor = polygonVertices[i].getX() * polygonVertices[j].getY() - polygonVertices[j].getX() * polygonVertices[i].getY();
+		;
 
 		staticMomentY += (polygonVertices[i].getX() + polygonVertices[j].getX()) * factor;
 	}
@@ -129,7 +131,7 @@ void Polygon::computeCentroid()
 
 	geometricCenter.setX(staticMomentY / polygonArea);
 	geometricCenter.setY(staticMomentX / polygonArea);
-	//geometricCenter.setPoint((staticMomentY/polygonArea), (staticMomentX/polygonArea));
+	// geometricCenter.setPoint((staticMomentY/polygonArea), (staticMomentX/polygonArea));
 }
 
 void Polygon::translateToCentroid()
@@ -143,7 +145,7 @@ void Polygon::translateToCentroid()
 
 		polygonVertices[i].setX(coordX);
 		polygonVertices[i].setY(coordY);
-		//polygonVertices[i].setPoint(coordX, coordY);
+		// polygonVertices[i].setPoint(coordX, coordY);
 	}
 }
 
@@ -160,7 +162,7 @@ void Polygon::rotateAroundCentroid(double angle)
 
 		polygonVertices[i].setX(rotateX);
 		polygonVertices[i].setY(rotateY);
-		//polygonVertices[i].setPoint(rotateX, rotateY);
+		// polygonVertices[i].setPoint(rotateX, rotateY);
 	}
 }
 

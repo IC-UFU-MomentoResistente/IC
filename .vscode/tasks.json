@@ -30,6 +30,7 @@
                 "src/AnalyticalIntegration.cpp",
                 "src/InternalForces.cpp",
                 "src/Section.cpp",
+                "src/combination.cpp",
                 "lib/imgui/imgui.cpp",
                 "lib/imgui/imgui_demo.cpp",
                 "lib/imgui/imgui_draw.cpp",
@@ -40,15 +41,16 @@
                 "-l:libraylib.a",
                 "-l:librlImGui.a",
                 "-lwinmm",
-                "-lgdi32", 
+                "-lgdi32",
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": ["$gcc"],
+            "problemMatcher": [
+                "$gcc"
+            ],
             "detail": "Compilação do projeto com raylib, imgui, implot e rlImGui"
         },
-             
     ]
 }

@@ -9,10 +9,11 @@
 #include "PolygonStressRegions.h"
 #include "AnalyticalIntegration.h"
 #include "InternalForces.h"
-
+#include "Combination.h"
 using std::vector;
 using std::cout;
 using std::endl;
+
 
 class Section
 {
@@ -26,6 +27,7 @@ public:
     AnalyticalIntegration analyticalIntegration;
     InternalForces internalForces;
 
+    std::vector<Combination> combinations;
     Section();
 
     void setPolygon(Polygon collectedPolygon);
@@ -40,4 +42,3 @@ public:
     SteelProperties collectedSteel, NormativeIntegrationVersion modelVersion);
     void printSectionData();
 };
-

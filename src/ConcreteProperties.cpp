@@ -55,6 +55,7 @@ double ConcreteProperties::computeStress(double strain)
 	case StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2014:
 
 		if (absStrain <= strainConcretePlastic)
+
 			return 0.85 * fcd * (1 - (pow((1 - (absStrain / strainConcretePlastic)), stressStrainExponent)));
 		else if (absStrain <= strainConcreteRupture)
 			return 0.85 * fcd;

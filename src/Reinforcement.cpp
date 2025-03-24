@@ -35,6 +35,13 @@ void Reinforcement::removeLastReinforcement()
 	areas.pop_back();
 }
 
+void Reinforcement::clearReinforcement()
+{
+	reinforcement.clear();
+	diameters.clear();
+	areas.clear();
+}
+
 void Reinforcement::computeArea()
 {
 	for (size_t i = 0; i < reinforcement.size(); i++)

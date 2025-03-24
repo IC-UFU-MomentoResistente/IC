@@ -36,6 +36,8 @@ public:
     void setStressRegions();
     void setIntegrationVersion(NormativeIntegrationVersion modelVersion);
     void computeInternalForces(double Nsd);
+    void setSectionProperties(Polygon collectedPolygon, Reinforcement collectedReinforcement, ConcreteProperties collectedConcrete,
+    SteelProperties collectedSteel, NormativeIntegrationVersion modelVersion);
     void printSectionData();
 };
 

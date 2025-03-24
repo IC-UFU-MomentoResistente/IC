@@ -73,6 +73,15 @@ void Section::computeInternalForces(double Nsd)
     internalForces.computeMaxTraction(polygon, reinforcement, steel);
 }
 
+void Section::setSectionProperties(Polygon collectedPolygon, Reinforcement collectedReinforcement, ConcreteProperties collectedConcrete, SteelProperties collectedSteel, NormativeIntegrationVersion modelVersion)
+{
+    setPolygon(collectedPolygon);
+    setReinforcement(collectedReinforcement);
+    setConcrete(collectedConcrete);
+    setSteel(collectedSteel);
+    setIntegrationVersion(modelVersion);
+}
+
 void Section::printSectionData()
 {
     cout << "--------------------------------------------\n";

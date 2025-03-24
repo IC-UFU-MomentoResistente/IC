@@ -45,4 +45,5 @@ public:
     double getMomentSteel() const;
     double getMaxNormalCompression() const;
     double getMaxNormalTraction() const;
+    double getNormalSolicitation() const;
 };

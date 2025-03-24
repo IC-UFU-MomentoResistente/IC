@@ -282,3 +282,8 @@ double InternalForces::getMaxNormalTraction() const
 {
     return maxNormalTraction;
 }
+
+double InternalForces::getNormalSolicitation() const
+{
+    return normalSolicitation;
+}

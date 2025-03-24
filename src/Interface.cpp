@@ -183,9 +183,14 @@ void Interface::crossSectionData(Section &section)
 
         if (ImGui::Button("SecaoT"))
         {
-            vector<Point> collectedPoints = {{7.5,0}, {10,30}, {20,40}, {20,50}, {-20, 50}, {-20, 40}, {-10, 30}, {-7.5, 0}};
-            vector<Point> collectedReinforcement = { {5,2.5}, {5,7.5}, {-5, 7.5}, {-5,2.5}, };
-            vector<double> collectedDiameters = { 10, 10, 10, 10 };
+            vector<Point> collectedPoints = {{7.5, 0}, {10, 30}, {20, 40}, {20, 50}, {-20, 50}, {-20, 40}, {-10, 30}, {-7.5, 0}};
+            vector<Point> collectedReinforcement = {
+                {5, 2.5},
+                {5, 7.5},
+                {-5, 7.5},
+                {-5, 2.5},
+            };
+            vector<double> collectedDiameters = {10, 10, 10, 10};
             section.polygon.setVertices(collectedPoints);
             section.reinforcement.setReinforcement(collectedReinforcement, collectedDiameters);
         }
@@ -334,8 +339,8 @@ void Interface::steelInterface(Section &section)
     // inicialização do gráfico com os eixos
     if (ImPlot::BeginPlot("Aço", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
     {
-        ImPlot::SetupAxesLimits((-section.steel.getStrainSteelRupture() * 1.1), (section.steel.getStrainSteelRupture() * 1.1), 
-        (-section.steel.getFyd() * 1.1), (section.steel.getFyd() * 1.1), ImGuiCond_Always);
+        ImPlot::SetupAxesLimits((-section.steel.getStrainSteelRupture() * 1.1), (section.steel.getStrainSteelRupture() * 1.1),
+                                (-section.steel.getFyd() * 1.1), (section.steel.getFyd() * 1.1), ImGuiCond_Always);
         renderVectorPoint(section.steel.getCurveStressStrain(), "TensaoxDef");
     }
 
@@ -427,10 +432,11 @@ void Interface::effortSectionInterface(Section &section)
     {
         ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always); // Ajuste os valores conforme necessário
         ImGui::SetNextWindowPos(ImVec2(200, 35));                     // Posição inicial
-        static double N, Mx, My, eps1, eps2;
+        static double Nsd, Mx, My, eps1, eps2;
+        static bool showPopUp = false;
 
         ImGui::Begin("Entrada de Dados: Esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-        ImGui::InputDouble("N (kN)", &N);
+        ImGui::InputDouble("N (kN)", &Nsd);
         ImGui::InputDouble("Mx (kN.m)", &Mx);
         ImGui::InputDouble("My (kN.m)", &My);
         ImGui::InputDouble("eps1 (mm/m)", &eps1);
@@ -438,15 +444,43 @@ void Interface::effortSectionInterface(Section &section)
 
         if (ImGui::Button("Calcular"))
         {
-            section.setPolygon(section.polygon);
-            section.setReinforcement(section.reinforcement);
-            section.setConcrete(section.concrete);
-            section.setSteel(section.steel);
-            section.setStrainDistribution(eps1, eps2);
-            section.setStressRegions();
-            section.setIntegrationVersion(NormativeIntegrationVersion::ABNT_NBR6118_2014);
-            section.computeInternalForces(N);
-            section.printSectionData();
+            section.setSectionProperties(section.polygon, section.reinforcement, section.concrete, section.steel, NormativeIntegrationVersion::ABNT_NBR6118_2014);
+            section.internalForces.setNormalSolicitation(Nsd);
+            section.internalForces.computeMaxCompression(section.polygon, section.reinforcement, section.steel, section.concrete);
+            section.internalForces.computeMaxTraction(section.polygon, section.reinforcement, section.steel);
+
+            if (section.internalForces.getNormalSolicitation() < section.internalForces.getMaxNormalCompression() ||
+                section.internalForces.getNormalSolicitation() > section.internalForces.getMaxNormalTraction())
+            {
+                showPopUp = true;
+                ImGui::OpenPopup("Erro de Esforço Normal");
+            }
+
+            // section.setStrainDistribution(eps1, eps2);
+            // section.setStressRegions();
+            // section.computeInternalForces(N);
+            // section.printSectionData();
+        }
+
+        if (showPopUp)
+        {
+            if (ImGui::BeginPopupModal("Erro de Esforço Normal", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("O esforço normal solicitante está fora do intervalo resistente da seção.");
+                ImGui::Separator();
+                ImGui::Text("Nsd: %.2f", Nsd);
+                ImGui::Text("Intervalo permitido:");
+                ImGui::BulletText("Máx. Compressão: %.2f kN", section.internalForces.getMaxNormalCompression());
+                ImGui::BulletText("Máx. Tração: %.2f kN", section.internalForces.getMaxNormalTraction());
+
+                if (ImGui::Button("OK", ImVec2(120, 0)))
+                {
+                    showPopUp = false;
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
+            }
         }
 
         ImGui::End();
@@ -468,7 +502,7 @@ void Interface::crossSectionPlotInterface(Section &section)
             renderPolygon(section.polygon.getPolygonVertices(), "Vertices", "Polygon");
             renderPolygon(section.stressRegions.getCompressedRegion().getPolygonVertices(), "vComp", "pComp");
             renderPolygon(section.stressRegions.getParabolicRegion().getPolygonVertices(), "vParab", "pParab");
-            renderPolygon(section.stressRegions.getRectangularRegion().getPolygonVertices(), "vRec", "pRec");      
+            renderPolygon(section.stressRegions.getRectangularRegion().getPolygonVertices(), "vRec", "pRec");
             renderVectorPoint(section.reinforcement.getReinforcement(), "Barras");
         }
     }

@@ -16,6 +16,7 @@ private:
     int maxIterations;
     int iterations;
     double tolerance;
+    double axialForceSum;
     bool converged;
 
     double Mrd;
@@ -38,15 +39,15 @@ InternalForces &internalForces, double strain1, double strain2, double Nsd);
 
     double iterateInRegion1(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
 StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
-InternalForces &internalForces, double strain1, double strain2, double Nsd);
+InternalForces &internalForces, double Nsd);
 
     double iterateInRegion2(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
 StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
-InternalForces &internalForces, double strain1, double strain2, double Nsd);
+InternalForces &internalForces, double Nsd);
 
     double iterateInRegion3(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
 StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
-InternalForces &internalForces, double strain1, double strain2, double Nsd);
+InternalForces &internalForces, double Nsd);
 
     void setStrainDistribution(Polygon &polygon, ConcreteProperties &concrete, StrainDistribution &strainDistribution, 
 double strain1, double strain2);

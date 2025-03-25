@@ -10,6 +10,11 @@
 #include "Reinforcement.h"
 #include "ConcreteProperties.h"
 #include "SteelProperties.h"
+#include "StrainDistribution.h"
+#include "PolygonStressRegions.h"
+#include "AnalyticalIntegration.h"
+#include "InternalForces.h"
+#include "MomentCapacitySolver.h"
 #include "Section.h"
 #include "Interface.h"
 
@@ -20,6 +25,7 @@ using std::vector;
 int main()
 {
 	Section section;
+	MomentCapacitySolver momentSolver = MomentCapacitySolver();
 	Interface interface;
 
 	interface.initInterface();
@@ -31,7 +37,7 @@ int main()
 		rlImGuiBegin();
 
 		interface.showPrimaryMenuBar();
-		interface.showSecondaryMenuBar(section);
+		interface.showSecondaryMenuBar(section, momentSolver);
 		interface.crossSectionPlotInterface(section);
 
 		bool showDemoWindow = true;

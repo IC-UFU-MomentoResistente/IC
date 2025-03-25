@@ -92,7 +92,7 @@ void Interface::autorsWindow()
     ImGui::End();
 }
 
-void Interface::showSecondaryMenuBar(Section &section)
+void Interface::showSecondaryMenuBar(Section &section, MomentCapacitySolver &momentSolver)
 {
     ImGuiIO &io = ImGui::GetIO();
     ImVec2 window_pos = ImVec2(0, ImGui::GetFrameHeight());
@@ -113,7 +113,7 @@ void Interface::showSecondaryMenuBar(Section &section)
         crossSectionData(section);
         interfaceMaterials(section);
         reinforcementInterface(section);
-        effortSectionInterface(section);
+        effortSectionInterface(section, momentSolver);
 
         ImGui::EndMenuBar();
     }
@@ -426,14 +426,15 @@ void Interface::reinforcementInterface(Section &section)
     }
 }
 
-void Interface::effortSectionInterface(Section &section)
+void Interface::effortSectionInterface(Section &section, MomentCapacitySolver &momentSolver)
 {
     if (ImGui::BeginMenu("Esforços"))
     {
         ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always); // Ajuste os valores conforme necessário
         ImGui::SetNextWindowPos(ImVec2(200, 35));                     // Posição inicial
         static double Nsd, Mx, My, eps1, eps2;
-        static bool showPopUp = false;
+        static bool showPopUpErrorAxialForce = false;
+        static bool showPopUpSolver = false;
 
         ImGui::Begin("Entrada de Dados: Esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
         ImGui::InputDouble("N (kN)", &Nsd);
@@ -452,17 +453,22 @@ void Interface::effortSectionInterface(Section &section)
             if (section.internalForces.getNormalSolicitation() < section.internalForces.getMaxNormalCompression() ||
                 section.internalForces.getNormalSolicitation() > section.internalForces.getMaxNormalTraction())
             {
-                showPopUp = true;
+                showPopUpErrorAxialForce = true;
                 ImGui::OpenPopup("Erro de Esforço Normal");
             }
-
+            else 
+            {
+                momentSolver.solveEquilibrium(section, Nsd);
+                showPopUpSolver = true;
+                ImGui::OpenPopup("Calculo do Momento Resistente");
+            }
             // section.setStrainDistribution(eps1, eps2);
             // section.setStressRegions();
             // section.computeInternalForces(N);
             // section.printSectionData();
         }
 
-        if (showPopUp)
+        if (showPopUpErrorAxialForce)
         {
             if (ImGui::BeginPopupModal("Erro de Esforço Normal", NULL, ImGuiWindowFlags_AlwaysAutoResize))
             {
@@ -475,7 +481,26 @@ void Interface::effortSectionInterface(Section &section)
 
                 if (ImGui::Button("OK", ImVec2(120, 0)))
                 {
-                    showPopUp = false;
+                    showPopUpErrorAxialForce = false;
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
+            }
+        }
+
+        if (showPopUpSolver)
+        {
+            if (ImGui::BeginPopupModal("Calculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("Momento Resistente: %.2f", momentSolver.getMomentCapacity());
+                ImGui::Separator();
+                ImGui::Text("eps1: %.2f", momentSolver.getTopFiberStrain());
+                ImGui::Text("eps2: %.2f", momentSolver.getBottomFiberStrain());
+
+                if (ImGui::Button("OK", ImVec2(120, 0)))
+                {
+                    showPopUpSolver = false;
                     ImGui::CloseCurrentPopup();
                 }
 

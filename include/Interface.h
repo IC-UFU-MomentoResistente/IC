@@ -16,6 +16,7 @@
 #include "PolygonStressRegions.h"   
 #include "AnalyticalIntegration.h"
 #include "InternalForces.h"
+#include "MomentCapacitySolver.h"
 #include "Section.h"
 
 using std::cout;
@@ -30,13 +31,13 @@ public:
     void interfaceLoop();
     void autorsWindow();
     void showPrimaryMenuBar();
-    void showSecondaryMenuBar(Section &section);
+    void showSecondaryMenuBar(Section &section, MomentCapacitySolver &momentSolver);
     void crossSectionData(Section &section);
     void interfaceMaterials(Section &section);
     void concreteInterface(Section &section);
     void steelInterface(Section &section);
     void reinforcementInterface(Section &section);
-    void effortSectionInterface(Section &section);
+    void effortSectionInterface(Section &section, MomentCapacitySolver &momentSolver);
     void crossSectionPlotInterface(Section &section);
     void renderPolygon(const vector<Point>& polygonVertices, string nameVertices, string namePolygon);
 	void renderVectorPoint(const vector<Point>& vector, string nameReinforcement);

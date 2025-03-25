@@ -10,6 +10,8 @@
 #include "AnalyticalIntegration.h"
 #include "InternalForces.h"
 #include "Combination.h"
+#include "MomentCapacitySolver.h"
+
 using std::vector;
 using std::cout;
 using std::endl;
@@ -26,6 +28,7 @@ public:
     PolygonStressRegions stressRegions;
     AnalyticalIntegration analyticalIntegration;
     InternalForces internalForces;
+    MomentCapacitySolver momentSolver;
 
     std::vector<Combination> combinations;
     Section();
@@ -40,5 +43,6 @@ public:
     void computeInternalForces(double Nsd);
     void setSectionProperties(Polygon collectedPolygon, Reinforcement collectedReinforcement, ConcreteProperties collectedConcrete,
     SteelProperties collectedSteel, NormativeIntegrationVersion modelVersion);
+    void computeSectionEquilibriumSolver(double Nsd);
     void printSectionData();
 };

@@ -16,6 +16,7 @@
 #include "PolygonStressRegions.h"   
 #include "AnalyticalIntegration.h"
 #include "InternalForces.h"
+#include "MomentCapacitySolver.h"
 #include "Section.h"
 
 using std::cout;

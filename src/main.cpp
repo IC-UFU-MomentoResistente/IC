@@ -25,7 +25,6 @@ using std::vector;
 int main()
 {
 	Section section;
-	MomentCapacitySolver momentSolver = MomentCapacitySolver();
 	Interface interface;
 
 	interface.initInterface();
@@ -37,7 +36,7 @@ int main()
 		rlImGuiBegin();
 
 		interface.showPrimaryMenuBar();
-		interface.showSecondaryMenuBar(section, momentSolver);
+		interface.showSecondaryMenuBar(section);
 		interface.crossSectionPlotInterface(section);
 
 		bool showDemoWindow = true;

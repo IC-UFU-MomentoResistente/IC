@@ -92,7 +92,7 @@ void Interface::autorsWindow()
     ImGui::End();
 }
 
-void Interface::showSecondaryMenuBar(Section &section, MomentCapacitySolver &momentSolver)
+void Interface::showSecondaryMenuBar(Section &section)
 {
     ImGuiIO &io = ImGui::GetIO();
     ImVec2 window_pos = ImVec2(0, ImGui::GetFrameHeight());
@@ -113,7 +113,7 @@ void Interface::showSecondaryMenuBar(Section &section, MomentCapacitySolver &mom
         crossSectionData(section);
         interfaceMaterials(section);
         reinforcementInterface(section);
-        effortSectionInterface(section, momentSolver);
+        effortSectionInterface(section);
 
         ImGui::EndMenuBar();
     }
@@ -426,7 +426,7 @@ void Interface::reinforcementInterface(Section &section)
     }
 }
 
-void Interface::effortSectionInterface(Section &section, MomentCapacitySolver &momentSolver)
+void Interface::effortSectionInterface(Section &section)
 {
     if (ImGui::BeginMenu("Esforços"))
     {
@@ -458,7 +458,7 @@ void Interface::effortSectionInterface(Section &section, MomentCapacitySolver &m
             }
             else 
             {
-                momentSolver.solveEquilibrium(section, Nsd);
+                section.computeSectionEquilibriumSolver(Nsd);
                 showPopUpSolver = true;
                 ImGui::OpenPopup("Calculo do Momento Resistente");
             }
@@ -493,10 +493,10 @@ void Interface::effortSectionInterface(Section &section, MomentCapacitySolver &m
         {
             if (ImGui::BeginPopupModal("Calculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
             {
-                ImGui::Text("Momento Resistente: %.2f", momentSolver.getMomentCapacity());
+                ImGui::Text("Momento Resistente: %.2f", section.momentSolver.getMomentCapacity());
                 ImGui::Separator();
-                ImGui::Text("eps1: %.2f", momentSolver.getTopFiberStrain());
-                ImGui::Text("eps2: %.2f", momentSolver.getBottomFiberStrain());
+                ImGui::Text("eps1: %.2f", section.momentSolver.getTopFiberStrain());
+                ImGui::Text("eps2: %.2f", section.momentSolver.getBottomFiberStrain());
 
                 if (ImGui::Button("OK", ImVec2(120, 0)))
                 {

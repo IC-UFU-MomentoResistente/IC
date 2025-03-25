@@ -1,6 +1,14 @@
 #pragma once
 
-#include "Section.h"
+#include "Point.h"
+#include "Polygon.h"
+#include "Reinforcement.h"
+#include "ConcreteProperties.h"
+#include "SteelProperties.h"
+#include "StrainDistribution.h"
+#include "PolygonStressRegions.h"
+#include "AnalyticalIntegration.h"
+#include "InternalForces.h"
 
 class MomentCapacitySolver
 {
@@ -16,12 +24,38 @@ private:
 public:
     MomentCapacitySolver();
 
-    void solveEquilibrium(Section &section, double Nsd);
-    double computeAxialForceResultant(Section &section, double eps1, double eps2, double Nsd);
-    double computeMomentResultant(Section &section, double eps1, double eps2, double Nsd);
-    double iterateInRegion1(Section &section, double Nsd);
-    double iterateInRegion2(Section &section, double Nsd);
-    double iterateInRegion3(Section &section, double Nsd);
+    void solveEquilibrium(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
+StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
+InternalForces &internalForces, double Nsd);
+
+    double computeAxialForceResultant(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
+StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
+InternalForces &internalForces, double strain1, double strain2, double Nsd);
+
+    double computeMomentResultant(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
+StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
+InternalForces &internalForces, double strain1, double strain2, double Nsd);
+
+    double iterateInRegion1(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
+StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
+InternalForces &internalForces, double strain1, double strain2, double Nsd);
+
+    double iterateInRegion2(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
+StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
+InternalForces &internalForces, double strain1, double strain2, double Nsd);
+
+    double iterateInRegion3(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
+StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
+InternalForces &internalForces, double strain1, double strain2, double Nsd);
+
+    void setStrainDistribution(Polygon &polygon, ConcreteProperties &concrete, StrainDistribution &strainDistribution, 
+double strain1, double strain2);
+
+    void setStressRegions(Polygon &polygon, StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions);
+
+    void setInternalForces(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
+StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
+InternalForces &internalForces, double Nsd);
 
     int getIterations() const;
     bool isConverged() const;

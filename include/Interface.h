@@ -31,13 +31,13 @@ public:
     void interfaceLoop();
     void autorsWindow();
     void showPrimaryMenuBar();
-    void showSecondaryMenuBar(Section &section, MomentCapacitySolver &momentSolver);
+    void showSecondaryMenuBar(Section &section);
     void crossSectionData(Section &section);
     void interfaceMaterials(Section &section);
     void concreteInterface(Section &section);
     void steelInterface(Section &section);
     void reinforcementInterface(Section &section);
-    void effortSectionInterface(Section &section, MomentCapacitySolver &momentSolver);
+    void effortSectionInterface(Section &section);
     void crossSectionPlotInterface(Section &section);
     void renderPolygon(const vector<Point>& polygonVertices, string nameVertices, string namePolygon);
 	void renderVectorPoint(const vector<Point>& vector, string nameReinforcement);

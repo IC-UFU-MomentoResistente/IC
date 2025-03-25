@@ -272,7 +272,7 @@ void Interface::concreteInterface(Section &section)
 
     if (constitutiveModel == 0)
     {
-        StressStrainModelType model61182014 = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2014;
+        StressStrainConcreteModelType model61182014 = StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2014;
 
         ImGui::Text("Parâmetros do Concreto");
         ImGui::PushItemWidth(70);
@@ -338,7 +338,7 @@ void Interface::concreteInterface(Section &section)
 
     if (constitutiveModel == 1)
     {
-        StressStrainModelType model61182023 = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2023;
+        StressStrainConcreteModelType model61182023 = StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2023;
 
         ImGui::Text("Parâmetros do Concreto");
         ImGui::PushItemWidth(70);

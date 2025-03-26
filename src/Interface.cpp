@@ -748,6 +748,8 @@ void Interface::effortSectionInterface(Section &section)
         ImGui::BeginGroup();
         ImGui::InputDouble("N (kN)", &Nsd, 0.0f, 0.0f, "%.3f");
         ImGui::InputDouble("Mx (kN.m)", &Mx, 0.0f, 0.0f, "%.3f");
+        ImGui::InputDouble("eps1: (mm/m)", &eps1, 0.0f, 0.0f, "%.3f");
+        ImGui::InputDouble("eps2: (mm/m)", &eps2, 0.0f, 0.0f, "%.3f");
         // ImGui::InputDouble("My (kN.m)", &My, 0.0f, 0.0f, "%.3f");
         ImGui::EndGroup();
 

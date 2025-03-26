@@ -2,10 +2,10 @@
 
 MomentCapacitySolver::MomentCapacitySolver()
 {
-    maxIterations = 200;
+    maxIterations = 0;
     iterations = 0;
-    tolerance = 0.001;
-    axialForceSum = tolerance + 1;
+    tolerance = 0;
+    axialForceSum = 0;
     converged = false;
     Mrd = 0;
     strainResult = StrainDistribution();
@@ -54,13 +54,13 @@ void MomentCapacitySolver::solveEquilibrium(Polygon &polygon, Reinforcement &rei
     }
     else if (axialForceRegion12Sum <= 0)
     {
-        std::cout << "Regiao 3" << std::endl;
+        std::cout << "Regiao 2" << std::endl;
         Mrd = iterateInRegion2(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
                                analyticalIntegration, internalForces, Nsd);
     }
     else
     {
-        std::cout << "Regiao 3" << std::endl;
+        std::cout << "Regiao 1" << std::endl;
         Mrd = iterateInRegion1(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
                                analyticalIntegration, internalForces, Nsd);
     }
@@ -70,13 +70,13 @@ double MomentCapacitySolver::computeAxialForceResultant(Polygon &polygon, Reinfo
                                                         StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
                                                         InternalForces &internalForces, double strain1, double strain2, double Nsd)
 {
-    if (strain1 == strain2 == concrete.getStrainConcretePlastic())
+    if (strain1 == strain2 && strain1 == -concrete.getStrainConcretePlastic())
     {
         internalForces.setNormalSolicitation(Nsd);
         internalForces.computeMaxCompression(polygon, reinforcement, steel, concrete);
-        return internalForces.getMaxNormalCompression();
+        return internalForces.getMaxNormalCompression() - Nsd;
     }
-    else if (strain1 == strain2 == steel.getStrainSteelRupture())
+    else if (strain1 == strain2 && strain1 == steel.getStrainSteelRupture())
     {
         internalForces.setNormalSolicitation(Nsd);
         internalForces.computeMaxTraction(polygon, reinforcement, steel);
@@ -129,6 +129,11 @@ double MomentCapacitySolver::iterateInRegion1(Polygon &polygon, Reinforcement &r
     double epsBck = 0;
     double fC = 0;
 
+    iterations = 0;
+    maxIterations = 100;
+    tolerance = 0.001;
+    axialForceSum = tolerance + 1;
+
     if (fA * fB < 0)
     {
         while (iterations < maxIterations && abs(axialForceSum) > tolerance)
@@ -143,18 +148,18 @@ double MomentCapacitySolver::iterateInRegion1(Polygon &polygon, Reinforcement &r
 
             if (fA * fC > 0)
             {
-                double ak = ck;
-                double epsAak = ypRegion1 + ak * (-xpRegion1);
-                double epsBak = ypRegion1 + ak * (h - xpRegion1);
-                double fA = computeAxialForceResultant(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
+                ak = ck;
+                epsAak = ypRegion1 + ak * (-xpRegion1);
+                epsBak = ypRegion1 + ak * (h - xpRegion1);
+                fA = computeAxialForceResultant(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
                                                        analyticalIntegration, internalForces, epsAak, epsBak, Nsd);
             }
             else
             {
-                double bk = ck;
-                double epsAbk = ypRegion1 + bk * (-xpRegion1);
-                double epsBbk = ypRegion1 + bk * (h - xpRegion1);
-                double fB = computeAxialForceResultant(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
+                bk = ck;
+                epsAbk = ypRegion1 + bk * (-xpRegion1);
+                epsBbk = ypRegion1 + bk * (h - xpRegion1);
+                fB = computeAxialForceResultant(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
                                                        analyticalIntegration, internalForces, epsAbk, epsBbk, Nsd);
             }
 
@@ -163,7 +168,7 @@ double MomentCapacitySolver::iterateInRegion1(Polygon &polygon, Reinforcement &r
 
         converged = true;
 
-        if (iterations = maxIterations)
+        if (iterations ==    maxIterations)
             std::cout << "Equacao de equilibrio nao convergiu dentro do limite de iteracoes";
 
         epsAck = ypRegion1 + ck * (-xpRegion1);
@@ -199,6 +204,11 @@ double MomentCapacitySolver::iterateInRegion2(Polygon &polygon, Reinforcement &r
     double ck = 0;
     double fC = 0;
 
+    iterations = 0;
+    maxIterations = 100;
+    tolerance = 0.001;
+    axialForceSum = tolerance + 1;
+
     if (fA * fB < 0)
     {
         while (iterations < maxIterations && abs(axialForceSum) > tolerance)
@@ -228,7 +238,7 @@ double MomentCapacitySolver::iterateInRegion2(Polygon &polygon, Reinforcement &r
 
         converged = true;
 
-        if (iterations = maxIterations)
+        if (iterations == maxIterations)
             std::cout << "Equacao de equilibrio nao convergiu dentro do limite de iteracoes";
 
         strainResult.setStrain(epsA, ck);
@@ -276,6 +286,11 @@ double MomentCapacitySolver::iterateInRegion3(Polygon &polygon, Reinforcement &r
     double epsBck = 0;
     double fC = 0;
 
+    iterations = 0;
+    maxIterations = 100;
+    tolerance = 0.001;
+    axialForceSum = tolerance + 1;
+
     if (fA * fB < 0)
     {
         while (iterations < maxIterations && abs(axialForceSum) > tolerance)
@@ -284,7 +299,7 @@ double MomentCapacitySolver::iterateInRegion3(Polygon &polygon, Reinforcement &r
 
             ck = epsAmax - ((fB * (epsAmax - epsAmin)) / (fB - fA));
             epsAck = ck;
-            epsBck = ((epsu = epsAck) * (h / d)) + epsAck;
+            epsBck = ((epsu - epsAck) * (h / d)) + epsAck;
             fC = computeAxialForceResultant(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
                                             analyticalIntegration, internalForces, epsAck, epsBck, Nsd);
 
@@ -308,7 +323,7 @@ double MomentCapacitySolver::iterateInRegion3(Polygon &polygon, Reinforcement &r
 
         converged = true;
 
-        if (iterations = maxIterations)
+        if (iterations == maxIterations)
             std::cout << "Equacao de equilibrio nao convergiu dentro do limite de iteracoes";
 
         strainResult.setStrain(ck, (((epsu - ck) * (h / d)) + ck));

@@ -49,20 +49,23 @@ void MomentCapacitySolver::solveEquilibrium(Polygon &polygon, Reinforcement &rei
     if (axialForceRegion23Sum <= 0)
     {
         std::cout << "Regiao 3" << std::endl;
-        Mrd = iterateInRegion3(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
-                               analyticalIntegration, internalForces, Nsd);
+        // Mrd = iterateInRegion3(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
+           //                    analyticalIntegration, internalForces, Nsd);
+        Mrd = testRegion3(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions, analyticalIntegration, internalForces, Nsd);
     }
     else if (axialForceRegion12Sum <= 0)
     {
         std::cout << "Regiao 2" << std::endl;
-        Mrd = iterateInRegion2(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
-                               analyticalIntegration, internalForces, Nsd);
+        // Mrd = iterateInRegion2(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
+        //                        analyticalIntegration, internalForces, Nsd);
+        Mrd = testRegion2(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions, analyticalIntegration, internalForces, Nsd);
     }
     else
     {
         std::cout << "Regiao 1" << std::endl;
-        Mrd = iterateInRegion1(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
-                               analyticalIntegration, internalForces, Nsd);
+        // Mrd = iterateInRegion1(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
+        //                        analyticalIntegration, internalForces, Nsd);
+        Mrd = testRegion1(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions, analyticalIntegration, internalForces, Nsd);
     }
 }
 
@@ -142,7 +145,7 @@ double MomentCapacitySolver::iterateInRegion1(Polygon &polygon, Reinforcement &r
 
             ck = bk - ((fB * (bk - ak)) / (fB - fA));
             epsAck = ypRegion1 + ck * (-xpRegion1);
-            epsBck = ypRegion1 + ck * (h - ypRegion1);
+            epsBck = ypRegion1 + ck * (h - xpRegion1);
             fC = computeAxialForceResultant(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
                                             analyticalIntegration, internalForces, epsAck, epsBck, Nsd);
 
@@ -168,7 +171,7 @@ double MomentCapacitySolver::iterateInRegion1(Polygon &polygon, Reinforcement &r
 
         converged = true;
 
-        if (iterations ==    maxIterations)
+        if (iterations == maxIterations)
             std::cout << "Equacao de equilibrio nao convergiu dentro do limite de iteracoes";
 
         epsAck = ypRegion1 + ck * (-xpRegion1);
@@ -365,6 +368,234 @@ void MomentCapacitySolver::setInternalForces(Polygon &polygon, Reinforcement &re
     internalForces.computeMomentSteel(polygon, reinforcement, steel, strainDistribution);
     internalForces.computeMaxCompression(polygon, reinforcement, steel, concrete);
     internalForces.computeMaxTraction(polygon, reinforcement, steel);
+}
+
+double MomentCapacitySolver::findRootBrent(std::function<double(double)> func, double a, double b, double tol, int maxIter)
+{
+    double fa = func(a);
+    double fb = func(b);
+
+    if (fa * fb >= 0.0)
+    {
+        std::cerr << "Erro: Brent requer fa * fb < 0 (raiz não isolada no intervalo)" << std::endl;
+        return a;
+    }
+
+    double c = a;
+    double fc = fa;
+    double s = b;
+    double fs = fb;
+    double d = b - a;
+    bool mflag = true;
+
+    for (int iter = 0; iter < maxIter; ++iter)
+    {
+        if (fa != fc && fb != fc)
+        {
+            // Interpolação inversa quadrática
+            s = a * fb * fc / ((fa - fb) * (fa - fc))
+              + b * fa * fc / ((fb - fa) * (fb - fc))
+              + c * fa * fb / ((fc - fa) * (fc - fb));
+        }
+        else
+        {
+            // Método da secante
+            s = b - fb * (b - a) / (fb - fa);
+        }
+
+        double cond1 = (s < (3 * a + b) / 4 || s > b);
+        double cond2 = (mflag && std::abs(s - b) >= std::abs(b - c) / 2);
+        double cond3 = (!mflag && std::abs(s - b) >= std::abs(c - d) / 2);
+        double cond4 = (mflag && std::abs(b - c) < tol);
+        double cond5 = (!mflag && std::abs(c - d) < tol);
+
+        if (cond1 || cond2 || cond3 || cond4 || cond5) 
+        {
+            // Bisseção
+            s = (a + b) / 2;
+            mflag = true;
+        } 
+        else 
+        {
+            mflag = false;
+        }
+
+        fs = func(s);
+        d = c;
+        c = b;
+        fc = fb;
+
+        if (fa * fs < 0) 
+        {
+            b = s;
+            fb = fs;
+        } 
+        else 
+        {
+            a = s;
+            fa = fs;
+        }
+
+        if (std::abs(fa) < std::abs(fb)) 
+        {
+            std::swap(a, b);
+            std::swap(fa, fb);
+        }
+
+        if (std::abs(b - a) < tol || std::abs(fs) < tol) 
+        {
+            iterations = iter;
+            return s;
+        }
+
+        iterations = iter;
+    }
+
+    std::cerr << "Brent não convergiu em " << maxIter << " iterações." << std::endl;
+    return s;
+}
+
+double MomentCapacitySolver::testRegion1(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration, InternalForces &internalForces, double Nsd)
+{
+    double epcu = -concrete.getStrainConcreteRupture();
+    double epc2 = -concrete.getStrainConcretePlastic();
+    double h = polygon.getPolygonHeight();
+
+    double x_plastic = h * ((epcu - epc2) / epcu);
+    double y_plastic = epc2;
+
+    auto func = [&](double k) {
+        double epsTop = y_plastic + k * (-x_plastic);
+        double epsBottom = y_plastic + k * (h - x_plastic);
+        return computeAxialForceResultant(
+            polygon, reinforcement, concrete, steel,
+            strainDistribution, stressRegions,
+            analyticalIntegration, internalForces,
+            epsTop, epsBottom, Nsd
+        );
+    };
+
+    double k_min = (-epcu) / h;
+    double k_max = 0;
+
+    if (func(k_min) * func(k_max) >= 0.0) {
+        converged = false;
+        std::cout << "Erro: Brent - raiz não isolada no intervalo (Região 1)" << std::endl;
+        return 0;
+    }
+
+    iterations = 0;
+    maxIterations = 100;
+    tolerance = 1e-5;
+
+    double k_root = findRootBrent(func, k_min, k_max, tolerance, maxIterations);
+    double epsTop = y_plastic + k_root * (-x_plastic);
+    double epsBottom = y_plastic + k_root * (h - x_plastic);
+
+    strainResult.setStrain(epsTop, epsBottom);
+    converged = true;
+
+    return computeMomentResultant(
+        polygon, reinforcement, concrete, steel,
+        strainDistribution, stressRegions,
+        analyticalIntegration, internalForces,
+        epsTop, epsBottom, Nsd
+    );
+}
+
+double MomentCapacitySolver::testRegion2(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration, InternalForces &internalForces, double Nsd)
+{
+    double epsA = -concrete.getStrainConcreteRupture(); // fixo
+    double epsBmin = 0;
+    double epsBmax = steel.getStrainSteelRupture();
+
+    // Lambda com captura de contexto
+    auto func = [&](double epsB) 
+    {
+        return computeAxialForceResultant(
+            polygon, reinforcement, concrete, steel,
+            strainDistribution, stressRegions,
+            analyticalIntegration, internalForces,
+            epsA, epsB, Nsd
+        );
+    };
+
+    // Verifica se há mudança de sinal (raiz isolada)
+    if (func(epsBmin) * func(epsBmax) >= 0.0) 
+    {
+        converged = false;
+        std::cout << "Erro: função não muda de sinal no intervalo inicial (Region 2)" << std::endl;
+        return 0;
+    }
+
+    iterations = 0;
+    maxIterations = 100;
+    tolerance = 1e-4;
+
+    double rootEpsB = findRootBrent(func, epsBmin, epsBmax, tolerance, maxIterations);
+    converged = true;
+
+    strainResult.setStrain(epsA, rootEpsB);
+    return computeMomentResultant(
+        polygon, reinforcement, concrete, steel,
+        strainDistribution, stressRegions,
+        analyticalIntegration, internalForces,
+        epsA, rootEpsB, Nsd
+    );
+}
+
+double MomentCapacitySolver::testRegion3(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration, InternalForces &internalForces, double Nsd)
+{
+    const auto &vectorReinf = reinforcement.getReinforcement();
+    double yLowestRebar = 0;
+    for (const auto &bar : vectorReinf) 
+    {
+        if (bar.getY() <= yLowestRebar)
+            yLowestRebar = bar.getY();
+    }
+
+    double d = polygon.getMaxY() - yLowestRebar;
+    double h = polygon.getPolygonHeight();
+    double epcu = -concrete.getStrainConcreteRupture();
+    double epsu = steel.getStrainSteelRupture();
+
+    auto func = [&](double epsTop) 
+    {
+        double epsBottom = ((epsu - epsTop) * (h / d)) + epsTop;
+        return computeAxialForceResultant(
+            polygon, reinforcement, concrete, steel,
+            strainDistribution, stressRegions,
+            analyticalIntegration, internalForces,
+            epsTop, epsBottom, Nsd
+        );
+    };
+
+    double epsTopMin = epcu;
+    double epsTopMax = epsu;
+
+    if (func(epsTopMin) * func(epsTopMax) >= 0.0) 
+    {
+        converged = false;
+        std::cout << "Erro: Brent - raiz não isolada no intervalo (Região 3)" << std::endl;
+        return 0;
+    }
+
+    iterations = 0;
+    maxIterations = 100;
+    tolerance = 1e-4;
+
+    double rootEpsTop = findRootBrent(func, epsTopMin, epsTopMax, tolerance, maxIterations);
+    double epsBottom = ((epsu - rootEpsTop) * (h / d)) + rootEpsTop;
+
+    strainResult.setStrain(rootEpsTop, epsBottom);
+    converged = true;
+
+    return computeMomentResultant(
+        polygon, reinforcement, concrete, steel,
+        strainDistribution, stressRegions,
+        analyticalIntegration, internalForces,
+        rootEpsTop, epsBottom, Nsd
+    );
 }
 
 int MomentCapacitySolver::getIterations() const

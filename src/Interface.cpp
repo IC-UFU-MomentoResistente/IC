@@ -738,7 +738,7 @@ void Interface::effortSectionInterface(Section &section)
     if (ImGui::BeginMenu("Esforços"))
     {
         ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always); // Ajuste os valores conforme necessário
-        ImGui::SetNextWindowPos(ImVec2(200, 35));                     // Posição inicial
+        ImGui::SetNextWindowPos(ImVec2(265, 47));                     // Posição inicial
         static double Nsd, Mx, My, eps1, eps2;
         static bool showPopUpErrorAxialForce = false;
         static bool showPopUpSolver = false;

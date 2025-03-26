@@ -275,7 +275,6 @@ void Interface::concreteInterface(Section &section)
 
     if (constitutiveModel == 0)
     {
-
         StressStrainConcreteModelType model61182014 = StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2014;
 
         ImGui::Text("Parâmetros do Concreto");
@@ -744,14 +743,17 @@ void Interface::effortSectionInterface(Section &section)
     {
         ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always); // Ajuste os valores conforme necessário
         ImGui::SetNextWindowPos(ImVec2(265, 47));                     // Posição inicial
-        static double Nsd, Mx, My;
-        static bool showPopUp = false;
+        static double Nsd, Mx, My, eps1, eps2;
+        static bool showPopUpErrorAxialForce = false;
+        static bool showPopUpSolver = false;
 
         ImGui::Begin("Entrada de Dados: Esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
         ImGui::PushItemWidth(50);
         ImGui::BeginGroup();
         ImGui::InputDouble("N (kN)", &Nsd, 0.0f, 0.0f, "%.3f");
         ImGui::InputDouble("Mx (kN.m)", &Mx, 0.0f, 0.0f, "%.3f");
+        ImGui::InputDouble("eps1: (mm/m)", &eps1, 0.0f, 0.0f, "%.3f");
+        ImGui::InputDouble("eps2: (mm/m)", &eps2, 0.0f, 0.0f, "%.3f");
         // ImGui::InputDouble("My (kN.m)", &My, 0.0f, 0.0f, "%.3f");
         ImGui::EndGroup();
 
@@ -776,6 +778,15 @@ void Interface::effortSectionInterface(Section &section)
         }
 
         ImGui::SameLine();
+        if (ImGui::Button("Comparar"))
+        {
+            section.setSectionProperties(section.polygon, section.reinforcement, section.concrete, section.steel, NormativeIntegrationVersion::ABNT_NBR6118_2014);
+            section.setStrainDistribution(eps1, eps2);
+            section.setStressRegions();
+            section.computeInternalForces(Nsd);
+            section.printSectionData();
+        }
+
         if (ImGui::Button("Calcular"))
         {
             section.setSectionProperties(section.polygon, section.reinforcement, section.concrete, section.steel, NormativeIntegrationVersion::ABNT_NBR6118_2014);
@@ -786,17 +797,18 @@ void Interface::effortSectionInterface(Section &section)
             if (section.internalForces.getNormalSolicitation() < section.internalForces.getMaxNormalCompression() ||
                 section.internalForces.getNormalSolicitation() > section.internalForces.getMaxNormalTraction())
             {
-                showPopUp = true;
+                showPopUpErrorAxialForce = true;
                 ImGui::OpenPopup("Erro de Esforço Normal");
             }
-
-            // section.setStrainDistribution(eps1, eps2);
-            // section.setStressRegions();
-            // section.computeInternalForces(N);
-            // section.printSectionData();
+            else
+            {
+                section.computeSectionEquilibriumSolver(Nsd);
+                showPopUpSolver = true;
+                ImGui::OpenPopup("Calculo do Momento Resistente");
+            }
         }
 
-        if (showPopUp)
+        if (showPopUpErrorAxialForce)
         {
             if (ImGui::BeginPopupModal("Erro de Esforço Normal", NULL, ImGuiWindowFlags_AlwaysAutoResize))
             {
@@ -809,7 +821,28 @@ void Interface::effortSectionInterface(Section &section)
 
                 if (ImGui::Button("OK", ImVec2(120, 0)))
                 {
-                    showPopUp = false;
+                    showPopUpErrorAxialForce = false;
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
+            }
+        }
+
+        if (showPopUpSolver)
+        {
+            if (ImGui::BeginPopupModal("Calculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("Momento Resistente: %.4f", section.momentSolver.getMomentCapacity());
+                ImGui::Separator();
+                ImGui::Text("eps1: %.4f", section.momentSolver.getTopFiberStrain());
+                ImGui::Text("eps2: %.4f", section.momentSolver.getBottomFiberStrain());
+                ImGui::Separator();
+                ImGui::Text("iteracoes: %d", section.momentSolver.getIterations());
+
+                if (ImGui::Button("OK", ImVec2(120, 0)))
+                {
+                    showPopUpSolver = false;
                     ImGui::CloseCurrentPopup();
                 }
 

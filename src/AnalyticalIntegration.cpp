@@ -18,8 +18,6 @@ double AnalyticalIntegration::computeNormalConcreteRectangular(double multFcd, d
         {
             double nctr = multFcd * fcd * ((coef1 * coordY) + (coef2 * coordY * coordY / 2));
 
-            std::cout << "\nnctr: " << nctr*1000 << " kN" << std::endl;
-
             return nctr * 1000; // kN
             break;
         }
@@ -55,8 +53,6 @@ double AnalyticalIntegration::computeNormalConcreteParabolic(double coordLN, dou
                         (-((xEpc2 * eexp * (coef1 * n2 + coef2 * (g + xEpc2 + nConc * coordY + coordY))) / (n1 * n2)) -
                         coef1 * coordY - (coef2 * coordY * coordY) / 2);
 
-            std::cout << "\nnctp: " << nctp*1000 << " kN" << std::endl;
-
             return nctp * 1000; // kN
             break;
         }
@@ -80,8 +76,6 @@ double AnalyticalIntegration::computeMomentConcreteRectangular(double multFcd, d
         case NormativeIntegrationVersion::ABNT_NBR6118_2014:
         {
             double mctr = multFcd * fcd * ((coef1 * coordY * coordY / 2) + (coef2 * coordY * coordY * coordY / 3));
-
-            std::cout << "\nmctr: " << mctr*1000 << " kN*m" << std::endl;
 
             return mctr * 1000; // kN.m
             break;
@@ -113,8 +107,6 @@ double AnalyticalIntegration::computeMomentConcreteParabolic(double coordLN, dou
             double eexp = pow(((g + xEpc2 - coordY) / xEpc2), n1);
 
             double mctp = (multFcd * fcd * (3 * coef1 * ((n1) * (n2) * (n3)*coordY * coordY + 2 * xEpc2 * eexp * (((g) + xEpc2) * (n3) + (3 + 4 * nConc + nConc * nConc) * coordY)) + 2 * coef2 * ((n1) * (n2) * (n3)*coordY * coordY * coordY + 3 * xEpc2 * eexp * (2 * (g) * (g) + 2 * xEpc2 * xEpc2 + 2 * xEpc2 * (n1)*coordY + (2 + 3 * nConc + nConc * nConc) * coordY * coordY + 2 * (g) * (2 * xEpc2 + (n1)*coordY))))) / (6 * (n1) * (n2) * (n3));
-            
-            std::cout << "\nmctp: " << mctp*1000 << " kN*m" << std::endl;
 
             return mctp * 1000;
 

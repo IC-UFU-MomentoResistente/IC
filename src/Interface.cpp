@@ -45,6 +45,7 @@ void Interface::initInterface()
 
 void Interface::interfaceLoop()
 {
+  
 }
 
 void Interface::showPrimaryMenuBar()
@@ -70,10 +71,12 @@ void Interface::showPrimaryMenuBar()
             autorsWindow();
             ImGui::EndMenu();
         }
-
+    
         ImGui::EndMainMenuBar();
     }
+
 }
+
 
 void Interface::autorsWindow()
 {
@@ -272,7 +275,8 @@ void Interface::concreteInterface(Section &section)
 
     if (constitutiveModel == 0)
     {
-        StressStrainModelType model61182014 = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2014;
+
+        StressStrainConcreteModelType model61182014 = StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2014;
 
         ImGui::Text("Parâmetros do Concreto");
         ImGui::PushItemWidth(70);
@@ -338,7 +342,7 @@ void Interface::concreteInterface(Section &section)
 
     if (constitutiveModel == 1)
     {
-        StressStrainModelType model61182023 = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2023;
+        StressStrainConcreteModelType model61182023 = StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2023;
 
         ImGui::Text("Parâmetros do Concreto");
         ImGui::PushItemWidth(70);
@@ -472,6 +476,7 @@ void Interface::reinforcementInterface(Section &section)
 
         ImGui::Begin("Entrada de dados: Armadura Passiva", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
         ImGui::RadioButton("Uma barra", &barMode, 0);
+        ImGui::SameLine();
         ImGui::RadioButton("Linha de barras", &barMode, 1);
 
         if (barMode == 0)
@@ -514,8 +519,8 @@ void Interface::reinforcementInterface(Section &section)
 
             ImGui::InputDouble("xi (cm)", &coordXiBar, 0.0f, 0.0f, "%.3f");
             ImGui::SameLine();
-            ImGui::InputDouble("yi (cm)", &coordYiBar, 0.0f, 0.0f, "%.3f");
             ImGui::InputDouble("xf (cm)", &coordXfBar, 0.0f, 0.0f, "%.3f");
+            ImGui::InputDouble("yi (cm)", &coordYiBar, 0.0f, 0.0f, "%.3f");
             ImGui::SameLine();
             ImGui::InputDouble("yf (cm)", &coordYfBar, 0.0f, 0.0f, "%.3f");
             ImGui::EndGroup();
@@ -740,6 +745,7 @@ void Interface::effortSectionInterface(Section &section)
         ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always); // Ajuste os valores conforme necessário
         ImGui::SetNextWindowPos(ImVec2(265, 47));                     // Posição inicial
         static double Nsd, Mx, My;
+        static bool showPopUp = false;
 
         ImGui::Begin("Entrada de Dados: Esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
         ImGui::PushItemWidth(50);
@@ -1042,4 +1048,3 @@ void Interface::RightTablePos(const char *nome1, const char *nome2, float posY, 
 
     ImGui::End();
 }
-

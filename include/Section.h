@@ -26,8 +26,8 @@ public:
     PolygonStressRegions stressRegions;
     AnalyticalIntegration analyticalIntegration;
     InternalForces internalForces;
-
     std::vector<Combination> combinations;
+
     Section();
 
     void setPolygon(Polygon collectedPolygon);

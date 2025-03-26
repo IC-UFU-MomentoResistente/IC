@@ -10,6 +10,9 @@
 #include "AnalyticalIntegration.h"
 #include "InternalForces.h"
 
+#include <iostream>
+#include <functional>
+
 class MomentCapacitySolver
 {
 private:
@@ -57,6 +60,20 @@ double strain1, double strain2);
     void setInternalForces(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
 StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
 InternalForces &internalForces, double Nsd);
+
+    double findRootBrent(std::function<double(double)> func, double a, double b, double tol, int maxIter);
+
+    double testRegion1(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
+StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
+InternalForces &internalForces, double Nsd);
+    
+    double testRegion2(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
+StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
+InternalForces &internalForces, double Nsd);
+    
+    double testRegion3(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
+StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
+InternalForces &internalForces, double Nsd); 
 
     int getIterations() const;
     bool isConverged() const;

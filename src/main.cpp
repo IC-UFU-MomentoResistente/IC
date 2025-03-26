@@ -36,12 +36,13 @@ int main()
 		ClearBackground(DARKGRAY);
 		rlImGuiBegin();
 
+
 		interface.showPrimaryMenuBar();
 		interface.showSecondaryMenuBar(section);
 		interface.crossSectionPlotInterface(section, 50);
 		interface.RightTablePos("Tabela de Pontos", "Tabela de Esforços", 50, section);
-		
 
+		
 		rlImGuiEnd();
 		EndDrawing();
 	}

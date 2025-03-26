@@ -71,7 +71,15 @@ void Interface::showPrimaryMenuBar()
             autorsWindow();
             ImGui::EndMenu();
         }
-    
+        
+        if (ImGui::BeginMenu("VISUAL"))
+        {
+            ImGuiStyle &style = ImGui::GetStyle();
+            ImGui::ShowStyleEditor();
+            ImGui::EndMenu();
+        }
+
+
         ImGui::EndMainMenuBar();
     }
 
@@ -206,6 +214,7 @@ void Interface::crossSectionData(Section &section)
                 {-5, 7.5},
                 {-5, 2.5},
             };
+
             vector<double> collectedDiameters = {10, 10, 10, 10};
             section.polygon.setVertices(collectedPoints);
             section.reinforcement.setReinforcement(collectedReinforcement, collectedDiameters);
@@ -589,7 +598,6 @@ void Interface::reinforcementInterface(Section &section)
     }
 }
 
-
 void Interface::ReferenceValues() 
 {
         ImGui::Text("Tabela de Valores Normativos - NBR 6118:2023");
@@ -733,9 +741,6 @@ void Interface::ReferenceValues()
             ImGui::EndTable();
         }
 }
-
-
-
 
 void Interface::effortSectionInterface(Section &section)
 {

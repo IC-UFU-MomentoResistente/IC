@@ -77,10 +77,6 @@ void Interface::showPrimaryMenuBar()
 
 void Interface::autorsWindow()
 {
-
-    ImGui::SetNextWindowPos(ImVec2(140, 25));
-    ImGui::SetNextWindowSize(ImVec2(600, 250));
-    ImGui::Begin("Autores", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration);
     ImGui::Text("SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO");
     ImGui::Spacing();
     ImGui::Separator();
@@ -100,8 +96,7 @@ void Interface::autorsWindow()
     {
         ImGui::CloseCurrentPopup();
     }
-
-    ImGui::End();
+   
 }
 
 void Interface::showSecondaryMenuBar(Section &section)
@@ -210,10 +205,14 @@ void Interface::interfaceMaterials(Section &section)
 {
     if (ImGui::BeginMenu("Materiais"))
     {
-        ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always); // Ajuste os valores conforme necessário
-        ImGui::SetNextWindowPos(ImVec2(123, 47));                     // Posição inicial
-        ImGui::Begin("Entrada de Dados de Materiais", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
-        ImVec2 plotSize = ImGui::GetContentRegionAvail();
+        // Janela normal sendo aberta enquanto o menu estiver ativo
+        ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always); // Tamanho da janela
+        ImGui::SetNextWindowPos(ImVec2(123, 47));                     // Posição na tela
+
+        ImGui::Begin("Inserir Dados dos Materiais", nullptr,
+                     ImGuiWindowFlags_NoCollapse |
+                         ImGuiWindowFlags_NoResize |
+                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
 
         if (ImGui::BeginTabBar("Tabela de Entrada de Dados de Materiais"))
         {
@@ -229,22 +228,21 @@ void Interface::interfaceMaterials(Section &section)
                 ImGui::EndTabItem();
             }
 
-            if(ImGui::BeginTabItem("Valores Normativos"))
+            if (ImGui::BeginTabItem("Valores Normativos"))
             {
-                
                 ReferenceValues();
                 ImGui::EndTabItem();
             }
 
-
             ImGui::EndTabBar();
         }
 
-        ImGui::End();
+        ImGui::End(); // Fecha janela
 
-        ImGui::EndMenu();
+        ImGui::EndMenu(); // Fecha menu
     }
 }
+
 
 void Interface::concreteInterface(Section &section)
 {
@@ -779,7 +777,7 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
                  ImGuiWindowFlags_NoMove |
                  ImGuiWindowFlags_NoResize |
                  ImGuiWindowFlags_NoCollapse |
-                 ImGuiWindowFlags_NoTitleBar);
+                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
 

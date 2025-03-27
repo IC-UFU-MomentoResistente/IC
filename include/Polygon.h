@@ -32,8 +32,10 @@ public:
 	void setVertices(vector<Point> collectedVertices);
 	void addVertice(double coordX, double coordY);
 	void removeLastVertice();
-	void computeMaxCoordY();
-	void computeMinCoordY();
+    void clearPolygonVertices();
+    void clearGeometricCenter();
+    void computeMaxCoordY();
+    void computeMinCoordY();
 	void computeHeight();
 	void computeArea();
 	void computeStaticMomentX();

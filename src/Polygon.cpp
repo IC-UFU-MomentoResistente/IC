@@ -33,6 +33,19 @@ void Polygon::removeLastVertice()
 	polygonVertices.pop_back();
 }
 
+void Polygon::clearPolygonVertices()
+{
+	polygonVertices.clear();
+	geometricCenter = Point(0,0);
+	maxY = 0;
+	minY = 0;
+	polygonHeight = 0;
+	polygonArea = 0;
+	staticMomentX = 0;
+	staticMomentY = 0;
+}
+
+
 void Polygon::computeMaxCoordY()
 {
 	if (polygonVertices.empty())

@@ -133,6 +133,7 @@ void Interface::crossSectionData(Section &section)
     if (ImGui::BeginMenu("Seção Transversal")) // Primeira versão, não é a final - precisa incrementar vértices temporarios - não adicionar vertices negativos e tal
     {
         static double coordXPolygon, coordYPolygon;
+        static bool showPopUpErrorPolygon = false;
         ImGui::SetNextWindowPos(ImVec2(3, 47));
         ImGui::SetNextWindowSize(ImVec2(420, 270));
         ImGui::Begin("Inserir Dados da Seção Transversal", nullptr,
@@ -162,15 +163,30 @@ void Interface::crossSectionData(Section &section)
                 section.polygon.removeLastVertice();
         }
 
+        if (ImGui::Button("Limpar")) 
+        {
+            if(!section.polygon.getPolygonVertices().empty())
+                section.polygon.clearPolygonVertices();
+                
+        }
+
         ImGui::SameLine();
 
         if (ImGui::Button("Calcular parametros"))
         {
-            section.polygon.computeArea();
-            section.polygon.computeCentroid();
-            section.polygon.computeMaxCoordY();
-            section.polygon.computeMinCoordY();
-            section.polygon.computeHeight();
+            if (!section.polygon.getPolygonVertices().empty())
+            {
+                section.polygon.computeArea();
+                section.polygon.computeCentroid();
+                section.polygon.computeMaxCoordY();
+                section.polygon.computeMinCoordY();
+                section.polygon.computeHeight();
+            }
+            else 
+            {
+                showPopUpErrorPolygon = true;
+                ImGui::OpenPopup("Vértices vazios");
+            }
         }
 
         if (ImGui::Button("Transladar"))
@@ -210,6 +226,22 @@ void Interface::crossSectionData(Section &section)
         ImGui::Text("Height: %.2f", section.polygon.getMaxY());
         ImGui::Text("CG: %.2f, %.2f", section.polygon.getGeometricCenter().getX(), section.polygon.getGeometricCenter().getY());
         ImGui::Text("Vet0: %.2f, %.2f", section.polygon.getVet0X(), section.polygon.getVet0Y());
+
+        if (showPopUpErrorPolygon)
+        {
+            if (ImGui::BeginPopupModal("Vértices vazios", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("Adicione os vértices da seção e depois calcule os parâmetros");
+    
+                if (ImGui::Button("OK", ImVec2(120, 0)))
+                {
+                    showPopUpErrorPolygon = false;
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
+            }
+        }
 
         ImGui::End(); // Finaliza a janela
         ImGui::EndMenu();
@@ -470,13 +502,14 @@ void Interface::reinforcementInterface(Section &section)
 
         ImGui::Begin("Entrada de dados: Armadura Passiva", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
         ImGui::RadioButton("Uma barra", &barMode, 0);
+        ImGui::SameLine();
         ImGui::RadioButton("Linha de barras", &barMode, 1);
 
         if (barMode == 0)
         {
             ImGui::PushItemWidth(70);
             ImGui::BeginGroup();
-            ImGui::InputDouble("Dâametro da barra (mm)", &diameterBar, 0.0f, 0.0f, "%.3f");
+            ImGui::InputDouble("Diâmetro da barra (mm)", &diameterBar, 0.0f, 0.0f, "%.3f");
             ImGui::InputDouble("x (cm)", &coordXBar, 0.0f, 0.0f, "%.3f");
             ImGui::InputDouble("y (cm)", &coordYBar, 0.0f, 0.0f, "%.3f");
             ImGui::EndGroup();
@@ -512,9 +545,9 @@ void Interface::reinforcementInterface(Section &section)
 
             ImGui::InputDouble("xi (cm)", &coordXiBar, 0.0f, 0.0f, "%.3f");
             ImGui::SameLine();
-            ImGui::InputDouble("yi (cm)", &coordYiBar, 0.0f, 0.0f, "%.3f");
             ImGui::InputDouble("xf (cm)", &coordXfBar, 0.0f, 0.0f, "%.3f");
-            ImGui::SameLine();
+            ImGui::InputDouble("yi (cm)", &coordYiBar, 0.0f, 0.0f, "%.3f");
+            ImGui::SameLine();            
             ImGui::InputDouble("yf (cm)", &coordYfBar, 0.0f, 0.0f, "%.3f");
             ImGui::EndGroup();
 

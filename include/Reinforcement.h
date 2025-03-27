@@ -19,8 +19,9 @@ private:
 public:
 	Reinforcement();
 
-	void setBars(vector<Point> collectedBars, vector<double> collectedDiameters);
+	void setReinforcement(vector<Point> collectedReinforcement, vector<double> collectedDiameters);
 	void addReinforcement(double coordX, double coordY, double diameter);
+	void removeLastReinforcement();
 	void removeLastBar();
 	void clearReinforcement();
 	void computeArea();

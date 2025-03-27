@@ -12,8 +12,16 @@
 #include "Reinforcement.h"
 #include "ConcreteProperties.h"
 #include "SteelProperties.h"
+#include "StrainDistribution.h"
+#include "PolygonStressRegions.h"   
+#include "AnalyticalIntegration.h"
+#include "InternalForces.h"
+#include "MomentCapacitySolver.h"
 #include "Section.h"
 
+using std::cout;
+using std::endl;
+using std::vector;
 using std::string;
 using std::vector;
 

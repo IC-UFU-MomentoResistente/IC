@@ -5,15 +5,16 @@ ConcreteProperties::ConcreteProperties()
 	fck = 0;
 	gammaC = 0;
 	fcd = 0;
+	factorMultiplierFcd = 0;
 	strainConcretePlastic = 0;
 	strainConcreteRupture = 0;
 	strengthReductionFactor = 0;
 	stressStrainExponent = 0;
 	curveStressStrain = {};
-	modelType = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2023;
+	modelType = StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2023;
 }
 
-void ConcreteProperties::setParameters(StressStrainModelType model, double collectedFck, double collectedGammaC)
+void ConcreteProperties::setParameters(StressStrainConcreteModelType model, double collectedFck, double collectedGammaC)
 {
 	modelType = model;
 
@@ -22,6 +23,7 @@ void ConcreteProperties::setParameters(StressStrainModelType model, double colle
 		fck = collectedFck;
 		gammaC = collectedGammaC;
 		fcd = collectedFck / collectedGammaC;
+		factorMultiplierFcd = 0.85;
 		strainConcretePlastic = 2;
 		strainConcreteRupture = 3.5;
 		stressStrainExponent = 2;
@@ -31,6 +33,7 @@ void ConcreteProperties::setParameters(StressStrainModelType model, double colle
 		fck = collectedFck;
 		gammaC = collectedGammaC;
 		fcd = collectedFck / collectedGammaC;
+		factorMultiplierFcd = 0.85 * (1 - (collectedFck - 50) / 200);
 		strainConcretePlastic = 2 + 0.085 * pow((collectedFck - 50), 0.53);
 		strainConcreteRupture = 2.6 + 35 * pow(((90 - collectedFck) / 100), 4);
 		stressStrainExponent = 1.4 + 23.4 * pow(((90 - fck) / 100), 4);
@@ -49,7 +52,7 @@ double ConcreteProperties::computeStress(double strain)
 
 	switch (modelType)
 	{
-	case StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2014:
+	case StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2014:
 
 		if (absStrain <= strainConcretePlastic)
 
@@ -60,7 +63,7 @@ double ConcreteProperties::computeStress(double strain)
 		return 0;
 		break;
 
-	case StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2023:
+	case StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2023:
 
 		strengthReductionFactor = (fck <= 40) ? 1 : pow(40.0 / fck, 1.0 / 3.0);
 
@@ -81,22 +84,33 @@ void ConcreteProperties::setCurveStressStrain()
 {
 	curveStressStrain.clear();
 
-	double step = 0.05; // passo de deformação desejado (ex: 0.05 ‰ = 0.00005)
-	int numPoints = static_cast<int>(strainConcreteRupture / step) + 1;
+    double step = 0.05; // passo de deformação desejado (ex: 0.05 ‰ = 0.00005)
+    int numPoints = static_cast<int>(strainConcreteRupture / step) + 1;
 
-	for (int i = 0; i < numPoints; ++i)
-	{
-		double strain = -i * step;
-		double stress = computeStress(strain);
-		curveStressStrain.push_back(Point(-strain, stress));
-	}
+    for (int i = 0; i < numPoints; ++i)
+    {
+        double strain = -i * step;
+        double stress = computeStress(strain);
+        curveStressStrain.push_back(Point(-strain, stress));
+    }
 
-	// Garante o último ponto, se necessário (por causa de arredondamentos)
-	if (curveStressStrain.back().getX() < strainConcreteRupture)
-	{
-		double stress = computeStress(-strainConcreteRupture);
-		curveStressStrain.push_back(Point(strainConcreteRupture, stress));
-	}
+    // Garante o último ponto, se necessário (por causa de arredondamentos)
+    if (curveStressStrain.back().getX() < strainConcreteRupture)
+    {
+        double stress = computeStress(-strainConcreteRupture);
+        curveStressStrain.push_back(Point(strainConcreteRupture, stress));
+    }
+
+	// curveStressStrain.clear();
+
+	// double step = (strainConcreteRupture - 0) / 60;
+
+	// for (double strain = 0; strain > -strainConcreteRupture; strain -= step)
+	// {
+	// 	double stress = computeStress(strain);
+
+	// 	curveStressStrain.push_back(Point(-strain, stress));
+	// }
 }
 
 double ConcreteProperties::getFck() const
@@ -112,6 +126,11 @@ double ConcreteProperties::getGammaC() const
 double ConcreteProperties::getFcd() const
 {
 	return fcd;
+}
+
+double ConcreteProperties::getFactorMultiplierFcd() const
+{
+    return factorMultiplierFcd;
 }
 
 double ConcreteProperties::getStrainConcretePlastic() const

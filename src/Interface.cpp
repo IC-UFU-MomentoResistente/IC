@@ -187,6 +187,21 @@ void Interface::crossSectionData(Section &section)
             section.reinforcement.rotateAroundCentroidPolygon(10, section.polygon.getGeometricCenter());
         }
 
+        ImGui::SameLine();
+
+        if (ImGui::Button("SecaoT"))
+        {
+            vector<Point> collectedPoints = {{7.5, 0}, {10, 30}, {20, 40}, {20, 50}, {-20, 50}, {-20, 40}, {-10, 30}, {-7.5, 0}};
+            vector<Point> collectedReinforcement = {
+                {5, 2.5},
+                {5, 7.5},
+                {-5, 7.5},
+                {-5, 2.5},
+            };
+            vector<double> collectedDiameters = {10, 10, 10, 10};
+            section.polygon.setVertices(collectedPoints);
+            section.reinforcement.setReinforcement(collectedReinforcement, collectedDiameters);
+        }
         crossSectionTable(section);
 
         ImGui::Text("Area: %.2f", section.polygon.getPolygonArea());
@@ -255,7 +270,7 @@ void Interface::concreteInterface(Section &section)
 
     if (constitutiveModel == 0)
     {
-        StressStrainModelType model61182014 = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2014;
+        StressStrainConcreteModelType model61182014 = StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2014;
 
         ImGui::Text("Parâmetros do Concreto");
         ImGui::PushItemWidth(70);
@@ -321,7 +336,7 @@ void Interface::concreteInterface(Section &section)
 
     if (constitutiveModel == 1)
     {
-        StressStrainModelType model61182023 = StressStrainModelType::PARABOLA_RECTANGLE_NBR6118_2023;
+        StressStrainConcreteModelType model61182023 = StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2023;
 
         ImGui::Text("Parâmetros do Concreto");
         ImGui::PushItemWidth(70);
@@ -477,7 +492,7 @@ void Interface::reinforcementInterface(Section &section)
             if (ImGui::Button("Remover"))
             {
                 if (!section.reinforcement.getReinforcement().empty())
-                    section.reinforcement.removeLastBar();
+                    section.reinforcement.removeLastReinforcement();
             }
 
             ImGui::SameLine();
@@ -521,6 +536,8 @@ void Interface::reinforcementInterface(Section &section)
 
                     section.reinforcement.addReinforcement(coordX, coordY, diameterBar);
                 }
+
+                section.reinforcement.computeArea();
             }
 
             ImGui::SameLine();
@@ -528,7 +545,7 @@ void Interface::reinforcementInterface(Section &section)
             if (ImGui::Button("Remover"))
             {
                 if (!section.reinforcement.getReinforcement().empty())
-                    section.reinforcement.removeLastBar();
+                    section.reinforcement.removeLastReinforcement();
             }
 
             ImGui::SameLine();
@@ -720,19 +737,23 @@ void Interface::effortSectionInterface(Section &section)
     {
         ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always); // Ajuste os valores conforme necessário
         ImGui::SetNextWindowPos(ImVec2(265, 47));                     // Posição inicial
-        static double N, Mx, My;
+        static double Nsd, Mx, My, eps1, eps2;
+        static bool showPopUpErrorAxialForce = false;
+        static bool showPopUpSolver = false;
 
         ImGui::Begin("Entrada de Dados: Esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
         ImGui::PushItemWidth(50);
         ImGui::BeginGroup();
-        ImGui::InputDouble("N (kN)", &N, 0.0f, 0.0f, "%.3f");
+        ImGui::InputDouble("N (kN)", &Nsd, 0.0f, 0.0f, "%.3f");
         ImGui::InputDouble("Mx (kN.m)", &Mx, 0.0f, 0.0f, "%.3f");
+        ImGui::InputDouble("eps1: (mm/m)", &eps1, 0.0f, 0.0f, "%.3f");
+        ImGui::InputDouble("eps2: (mm/m)", &eps2, 0.0f, 0.0f, "%.3f");
         // ImGui::InputDouble("My (kN.m)", &My, 0.0f, 0.0f, "%.3f");
         ImGui::EndGroup();
 
         if (ImGui::Button("Adicionar"))
         {
-            section.combinations.emplace_back(N, Mx, My);
+            section.combinations.emplace_back(Nsd, Mx, My);
         }
 
         ImGui::SameLine();
@@ -751,8 +772,76 @@ void Interface::effortSectionInterface(Section &section)
         }
 
         ImGui::SameLine();
+        if (ImGui::Button("Comparar"))
+        {
+            section.setSectionProperties(section.polygon, section.reinforcement, section.concrete, section.steel, NormativeIntegrationVersion::ABNT_NBR6118_2014);
+            section.setStrainDistribution(eps1, eps2);
+            section.setStressRegions();
+            section.computeInternalForces(Nsd);
+            section.printSectionData();
+        }
+
         if (ImGui::Button("Calcular"))
         {
+            section.setSectionProperties(section.polygon, section.reinforcement, section.concrete, section.steel, NormativeIntegrationVersion::ABNT_NBR6118_2014);
+            section.internalForces.setNormalSolicitation(Nsd);
+            section.internalForces.computeMaxCompression(section.polygon, section.reinforcement, section.steel, section.concrete);
+            section.internalForces.computeMaxTraction(section.polygon, section.reinforcement, section.steel);
+
+            if (section.internalForces.getNormalSolicitation() < section.internalForces.getMaxNormalCompression() ||
+                section.internalForces.getNormalSolicitation() > section.internalForces.getMaxNormalTraction())
+            {
+                showPopUpErrorAxialForce = true;
+                ImGui::OpenPopup("Erro de Esforço Normal");
+            }
+            else
+            {
+                section.computeSectionEquilibriumSolver(Nsd);
+                showPopUpSolver = true;
+                ImGui::OpenPopup("Calculo do Momento Resistente");
+            }
+        }
+
+        if (showPopUpErrorAxialForce)
+        {
+            if (ImGui::BeginPopupModal("Erro de Esforço Normal", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("O esforço normal solicitante está fora do intervalo resistente da seção.");
+                ImGui::Separator();
+                ImGui::Text("Nsd: %.2f", Nsd);
+                ImGui::Text("Intervalo permitido:");
+                ImGui::BulletText("Máx. Compressão: %.2f kN", section.internalForces.getMaxNormalCompression());
+                ImGui::BulletText("Máx. Tração: %.2f kN", section.internalForces.getMaxNormalTraction());
+
+                if (ImGui::Button("OK", ImVec2(120, 0)))
+                {
+                    showPopUpErrorAxialForce = false;
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
+            }
+        }
+
+        if (showPopUpSolver)
+        {
+            if (ImGui::BeginPopupModal("Calculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("Momento Resistente: %.4f", section.momentSolver.getMomentCapacity());
+                ImGui::Separator();
+                ImGui::Text("eps1: %.4f", section.momentSolver.getTopFiberStrain());
+                ImGui::Text("eps2: %.4f", section.momentSolver.getBottomFiberStrain());
+                ImGui::Separator();
+                ImGui::Text("iteracoes: %d", section.momentSolver.getIterations());
+
+                if (ImGui::Button("OK", ImVec2(120, 0)))
+                {
+                    showPopUpSolver = false;
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
+            }
         }
 
         EffortsTable(section);
@@ -786,6 +875,9 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
         if (section.polygon.getPolygonVertices().size() > 2)
         {
             renderPolygon(section.polygon.getPolygonVertices(), "Vertices", "Polygon");
+            renderPolygon(section.stressRegions.getCompressedRegion().getPolygonVertices(), "vComp", "pComp");
+            renderPolygon(section.stressRegions.getParabolicRegion().getPolygonVertices(), "vParab", "pParab");
+            renderPolygon(section.stressRegions.getRectangularRegion().getPolygonVertices(), "vRec", "pRec");
             renderVectorPoint(section.reinforcement.getReinforcement(), "Barras");
         }
 

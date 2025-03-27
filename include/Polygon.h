@@ -19,7 +19,6 @@ class Polygon
 private:
 	vector<Point> polygonVertices;
 	Point geometricCenter;
-	Point intersectionPoint;
 	double maxY;
 	double minY;
 	double polygonHeight;
@@ -42,11 +41,9 @@ public:
 	void computeCentroid();
 	void translateToCentroid();
 	void rotateAroundCentroid(double angle);
-	void computeIntersection(Point firstPoint, Point secondPoint, double cutCoordY);
 
 	vector<Point> getPolygonVertices() const;
 	Point getGeometricCenter() const;
-	Point getIntersectionPoint() const;
 	double getMaxY() const;
 	double getMinY() const;
 	double getPolygonHeight() const;

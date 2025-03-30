@@ -10,7 +10,7 @@ Section::Section()
     stressRegions = PolygonStressRegions();
     analyticalIntegration = AnalyticalIntegration();
     internalForces = InternalForces();
-    momentSolver = MomentCapacitySolver();
+    momentSolver = MomentSolver();
 }
 
 void Section::setPolygon(Polygon collectedPolygon)

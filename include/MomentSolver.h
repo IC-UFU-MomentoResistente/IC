@@ -13,7 +13,7 @@
 #include <iostream>
 #include <functional>
 
-class MomentCapacitySolver
+class MomentSolver
 {
 private:
     int maxIterations;
@@ -26,7 +26,7 @@ private:
     StrainDistribution strainResult;
 
 public:
-    MomentCapacitySolver();
+    MomentSolver();
 
     void solveEquilibrium(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
 StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
@@ -77,7 +77,7 @@ InternalForces &internalForces, double Nsd);
 
     int getIterations() const;
     bool isConverged() const;
-    double getMomentCapacity() const;
+    double getMoment() const;
     double getTopFiberStrain() const;
     double getBottomFiberStrain() const;
 };

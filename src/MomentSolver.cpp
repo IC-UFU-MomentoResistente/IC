@@ -1,6 +1,6 @@
-#include "MomentCapacitySolver.h"
+#include "MomentSolver.h"
 
-MomentCapacitySolver::MomentCapacitySolver()
+MomentSolver::MomentSolver()
 {
     maxIterations = 0;
     iterations = 0;
@@ -11,7 +11,7 @@ MomentCapacitySolver::MomentCapacitySolver()
     strainResult = StrainDistribution();
 }
 
-void MomentCapacitySolver::solveEquilibrium(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete,
+void MomentSolver::solveEquilibrium(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete,
                                             SteelProperties &steel, StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions,
                                             AnalyticalIntegration &analyticalIntegration, InternalForces &internalForces, double Nsd)
 {
@@ -69,7 +69,7 @@ void MomentCapacitySolver::solveEquilibrium(Polygon &polygon, Reinforcement &rei
     }
 }
 
-double MomentCapacitySolver::computeAxialForceResultant(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel,
+double MomentSolver::computeAxialForceResultant(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel,
                                                         StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
                                                         InternalForces &internalForces, double strain1, double strain2, double Nsd)
 {
@@ -94,7 +94,7 @@ double MomentCapacitySolver::computeAxialForceResultant(Polygon &polygon, Reinfo
     }
 }
 
-double MomentCapacitySolver::computeMomentResultant(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel,
+double MomentSolver::computeMomentResultant(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel,
                                                     StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
                                                     InternalForces &internalForces, double strain1, double strain2, double Nsd)
 {
@@ -104,7 +104,7 @@ double MomentCapacitySolver::computeMomentResultant(Polygon &polygon, Reinforcem
     return internalForces.getMomentSection();
 }
 
-double MomentCapacitySolver::iterateInRegion1(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel,
+double MomentSolver::iterateInRegion1(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel,
                                               StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
                                               InternalForces &internalForces, double Nsd)
 {
@@ -189,7 +189,7 @@ double MomentCapacitySolver::iterateInRegion1(Polygon &polygon, Reinforcement &r
     }
 }
 
-double MomentCapacitySolver::iterateInRegion2(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel,
+double MomentSolver::iterateInRegion2(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel,
                                               StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
                                               InternalForces &internalForces, double Nsd)
 {
@@ -256,7 +256,7 @@ double MomentCapacitySolver::iterateInRegion2(Polygon &polygon, Reinforcement &r
     }
 }
 
-double MomentCapacitySolver::iterateInRegion3(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel,
+double MomentSolver::iterateInRegion3(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel,
                                               StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
                                               InternalForces &internalForces, double Nsd)
 {
@@ -341,7 +341,7 @@ double MomentCapacitySolver::iterateInRegion3(Polygon &polygon, Reinforcement &r
     }
 }
 
-void MomentCapacitySolver::setStrainDistribution(Polygon &polygon, ConcreteProperties &concrete, StrainDistribution &strainDistribution,
+void MomentSolver::setStrainDistribution(Polygon &polygon, ConcreteProperties &concrete, StrainDistribution &strainDistribution,
                                                  double strain1, double strain2)
 {
     strainDistribution.setStrain(strain1, strain2);
@@ -349,7 +349,7 @@ void MomentCapacitySolver::setStrainDistribution(Polygon &polygon, ConcretePrope
                                                  concrete.getStrainConcreteRupture(), polygon.getPolygonHeight());
 }
 
-void MomentCapacitySolver::setStressRegions(Polygon &polygon, StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions)
+void MomentSolver::setStressRegions(Polygon &polygon, StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions)
 {
     stressRegions.setOriginalPolygon(polygon);
     stressRegions.setDeformationHeight(strainDistribution.getNeutralAxisCoord(),
@@ -357,7 +357,7 @@ void MomentCapacitySolver::setStressRegions(Polygon &polygon, StrainDistribution
     stressRegions.generateStressRegions();
 }
 
-void MomentCapacitySolver::setInternalForces(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel,
+void MomentSolver::setInternalForces(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel,
                                              StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
                                              InternalForces &internalForces, double Nsd)
 {
@@ -370,7 +370,7 @@ void MomentCapacitySolver::setInternalForces(Polygon &polygon, Reinforcement &re
     internalForces.computeMaxTraction(polygon, reinforcement, steel);
 }
 
-double MomentCapacitySolver::findRootBrent(std::function<double(double)> func, double a, double b, double tol, int maxIter)
+double MomentSolver::findRootBrent(std::function<double(double)> func, double a, double b, double tol, int maxIter)
 {
     double fa = func(a);
     double fb = func(b);
@@ -455,7 +455,7 @@ double MomentCapacitySolver::findRootBrent(std::function<double(double)> func, d
     return s;
 }
 
-double MomentCapacitySolver::testRegion1(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration, InternalForces &internalForces, double Nsd)
+double MomentSolver::testRegion1(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration, InternalForces &internalForces, double Nsd)
 {
     double epcu = -concrete.getStrainConcreteRupture();
     double epc2 = -concrete.getStrainConcretePlastic();
@@ -503,7 +503,7 @@ double MomentCapacitySolver::testRegion1(Polygon &polygon, Reinforcement &reinfo
     );
 }
 
-double MomentCapacitySolver::testRegion2(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration, InternalForces &internalForces, double Nsd)
+double MomentSolver::testRegion2(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration, InternalForces &internalForces, double Nsd)
 {
     double epsA = -concrete.getStrainConcreteRupture(); // fixo
     double epsBmin = 0;
@@ -544,7 +544,7 @@ double MomentCapacitySolver::testRegion2(Polygon &polygon, Reinforcement &reinfo
     );
 }
 
-double MomentCapacitySolver::testRegion3(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration, InternalForces &internalForces, double Nsd)
+double MomentSolver::testRegion3(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration, InternalForces &internalForces, double Nsd)
 {
     const auto &vectorReinf = reinforcement.getReinforcement();
     double yLowestRebar = 0;
@@ -598,27 +598,27 @@ double MomentCapacitySolver::testRegion3(Polygon &polygon, Reinforcement &reinfo
     );
 }
 
-int MomentCapacitySolver::getIterations() const
+int MomentSolver::getIterations() const
 {
     return iterations;
 }
 
-bool MomentCapacitySolver::isConverged() const
+bool MomentSolver::isConverged() const
 {
     return converged;
 }
 
-double MomentCapacitySolver::getMomentCapacity() const
+double MomentSolver::getMoment() const
 {
     return Mrd;
 }
 
-double MomentCapacitySolver::getTopFiberStrain() const
+double MomentSolver::getTopFiberStrain() const
 {
     return strainResult.getTopFiberStrain();
 }
 
-double MomentCapacitySolver::getBottomFiberStrain() const
+double MomentSolver::getBottomFiberStrain() const
 {
     return strainResult.getBottomFiberStrain();
 }

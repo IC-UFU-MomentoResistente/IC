@@ -134,6 +134,12 @@ void Interface::crossSectionData(Section &section)
     {
         static double coordXPolygon, coordYPolygon;
         static bool showPopUpErrorPolygon = false;
+
+        static int typeSection = 0; 
+        const char *typesSection[] = {"Retangular", "T" "Circular", "Poligonal"};
+
+        static double widht, height, flangeThickness, flangeWidth, webHeight, webWidht;
+
         ImGui::SetNextWindowPos(ImVec2(3, 47));
         ImGui::SetNextWindowSize(ImVec2(420, 270));
         ImGui::Begin("Inserir Dados da Seção Transversal", nullptr,
@@ -860,7 +866,7 @@ void Interface::effortSectionInterface(Section &section)
         {
             if (ImGui::BeginPopupModal("Calculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
             {
-                ImGui::Text("Momento Resistente: %.4f", section.momentSolver.getMomentCapacity());
+                ImGui::Text("Momento Resistente: %.4f", section.momentSolver.getMoment());
                 ImGui::Separator();
                 ImGui::Text("eps1: %.4f", section.momentSolver.getTopFiberStrain());
                 ImGui::Text("eps2: %.4f", section.momentSolver.getBottomFiberStrain());

@@ -10,12 +10,11 @@
 #include "AnalyticalIntegration.h"
 #include "InternalForces.h"
 #include "Combination.h"
-#include "MomentCapacitySolver.h"
+#include "MomentSolver.h"
 
 using std::vector;
 using std::cout;
 using std::endl;
-
 
 class Section
 {
@@ -28,7 +27,7 @@ public:
     PolygonStressRegions stressRegions;
     AnalyticalIntegration analyticalIntegration;
     InternalForces internalForces;
-    MomentCapacitySolver momentSolver;
+    MomentSolver momentSolver;
 
     std::vector<Combination> combinations;
     Section();

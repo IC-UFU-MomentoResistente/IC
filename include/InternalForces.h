@@ -13,9 +13,11 @@ class InternalForces
 {
 private:
     double normalConcrete;
-    double momentConcrete;
+    double momentXXConcrete;
+    double momentYYConcrete;
     double normalSteel;
-    double momentSteel;
+    double momentXXSteel;
+    double momentYYSteel;
     double maxNormalCompression;
     double maxNormalTraction;
     double normalSolicitation;
@@ -26,7 +28,7 @@ public:
     void setNormalSolicitation(double Nsd);
     void computeNormalConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
                                PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution);
-    void computeMomentConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
+    void computeMomentXXConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
                                PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution);
     void computeNormalSteel(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, 
                             StrainDistribution &strainDistribution);

@@ -3,9 +3,11 @@
 InternalForces::InternalForces()
 {
     normalConcrete = 0;
-    momentConcrete = 0;
+    momentXXConcrete = 0;
+    momentYYConcrete = 0;
     normalSteel = 0;
-    momentSteel = 0;
+    momentXXSteel = 0;
+    momentYYSteel = 0;
     maxNormalCompression = 0;
     maxNormalTraction = 0;
     normalSolicitation = 0;
@@ -76,7 +78,7 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
     normalConcrete = -(NCTP + NCTR);
 }
 
-void InternalForces::computeMomentConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
+void InternalForces::computeMomentXXConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
 PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
 {
     double coordLN = stressRegions.getNeutralAxisHeight(); // cm
@@ -105,8 +107,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
             double coef1 = (y1 * x2 - y2 * x1) / (y1 - y2); // m
             double coef2 = (x1 - x2) / (y1 - y2); // m
 
-            double mc1 = analyticalIntegration.computeMomentConcreteParabolic(coordLN, coordEpc2, nConc, fcd, multFcd, coef1, coef2, y1);
-            double mc2 = analyticalIntegration.computeMomentConcreteParabolic(coordLN, coordEpc2, nConc, fcd, multFcd, coef1, coef2, y2);
+            double mc1 = analyticalIntegration.computeMomentXXConcreteParabolic(coordLN, coordEpc2, nConc, fcd, multFcd, coef1, coef2, y1);
+            double mc2 = analyticalIntegration.computeMomentXXConcreteParabolic(coordLN, coordEpc2, nConc, fcd, multFcd, coef1, coef2, y2);
 
             MCTP = MCTP + mc2 - mc1;
         }
@@ -126,14 +128,14 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
             double coef1 = (y1 * x2 - y2 * x1) / (y1 - y2); // m
             double coef2 = (x1 - x2) / (y1 - y2); // m
 
-            double mc1 = analyticalIntegration.computeMomentConcreteRectangular(multFcd, fcd, coef1, coef2, y1);
-            double mc2 = analyticalIntegration.computeMomentConcreteRectangular(multFcd, fcd, coef1, coef2, y2);
+            double mc1 = analyticalIntegration.computeMomentXXConcreteRectangular(multFcd, fcd, coef1, coef2, y1);
+            double mc2 = analyticalIntegration.computeMomentXXConcreteRectangular(multFcd, fcd, coef1, coef2, y2);
 
             MCTR = MCTR + mc2 - mc1;
         }
     }
 
-    momentConcrete = MCTP + MCTR;
+    momentXXConcrete = MCTP + MCTR;
 }
 
 void InternalForces::computeNormalSteel(Polygon &polygon, Reinforcement &reinforcement, 
@@ -195,7 +197,7 @@ SteelProperties &steel, StrainDistribution &strainDistribution)
         MY = MY + (-ny * (reinforcementVertices[i].getY()/100)); // kN.m
     }
 
-    momentSteel = MY;
+    momentXXSteel = MY;
 }
 
 void InternalForces::computeMaxCompression(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, ConcreteProperties &concrete)
@@ -242,7 +244,7 @@ double InternalForces::getNormalSection() const
 
 double InternalForces::getMomentSection() const
 {
-    return momentConcrete + momentSteel - 0;
+    return momentXXConcrete + momentXXSteel - 0;
 }
 
 double InternalForces::getNormalConcrete() const
@@ -252,7 +254,7 @@ double InternalForces::getNormalConcrete() const
 
 double InternalForces::getMomentConcrete() const
 {
-    return momentConcrete;
+    return momentXXConcrete;
 }
 
 double InternalForces::getNormalSteel() const
@@ -262,7 +264,7 @@ double InternalForces::getNormalSteel() const
 
 double InternalForces::getMomentSteel() const
 {
-    return momentSteel;
+    return momentXXSteel;
 }
 
 double InternalForces::getMaxNormalCompression() const

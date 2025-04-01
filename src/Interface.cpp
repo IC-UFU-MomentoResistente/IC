@@ -866,7 +866,8 @@ void Interface::effortSectionInterface(Section &section)
         {
             if (ImGui::BeginPopupModal("Calculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
             {
-                ImGui::Text("Momento Resistente: %.4f", section.momentSolver.getMoment());
+                ImGui::Text("Mrdxx: %.4f", section.momentSolver.getMoment().getX());
+                ImGui::Text("Mrdyy: %.4f", section.momentSolver.getMoment().getY());
                 ImGui::Separator();
                 ImGui::Text("eps1: %.4f", section.momentSolver.getTopFiberStrain());
                 ImGui::Text("eps2: %.4f", section.momentSolver.getBottomFiberStrain());

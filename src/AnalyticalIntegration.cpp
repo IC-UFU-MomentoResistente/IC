@@ -147,7 +147,7 @@ double AnalyticalIntegration::computeMomentYYConcreteRectangular(double multFcd,
     }
 }
 
-double AnalyticalIntegration::computeMomentoYYConcreteParabolic(double coordLN, double coordEpc2, double nConc, double fcd, double multFcd, double coef1, double coef2, double coordY)
+double AnalyticalIntegration::computeMomentYYConcreteParabolic(double coordLN, double coordEpc2, double nConc, double fcd, double multFcd, double coef1, double coef2, double coordY)
 {
     switch (integrationVersion)
     {

@@ -22,7 +22,7 @@ private:
     double axialForceSum;
     bool converged;
 
-    double Mrd;
+    Point Mrd;
     StrainDistribution strainResult;
 
 public:
@@ -36,21 +36,9 @@ InternalForces &internalForces, double Nsd);
 StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
 InternalForces &internalForces, double strain1, double strain2, double Nsd);
 
-    double computeMomentResultant(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
+    Point computeMomentResultant(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
 StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
 InternalForces &internalForces, double strain1, double strain2, double Nsd);
-
-    double iterateInRegion1(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
-StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
-InternalForces &internalForces, double Nsd);
-
-    double iterateInRegion2(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
-StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
-InternalForces &internalForces, double Nsd);
-
-    double iterateInRegion3(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
-StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
-InternalForces &internalForces, double Nsd);
 
     void setStrainDistribution(Polygon &polygon, ConcreteProperties &concrete, StrainDistribution &strainDistribution, 
 double strain1, double strain2);
@@ -63,21 +51,21 @@ InternalForces &internalForces, double Nsd);
 
     double findRootBrent(std::function<double(double)> func, double a, double b, double tol, int maxIter);
 
-    double testRegion1(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
+    Point testRegion1(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
 StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
 InternalForces &internalForces, double Nsd);
     
-    double testRegion2(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
+    Point testRegion2(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
 StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
 InternalForces &internalForces, double Nsd);
     
-    double testRegion3(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
+    Point testRegion3(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
 StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
 InternalForces &internalForces, double Nsd); 
 
     int getIterations() const;
     bool isConverged() const;
-    double getMoment() const;
+    Point getMoment() const;
     double getTopFiberStrain() const;
     double getBottomFiberStrain() const;
 };

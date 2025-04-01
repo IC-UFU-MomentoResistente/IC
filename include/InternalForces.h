@@ -30,17 +30,21 @@ public:
                                PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution);
     void computeMomentXXConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
                                PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution);
-    void computeNormalSteel(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, 
+    void computeMomentYYConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete, 
+                                PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution);
+    void computeNormalSteel(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel,
                             StrainDistribution &strainDistribution);
-    void computeMomentSteel(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, 
-                            StrainDistribution &strainDistribution);  
+    void computeMomentXXSteel(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, 
+                            StrainDistribution &strainDistribution);
+    void computeMomentYYSteel(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, 
+                            StrainDistribution &strainDistribution);
     void computeMaxCompression(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, 
                                ConcreteProperties &concrete);
     void computeMaxTraction(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel);
 
     double getNormalSection() const;
-    double getMomentSection() const;
-
+    double getMomentXXSection() const;
+    double getMomentYYSection() const;
     double getNormalConcrete() const;
     double getMomentConcrete() const;
     double getNormalSteel() const;

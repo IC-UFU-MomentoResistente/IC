@@ -67,9 +67,11 @@ void Section::computeInternalForces(double Nsd)
 {
     internalForces.setNormalSolicitation(Nsd);
     internalForces.computeNormalConcrete(analyticalIntegration, concrete, stressRegions, strainDistribution);
-    internalForces.computeMomentConcrete(analyticalIntegration, concrete, stressRegions, strainDistribution);
+    internalForces.computeMomentXXConcrete(analyticalIntegration, concrete, stressRegions, strainDistribution);
+    internalForces.computeMomentYYConcrete(analyticalIntegration, concrete, stressRegions, strainDistribution);
     internalForces.computeNormalSteel(polygon, reinforcement, steel, strainDistribution);
-    internalForces.computeMomentSteel(polygon, reinforcement, steel, strainDistribution);
+    internalForces.computeMomentXXSteel(polygon, reinforcement, steel, strainDistribution);
+    internalForces.computeMomentYYSteel(polygon, reinforcement, steel, strainDistribution);
     internalForces.computeMaxCompression(polygon, reinforcement, steel, concrete);
     internalForces.computeMaxTraction(polygon, reinforcement, steel);
 }
@@ -185,7 +187,8 @@ void Section::printSectionData()
     cout << "--------------------------------------------\n";
     cout << "Equilibrio: \n";
     cout << "Normal: " << internalForces.getNormalSection() << " kN" << endl;
-    cout << "Momento: " << internalForces.getMomentSection() << " kN*m" << endl;
+    cout << "Mrdxx: " << internalForces.getMomentXXSection() << " kN*m" << endl;
+    cout << "Mrdyy: " << internalForces.getMomentYYSection() << " kN*m" << endl;
     cout << "--------------------------------------------\n";
     combinations = std::vector<Combination>();
 }

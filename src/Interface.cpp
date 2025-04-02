@@ -205,8 +205,9 @@ void Interface::crossSectionData(Section &section)
 
         if (ImGui::Button("Rotacionar"))
         {
-            section.polygon.rotateAroundCentroid(10);
-            section.reinforcement.rotateAroundCentroidPolygon(10, section.polygon.getGeometricCenter());
+            section.polygon.setAngle(3);
+            section.polygon.rotateAroundCentroid();
+            section.reinforcement.rotateAroundCentroidPolygon(section.polygon.getAngle(), section.polygon.getGeometricCenter());
         }
 
         ImGui::SameLine();

@@ -67,11 +67,15 @@ void Section::computeInternalForces(double Nsd)
 {
     internalForces.setNormalSolicitation(Nsd);
     internalForces.computeNormalConcrete(analyticalIntegration, concrete, stressRegions, strainDistribution);
-    internalForces.computeMomentXXConcrete(analyticalIntegration, concrete, stressRegions, strainDistribution);
-    internalForces.computeMomentYYConcrete(analyticalIntegration, concrete, stressRegions, strainDistribution);
+    internalForces.computeMomentUUConcrete(analyticalIntegration, concrete, stressRegions, strainDistribution);
+    internalForces.computeMomentVVConcrete(analyticalIntegration, concrete, stressRegions, strainDistribution);
     internalForces.computeNormalSteel(polygon, reinforcement, steel, strainDistribution);
-    internalForces.computeMomentXXSteel(polygon, reinforcement, steel, strainDistribution);
-    internalForces.computeMomentYYSteel(polygon, reinforcement, steel, strainDistribution);
+    internalForces.computeMomentUUSteel(polygon, reinforcement, steel, strainDistribution);
+    internalForces.computeMomentVVSteel(polygon, reinforcement, steel, strainDistribution);
+    internalForces.computeMomentUUSection();
+    internalForces.computeMomentVVSection();
+    internalForces.computeMomentXXSection(polygon.getAngle());
+    internalForces.computeMomentYYSection(polygon.getAngle());
     internalForces.computeMaxCompression(polygon, reinforcement, steel, concrete);
     internalForces.computeMaxTraction(polygon, reinforcement, steel);
 }

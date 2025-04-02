@@ -3,11 +3,15 @@
 InternalForces::InternalForces()
 {
     normalConcrete = 0;
-    momentXXConcrete = 0;
-    momentYYConcrete = 0;
+    momentUUConcrete = 0;
+    momentVVConcrete = 0;
     normalSteel = 0;
-    momentXXSteel = 0;
-    momentYYSteel = 0;
+    momentUUSteel = 0;
+    momentVVSteel = 0;
+    momentUUSection = 0;
+    momentVVSection = 0;
+    momentXXSection = 0;
+    momentYYSection = 0;
     maxNormalCompression = 0;
     maxNormalTraction = 0;
     normalSolicitation = 0;
@@ -78,7 +82,7 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
     normalConcrete = -(NCTP + NCTR);
 }
 
-void InternalForces::computeMomentXXConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
+void InternalForces::computeMomentUUConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
 PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
 {
     double coordLN = stressRegions.getNeutralAxisHeight(); // cm
@@ -135,10 +139,10 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
         }
     }
 
-    momentXXConcrete = MCTP + MCTR;
+    momentUUConcrete = MCTP + MCTR;
 }
 
-void InternalForces::computeMomentYYConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
+void InternalForces::computeMomentVVConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
 PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
 {
     double coordLN = stressRegions.getNeutralAxisHeight(); // cm
@@ -195,7 +199,7 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
         }
     }
 
-    momentXXConcrete = MCTP + MCTR;
+    momentVVConcrete = MCTP + MCTR;
 }
 
 void InternalForces::computeNormalSteel(Polygon &polygon, Reinforcement &reinforcement, 
@@ -228,7 +232,7 @@ SteelProperties &steel, StrainDistribution &strainDistribution)
     normalSteel = NY;
 }
 
-void InternalForces::computeMomentXXSteel(Polygon &polygon, Reinforcement &reinforcement, 
+void InternalForces::computeMomentUUSteel(Polygon &polygon, Reinforcement &reinforcement, 
 SteelProperties &steel, StrainDistribution &strainDistribution)
 {
     const auto& reinforcementVertices = reinforcement.getReinforcement();
@@ -257,10 +261,10 @@ SteelProperties &steel, StrainDistribution &strainDistribution)
         mxx = mxx + (-ns * (reinforcementVertices[i].getY()/100)); // kN.m
     }
 
-    momentXXSteel = mxx;
+    momentUUSteel = mxx;
 }
 
-void InternalForces::computeMomentYYSteel(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, StrainDistribution &strainDistribution)
+void InternalForces::computeMomentVVSteel(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, StrainDistribution &strainDistribution)
 {
     const auto& reinforcementVertices = reinforcement.getReinforcement();
     const auto& areas = reinforcement.getAreas(); // cm²
@@ -285,10 +289,36 @@ void InternalForces::computeMomentYYSteel(Polygon &polygon, Reinforcement &reinf
         double stressReinforcement = steel.computeStress(strainReinforcement);
         double ns = stressReinforcement * areas[i] / 10; // kN
         
-        myy = myy + (-ns * (reinforcementVertices[i].getX()/100)); // kN.m
+        myy = myy + (ns * (reinforcementVertices[i].getX()/100)); // kN.m
     }
 
-    momentYYSteel = myy;
+    momentVVSteel = myy;
+}
+
+void InternalForces::computeMomentUUSection()
+{
+    momentUUSection = momentUUConcrete + momentUUSteel;
+}
+
+void InternalForces::computeMomentVVSection()
+{
+    momentVVSection = momentVVConcrete + momentVVSteel;
+}
+
+void InternalForces::computeMomentXXSection(double collectedAngle)
+{
+    double rad = collectedAngle * 3.14159265358979323846 / 180;
+	double cosAngle = cos(rad);
+	double sinAngle = sin(rad);
+    momentXXSection = (momentUUSection * cosAngle) + (momentVVSection * sinAngle);
+}
+
+void InternalForces::computeMomentYYSection(double collectedAngle)
+{
+    double rad = collectedAngle * 3.14159265358979323846 / 180;
+	double cosAngle = cos(rad);
+	double sinAngle = sin(rad);
+    momentYYSection = (-momentUUSection * sinAngle) + (momentVVSection * cosAngle);
 }
 
 void InternalForces::computeMaxCompression(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, ConcreteProperties &concrete)
@@ -335,12 +365,12 @@ double InternalForces::getNormalSection() const
 
 double InternalForces::getMomentXXSection() const
 {
-    return momentXXConcrete + momentXXSteel;
+    return momentXXSection;
 }
 
 double InternalForces::getMomentYYSection() const
 {
-    return momentYYConcrete + momentYYSteel;
+    return momentYYSection;
 }
 
 double InternalForces::getNormalConcrete() const
@@ -350,7 +380,7 @@ double InternalForces::getNormalConcrete() const
 
 double InternalForces::getMomentConcrete() const
 {
-    return momentXXConcrete;
+    return momentUUConcrete;
 }
 
 double InternalForces::getNormalSteel() const
@@ -360,7 +390,7 @@ double InternalForces::getNormalSteel() const
 
 double InternalForces::getMomentSteel() const
 {
-    return momentXXSteel;
+    return momentUUSteel;
 }
 
 double InternalForces::getMaxNormalCompression() const

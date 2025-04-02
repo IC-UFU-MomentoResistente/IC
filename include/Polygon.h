@@ -25,15 +25,16 @@ private:
 	double polygonArea;
 	double staticMomentX;
 	double staticMomentY;
+	double angle;
 
 public:
 	Polygon();
 
 	void setVertices(vector<Point> collectedVertices);
 	void addVertice(double coordX, double coordY);
+	void setAngle(double collectedAngle);
 	void removeLastVertice();
     void clearPolygonVertices();
-    void clearGeometricCenter();
     void computeMaxCoordY();
     void computeMinCoordY();
 	void computeHeight();
@@ -42,10 +43,11 @@ public:
 	void computeStaticMomentY();
 	void computeCentroid();
 	void translateToCentroid();
-	void rotateAroundCentroid(double angle);
+	void rotateAroundCentroid();
 
 	vector<Point> getPolygonVertices() const;
 	Point getGeometricCenter() const;
+	double getAngle() const;
 	double getMaxY() const;
 	double getMinY() const;
 	double getPolygonHeight() const;

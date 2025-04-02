@@ -106,7 +106,12 @@ double AnalyticalIntegration::computeMomentXXConcreteParabolic(double coordLN, d
             double n3 = nConc + 3;
             double eexp = pow(((g + xEpc2 - coordY) / xEpc2), n1);
 
-            double mcd1xx = (multFcd * fcd * (3 * coef1 * ((n1) * (n2) * (n3)*coordY * coordY + 2 * xEpc2 * eexp * (((g) + xEpc2) * (n3) + (3 + 4 * nConc + nConc * nConc) * coordY)) + 2 * coef2 * ((n1) * (n2) * (n3)*coordY * coordY * coordY + 3 * xEpc2 * eexp * (2 * (g) * (g) + 2 * xEpc2 * xEpc2 + 2 * xEpc2 * (n1)*coordY + (2 + 3 * nConc + nConc * nConc) * coordY * coordY + 2 * (g) * (2 * xEpc2 + (n1)*coordY))))) / (6 * (n1) * (n2) * (n3));
+            double mcd1xx = (multFcd * fcd * (3 * coef1 * ((n1) * (n2) * (n3)*coordY * coordY + 2 * xEpc2 * eexp * 
+            (((g) + xEpc2) * (n3) + (3 + 4 * nConc + nConc * nConc) * coordY)) + 2 * coef2 * 
+            ((n1) * (n2) * (n3)*coordY * coordY * coordY + 3 * xEpc2 * eexp * 
+            (2 * (g) * (g) + 2 * xEpc2 * xEpc2 + 2 * xEpc2 * (n1)*coordY + 
+            (2 + 3 * nConc + nConc * nConc) * coordY * coordY + 2 * (g) * (2 * xEpc2 + (n1)*coordY))))) / 
+            (6 * (n1) * (n2) * (n3));
 
             return mcd1xx * 1000;
 

@@ -10,6 +10,7 @@ Polygon::Polygon()
 	polygonArea = 0;
 	staticMomentX = 0;
 	staticMomentY = 0;
+	angle = 0;
 }
 
 void Polygon::setVertices(vector<Point> collectedVertices)
@@ -28,6 +29,11 @@ void Polygon::addVertice(double coordX, double coordY)
 	polygonVertices.push_back(Point(coordX, coordY));
 }
 
+void Polygon::setAngle(double collectedAngle)
+{
+	angle = collectedAngle;
+}
+
 void Polygon::removeLastVertice()
 {
 	polygonVertices.pop_back();
@@ -44,7 +50,6 @@ void Polygon::clearPolygonVertices()
 	staticMomentX = 0;
 	staticMomentY = 0;
 }
-
 
 void Polygon::computeMaxCoordY()
 {
@@ -162,7 +167,7 @@ void Polygon::translateToCentroid()
 	}
 }
 
-void Polygon::rotateAroundCentroid(double angle)
+void Polygon::rotateAroundCentroid()
 {
 	double rad = angle * 3.14159265358979323846 / 180;
 	double cosAngle = cos(rad);
@@ -187,6 +192,11 @@ vector<Point> Polygon::getPolygonVertices() const
 Point Polygon::getGeometricCenter() const
 {
 	return geometricCenter;
+}
+
+double Polygon::getAngle() const
+{
+    return angle;
 }
 
 double Polygon::getMaxY() const

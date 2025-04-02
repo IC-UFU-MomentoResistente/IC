@@ -13,11 +13,15 @@ class InternalForces
 {
 private:
     double normalConcrete;
-    double momentXXConcrete;
-    double momentYYConcrete;
+    double momentUUConcrete;
+    double momentVVConcrete;
     double normalSteel;
-    double momentXXSteel;
-    double momentYYSteel;
+    double momentUUSteel;
+    double momentVVSteel;
+    double momentUUSection;
+    double momentVVSection;
+    double momentXXSection;
+    double momentYYSection;
     double maxNormalCompression;
     double maxNormalTraction;
     double normalSolicitation;
@@ -28,16 +32,20 @@ public:
     void setNormalSolicitation(double Nsd);
     void computeNormalConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
                                PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution);
-    void computeMomentXXConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
+    void computeMomentUUConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete,
                                PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution);
-    void computeMomentYYConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete, 
+    void computeMomentVVConcrete(AnalyticalIntegration &analyticalIntegration, ConcreteProperties &concrete, 
                                 PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution);
     void computeNormalSteel(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel,
                             StrainDistribution &strainDistribution);
-    void computeMomentXXSteel(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, 
+    void computeMomentUUSteel(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, 
                             StrainDistribution &strainDistribution);
-    void computeMomentYYSteel(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, 
+    void computeMomentVVSteel(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, 
                             StrainDistribution &strainDistribution);
+    void computeMomentUUSection();
+    void computeMomentVVSection();
+    void computeMomentXXSection(double angle);
+    void computeMomentYYSection(double angle);
     void computeMaxCompression(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel, 
                                ConcreteProperties &concrete);
     void computeMaxTraction(Polygon &polygon, Reinforcement &reinforcement, SteelProperties &steel);

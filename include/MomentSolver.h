@@ -29,10 +29,6 @@ private:
 public:
     MomentSolver();
 
-    void solveEnvelopeMoment(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
-StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
-InternalForces &internalForces, double Nsd);
-
     void solveEquilibrium(Polygon &polygon, Reinforcement &reinforcement, ConcreteProperties &concrete, SteelProperties &steel, 
 StrainDistribution &strainDistribution, PolygonStressRegions &stressRegions, AnalyticalIntegration &analyticalIntegration,
 InternalForces &internalForces, double Nsd);

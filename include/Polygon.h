@@ -54,4 +54,8 @@ public:
 	double getPolygonArea() const;
 	double getVet0X() const;
 	double getVet0Y() const;
+    void SetNumPoints(int numPointsInput);
+    int GetNumPoints() const;
+    void GetTableData(int index, float *x, float *y) const;
+    void SetTableData(int index, float x, float y);
 };

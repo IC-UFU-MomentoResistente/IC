@@ -48,4 +48,5 @@ public:
     void EffortsTable(Section &section);
     void crossSectionTable(Section &section);
     void RightTablePos(const char * nome1, const char * nome2, float posY, Section & section);
+    void applyDarkElegantPlotStyle();
 };

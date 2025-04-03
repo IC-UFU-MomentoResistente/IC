@@ -813,9 +813,6 @@ void Interface::ReferenceValues()
         }
 }
 
-
-
-
 void Interface::effortSectionInterface(Section &section)
 {
     if (ImGui::BeginMenu("Esforços"))
@@ -825,28 +822,83 @@ void Interface::effortSectionInterface(Section &section)
         static double Nsd, Mx, My, eps1, eps2;
         static bool showPopUpErrorAxialForce = false;
         static bool showPopUpSolver = false;
+        static int tempNumPoints = 0;
+
 
         ImGui::Begin("Entrada de Dados: Esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
+        ImGui::PushItemWidth(100);
+        ImGui::InputInt("Numero de Combinações", &tempNumPoints);
+
+        if (tempNumPoints < 0)
+            tempNumPoints = 0;
+
+        if (tempNumPoints != section.combinations.size())
+        {
+            section.combinations.resize(tempNumPoints, Combination(0.0f, 0.0f, 0.0f));
+        }
+
         ImGui::PushItemWidth(50);
         ImGui::BeginGroup();
-        ImGui::InputDouble("N (kN)", &Nsd, 0.0f, 0.0f, "%.3f");
-        ImGui::InputDouble("Mx (kN.m)", &Mx, 0.0f, 0.0f, "%.3f");
         ImGui::InputDouble("eps1: (mm/m)", &eps1, 0.0f, 0.0f, "%.3f");
         ImGui::InputDouble("eps2: (mm/m)", &eps2, 0.0f, 0.0f, "%.3f");
         // ImGui::InputDouble("My (kN.m)", &My, 0.0f, 0.0f, "%.3f");
         ImGui::EndGroup();
 
-        if (ImGui::Button("Adicionar"))
+        if (ImGui::BeginTable("TabelaEsforcos", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
         {
-            section.combinations.emplace_back(Nsd, Mx, My);
+            ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 50.0f);
+            ImGui::TableSetupColumn("Nsd (kN)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
+            ImGui::TableSetupColumn("Mx (kN.m)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
+            ImGui::TableSetupColumn("My (kN.m)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
+            ImGui::TableHeadersRow();
+
+            for (int i = 0; i < section.combinations.size(); ++i)
+            {
+                ImGui::PushID(i);
+                ImGui::TableNextRow();
+
+                float nsd = section.combinations[i].Normal;
+                float mx = section.combinations[i].MsdX;
+                float my = section.combinations[i].MsdY;
+
+                // ID
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%d", i + 1);
+
+                // Nsd
+                ImGui::TableSetColumnIndex(1);
+                char labelN[16];
+                snprintf(labelN, sizeof(labelN), "##nsd%d", i);
+                if (ImGui::InputFloat(labelN, &nsd))
+                    section.combinations[i].Normal = nsd;
+
+                // Mx
+                ImGui::TableSetColumnIndex(2);
+                char labelMx[16];
+                snprintf(labelMx, sizeof(labelMx), "##mx%d", i);
+                if (ImGui::InputFloat(labelMx, &mx))
+                    section.combinations[i].MsdX = mx;
+                // My
+                ImGui::TableSetColumnIndex(3);
+                char labelMy[16];
+                snprintf(labelMy, sizeof(labelMy), "##my%d", i);
+                if (ImGui::InputFloat(labelMy, &my))
+                    section.combinations[i].MsdY = my;
+
+                ImGui::PopID();
+            }
+
+            ImGui::EndTable();
         }
 
-        ImGui::SameLine();
+        
+
         if (ImGui::Button("Remover"))
         {
 
             if (section.combinations.size() > 0)
                 section.combinations.pop_back();
+                tempNumPoints = tempNumPoints - 1;
         }
 
         ImGui::SameLine();
@@ -854,6 +906,7 @@ void Interface::effortSectionInterface(Section &section)
         {
             if (section.combinations.size() > 0)
                 section.combinations.clear();
+                tempNumPoints = 0;
         }
 
         ImGui::SameLine();
@@ -928,9 +981,6 @@ void Interface::effortSectionInterface(Section &section)
                 ImGui::EndPopup();
             }
         }
-
-        EffortsTable(section);
-
         ImGui::End();
         ImGui::EndMenu();
     }
@@ -1081,11 +1131,12 @@ void Interface::renderStrainSteelDiagram(const vector<Point> &vectorPoint, strin
 
 void Interface::EffortsTable(Section &section)
 {
-    if (ImGui::BeginTable("Tabela", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+    if (ImGui::BeginTable("Tabela", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
     {
-        ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 40.0f);
-        ImGui::TableSetupColumn("Normal (kN)", ImGuiTableColumnFlags_WidthFixed, 80.0f);
-        ImGui::TableSetupColumn("Momento em X (kN.m)", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 30.0f);
+        ImGui::TableSetupColumn("Nsd (kN)", ImGuiTableColumnFlags_WidthFixed, 50.0f);
+        ImGui::TableSetupColumn("Msd,x (kN.m)", ImGuiTableColumnFlags_WidthFixed, 85.0f);
+        ImGui::TableSetupColumn("Msd,y (kN.m)", ImGuiTableColumnFlags_WidthFixed, 85.0f);
         ImGui::TableHeadersRow();
 
         for (size_t i = 0; i < section.combinations.size(); ++i)
@@ -1097,8 +1148,8 @@ void Interface::EffortsTable(Section &section)
             ImGui::Text("%.3f", section.combinations[i].Normal);
             ImGui::TableSetColumnIndex(2);
             ImGui::Text("%.3f", section.combinations[i].MsdX);
-            // ImGui::TableSetColumnIndex(3);
-            // ImGui::Text("%.3f", section.reinforcement.getDiameters()[i]);
+            ImGui::TableSetColumnIndex(3);
+            ImGui::Text("%.3f", section.combinations[i].MsdY);
         }
         ImGui::EndTable();
     }
@@ -1187,3 +1238,4 @@ void Interface::applyDarkElegantPlotStyle() {
     style.MajorTickLen  = ImVec2(6, 6);
     style.MajorTickSize = ImVec2(1.0f, 1.0f);
 }
+

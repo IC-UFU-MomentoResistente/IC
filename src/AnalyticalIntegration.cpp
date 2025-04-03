@@ -165,31 +165,44 @@ double AnalyticalIntegration::computeMomentYYConcreteParabolic(double coordLN, d
             double n3 = nConc + 3;
             double eexp = pow(((g + xEpc2 - coordY) / xEpc2), n1);
 
-            double term1 = coef1 * coef1 * (
-                xEpc2 * (6 + 5 * nConc + nConc * nConc) * eexp +
-                n1 * n2 * n3 * coordY
-            );
+            // double term1 = coef1 * coef1 * (
+            //     xEpc2 * (6 + 5 * nConc + nConc * nConc) * eexp +
+            //     n1 * n2 * n3 * coordY
+            // );
 
-            double term2 = coef1 * coef2 * (
-                n1 * n2 * n3 * coordY * coordY +
-                2 * xEpc2 * eexp * (
-                    (g + xEpc2) * n3 + 
-                    (3 + 4 * nConc + nConc * nConc) * coordY
-                )
-            );
+            // double term2 = coef1 * coef2 * (
+            //     n1 * n2 * n3 * coordY * coordY +
+            //     2 * xEpc2 * eexp * (
+            //         (g + xEpc2) * n3 + 
+            //         (3 + 4 * nConc + nConc * nConc) * coordY
+            //     )
+            // );
 
-            double term3 = coef2 * coef2 * (
-                n1 * n2 * n3 * coordY * coordY * coordY +
-                3 * xEpc2 * eexp * (
-                    2 * g * g + 
-                    2 * xEpc2 * xEpc2 + 
-                    2 * xEpc2 * n1 * coordY +
-                    (2 + 3 * nConc + nConc * nConc) * coordY * coordY +
-                    2 * g * (2 * xEpc2 + n1 * coordY)
-                )
-            );
+            // double term3 = coef2 * coef2 * (
+            //     n1 * n2 * n3 * coordY * coordY * coordY +
+            //     3 * xEpc2 * eexp * (
+            //         2 * g * g + 
+            //         2 * xEpc2 * xEpc2 + 
+            //         2 * xEpc2 * n1 * coordY +
+            //         (2 + 3 * nConc + nConc * nConc) * coordY * coordY +
+            //         2 * g * (2 * xEpc2 + n1 * coordY)
+            //     )
+            // );
 
-            double mcd1yy = (multFcd * fcd * 3 * (term1 + term2 + term3)) / (6 * n1 * n2 * n3);
+            // double mcd1yy = (multFcd * fcd * 3 * (term1 + term2 + term3)) / (6 * n1 * n2 * n3);
+
+            double mcd1yy = (0.85*fcd*(3*coef1*coef1*(xEpc2*
+            (6+5*nConc+nConc*nConc)*eexp+
+            (n1)*(n2)*(n3)*coordY)+
+            3*coef1*coef2*((n1)*(n2)*(n3)*coordY*coordY+
+            2*xEpc2*eexp*(((g)+xEpc2)*(3+nConc)+
+            (3+4*nConc+nConc*nConc)*coordY))+
+            coef2*coef2*((n1)*(n2)*(n3)*coordY*coordY*coordY+
+            3*xEpc2*eexp*(2*(g)*(g)+
+            2*xEpc2*xEpc2+2*xEpc2*(n1)*coordY+
+            (2+3*nConc+nConc*nConc)*coordY*coordY+
+            2*(g)*(2*xEpc2+(n1)*coordY)))))/
+            (6*(n1)*(n2)*(n3));
 
             return mcd1yy * 1000; // kN.m
 

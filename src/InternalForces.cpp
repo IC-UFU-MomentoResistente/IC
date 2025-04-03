@@ -289,7 +289,7 @@ void InternalForces::computeMomentVVSteel(Polygon &polygon, Reinforcement &reinf
         double stressReinforcement = steel.computeStress(strainReinforcement);
         double ns = stressReinforcement * areas[i] / 10; // kN
         
-        myy = myy + (ns * (reinforcementVertices[i].getX()/100)); // kN.m
+        myy = myy + (-ns * (reinforcementVertices[i].getX()/100)); // kN.m
     }
 
     momentVVSteel = myy;
@@ -307,7 +307,7 @@ void InternalForces::computeMomentVVSection()
 
 void InternalForces::computeMomentXXSection(double collectedAngle)
 {
-    double rad = collectedAngle * 3.14159265358979323846 / 180;
+    double rad = -collectedAngle * 3.14159265358979323846 / 180;
 	double cosAngle = cos(rad);
 	double sinAngle = sin(rad);
     momentXXSection = (momentUUSection * cosAngle) + (momentVVSection * sinAngle);
@@ -315,7 +315,7 @@ void InternalForces::computeMomentXXSection(double collectedAngle)
 
 void InternalForces::computeMomentYYSection(double collectedAngle)
 {
-    double rad = collectedAngle * 3.14159265358979323846 / 180;
+    double rad = -collectedAngle * 3.14159265358979323846 / 180;
 	double cosAngle = cos(rad);
 	double sinAngle = sin(rad);
     momentYYSection = (-momentUUSection * sinAngle) + (momentVVSection * cosAngle);

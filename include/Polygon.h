@@ -35,6 +35,7 @@ public:
 	void setAngle(double collectedAngle);
 	void removeLastVertice();
     void clearPolygonVertices();
+    void clearGeometricCenter();
     void computeMaxCoordY();
     void computeMinCoordY();
 	void computeHeight();

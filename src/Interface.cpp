@@ -189,6 +189,7 @@ void Interface::crossSectionData(Section &section)
                 {
                     // Se o valor de x for alterado, atualiza o ponto correspondente
                     section.polygon.SetTableData(row, x, y); // Atualiza a coordenada 'x' diretamente no vetor
+                    ImPlot::SetNextAxesToFit();
                 }
 
                 // Exibe a coordenada Y
@@ -872,6 +873,9 @@ void Interface::effortSectionInterface(Section &section)
         ImGui::PushItemWidth(100);
         ImGui::InputInt("Numero de Combinações", &tempNumPoints);
 
+        ImGui::InputDouble("Angulo", &angle, 0.0f, 0.0f, "%.3f");
+        ImGui::InputDouble("Nsd (kN)", &Nsd, 0.0f, 0.0f, "%.3f");
+
         if (tempNumPoints < 0)
             tempNumPoints = 0;
 
@@ -976,7 +980,8 @@ void Interface::effortSectionInterface(Section &section)
             }
             else
             {
-                section.computeSectionEquilibriumSolver(Nsd);
+                //section.computeSectionEquilibriumSolver(Nsd);
+                section.computeSectionMomentEnvelope(Nsd);
                 showPopUpSolver = true;
                 ImGui::OpenPopup("Calculo do Momento Resistente");
             }
@@ -1052,13 +1057,28 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
     {
         if (section.polygon.getPolygonVertices().size() > 2)
         {
-
             renderPolygon(section.polygon.getPolygonVertices(), "Vertices", "Polygon");
             renderPolygon(section.stressRegions.getCompressedRegion().getPolygonVertices(), "vComp", "pComp");
             renderPolygon(section.stressRegions.getParabolicRegion().getPolygonVertices(), "vParab", "pParab");
             renderPolygon(section.stressRegions.getRectangularRegion().getPolygonVertices(), "vRec", "pRec");
             renderVectorPoint(section.reinforcement.getReinforcement(), "Barras");
         }
+
+        ImPlot::EndPlot();
+    }
+
+    ImGui::End();
+}
+
+void Interface::envelopeMomentsPlotInterface(Section &section)
+{
+    ImGui::Begin("Envoltoria", nullptr, ImGuiWindowFlags_NoTitleBar);
+
+    ImVec2 plotSize = ImGui::GetContentRegionAvail();
+
+    if (ImPlot::BeginPlot("Envoltoria de Momentos Resistentes", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit))
+    {
+        renderVectorPoint(section.envelopeMoments, "EnvelopeMoments");
 
         ImPlot::EndPlot();
     }

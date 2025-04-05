@@ -41,6 +41,7 @@ public:
     void ReferenceValues();
     void effortSectionInterface(Section &section);
     void crossSectionPlotInterface(Section &section, float posY);
+    void envelopeMomentsPlotInterface(Section &section);
     void renderPolygon(const vector<Point> &polygonVertices, string nameVertices, string namePolygon);
     void renderVectorPoint(const vector<Point> &vector, string nameReinforcement);
     void renderStrainConcreteRuptureDiagram(const vector<Point> &vectorPoint, string nameVectorPoint);

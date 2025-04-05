@@ -22,13 +22,12 @@ public:
 	void setReinforcement(vector<Point> collectedReinforcement, vector<double> collectedDiameters);
 	void addReinforcement(double coordX, double coordY, double diameter);
 	void removeLastReinforcement();
-	void removeLastBar();
 	void clearReinforcement();
 	void computeArea();
 	void translateToCentroidPolygon(Point centroid);
 	void rotateAroundCentroidPolygon(double angle, Point centroid);
 
 	vector<Point> getReinforcement() const;
-	vector<double> getDiameters() const;
-	vector<double> getAreas() const;
+    vector<double> getDiameters() const;
+    vector<double> getAreas() const;
 };

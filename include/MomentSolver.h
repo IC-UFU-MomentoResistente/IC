@@ -67,6 +67,7 @@ InternalForces &internalForces, double Nsd);
     int getIterations() const;
     bool isConverged() const;
     Point getMoment() const;
+    vector<Point> getEnvelope() const;
     double getTopFiberStrain() const;
     double getBottomFiberStrain() const;
 };

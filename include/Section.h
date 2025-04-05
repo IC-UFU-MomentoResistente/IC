@@ -28,8 +28,10 @@ public:
     AnalyticalIntegration analyticalIntegration;
     InternalForces internalForces;
     MomentSolver momentSolver;
-
+    
     std::vector<Combination> combinations;
+    std::vector<Point> envelopeMoments;
+
     Section();
 
     void setPolygon(Polygon collectedPolygon);
@@ -43,5 +45,6 @@ public:
     void setSectionProperties(Polygon collectedPolygon, Reinforcement collectedReinforcement, ConcreteProperties collectedConcrete,
     SteelProperties collectedSteel, NormativeIntegrationVersion modelVersion);
     void computeSectionEquilibriumSolver(double Nsd);
+    void computeSectionMomentEnvelope(double Nsd);
     void printSectionData();
 };

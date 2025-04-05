@@ -47,8 +47,8 @@ public:
 	void rotateAroundCentroid();
 
 	vector<Point> getPolygonVertices() const;
-	Point getGeometricCenter() const;
-	double getAngle() const;
+    Point getGeometricCenter() const;
+    double getAngle() const;
 	double getMaxY() const;
 	double getMinY() const;
 	double getPolygonHeight() const;

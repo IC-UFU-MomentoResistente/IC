@@ -153,7 +153,7 @@ void Polygon::translateToCentroid()
 
 void Polygon::rotateAroundCentroid()
 {
-    double rad = angle * M_PI / 180;
+    double rad = angle * 3.14159265358979323846 / 180;
     double cosAngle = cos(rad);
     double sinAngle = sin(rad);
 
@@ -161,6 +161,7 @@ void Polygon::rotateAroundCentroid()
     {
         double rotateX = (polygonVertices[i].getX() * cosAngle) - (polygonVertices[i].getY() * sinAngle);
         double rotateY = (polygonVertices[i].getX() * sinAngle) + (polygonVertices[i].getY() * cosAngle);
+        
         polygonVertices[i].setX(rotateX);
         polygonVertices[i].setY(rotateY);
     }

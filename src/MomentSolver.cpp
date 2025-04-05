@@ -20,9 +20,9 @@ void MomentSolver::solveEquilibrium(Polygon &polygon, Reinforcement &reinforceme
     double axialForceRegion12Sum = computeAxialForceResultant(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
                                                               analyticalIntegration, internalForces, eps1Region12, eps2Region12, Nsd);
 
-    std::cout << "eps1: " << strainDistribution.getTopFiberStrain() << std::endl;
-    std::cout << "eps2: " << strainDistribution.getBottomFiberStrain() << std::endl;
-    std::cout << "Soma limite regiao 1-2: " << axialForceRegion12Sum << std::endl;
+    // std::cout << "eps1: " << strainDistribution.getTopFiberStrain() << std::endl;
+    // std::cout << "eps2: " << strainDistribution.getBottomFiberStrain() << std::endl;
+    // std::cout << "Soma limite regiao 1-2: " << axialForceRegion12Sum << std::endl;
 
     const auto &vectorReinforcement = reinforcement.getReinforcement();
     double temp = 0;
@@ -42,27 +42,27 @@ void MomentSolver::solveEquilibrium(Polygon &polygon, Reinforcement &reinforceme
     double axialForceRegion23Sum = computeAxialForceResultant(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
                                                               analyticalIntegration, internalForces, eps1Region23, eps2Region23, Nsd);
 
-    std::cout << "eps1: " << strainDistribution.getTopFiberStrain() << std::endl;
-    std::cout << "eps2: " << strainDistribution.getBottomFiberStrain() << std::endl;
-    std::cout << "Soma limite regiao 2-3: " << axialForceRegion23Sum << std::endl;
+    // std::cout << "eps1: " << strainDistribution.getTopFiberStrain() << std::endl;
+    // std::cout << "eps2: " << strainDistribution.getBottomFiberStrain() << std::endl;
+    // std::cout << "Soma limite regiao 2-3: " << axialForceRegion23Sum << std::endl;
 
     if (axialForceRegion23Sum <= 0)
     {
-        std::cout << "Regiao 3" << std::endl;
+        //std::cout << "Regiao 3" << std::endl;
         // Mrd = iterateInRegion3(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
            //                    analyticalIntegration, internalForces, Nsd);
         Mrd = testRegion3(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions, analyticalIntegration, internalForces, Nsd);
     }
     else if (axialForceRegion12Sum <= 0)
     {
-        std::cout << "Regiao 2" << std::endl;
+        //std::cout << "Regiao 2" << std::endl;
         // Mrd = iterateInRegion2(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
         //                        analyticalIntegration, internalForces, Nsd);
         Mrd = testRegion2(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions, analyticalIntegration, internalForces, Nsd);
     }
     else
     {
-        std::cout << "Regiao 1" << std::endl;
+        //std::cout << "Regiao 1" << std::endl;
         // Mrd = iterateInRegion1(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
         //                        analyticalIntegration, internalForces, Nsd);
         Mrd = testRegion1(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions, analyticalIntegration, internalForces, Nsd);
@@ -101,7 +101,12 @@ Point MomentSolver::computeMomentResultant(Polygon &polygon, Reinforcement &rein
     setStrainDistribution(polygon, concrete, strainDistribution, strain1, strain2);
     setStressRegions(polygon, strainDistribution, stressRegions);
     setInternalForces(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions, analyticalIntegration, internalForces, Nsd);
-    return Point(internalForces.getMomentXXSection(), internalForces.getMomentYYSection());
+    double Mrdxx = internalForces.getMomentXXSection();
+    double Mrdyy = internalForces.getMomentYYSection();
+    Point result = {0, 0};
+    result.setX(Mrdxx);
+    result.setY(Mrdyy);
+    return result;
 }
 
 void MomentSolver::setStrainDistribution(Polygon &polygon, ConcreteProperties &concrete, StrainDistribution &strainDistribution,
@@ -135,8 +140,6 @@ void MomentSolver::setInternalForces(Polygon &polygon, Reinforcement &reinforcem
     internalForces.computeMomentVVSection();
     internalForces.computeMomentXXSection(polygon.getAngle());
     internalForces.computeMomentYYSection(polygon.getAngle());
-    internalForces.computeMaxCompression(polygon, reinforcement, steel, concrete);
-    internalForces.computeMaxTraction(polygon, reinforcement, steel);
 }
 
 double MomentSolver::findRootBrent(std::function<double(double)> func, double a, double b, double tol, int maxIter)

@@ -94,6 +94,52 @@ void Section::computeSectionEquilibriumSolver(double Nsd)
 {
     momentSolver.solveEquilibrium(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions, 
     analyticalIntegration, internalForces, Nsd);
+    envelopeMoments.push_back(momentSolver.getMoment());
+    // std::cout << "Mrdxx: " << momentSolver.getMoment().getX() << " kN*m" << std::endl;
+    // std::cout << "Mrdyy: " << momentSolver.getMoment().getY() << " kN*m" << std::endl;
+    // std::cout << "--------------------------------------------\n";
+}
+
+void Section::computeSectionMomentEnvelope(double Nsd)
+{
+    envelopeMoments.clear(); // limpar antes de começar
+
+    vector<double> angles = {0, 20, 40, 60, 80, 100, 120, 140, 160, 183, 200, 220, 240, 260, 280, 300, 320, 340};
+
+    Polygon originalPolygon = polygon;
+    Reinforcement originalReinforcement = reinforcement;
+
+    for (double angleDeg = 0; angleDeg <= 360; angleDeg += 3)
+    {   
+        Polygon workingPolygon = originalPolygon;
+        Reinforcement workingReinforcement = originalReinforcement;
+
+        workingPolygon.setAngle(angleDeg);
+        workingPolygon.translateToCentroid();
+        workingPolygon.rotateAroundCentroid();
+
+        workingReinforcement.translateToCentroidPolygon(workingPolygon.getGeometricCenter());
+        workingReinforcement.computeArea();
+        workingReinforcement.rotateAroundCentroidPolygon(angleDeg, workingPolygon.getGeometricCenter());
+
+        this->setPolygon(workingPolygon);
+        this->setReinforcement(workingReinforcement);
+
+        setStressRegions();
+
+        computeSectionEquilibriumSolver(Nsd);
+
+        Point moment = momentSolver.getMoment();
+
+        envelopeMoments.push_back(moment);
+
+        std::cout << "Angulo: " << angleDeg << " "
+        << "eps1: " << momentSolver.getTopFiberStrain() << " "
+        << "eps2: " << momentSolver.getBottomFiberStrain() << " "
+        << "Mrdxx: " << moment.getX() << " "
+        << "Mrdyy: " << moment.getY() << endl;
+        std::cout << "--------------------------------------------\n";
+    }
 }
 
 void Section::printSectionData()

@@ -36,6 +36,7 @@ int main()
 		ClearBackground(DARKGRAY);
 		rlImGuiBegin();
 
+		interface.envelopeMomentsPlotInterface(section);
 		interface.showPrimaryMenuBar();
 		interface.showSecondaryMenuBar(section);
 		interface.crossSectionPlotInterface(section, 56);

@@ -46,7 +46,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
         double x2 = parabolicRegion[j].getX() / 100; // m
         double y2 = parabolicRegion[j].getY() / 100; // m 
 
-        if (y1 - y2 != 0)
+        const double tolerance = 1e-9;
+        if (std::abs(y1 - y2) > tolerance)
         {
             double coef1 = (y1 * x2 - y2 * x1) / (y1 - y2); // m
             double coef2 = (x1 - x2) / (y1 - y2); // m
@@ -67,7 +68,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
         double x2 = rectangularRegion[j].getX() / 100; // m
         double y2 = rectangularRegion[j].getY() / 100; // m
 
-        if (y1 - y2 != 0)
+        const double tolerance = 1e-9;
+        if (std::abs(y1 - y2) > tolerance)
         {
             double coef1 = (y1 * x2 - y2 * x1) / (y1 - y2); // m
             double coef2 = (x1 - x2) / (y1 - y2); // m
@@ -106,7 +108,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
         double x2 = parabolicRegion[j].getX() / 100; // m
         double y2 = parabolicRegion[j].getY() / 100; // m
 
-        if (y1 - y2 != 0)
+        const double tolerance = 1e-9;
+        if (std::abs(y1 - y2) > tolerance)
         {
             double coef1 = (y1 * x2 - y2 * x1) / (y1 - y2); // m
             double coef2 = (x1 - x2) / (y1 - y2); // m
@@ -127,7 +130,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
         double x2 = rectangularRegion[j].getX() / 100; // m
         double y2 = rectangularRegion[j].getY() / 100; // m
 
-        if (y1 - y2 != 0)
+        const double tolerance = 1e-9;
+        if (std::abs(y1 - y2) > tolerance)
         {
             double coef1 = (y1 * x2 - y2 * x1) / (y1 - y2); // m
             double coef2 = (x1 - x2) / (y1 - y2); // m
@@ -166,7 +170,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
         double x2 = parabolicRegion[j].getX() / 100; // m
         double y2 = parabolicRegion[j].getY() / 100; // m
 
-        if (y1 - y2 != 0)
+        const double tolerance = 1e-9;
+        if (std::abs(y1 - y2) > tolerance)
         {
             double coef1 = (y1 * x2 - y2 * x1) / (y1 - y2); // m
             double coef2 = (x1 - x2) / (y1 - y2); // m
@@ -187,7 +192,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
         double x2 = rectangularRegion[j].getX() / 100; // m
         double y2 = rectangularRegion[j].getY() / 100; // m
 
-        if (y1 - y2 != 0)
+        const double tolerance = 1e-9;
+        if (std::abs(y1 - y2) > tolerance)
         {
             double coef1 = (y1 * x2 - y2 * x1) / (y1 - y2); // m
             double coef2 = (x1 - x2) / (y1 - y2); // m

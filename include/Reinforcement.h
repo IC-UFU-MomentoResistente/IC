@@ -25,7 +25,7 @@ public:
 	void clearReinforcement();
 	void computeArea();
 	void translateToCentroidPolygon(Point centroid);
-	void rotateAroundCentroidPolygon(double angle, Point centroid);
+	void rotateAroundCentroidPolygon(double angle);
 
 	vector<Point> getReinforcement() const;
     vector<double> getDiameters() const;

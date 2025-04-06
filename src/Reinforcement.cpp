@@ -2,9 +2,9 @@
 
 Reinforcement::Reinforcement()
 {
-	vector<Point> reinforcement = {};
-	vector<double> diameters = {};
-	vector<double> areas = {};
+	reinforcement = {};
+	diameters = {};
+	areas = {};
 }
 
 void Reinforcement::setReinforcement(vector<Point> collectedReinforcement, vector<double> collectedDiameters)
@@ -64,7 +64,7 @@ void Reinforcement::translateToCentroidPolygon(Point centroid)
 	}
 }
 
-void Reinforcement::rotateAroundCentroidPolygon(double angle, Point centroid)
+void Reinforcement::rotateAroundCentroidPolygon(double angle)
 {
 	double rad = angle * 3.14159265358979323846 / 180;
 	double cosAngle = cos(rad);
@@ -74,7 +74,7 @@ void Reinforcement::rotateAroundCentroidPolygon(double angle, Point centroid)
 	{
 		double rotateX = (reinforcement[i].getX() * cosAngle) - (reinforcement[i].getY() * sinAngle);
 		double rotateY = (reinforcement[i].getX() * sinAngle) + (reinforcement[i].getY() * cosAngle);
-
+		
 		reinforcement[i].setX(rotateX);
 		reinforcement[i].setY(rotateY);
 	}

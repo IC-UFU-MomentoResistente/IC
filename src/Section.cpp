@@ -67,7 +67,7 @@ void Section::applyAngleandCenterline(double angleDegrees)
     workingReinforcement.rotateAroundCentroidPolygon(angleDegrees);
 }
 
-void Section::computeEquilibrium(double Nsd, double eps1, double eps2)
+void Section::verifyEquilibrium(double Nsd, double eps1, double eps2)
 {
     strainDistribution.setStrain(eps1, eps2);
     strainDistribution.computeStrainDistribution(
@@ -95,6 +95,24 @@ void Section::computeEquilibrium(double Nsd, double eps1, double eps2)
     internalForces.computeMomentYYSection(workingPolygon.getAngle());
     internalForces.computeMaxCompression(workingPolygon, workingReinforcement, steel, concrete);
     internalForces.computeMaxTraction(workingPolygon, workingReinforcement, steel);
+}
+
+void Section::computeEquilibrium(double Nsd, double eps1, double eps2)
+{
+    verifyEquilibrium(Nsd, +0.003, -0.003); // eps1, eps2
+
+    momentSolver.solveEquilibrium(
+        workingPolygon, workingReinforcement, concrete, steel,
+        strainDistribution, stressRegions, analyticalIntegration,
+        internalForces, Nsd);
+
+    std::cout << "--------------------------------------------\n";
+    std::cout << "Angulo: " << workingPolygon.getAngle() << "; "
+                  << "eps1: " << momentSolver.getTopFiberStrain() << "; "
+                  << "eps2: " << momentSolver.getBottomFiberStrain() << "; "
+                  << "Mrdxx: " << momentSolver.getMoment().getX() << "; "
+                  << "Mrdyy: " << momentSolver.getMoment().getY() << endl;
+    std::cout << "--------------------------------------------\n";
 }
 
 void Section::computeEnvelope(double Nsd)

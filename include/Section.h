@@ -43,6 +43,7 @@ public:
     void resetWorkingState();
     void applyAngleandCenterline(double angleDegrees);
 
+    void verifyEquilibrium(double Nsd, double eps1, double eps2);
     void computeEquilibrium(double Nsd, double eps1, double eps2);
     void computeEnvelope(double Nsd);
 

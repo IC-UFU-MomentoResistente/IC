@@ -94,3 +94,31 @@ vector<double> Reinforcement::getAreas() const
 {
 	return areas;
 }
+
+void Reinforcement::SetNumPoints(int numPointsInput)
+{
+    if (numPointsInput < 0) numPointsInput = 0;
+    reinforcement.resize(numPointsInput);  // Ajusta o tamanho do vetor de vértices
+	diameters.resize(numPointsInput);  // Ajusta o tamanho do vetor de diâmetros
+}
+
+int Reinforcement::GetNumPoints() const
+{
+    return reinforcement.size();  // Retorna o número de pontos
+}
+
+void Reinforcement::GetTableData(int index, double* x, double* y, double* d) const
+{
+    if (index < 0 || index >= GetNumPoints()) return;
+    *x = reinforcement[index].getX();  // Obtém a coordenada X do vértice
+    *y = reinforcement[index].getY();  // Obtém a coordenada Y do vértice
+	*d = diameters[index];  // Obtém o diâmetro do vértice
+}
+
+void Reinforcement::SetTableData(int index, double x, double y, double d)
+{
+    if (index < 0 || index >= GetNumPoints()) return;
+    reinforcement[index].setX(x);  // Define a coordenada X do vértice
+    reinforcement[index].setY(y);  // Define a coordenada Y do vértice
+	diameters[index] = d;  // Define o diâmetro do vértice
+}

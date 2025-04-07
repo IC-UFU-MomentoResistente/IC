@@ -31,4 +31,8 @@ public:
 	vector<Point> getReinforcement() const;
 	vector<double> getDiameters() const;
 	vector<double> getAreas() const;
+    void SetNumPoints(int numPointsInput);
+    int GetNumPoints() const;
+    void GetTableData(int index, double *x, double *y, double *d) const;
+    void SetTableData(int index, double x, double y, double d);
 };

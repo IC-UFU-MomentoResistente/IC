@@ -996,10 +996,15 @@ void Interface::effortSectionInterface(Section &section)
             }
             else
             {
-                // section.computeEquilibrium(Nsd, eps1, eps2);
-                section.computeEnvelope(Nsd);
-                showPopUpSolver = true;
-                ImGui::OpenPopup("Calculo do Momento Resistente");
+
+                for(size_t i = 0; i < section.combinations.size(); i++) 
+                {
+                    section.resetWorkingState();
+                    section.computeEnvelope(section.combinations[i].Normal);
+                    showPopUpSolver = true;
+                    ImGui::OpenPopup("Calculo do Momento Resistente");
+                }
+                
             }
         }
 

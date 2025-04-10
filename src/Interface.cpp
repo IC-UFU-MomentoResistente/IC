@@ -1120,8 +1120,9 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
 {
     ImGuiIO &io = ImGui::GetIO();
 
-    float largura = io.DisplaySize.x - 300.0f; // considerando a janela da direita com 300px
-    float altura = io.DisplaySize.y - posY;    // altura que sobra a partir de posY
+    float largura = io.DisplaySize.x - 300.0f;
+    float alturaDisponivel = io.DisplaySize.y - posY;
+    float altura = alturaDisponivel * 0.6f; // 60%
 
     ImGui::SetNextWindowPos(ImVec2(0, posY), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(largura, altura), ImGuiCond_Always);
@@ -1135,6 +1136,7 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
 
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
+    
     if (ImPlot::BeginPlot("Gráfico da Seção Transversal", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit))
     {
         if (section.workingPolygon.getPolygonVertices().size() > 2)
@@ -1152,9 +1154,24 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
     ImGui::End();
 }
 
-void Interface::envelopeMomentsPlotInterface(Section &section)
+
+void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
 {
-    ImGui::Begin("Envoltoria", nullptr, ImGuiWindowFlags_NoTitleBar);
+    ImGuiIO &io = ImGui::GetIO();
+
+    float largura = io.DisplaySize.x - 300.0f;
+    float alturaDisponivel = io.DisplaySize.y - posY;
+    float altura = alturaDisponivel * 0.4f; // 40%
+    float novaPosY = posY + alturaDisponivel * 0.6f; // começa logo após a primeira janela
+
+    ImGui::SetNextWindowPos(ImVec2(0, novaPosY), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(largura, altura), ImGuiCond_Always);
+
+    ImGui::Begin("Envoltoria", nullptr,
+                 ImGuiWindowFlags_NoMove |
+                     ImGuiWindowFlags_NoResize |
+                     ImGuiWindowFlags_NoCollapse |
+                     ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
@@ -1379,3 +1396,4 @@ void Interface::applyDarkElegantPlotStyle()
     style.MajorTickLen = ImVec2(6, 6);
     style.MajorTickSize = ImVec2(1.0f, 1.0f);
 }
+

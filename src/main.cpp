@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 
 #include "raylib.h"
@@ -25,6 +26,17 @@ using std::vector;
 
 int main()
 {
+	std::ofstream logFile("log_resultados.txt");
+
+	if (!logFile.is_open())
+	{
+		std::cerr << "Erro ao abrir o arquivo de log" << std::endl;
+		return 1;
+	}
+
+	std::streambuf* coutbuf = std::cout.rdbuf();
+	std::cout.rdbuf(logFile.rdbuf());
+
 	Section section;
 	Interface interface;
 
@@ -36,7 +48,6 @@ int main()
 		ClearBackground(DARKGRAY);
 		rlImGuiBegin();
 
-		
 		interface.showPrimaryMenuBar();
 		interface.showSecondaryMenuBar(section);
 		interface.crossSectionPlotInterface(section, 56);
@@ -54,6 +65,10 @@ int main()
 	ImPlot::DestroyContext();
 	rlImGuiShutdown();
 	CloseWindow();
+
+	std::cout.rdbuf(coutbuf);
+
+	logFile.close();
 
 	return 0;
 }

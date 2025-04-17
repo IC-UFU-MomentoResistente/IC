@@ -1,0 +1,3433 @@
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 26.5145
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 26.5145
+d: 47.5
+sumNormal(comp+trac-Nsd): 1412.23
+eps1: -3.5
+eps2: 10.7105
+Soma limite regiao 2-3: 1412.23
+Regiao 1
+sumNormal(comp+trac-Nsd): 26.5145
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 26.5145
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -238.555
+sumNormal(comp+trac-Nsd): 16.174
+sumNormal(comp+trac-Nsd): -0.148943
+sumNormal(comp+trac-Nsd): 7.96888
+sumNormal(comp+trac-Nsd): 3.89906
+sumNormal(comp+trac-Nsd): 1.87233
+sumNormal(comp+trac-Nsd): 0.861014
+sumNormal(comp+trac-Nsd): 0.355865
+sumNormal(comp+trac-Nsd): 0.103419
+sumNormal(comp+trac-Nsd): -1.03041e-05
+sumNormal(comp+trac-Nsd): 0.0517024
+--------------------------------------------
+Angulo: 0; eps1: -3.43979; eps2: -0.0802762; Mrdxx: 52.0569; Mrdyy: 4.08007e-15
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 22.4384
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 22.4384
+d: 48.7433
+sumNormal(comp+trac-Nsd): 1467.97
+eps1: -3.5
+eps2: 10.7277
+Soma limite regiao 2-3: 1467.97
+Regiao 1
+sumNormal(comp+trac-Nsd): 22.4384
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 22.4384
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -239.853
+sumNormal(comp+trac-Nsd): 13.9881
+sumNormal(comp+trac-Nsd): -0.111389
+sumNormal(comp+trac-Nsd): 6.90571
+sumNormal(comp+trac-Nsd): 3.389
+sumNormal(comp+trac-Nsd): 1.63676
+sumNormal(comp+trac-Nsd): 0.762177
+sumNormal(comp+trac-Nsd): 0.325266
+sumNormal(comp+trac-Nsd): 0.106907
+sumNormal(comp+trac-Nsd): -7.9678e-06
+--------------------------------------------
+Angulo: 3; eps1: -3.44854; eps2: -0.0686193; Mrdxx: 51.719; Mrdyy: 0.392551
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 18.8279
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 18.8279
+d: 49.853
+sumNormal(comp+trac-Nsd): 1525.03
+eps1: -3.5
+eps2: 10.744
+Soma limite regiao 2-3: 1525.03
+Regiao 1
+sumNormal(comp+trac-Nsd): 18.8279
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 18.8279
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -241.022
+sumNormal(comp+trac-Nsd): 11.974
+sumNormal(comp+trac-Nsd): -0.0815921
+sumNormal(comp+trac-Nsd): 5.92225
+sumNormal(comp+trac-Nsd): 2.91434
+sumNormal(comp+trac-Nsd): 1.41488
+sumNormal(comp+trac-Nsd): 0.666269
+sumNormal(comp+trac-Nsd): 0.292245
+sumNormal(comp+trac-Nsd): 0.105303
+sumNormal(comp+trac-Nsd): 0.0118497
+--------------------------------------------
+Angulo: 6; eps1: -3.45654; eps2: -0.0579495; Mrdxx: 51.3799; Mrdyy: 0.778141
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 15.6303
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 15.6303
+d: 50.8261
+sumNormal(comp+trac-Nsd): 1582.79
+eps1: -3.5
+eps2: 10.7597
+Soma limite regiao 2-3: 1582.79
+Regiao 1
+sumNormal(comp+trac-Nsd): 15.6303
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 15.6303
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -242.075
+sumNormal(comp+trac-Nsd): 10.1252
+sumNormal(comp+trac-Nsd): -0.0583076
+sumNormal(comp+trac-Nsd): 5.01633
+sumNormal(comp+trac-Nsd): 2.47473
+sumNormal(comp+trac-Nsd): 1.20714
+sumNormal(comp+trac-Nsd): 0.574148
+sumNormal(comp+trac-Nsd): 0.257854
+sumNormal(comp+trac-Nsd): 0.0997562
+sumNormal(comp+trac-Nsd): 0.0207202
+--------------------------------------------
+Angulo: 9; eps1: -3.46372; eps2: -0.0483728; Mrdxx: 51.0218; Mrdyy: 1.15897
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 12.8085
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 12.8085
+d: 51.6598
+sumNormal(comp+trac-Nsd): 1641.02
+eps1: -3.5
+eps2: 10.7749
+Soma limite regiao 2-3: 1641.02
+Regiao 1
+sumNormal(comp+trac-Nsd): 12.8085
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 12.8085
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -243.025
+sumNormal(comp+trac-Nsd): 8.44002
+sumNormal(comp+trac-Nsd): -0.040479
+sumNormal(comp+trac-Nsd): 4.18786
+sumNormal(comp+trac-Nsd): 2.07071
+sumNormal(comp+trac-Nsd): 1.01437
+sumNormal(comp+trac-Nsd): 0.486761
+sumNormal(comp+trac-Nsd): 0.223095
+sumNormal(comp+trac-Nsd): 0.0912961
+sumNormal(comp+trac-Nsd): 0.0254057
+--------------------------------------------
+Angulo: 12; eps1: -3.47013; eps2: -0.0398274; Mrdxx: 50.641; Mrdyy: 1.53745
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 10.3411
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 10.3411
+d: 52.352
+sumNormal(comp+trac-Nsd): 1697.47
+eps1: -3.5
+eps2: 10.7896
+Soma limite regiao 2-3: 1697.47
+Regiao 1
+sumNormal(comp+trac-Nsd): 10.3411
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 10.3411
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -243.879
+sumNormal(comp+trac-Nsd): 6.92265
+sumNormal(comp+trac-Nsd): -0.0272006
+sumNormal(comp+trac-Nsd): 3.43971
+sumNormal(comp+trac-Nsd): 1.70425
+sumNormal(comp+trac-Nsd): 0.838024
+sumNormal(comp+trac-Nsd): 0.405287
+sumNormal(comp+trac-Nsd): 0.189012
+sumNormal(comp+trac-Nsd): 0.0808977
+sumNormal(comp+trac-Nsd): 0.0268466
+--------------------------------------------
+Angulo: 15; eps1: -3.47579; eps2: -0.032283; Mrdxx: 50.2327; Mrdyy: 1.91655
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 8.2231
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 8.2231
+d: 52.9006
+sumNormal(comp+trac-Nsd): 1748.82
+eps1: -3.5
+eps2: 10.8039
+Soma limite regiao 2-3: 1748.82
+Regiao 1
+sumNormal(comp+trac-Nsd): 8.2231
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 8.2231
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -244.64
+sumNormal(comp+trac-Nsd): 5.58588
+sumNormal(comp+trac-Nsd): -0.0176825
+sumNormal(comp+trac-Nsd): 2.77888
+sumNormal(comp+trac-Nsd): 1.37929
+sumNormal(comp+trac-Nsd): 0.680479
+sumNormal(comp+trac-Nsd): 0.331317
+sumNormal(comp+trac-Nsd): 0.156797
+sumNormal(comp+trac-Nsd): 0.069552
+--------------------------------------------
+Angulo: 18; eps1: -3.48079; eps2: -0.0256163; Mrdxx: 49.799; Mrdyy: 2.30048
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 6.47095
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 6.47095
+d: 53.3043
+sumNormal(comp+trac-Nsd): 1791.41
+eps1: -3.5
+eps2: 10.818
+Soma limite regiao 2-3: 1791.41
+Regiao 1
+sumNormal(comp+trac-Nsd): 6.47095
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 6.47095
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -245.304
+sumNormal(comp+trac-Nsd): 4.45509
+sumNormal(comp+trac-Nsd): -0.0112252
+sumNormal(comp+trac-Nsd): 2.21861
+sumNormal(comp+trac-Nsd): 1.10286
+sumNormal(comp+trac-Nsd): 0.54561
+sumNormal(comp+trac-Nsd): 0.26714
+sumNormal(comp+trac-Nsd): 0.127945
+sumNormal(comp+trac-Nsd): 0.0583565
+--------------------------------------------
+Angulo: 21; eps1: -3.48485; eps2: -0.0202058; Mrdxx: 49.3062; Mrdyy: 2.69433
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 5.13102
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 5.13102
+d: 53.5618
+sumNormal(comp+trac-Nsd): 1824.08
+eps1: -3.5
+eps2: 10.8319
+Soma limite regiao 2-3: 1824.08
+Regiao 1
+sumNormal(comp+trac-Nsd): 5.13102
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 5.13102
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -245.862
+sumNormal(comp+trac-Nsd): 3.57573
+sumNormal(comp+trac-Nsd): -0.00721218
+sumNormal(comp+trac-Nsd): 1.78212
+sumNormal(comp+trac-Nsd): 0.886917
+sumNormal(comp+trac-Nsd): 0.439719
+sumNormal(comp+trac-Nsd): 0.21622
+sumNormal(comp+trac-Nsd): 0.104495
+sumNormal(comp+trac-Nsd): 0.0486395
+--------------------------------------------
+Angulo: 24; eps1: -3.48797; eps2: -0.0160454; Mrdxx: 48.747; Mrdyy: 3.10761
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 4.28453
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 4.28453
+d: 53.6726
+sumNormal(comp+trac-Nsd): 1849.73
+eps1: -3.5
+eps2: 10.8458
+Soma limite regiao 2-3: 1849.73
+Regiao 1
+sumNormal(comp+trac-Nsd): 4.28453
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 4.28453
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -246.295
+sumNormal(comp+trac-Nsd): 3.01779
+sumNormal(comp+trac-Nsd): -0.00511937
+sumNormal(comp+trac-Nsd): 1.50481
+sumNormal(comp+trac-Nsd): 0.749464
+sumNormal(comp+trac-Nsd): 0.372077
+sumNormal(comp+trac-Nsd): 0.183455
+sumNormal(comp+trac-Nsd): 0.0891618
+--------------------------------------------
+Angulo: 27; eps1: -3.49006; eps2: -0.0132542; Mrdxx: 48.1025; Mrdyy: 3.55443
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 4.03567
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 4.03567
+d: 53.6362
+sumNormal(comp+trac-Nsd): 1870.48
+eps1: -3.5
+eps2: 10.8596
+Soma limite regiao 2-3: 1870.48
+Regiao 1
+sumNormal(comp+trac-Nsd): 4.03567
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 4.03567
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -246.578
+sumNormal(comp+trac-Nsd): 2.86785
+sumNormal(comp+trac-Nsd): -0.00460251
+sumNormal(comp+trac-Nsd): 1.43025
+sumNormal(comp+trac-Nsd): 0.712477
+sumNormal(comp+trac-Nsd): 0.353851
+sumNormal(comp+trac-Nsd): 0.174603
+sumNormal(comp+trac-Nsd): 0.0849947
+--------------------------------------------
+Angulo: 30; eps1: -3.49065; eps2: -0.0124716; Mrdxx: 47.3163; Mrdyy: 4.04933
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 4.5137
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 4.5137
+d: 53.4528
+sumNormal(comp+trac-Nsd): 1887.67
+eps1: -3.5
+eps2: 10.8734
+Soma limite regiao 2-3: 1887.67
+Regiao 1
+sumNormal(comp+trac-Nsd): 4.5137
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 4.5137
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -246.679
+sumNormal(comp+trac-Nsd): 3.22923
+sumNormal(comp+trac-Nsd): -0.00580161
+sumNormal(comp+trac-Nsd): 1.60997
+sumNormal(comp+trac-Nsd): 0.801645
+sumNormal(comp+trac-Nsd): 0.397812
+sumNormal(comp+trac-Nsd): 0.195978
+sumNormal(comp+trac-Nsd): 0.0950814
+--------------------------------------------
+Angulo: 33; eps1: -3.48957; eps2: -0.0139128; Mrdxx: 46.3594; Mrdyy: 4.60991
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 5.8823
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 5.8823
+d: 53.1229
+sumNormal(comp+trac-Nsd): 1902.2
+eps1: -3.5
+eps2: 10.8874
+Soma limite regiao 2-3: 1902.2
+Regiao 1
+sumNormal(comp+trac-Nsd): 5.8823
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 5.8823
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -246.56
+sumNormal(comp+trac-Nsd): 4.2257
+sumNormal(comp+trac-Nsd): -0.00986064
+sumNormal(comp+trac-Nsd): 2.10492
+sumNormal(comp+trac-Nsd): 1.04678
+sumNormal(comp+trac-Nsd): 0.518272
+sumNormal(comp+trac-Nsd): 0.254159
+sumNormal(comp+trac-Nsd): 0.122138
+sumNormal(comp+trac-Nsd): 0.0561355
+--------------------------------------------
+Angulo: 36; eps1: -3.48631; eps2: -0.0182578; Mrdxx: 45.1686; Mrdyy: 5.25422
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 8.35182
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 8.35182
+d: 52.6474
+sumNormal(comp+trac-Nsd): 1914.69
+eps1: -3.5
+eps2: 10.9016
+Soma limite regiao 2-3: 1914.69
+Regiao 1
+sumNormal(comp+trac-Nsd): 8.35182
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 8.35182
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -246.168
+sumNormal(comp+trac-Nsd): 6.00472
+sumNormal(comp+trac-Nsd): -0.0197241
+sumNormal(comp+trac-Nsd): 2.98644
+sumNormal(comp+trac-Nsd): 1.48185
+sumNormal(comp+trac-Nsd): 0.730682
+sumNormal(comp+trac-Nsd): 0.355384
+sumNormal(comp+trac-Nsd): 0.167807
+sumNormal(comp+trac-Nsd): 0.0740353
+--------------------------------------------
+Angulo: 39; eps1: -3.48069; eps2: -0.0257477; Mrdxx: 43.7067; Mrdyy: 6.00515
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 12.1761
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 12.1761
+d: 52.0276
+sumNormal(comp+trac-Nsd): 1925.58
+eps1: -3.5
+eps2: 10.9161
+Soma limite regiao 2-3: 1925.58
+Regiao 1
+sumNormal(comp+trac-Nsd): 12.1761
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 12.1761
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -245.442
+sumNormal(comp+trac-Nsd): 8.72575
+sumNormal(comp+trac-Nsd): -0.0411642
+sumNormal(comp+trac-Nsd): 4.32951
+sumNormal(comp+trac-Nsd): 2.14098
+sumNormal(comp+trac-Nsd): 1.04911
+sumNormal(comp+trac-Nsd): 0.503771
+sumNormal(comp+trac-Nsd): 0.231254
+sumNormal(comp+trac-Nsd): 0.0950322
+sumNormal(comp+trac-Nsd): 0.0269309
+--------------------------------------------
+Angulo: 42; eps1: -3.47196; eps2: -0.0373897; Mrdxx: 41.8843; Mrdyy: 6.88122
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 17.6249
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 17.6249
+d: 51.2652
+sumNormal(comp+trac-Nsd): 1935.2
+eps1: -3.5
+eps2: 10.931
+Soma limite regiao 2-3: 1935.2
+Regiao 1
+sumNormal(comp+trac-Nsd): 17.6249
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 17.6249
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -244.315
+sumNormal(comp+trac-Nsd): 12.5264
+sumNormal(comp+trac-Nsd): -0.0836318
+sumNormal(comp+trac-Nsd): 6.19504
+sumNormal(comp+trac-Nsd): 3.04912
+sumNormal(comp+trac-Nsd): 1.4811
+sumNormal(comp+trac-Nsd): 0.698321
+sumNormal(comp+trac-Nsd): 0.307242
+sumNormal(comp+trac-Nsd): 0.111779
+sumNormal(comp+trac-Nsd): 0.0140672
+--------------------------------------------
+Angulo: 45; eps1: -3.45993; eps2: -0.0534229; Mrdxx: 39.6701; Mrdyy: 7.89731
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 24.993
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 24.993
+d: 50.3623
+sumNormal(comp+trac-Nsd): 1943.79
+eps1: -3.5
+eps2: 10.9464
+Soma limite regiao 2-3: 1943.79
+Regiao 1
+sumNormal(comp+trac-Nsd): 24.993
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 24.993
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -242.716
+sumNormal(comp+trac-Nsd): 17.5106
+sumNormal(comp+trac-Nsd): -0.160692
+sumNormal(comp+trac-Nsd): 8.62349
+sumNormal(comp+trac-Nsd): 4.21854
+sumNormal(comp+trac-Nsd): 2.02571
+sumNormal(comp+trac-Nsd): 0.931703
+sumNormal(comp+trac-Nsd): 0.385304
+sumNormal(comp+trac-Nsd): 0.112256
+sumNormal(comp+trac-Nsd): -1.21675e-05
+sumNormal(comp+trac-Nsd): 0.0561197
+--------------------------------------------
+Angulo: 48; eps1: -3.44431; eps2: -0.0742483; Mrdxx: 37.0299; Mrdyy: 9.05992
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 34.6229
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 34.6229
+d: 49.3214
+sumNormal(comp+trac-Nsd): 1951.53
+eps1: -3.5
+eps2: 10.9624
+Soma limite regiao 2-3: 1951.53
+Regiao 1
+sumNormal(comp+trac-Nsd): 34.6229
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 34.6229
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -240.561
+sumNormal(comp+trac-Nsd): 23.739
+sumNormal(comp+trac-Nsd): -0.289672
+sumNormal(comp+trac-Nsd): 11.6302
+sumNormal(comp+trac-Nsd): 5.64662
+sumNormal(comp+trac-Nsd): 2.67257
+sumNormal(comp+trac-Nsd): 1.18997
+sumNormal(comp+trac-Nsd): 0.449781
+sumNormal(comp+trac-Nsd): 0.0799625
+sumNormal(comp+trac-Nsd): -1.56448e-05
+--------------------------------------------
+Angulo: 51; eps1: -3.42446; eps2: -0.100714; Mrdxx: 33.9117; Mrdyy: 10.3646
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 46.9275
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 46.9275
+d: 48.1452
+sumNormal(comp+trac-Nsd): 1958.59
+eps1: -3.5
+eps2: 10.9792
+Soma limite regiao 2-3: 1958.59
+Regiao 1
+sumNormal(comp+trac-Nsd): 46.9275
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 46.9275
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -237.748
+sumNormal(comp+trac-Nsd): 31.2117
+sumNormal(comp+trac-Nsd): -0.490075
+sumNormal(comp+trac-Nsd): 15.1977
+sumNormal(comp+trac-Nsd): 7.31301
+sumNormal(comp+trac-Nsd): 3.40127
+sumNormal(comp+trac-Nsd): 1.45305
+sumNormal(comp+trac-Nsd): 0.48085
+sumNormal(comp+trac-Nsd): -0.000159315
+sumNormal(comp+trac-Nsd): 0.240306
+sumNormal(comp+trac-Nsd): 0.120064
+sumNormal(comp+trac-Nsd): 0.0599497
+--------------------------------------------
+Angulo: 54; eps1: -3.40063; eps2: -0.132492; Mrdxx: 30.3423; Mrdyy: 11.8123
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 62.4184
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 62.4184
+d: 46.8371
+sumNormal(comp+trac-Nsd): 1965.06
+eps1: -3.5
+eps2: 10.9968
+Soma limite regiao 2-3: 1965.06
+Regiao 1
+sumNormal(comp+trac-Nsd): 62.4184
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 62.4184
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -234.151
+sumNormal(comp+trac-Nsd): 39.8431
+sumNormal(comp+trac-Nsd): -0.780365
+sumNormal(comp+trac-Nsd): 19.2659
+sumNormal(comp+trac-Nsd): 9.17642
+sumNormal(comp+trac-Nsd): 4.18144
+sumNormal(comp+trac-Nsd): 1.69639
+sumNormal(comp+trac-Nsd): 0.456975
+sumNormal(comp+trac-Nsd): -0.000241502
+sumNormal(comp+trac-Nsd): 0.228331
+sumNormal(comp+trac-Nsd): 0.114036
+sumNormal(comp+trac-Nsd): 0.0568951
+--------------------------------------------
+Angulo: 57; eps1: -3.37223; eps2: -0.170358; Mrdxx: 26.2918; Mrdyy: 13.3871
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 81.7413
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 81.7413
+d: 45.4006
+sumNormal(comp+trac-Nsd): 1971.04
+eps1: -3.5
+eps2: 11.0155
+Soma limite regiao 2-3: 1971.04
+Regiao 1
+sumNormal(comp+trac-Nsd): 81.7413
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 81.7413
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -229.613
+sumNormal(comp+trac-Nsd): 49.4275
+sumNormal(comp+trac-Nsd): -1.17281
+sumNormal(comp+trac-Nsd): 23.7197
+sumNormal(comp+trac-Nsd): 11.1715
+sumNormal(comp+trac-Nsd): 4.97387
+sumNormal(comp+trac-Nsd): 1.89416
+sumNormal(comp+trac-Nsd): 0.359085
+sumNormal(comp+trac-Nsd): -0.000285781
+sumNormal(comp+trac-Nsd): 0.179378
+sumNormal(comp+trac-Nsd): 0.0895405
+--------------------------------------------
+Angulo: 60; eps1: -3.33935; eps2: -0.214197; Mrdxx: 21.7903; Mrdyy: 15.078
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 105.725
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 105.725
+d: 43.8397
+sumNormal(comp+trac-Nsd): 1976.61
+eps1: -3.5
+eps2: 11.0354
+Soma limite regiao 2-3: 1976.61
+Regiao 1
+sumNormal(comp+trac-Nsd): 105.725
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 105.725
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -223.928
+sumNormal(comp+trac-Nsd): 59.5991
+sumNormal(comp+trac-Nsd): -1.66642
+sumNormal(comp+trac-Nsd): 28.3749
+sumNormal(comp+trac-Nsd): 13.2064
+sumNormal(comp+trac-Nsd): 5.73303
+sumNormal(comp+trac-Nsd): 2.02406
+sumNormal(comp+trac-Nsd): 0.176511
+sumNormal(comp+trac-Nsd): -0.000200068
+sumNormal(comp+trac-Nsd): 0.0881502
+--------------------------------------------
+Angulo: 63; eps1: -3.30178; eps2: -0.264299; Mrdxx: 16.8541; Mrdyy: 16.8634
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 135.447
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 135.447
+d: 42.1586
+sumNormal(comp+trac-Nsd): 1981.83
+eps1: -3.5
+eps2: 11.0569
+Soma limite regiao 2-3: 1981.83
+Regiao 1
+sumNormal(comp+trac-Nsd): 135.447
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 135.447
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -216.832
+sumNormal(comp+trac-Nsd): 69.7872
+sumNormal(comp+trac-Nsd): -2.2386
+sumNormal(comp+trac-Nsd): 32.9652
+sumNormal(comp+trac-Nsd): 15.161
+sumNormal(comp+trac-Nsd): 6.41065
+sumNormal(comp+trac-Nsd): 2.07338
+sumNormal(comp+trac-Nsd): -0.00315587
+sumNormal(comp+trac-Nsd): 1.03438
+sumNormal(comp+trac-Nsd): 0.515431
+sumNormal(comp+trac-Nsd): 0.256092
+sumNormal(comp+trac-Nsd): 0.126457
+sumNormal(comp+trac-Nsd): 0.0616475
+--------------------------------------------
+Angulo: 66; eps1: -3.25951; eps2: -0.320649; Mrdxx: 11.5242; Mrdyy: 18.721
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 172.333
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 172.333
+d: 40.362
+sumNormal(comp+trac-Nsd): 1986.74
+eps1: -3.5
+eps2: 11.0803
+Soma limite regiao 2-3: 1986.74
+Regiao 1
+sumNormal(comp+trac-Nsd): 172.333
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 172.333
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -207.973
+sumNormal(comp+trac-Nsd): 79.1759
+sumNormal(comp+trac-Nsd): -2.83683
+sumNormal(comp+trac-Nsd): 37.13
+sumNormal(comp+trac-Nsd): 16.8867
+sumNormal(comp+trac-Nsd): 6.95994
+sumNormal(comp+trac-Nsd): 2.04531
+sumNormal(comp+trac-Nsd): -0.00395414
+sumNormal(comp+trac-Nsd): 1.01997
+sumNormal(comp+trac-Nsd): 0.507828
+sumNormal(comp+trac-Nsd): 0.251893
+sumNormal(comp+trac-Nsd): 0.123958
+sumNormal(comp+trac-Nsd): 0.0599992
+--------------------------------------------
+Angulo: 69; eps1: -3.21271; eps2: -0.383052; Mrdxx: 5.85649; Mrdyy: 20.6282
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 218.29
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 218.29
+d: 38.4547
+sumNormal(comp+trac-Nsd): 1991.39
+eps1: -3.5
+eps2: 11.1059
+Soma limite regiao 2-3: 1991.39
+Regiao 1
+sumNormal(comp+trac-Nsd): 218.29
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 218.29
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -196.879
+sumNormal(comp+trac-Nsd): -20.4008
+sumNormal(comp+trac-Nsd): 91.1682
+sumNormal(comp+trac-Nsd): 33.4395
+sumNormal(comp+trac-Nsd): 6.03332
+sumNormal(comp+trac-Nsd): -0.0856139
+sumNormal(comp+trac-Nsd): 2.96752
+sumNormal(comp+trac-Nsd): 1.43937
+sumNormal(comp+trac-Nsd): 0.676484
+sumNormal(comp+trac-Nsd): 0.295336
+sumNormal(comp+trac-Nsd): 0.104836
+sumNormal(comp+trac-Nsd): 0.00960502
+--------------------------------------------
+Angulo: 72; eps1: -3.16134; eps2: -0.451542; Mrdxx: -0.0959035; Mrdyy: 22.5531
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 171.705
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 171.705
+d: 36.4421
+sumNormal(comp+trac-Nsd): 1995.81
+eps1: -3.5
+eps2: 11.7719
+Soma limite regiao 2-3: 1995.81
+Regiao 1
+sumNormal(comp+trac-Nsd): 171.705
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 171.705
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -210.851
+sumNormal(comp+trac-Nsd): 85.1792
+sumNormal(comp+trac-Nsd): -3.10383
+sumNormal(comp+trac-Nsd): 39.838
+sumNormal(comp+trac-Nsd): 18.0672
+sumNormal(comp+trac-Nsd): 7.4067
+sumNormal(comp+trac-Nsd): 2.13269
+sumNormal(comp+trac-Nsd): -0.004525
+sumNormal(comp+trac-Nsd): 1.0633
+sumNormal(comp+trac-Nsd): 0.529196
+sumNormal(comp+trac-Nsd): 0.262287
+sumNormal(comp+trac-Nsd): 0.128869
+sumNormal(comp+trac-Nsd): 0.0621688
+--------------------------------------------
+Angulo: 75; eps1: -3.21655; eps2: -0.377935; Mrdxx: -6.30574; Mrdyy: 25.1124
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 105.657
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 105.657
+d: 34.3295
+sumNormal(comp+trac-Nsd): 2000.03
+eps1: -3.5
+eps2: 12.7038
+Soma limite regiao 2-3: 2000.03
+Regiao 1
+sumNormal(comp+trac-Nsd): 105.657
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 105.657
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -230.209
+sumNormal(comp+trac-Nsd): 71.766
+sumNormal(comp+trac-Nsd): -2.10252
+sumNormal(comp+trac-Nsd): 33.9784
+sumNormal(comp+trac-Nsd): 15.7246
+sumNormal(comp+trac-Nsd): 6.75769
+sumNormal(comp+trac-Nsd): 2.31425
+sumNormal(comp+trac-Nsd): 0.102531
+sumNormal(comp+trac-Nsd): -0.000147795
+sumNormal(comp+trac-Nsd): 0.0511898
+--------------------------------------------
+Angulo: 78; eps1: -3.30741; eps2: -0.256789; Mrdxx: -13.4433; Mrdyy: 28.113
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 47.8597
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 47.8597
+d: 32.1228
+sumNormal(comp+trac-Nsd): 2004.07
+eps1: -3.5
+eps2: 13.7609
+Soma limite regiao 2-3: 2004.07
+Regiao 1
+sumNormal(comp+trac-Nsd): 47.8597
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 47.8597
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -247.515
+sumNormal(comp+trac-Nsd): 43.8326
+sumNormal(comp+trac-Nsd): -0.767117
+sumNormal(comp+trac-Nsd): 21.2109
+sumNormal(comp+trac-Nsd): 10.1414
+sumNormal(comp+trac-Nsd): 4.66703
+sumNormal(comp+trac-Nsd): 1.94493
+sumNormal(comp+trac-Nsd): 0.587648
+sumNormal(comp+trac-Nsd): -0.000308794
+sumNormal(comp+trac-Nsd): 0.293611
+sumNormal(comp+trac-Nsd): 0.146636
+sumNormal(comp+trac-Nsd): 0.07316
+--------------------------------------------
+Angulo: 81; eps1: -3.4041; eps2: -0.127863; Mrdxx: -21.6101; Mrdyy: 31.3985
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -2.12033
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -2.12033
+d: 29.8281
+sumNormal(comp+trac-Nsd): 2007.95
+eps1: -3.5
+eps2: 14.9776
+Soma limite regiao 2-3: 2007.95
+Regiao 2
+sumNormal(comp+trac-Nsd): -2.12033
+sumNormal(comp+trac-Nsd): 1940.38
+sumNormal(comp+trac-Nsd): -2.12033
+sumNormal(comp+trac-Nsd): 1940.38
+sumNormal(comp+trac-Nsd): 1685.33
+sumNormal(comp+trac-Nsd): 1173.7
+sumNormal(comp+trac-Nsd): 671.527
+sumNormal(comp+trac-Nsd): 326.06
+sumNormal(comp+trac-Nsd): 156.939
+sumNormal(comp+trac-Nsd): 75.8688
+sumNormal(comp+trac-Nsd): 36.3549
+sumNormal(comp+trac-Nsd): 16.9294
+sumNormal(comp+trac-Nsd): 7.34838
+sumNormal(comp+trac-Nsd): 2.5988
+sumNormal(comp+trac-Nsd): 0.235279
+sumNormal(comp+trac-Nsd): -0.0003607
+sumNormal(comp+trac-Nsd): 0.117449
+sumNormal(comp+trac-Nsd): 0.0585419
+sumNormal(comp+trac-Nsd): 0.02909
+--------------------------------------------
+Angulo: 84; eps1: -3.5; eps2: 0.00445608; Mrdxx: -30.6998; Mrdyy: 34.8621
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -44.9174
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -44.9174
+d: 27.4517
+sumNormal(comp+trac-Nsd): 2011.67
+eps1: -3.5
+eps2: 16.4013
+Soma limite regiao 2-3: 2011.67
+Regiao 2
+sumNormal(comp+trac-Nsd): -44.9174
+sumNormal(comp+trac-Nsd): 1929.6
+sumNormal(comp+trac-Nsd): -44.9174
+sumNormal(comp+trac-Nsd): 1929.6
+sumNormal(comp+trac-Nsd): 1620.74
+sumNormal(comp+trac-Nsd): 1066.04
+sumNormal(comp+trac-Nsd): 565.602
+sumNormal(comp+trac-Nsd): 248.304
+sumNormal(comp+trac-Nsd): 97.8049
+sumNormal(comp+trac-Nsd): 25.3014
+sumNormal(comp+trac-Nsd): -0.301081
+sumNormal(comp+trac-Nsd): 12.4633
+sumNormal(comp+trac-Nsd): 6.07175
+sumNormal(comp+trac-Nsd): 2.88298
+sumNormal(comp+trac-Nsd): 1.29036
+sumNormal(comp+trac-Nsd): 0.494489
+sumNormal(comp+trac-Nsd): 0.096667
+sumNormal(comp+trac-Nsd): -6.83279e-06
+--------------------------------------------
+Angulo: 87; eps1: -3.5; eps2: 0.100616; Mrdxx: -39.3328; Mrdyy: 37.598
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -77.5529
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -77.5529
+d: 25
+sumNormal(comp+trac-Nsd): 2015.26
+eps1: -3.5
+eps2: 18.1
+Soma limite regiao 2-3: 2015.26
+Regiao 2
+sumNormal(comp+trac-Nsd): -77.5529
+sumNormal(comp+trac-Nsd): 1900.91
+sumNormal(comp+trac-Nsd): -77.5529
+sumNormal(comp+trac-Nsd): 1900.91
+sumNormal(comp+trac-Nsd): 1524.38
+sumNormal(comp+trac-Nsd): 952.179
+sumNormal(comp+trac-Nsd): 461.88
+sumNormal(comp+trac-Nsd): 180.802
+sumNormal(comp+trac-Nsd): 46.8364
+sumNormal(comp+trac-Nsd): -0.774455
+sumNormal(comp+trac-Nsd): 22.9243
+sumNormal(comp+trac-Nsd): 11.0477
+sumNormal(comp+trac-Nsd): 5.12973
+sumNormal(comp+trac-Nsd): 2.17589
+sumNormal(comp+trac-Nsd): 0.700282
+sumNormal(comp+trac-Nsd): -0.000109289
+sumNormal(comp+trac-Nsd): 0.350062
+sumNormal(comp+trac-Nsd): 0.17497
+sumNormal(comp+trac-Nsd): 0.0874288
+sumNormal(comp+trac-Nsd): 0.0436594
+sumNormal(comp+trac-Nsd): 0.0217749
+--------------------------------------------
+Angulo: 90; eps1: -3.5; eps2: 0.19682; Mrdxx: -47.3997; Mrdyy: 39.8531
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -112.189
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -112.189
+d: 23.2648
+sumNormal(comp+trac-Nsd): 2028.69
+eps1: -3.5
+eps2: 19.9829
+Soma limite regiao 2-3: 2028.69
+Regiao 2
+sumNormal(comp+trac-Nsd): -112.189
+sumNormal(comp+trac-Nsd): 1872.63
+sumNormal(comp+trac-Nsd): -112.189
+sumNormal(comp+trac-Nsd): 1872.63
+sumNormal(comp+trac-Nsd): 1419.97
+sumNormal(comp+trac-Nsd): 837.971
+sumNormal(comp+trac-Nsd): 364.046
+sumNormal(comp+trac-Nsd): 117.351
+sumNormal(comp+trac-Nsd): 0.405154
+sumNormal(comp+trac-Nsd): -0.00894231
+sumNormal(comp+trac-Nsd): 0.198099
+sumNormal(comp+trac-Nsd): 0.0945767
+sumNormal(comp+trac-Nsd): 0.0428168
+sumNormal(comp+trac-Nsd): 0.0169371
+--------------------------------------------
+Angulo: 93; eps1: -3.5; eps2: 0.311446; Mrdxx: -53.6321; Mrdyy: 41.0187
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -140.342
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -140.342
+d: 21.4659
+sumNormal(comp+trac-Nsd): 2042.19
+eps1: -3.5
+eps2: 22.1758
+Soma limite regiao 2-3: 2042.19
+Regiao 2
+sumNormal(comp+trac-Nsd): -140.342
+sumNormal(comp+trac-Nsd): 1818.34
+sumNormal(comp+trac-Nsd): -140.342
+sumNormal(comp+trac-Nsd): 1818.34
+sumNormal(comp+trac-Nsd): 1307.53
+sumNormal(comp+trac-Nsd): 723.323
+sumNormal(comp+trac-Nsd): 285.835
+sumNormal(comp+trac-Nsd): 68.4011
+sumNormal(comp+trac-Nsd): -1.33918
+sumNormal(comp+trac-Nsd): 33.4178
+sumNormal(comp+trac-Nsd): 16.009
+sumNormal(comp+trac-Nsd): 7.32707
+sumNormal(comp+trac-Nsd): 2.99194
+sumNormal(comp+trac-Nsd): 0.825875
+sumNormal(comp+trac-Nsd): -0.000119775
+sumNormal(comp+trac-Nsd): 0.412859
+sumNormal(comp+trac-Nsd): 0.206365
+sumNormal(comp+trac-Nsd): 0.103122
+sumNormal(comp+trac-Nsd): 0.0515006
+sumNormal(comp+trac-Nsd): 0.0256903
+--------------------------------------------
+Angulo: 96; eps1: -3.5; eps2: 0.424234; Mrdxx: -59.3518; Mrdyy: 41.9204
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -163.408
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -163.408
+d: 19.6081
+sumNormal(comp+trac-Nsd): 2055.82
+eps1: -3.5
+eps2: 24.7776
+Soma limite regiao 2-3: 2055.82
+Regiao 2
+sumNormal(comp+trac-Nsd): -163.408
+sumNormal(comp+trac-Nsd): 1736.98
+sumNormal(comp+trac-Nsd): -163.408
+sumNormal(comp+trac-Nsd): 1736.98
+sumNormal(comp+trac-Nsd): 1191.09
+sumNormal(comp+trac-Nsd): 615.003
+sumNormal(comp+trac-Nsd): 224.374
+sumNormal(comp+trac-Nsd): 28.1424
+sumNormal(comp+trac-Nsd): -0.479975
+sumNormal(comp+trac-Nsd): 13.8217
+sumNormal(comp+trac-Nsd): 6.66831
+sumNormal(comp+trac-Nsd): 3.09351
+sumNormal(comp+trac-Nsd): 1.3066
+sumNormal(comp+trac-Nsd): 0.413273
+sumNormal(comp+trac-Nsd): -1.03965e-05
+--------------------------------------------
+Angulo: 99; eps1: -3.5; eps2: 0.534718; Mrdxx: -64.5637; Mrdyy: 42.5921
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -182.384
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -182.384
+d: 17.6966
+sumNormal(comp+trac-Nsd): 2063.74
+eps1: -3.5
+eps2: 27.9337
+Soma limite regiao 2-3: 2063.74
+Regiao 2
+sumNormal(comp+trac-Nsd): -182.384
+sumNormal(comp+trac-Nsd): 1637.51
+sumNormal(comp+trac-Nsd): -182.384
+sumNormal(comp+trac-Nsd): 1637.51
+sumNormal(comp+trac-Nsd): 1073.11
+sumNormal(comp+trac-Nsd): 525.356
+sumNormal(comp+trac-Nsd): 173.683
+sumNormal(comp+trac-Nsd): -0.739164
+sumNormal(comp+trac-Nsd): 86.666
+sumNormal(comp+trac-Nsd): 43.0047
+sumNormal(comp+trac-Nsd): 21.141
+sumNormal(comp+trac-Nsd): 10.2026
+sumNormal(comp+trac-Nsd): 4.73208
+sumNormal(comp+trac-Nsd): 1.99654
+sumNormal(comp+trac-Nsd): 0.628708
+sumNormal(comp+trac-Nsd): 4.91719e-06
+--------------------------------------------
+Angulo: 102; eps1: -3.5; eps2: 0.642846; Mrdxx: -69.292; Mrdyy: 43.0768
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -194.242
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -194.242
+d: 16.7655
+sumNormal(comp+trac-Nsd): 2019.24
+eps1: -3.5
+eps2: 29.6955
+Soma limite regiao 2-3: 2019.24
+Regiao 2
+sumNormal(comp+trac-Nsd): -194.242
+sumNormal(comp+trac-Nsd): 1513.61
+sumNormal(comp+trac-Nsd): -194.242
+sumNormal(comp+trac-Nsd): 1513.61
+sumNormal(comp+trac-Nsd): 963.102
+sumNormal(comp+trac-Nsd): 448.641
+sumNormal(comp+trac-Nsd): 131.765
+sumNormal(comp+trac-Nsd): -1.01617
+sumNormal(comp+trac-Nsd): 65.7725
+sumNormal(comp+trac-Nsd): 32.4761
+sumNormal(comp+trac-Nsd): 15.7538
+sumNormal(comp+trac-Nsd): 7.37464
+sumNormal(comp+trac-Nsd): 3.18067
+sumNormal(comp+trac-Nsd): 1.08261
+sumNormal(comp+trac-Nsd): 0.0333109
+sumNormal(comp+trac-Nsd): 2.73141e-06
+--------------------------------------------
+Angulo: 105; eps1: -3.5; eps2: 0.7486; Mrdxx: -73.5849; Mrdyy: 43.4088
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -200.015
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -200.015
+d: 16.4455
+sumNormal(comp+trac-Nsd): 1966.06
+eps1: -3.5
+eps2: 30.6532
+Soma limite regiao 2-3: 1966.06
+Regiao 2
+sumNormal(comp+trac-Nsd): -200.015
+sumNormal(comp+trac-Nsd): 1431.96
+sumNormal(comp+trac-Nsd): -200.015
+sumNormal(comp+trac-Nsd): 1431.96
+sumNormal(comp+trac-Nsd): 889.625
+sumNormal(comp+trac-Nsd): 403.285
+sumNormal(comp+trac-Nsd): 107.745
+sumNormal(comp+trac-Nsd): 0.347539
+sumNormal(comp+trac-Nsd): -0.00431177
+sumNormal(comp+trac-Nsd): 0.171618
+sumNormal(comp+trac-Nsd): 0.0836543
+sumNormal(comp+trac-Nsd): 0.0396715
+sumNormal(comp+trac-Nsd): 0.01768
+--------------------------------------------
+Angulo: 108; eps1: -3.5; eps2: 0.811055; Mrdxx: -76.4443; Mrdyy: 43.4081
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -193.633
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -193.633
+d: 17.8016
+sumNormal(comp+trac-Nsd): 1999.42
+eps1: -3.5
+eps2: 29.5582
+Soma limite regiao 2-3: 1999.42
+Regiao 2
+sumNormal(comp+trac-Nsd): -193.633
+sumNormal(comp+trac-Nsd): 1501.33
+sumNormal(comp+trac-Nsd): -193.633
+sumNormal(comp+trac-Nsd): 1501.33
+sumNormal(comp+trac-Nsd): 934.822
+sumNormal(comp+trac-Nsd): 433.616
+sumNormal(comp+trac-Nsd): 127.945
+sumNormal(comp+trac-Nsd): 0.523505
+sumNormal(comp+trac-Nsd): -1.45441e-05
+--------------------------------------------
+Angulo: 111; eps1: -3.5; eps2: 0.75063; Mrdxx: -77.5587; Mrdyy: 42.7332
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -186.849
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -186.849
+d: 19.109
+sumNormal(comp+trac-Nsd): 2003.62
+eps1: -3.5
+eps2: 28.6158
+Soma limite regiao 2-3: 2003.62
+Regiao 2
+sumNormal(comp+trac-Nsd): -186.849
+sumNormal(comp+trac-Nsd): 1568.27
+sumNormal(comp+trac-Nsd): -186.849
+sumNormal(comp+trac-Nsd): 1568.27
+sumNormal(comp+trac-Nsd): 983.948
+sumNormal(comp+trac-Nsd): 466.619
+sumNormal(comp+trac-Nsd): 149.764
+sumNormal(comp+trac-Nsd): 0.891713
+sumNormal(comp+trac-Nsd): -0.00826977
+sumNormal(comp+trac-Nsd): 0.441748
+sumNormal(comp+trac-Nsd): 0.216746
+sumNormal(comp+trac-Nsd): 0.10424
+sumNormal(comp+trac-Nsd): 0.0479854
+sumNormal(comp+trac-Nsd): 0.0198579
+sumNormal(comp+trac-Nsd): 0.0057941
+--------------------------------------------
+Angulo: 114; eps1: -3.5; eps2: 0.690594; Mrdxx: -78.3338; Mrdyy: 41.9604
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -179.621
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -179.621
+d: 20.364
+sumNormal(comp+trac-Nsd): 2000.67
+eps1: -3.5
+eps2: 27.7919
+Soma limite regiao 2-3: 2000.67
+Regiao 2
+sumNormal(comp+trac-Nsd): -179.621
+sumNormal(comp+trac-Nsd): 1624.1
+sumNormal(comp+trac-Nsd): -179.621
+sumNormal(comp+trac-Nsd): 1624.1
+sumNormal(comp+trac-Nsd): 1036.68
+sumNormal(comp+trac-Nsd): 502.393
+sumNormal(comp+trac-Nsd): 173.038
+sumNormal(comp+trac-Nsd): 0.936522
+sumNormal(comp+trac-Nsd): -0.0157466
+sumNormal(comp+trac-Nsd): 0.460413
+sumNormal(comp+trac-Nsd): 0.22234
+sumNormal(comp+trac-Nsd): 0.103298
+sumNormal(comp+trac-Nsd): 0.0437761
+sumNormal(comp+trac-Nsd): 0.0140149
+sumNormal(comp+trac-Nsd): 2.46096e-08
+--------------------------------------------
+Angulo: 117; eps1: -3.5; eps2: 0.633403; Mrdxx: -79.0195; Mrdyy: 41.1016
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -171.891
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -171.891
+d: 21.5632
+sumNormal(comp+trac-Nsd): 1997.45
+eps1: -3.5
+eps2: 27.0619
+Soma limite regiao 2-3: 1997.45
+Regiao 2
+sumNormal(comp+trac-Nsd): -171.891
+sumNormal(comp+trac-Nsd): 1659.04
+sumNormal(comp+trac-Nsd): -171.891
+sumNormal(comp+trac-Nsd): 1659.04
+sumNormal(comp+trac-Nsd): 1091.28
+sumNormal(comp+trac-Nsd): 541.126
+sumNormal(comp+trac-Nsd): 198.114
+sumNormal(comp+trac-Nsd): 13.995
+sumNormal(comp+trac-Nsd): -0.242492
+sumNormal(comp+trac-Nsd): 6.88104
+sumNormal(comp+trac-Nsd): 3.32043
+sumNormal(comp+trac-Nsd): 1.53925
+sumNormal(comp+trac-Nsd): 0.648452
+sumNormal(comp+trac-Nsd): 0.202997
+sumNormal(comp+trac-Nsd): 4.34281e-06
+--------------------------------------------
+Angulo: 120; eps1: -3.5; eps2: 0.578745; Mrdxx: -79.6398; Mrdyy: 40.149
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -163.584
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -163.584
+d: 22.7033
+sumNormal(comp+trac-Nsd): 1994.01
+eps1: -3.5
+eps2: 26.407
+Soma limite regiao 2-3: 1994.01
+Regiao 2
+sumNormal(comp+trac-Nsd): -163.584
+sumNormal(comp+trac-Nsd): 1672.55
+sumNormal(comp+trac-Nsd): -163.584
+sumNormal(comp+trac-Nsd): 1672.55
+sumNormal(comp+trac-Nsd): 1144.83
+sumNormal(comp+trac-Nsd): 583.084
+sumNormal(comp+trac-Nsd): 225.545
+sumNormal(comp+trac-Nsd): 31.534
+sumNormal(comp+trac-Nsd): -0.705963
+sumNormal(comp+trac-Nsd): 15.434
+sumNormal(comp+trac-Nsd): 7.36853
+sumNormal(comp+trac-Nsd): 3.33235
+sumNormal(comp+trac-Nsd): 1.31346
+sumNormal(comp+trac-Nsd): 0.30381
+sumNormal(comp+trac-Nsd): 1.3342e-05
+--------------------------------------------
+Angulo: 123; eps1: -3.5; eps2: 0.526197; Mrdxx: -80.2094; Mrdyy: 39.0896
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -154.604
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -154.604
+d: 23.7812
+sumNormal(comp+trac-Nsd): 1990.37
+eps1: -3.5
+eps2: 25.8132
+Soma limite regiao 2-3: 1990.37
+Regiao 2
+sumNormal(comp+trac-Nsd): -154.604
+sumNormal(comp+trac-Nsd): 1672.13
+sumNormal(comp+trac-Nsd): -154.604
+sumNormal(comp+trac-Nsd): 1672.13
+sumNormal(comp+trac-Nsd): 1194.31
+sumNormal(comp+trac-Nsd): 628.376
+sumNormal(comp+trac-Nsd): 255.023
+sumNormal(comp+trac-Nsd): 50.4059
+sumNormal(comp+trac-Nsd): -1.35944
+sumNormal(comp+trac-Nsd): 24.5624
+sumNormal(comp+trac-Nsd): 11.6093
+sumNormal(comp+trac-Nsd): 5.12659
+sumNormal(comp+trac-Nsd): 1.88396
+sumNormal(comp+trac-Nsd): 0.262347
+sumNormal(comp+trac-Nsd): 1.21322e-05
+--------------------------------------------
+Angulo: 126; eps1: -3.5; eps2: 0.475356; Mrdxx: -80.7394; Mrdyy: 37.9071
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -144.832
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -144.832
+d: 24.7938
+sumNormal(comp+trac-Nsd): 1986.49
+eps1: -3.5
+eps2: 25.2695
+Soma limite regiao 2-3: 1986.49
+Regiao 2
+sumNormal(comp+trac-Nsd): -144.832
+sumNormal(comp+trac-Nsd): 1667.96
+sumNormal(comp+trac-Nsd): -144.832
+sumNormal(comp+trac-Nsd): 1667.96
+sumNormal(comp+trac-Nsd): 1236.81
+sumNormal(comp+trac-Nsd): 675.286
+sumNormal(comp+trac-Nsd): 286.674
+sumNormal(comp+trac-Nsd): 70.8408
+sumNormal(comp+trac-Nsd): -2.17773
+sumNormal(comp+trac-Nsd): 34.3843
+sumNormal(comp+trac-Nsd): 16.1081
+sumNormal(comp+trac-Nsd): 6.96401
+sumNormal(comp+trac-Nsd): 2.39247
+sumNormal(comp+trac-Nsd): 0.10715
+sumNormal(comp+trac-Nsd): -1.04983e-05
+--------------------------------------------
+Angulo: 129; eps1: -3.5; eps2: 0.425824; Mrdxx: -81.2374; Mrdyy: 36.5817
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -134.116
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -134.116
+d: 25.7385
+sumNormal(comp+trac-Nsd): 1982.35
+eps1: -3.5
+eps2: 24.7672
+Soma limite regiao 2-3: 1982.35
+Regiao 2
+sumNormal(comp+trac-Nsd): -134.116
+sumNormal(comp+trac-Nsd): 1663.01
+sumNormal(comp+trac-Nsd): -134.116
+sumNormal(comp+trac-Nsd): 1663.01
+sumNormal(comp+trac-Nsd): 1270.1
+sumNormal(comp+trac-Nsd): 722.908
+sumNormal(comp+trac-Nsd): 320.504
+sumNormal(comp+trac-Nsd): 93.0158
+sumNormal(comp+trac-Nsd): -3.04175
+sumNormal(comp+trac-Nsd): 45.0114
+sumNormal(comp+trac-Nsd): 20.9549
+sumNormal(comp+trac-Nsd): 8.94282
+sumNormal(comp+trac-Nsd): 2.94626
+sumNormal(comp+trac-Nsd): -0.00117391
+sumNormal(comp+trac-Nsd): 1.47227
+sumNormal(comp+trac-Nsd): 0.735479
+sumNormal(comp+trac-Nsd): 0.367135
+sumNormal(comp+trac-Nsd): 0.182976
+sumNormal(comp+trac-Nsd): 0.0909
+sumNormal(comp+trac-Nsd): 0.0448628
+sumNormal(comp+trac-Nsd): 0.0218444
+--------------------------------------------
+Angulo: 132; eps1: -3.5; eps2: 0.377235; Mrdxx: -81.7086; Mrdyy: 35.1067
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -122.289
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -122.289
+d: 26.6127
+sumNormal(comp+trac-Nsd): 1974.75
+eps1: -3.5
+eps2: 24.2991
+Soma limite regiao 2-3: 1974.75
+Regiao 2
+sumNormal(comp+trac-Nsd): -122.289
+sumNormal(comp+trac-Nsd): 1657.57
+sumNormal(comp+trac-Nsd): -122.289
+sumNormal(comp+trac-Nsd): 1657.57
+sumNormal(comp+trac-Nsd): 1294.74
+sumNormal(comp+trac-Nsd): 770.372
+sumNormal(comp+trac-Nsd): 356.358
+sumNormal(comp+trac-Nsd): 117.044
+sumNormal(comp+trac-Nsd): -3.82262
+sumNormal(comp+trac-Nsd): 56.523
+sumNormal(comp+trac-Nsd): 26.2487
+sumNormal(comp+trac-Nsd): 11.1758
+sumNormal(comp+trac-Nsd): 3.66569
+sumNormal(comp+trac-Nsd): -0.00292322
+sumNormal(comp+trac-Nsd): 1.83071
+sumNormal(comp+trac-Nsd): 0.913719
+sumNormal(comp+trac-Nsd): 0.455355
+sumNormal(comp+trac-Nsd): 0.226205
+sumNormal(comp+trac-Nsd): 0.111638
+sumNormal(comp+trac-Nsd): 0.0543567
+sumNormal(comp+trac-Nsd): 0.0257166
+--------------------------------------------
+Angulo: 135; eps1: -3.5; eps2: 0.329174; Mrdxx: -82.1467; Mrdyy: 33.4856
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -109.213
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -109.213
+d: 27.4139
+sumNormal(comp+trac-Nsd): 1964.17
+eps1: -3.5
+eps2: 23.8597
+Soma limite regiao 2-3: 1964.17
+Regiao 2
+sumNormal(comp+trac-Nsd): -109.213
+sumNormal(comp+trac-Nsd): 1651.84
+sumNormal(comp+trac-Nsd): -109.213
+sumNormal(comp+trac-Nsd): 1651.84
+sumNormal(comp+trac-Nsd): 1311.75
+sumNormal(comp+trac-Nsd): 816.772
+sumNormal(comp+trac-Nsd): 394
+sumNormal(comp+trac-Nsd): 143.005
+sumNormal(comp+trac-Nsd): 12.756
+sumNormal(comp+trac-Nsd): -0.66
+sumNormal(comp+trac-Nsd): 6.03655
+sumNormal(comp+trac-Nsd): 2.68527
+sumNormal(comp+trac-Nsd): 1.01187
+sumNormal(comp+trac-Nsd): 0.175738
+sumNormal(comp+trac-Nsd): -3.24469e-05
+--------------------------------------------
+Angulo: 138; eps1: -3.5; eps2: 0.281431; Mrdxx: -82.5473; Mrdyy: 31.729
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -94.7697
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -94.7697
+d: 28.14
+sumNormal(comp+trac-Nsd): 1953.4
+eps1: -3.5
+eps2: 23.4441
+Soma limite regiao 2-3: 1953.4
+Regiao 2
+sumNormal(comp+trac-Nsd): -94.7697
+sumNormal(comp+trac-Nsd): 1645.95
+sumNormal(comp+trac-Nsd): -94.7697
+sumNormal(comp+trac-Nsd): 1645.95
+sumNormal(comp+trac-Nsd): 1321.85
+sumNormal(comp+trac-Nsd): 861.059
+sumNormal(comp+trac-Nsd): 433.223
+sumNormal(comp+trac-Nsd): 170.897
+sumNormal(comp+trac-Nsd): 33.7627
+sumNormal(comp+trac-Nsd): -1.52844
+sumNormal(comp+trac-Nsd): 16.03
+sumNormal(comp+trac-Nsd): 7.22653
+sumNormal(comp+trac-Nsd): 2.84266
+sumNormal(comp+trac-Nsd): 0.655472
+sumNormal(comp+trac-Nsd): -0.000347699
+sumNormal(comp+trac-Nsd): 0.327525
+sumNormal(comp+trac-Nsd): 0.163579
+sumNormal(comp+trac-Nsd): 0.0816136
+sumNormal(comp+trac-Nsd): 0.0406324
+--------------------------------------------
+Angulo: 141; eps1: -3.5; eps2: 0.2341; Mrdxx: -82.9194; Mrdyy: 29.8547
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -78.8495
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -78.8495
+d: 28.789
+sumNormal(comp+trac-Nsd): 1942.25
+eps1: -3.5
+eps2: 23.0484
+Soma limite regiao 2-3: 1942.25
+Regiao 2
+sumNormal(comp+trac-Nsd): -78.8495
+sumNormal(comp+trac-Nsd): 1639.99
+sumNormal(comp+trac-Nsd): -78.8495
+sumNormal(comp+trac-Nsd): 1639.99
+sumNormal(comp+trac-Nsd): 1327.27
+sumNormal(comp+trac-Nsd): 902.056
+sumNormal(comp+trac-Nsd): 473.827
+sumNormal(comp+trac-Nsd): 200.695
+sumNormal(comp+trac-Nsd): 56.5843
+sumNormal(comp+trac-Nsd): -2.11353
+sumNormal(comp+trac-Nsd): 26.9796
+sumNormal(comp+trac-Nsd): 12.358
+sumNormal(comp+trac-Nsd): 5.102
+sumNormal(comp+trac-Nsd): 1.48899
+sumNormal(comp+trac-Nsd): -0.00129262
+sumNormal(comp+trac-Nsd): 0.743624
+sumNormal(comp+trac-Nsd): 0.371109
+sumNormal(comp+trac-Nsd): 0.184894
+sumNormal(comp+trac-Nsd): 0.0917972
+sumNormal(comp+trac-Nsd): 0.0452514
+sumNormal(comp+trac-Nsd): 0.0219792
+--------------------------------------------
+Angulo: 144; eps1: -3.5; eps2: 0.186777; Mrdxx: -83.2471; Mrdyy: 27.8695
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -61.35
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -61.35
+d: 29.359
+sumNormal(comp+trac-Nsd): 1930.51
+eps1: -3.5
+eps2: 22.6691
+Soma limite regiao 2-3: 1930.51
+Regiao 2
+sumNormal(comp+trac-Nsd): -61.35
+sumNormal(comp+trac-Nsd): 1634.01
+sumNormal(comp+trac-Nsd): -61.35
+sumNormal(comp+trac-Nsd): 1634.01
+sumNormal(comp+trac-Nsd): 1332.02
+sumNormal(comp+trac-Nsd): 938.934
+sumNormal(comp+trac-Nsd): 515.582
+sumNormal(comp+trac-Nsd): 232.411
+sumNormal(comp+trac-Nsd): 81.2598
+sumNormal(comp+trac-Nsd): 7.65792
+sumNormal(comp+trac-Nsd): -0.281473
+sumNormal(comp+trac-Nsd): 3.681
+sumNormal(comp+trac-Nsd): 1.69793
+sumNormal(comp+trac-Nsd): 0.707763
+sumNormal(comp+trac-Nsd): 0.213029
+sumNormal(comp+trac-Nsd): -2.85992e-05
+--------------------------------------------
+Angulo: 147; eps1: -3.5; eps2: 0.139528; Mrdxx: -83.5388; Mrdyy: 25.7943
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -42.1919
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -42.1919
+d: 29.8486
+sumNormal(comp+trac-Nsd): 1917.89
+eps1: -3.5
+eps2: 22.3033
+Soma limite regiao 2-3: 1917.89
+Regiao 2
+sumNormal(comp+trac-Nsd): -42.1919
+sumNormal(comp+trac-Nsd): 1628.06
+sumNormal(comp+trac-Nsd): -42.1919
+sumNormal(comp+trac-Nsd): 1628.06
+sumNormal(comp+trac-Nsd): 1336.22
+sumNormal(comp+trac-Nsd): 971.279
+sumNormal(comp+trac-Nsd): 558.182
+sumNormal(comp+trac-Nsd): 266.081
+sumNormal(comp+trac-Nsd): 107.86
+sumNormal(comp+trac-Nsd): 30.5065
+sumNormal(comp+trac-Nsd): -0.754803
+sumNormal(comp+trac-Nsd): 14.7599
+sumNormal(comp+trac-Nsd): 6.97163
+sumNormal(comp+trac-Nsd): 3.10043
+sumNormal(comp+trac-Nsd): 1.17079
+sumNormal(comp+trac-Nsd): 0.207481
+sumNormal(comp+trac-Nsd): -8.66488e-05
+--------------------------------------------
+Angulo: 150; eps1: -3.5; eps2: 0.0922898; Mrdxx: -83.8006; Mrdyy: 23.6453
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -21.2827
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -21.2827
+d: 30.2563
+sumNormal(comp+trac-Nsd): 1903.36
+eps1: -3.5
+eps2: 21.9483
+Soma limite regiao 2-3: 1903.36
+Regiao 2
+sumNormal(comp+trac-Nsd): -21.2827
+sumNormal(comp+trac-Nsd): 1622.13
+sumNormal(comp+trac-Nsd): -21.2827
+sumNormal(comp+trac-Nsd): 1622.13
+sumNormal(comp+trac-Nsd): 1339.99
+sumNormal(comp+trac-Nsd): 999.463
+sumNormal(comp+trac-Nsd): 601.162
+sumNormal(comp+trac-Nsd): 301.761
+sumNormal(comp+trac-Nsd): 136.495
+sumNormal(comp+trac-Nsd): 55.2688
+sumNormal(comp+trac-Nsd): 16.1889
+sumNormal(comp+trac-Nsd): -0.226229
+sumNormal(comp+trac-Nsd): 7.94144
+sumNormal(comp+trac-Nsd): 3.84732
+sumNormal(comp+trac-Nsd): 1.80793
+sumNormal(comp+trac-Nsd): 0.790194
+sumNormal(comp+trac-Nsd): 0.281818
+sumNormal(comp+trac-Nsd): 0.0277531
+sumNormal(comp+trac-Nsd): -4.02893e-06
+--------------------------------------------
+Angulo: 153; eps1: -3.5; eps2: 0.0448423; Mrdxx: -84.0342; Mrdyy: 21.4346
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 1.50416
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 1.50416
+d: 30.5812
+sumNormal(comp+trac-Nsd): 1885.11
+eps1: -3.5
+eps2: 21.6018
+Soma limite regiao 2-3: 1885.11
+Regiao 1
+sumNormal(comp+trac-Nsd): 1.50416
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 1.50416
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -275.505
+sumNormal(comp+trac-Nsd): -160.084
+sumNormal(comp+trac-Nsd): -85.0611
+sumNormal(comp+trac-Nsd): -43.2212
+sumNormal(comp+trac-Nsd): -21.2192
+sumNormal(comp+trac-Nsd): -9.9477
+sumNormal(comp+trac-Nsd): -4.24431
+sumNormal(comp+trac-Nsd): -1.37571
+sumNormal(comp+trac-Nsd): 0.0628186
+sumNormal(comp+trac-Nsd): -5.88397e-05
+--------------------------------------------
+Angulo: 156; eps1: -3.49694; eps2: -0.00407683; Mrdxx: -84.2317; Mrdyy: 19.1563
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 26.3357
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 26.3357
+d: 30.8222
+sumNormal(comp+trac-Nsd): 1866.86
+eps1: -3.5
+eps2: 21.2617
+Soma limite regiao 2-3: 1866.86
+Regiao 1
+sumNormal(comp+trac-Nsd): 26.3357
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 26.3357
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -269.297
+sumNormal(comp+trac-Nsd): -146.117
+sumNormal(comp+trac-Nsd): -66.0495
+sumNormal(comp+trac-Nsd): -21.3966
+sumNormal(comp+trac-Nsd): 2.0846
+sumNormal(comp+trac-Nsd): -0.0311399
+sumNormal(comp+trac-Nsd): 1.02597
+sumNormal(comp+trac-Nsd): 0.497226
+sumNormal(comp+trac-Nsd): 0.232996
+sumNormal(comp+trac-Nsd): 0.100916
+sumNormal(comp+trac-Nsd): 0.0348851
+--------------------------------------------
+Angulo: 159; eps1: -3.44909; eps2: -0.0678752; Mrdxx: -84.2077; Mrdyy: 16.5853
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 53.4249
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 53.4249
+d: 30.9787
+sumNormal(comp+trac-Nsd): 1849
+eps1: -3.5
+eps2: 20.926
+Soma limite regiao 2-3: 1849
+Regiao 1
+sumNormal(comp+trac-Nsd): 53.4249
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 53.4249
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -262.525
+sumNormal(comp+trac-Nsd): -130.879
+sumNormal(comp+trac-Nsd): -45.3093
+sumNormal(comp+trac-Nsd): 2.41227
+sumNormal(comp+trac-Nsd): -0.078977
+sumNormal(comp+trac-Nsd): 1.16559
+sumNormal(comp+trac-Nsd): 0.543046
+sumNormal(comp+trac-Nsd): 0.231969
+sumNormal(comp+trac-Nsd): 0.0764796
+sumNormal(comp+trac-Nsd): -4.10513e-06
+--------------------------------------------
+Angulo: 162; eps1: -3.40166; eps2: -0.131118; Mrdxx: -84.1539; Mrdyy: 14.0553
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 83.0382
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 83.0382
+d: 31.0503
+sumNormal(comp+trac-Nsd): 1831.23
+eps1: -3.5
+eps2: 20.5927
+Soma limite regiao 2-3: 1831.23
+Regiao 1
+sumNormal(comp+trac-Nsd): 83.0382
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 83.0382
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -255.121
+sumNormal(comp+trac-Nsd): -114.221
+sumNormal(comp+trac-Nsd): -22.6366
+sumNormal(comp+trac-Nsd): 28.4395
+sumNormal(comp+trac-Nsd): 2.46114
+sumNormal(comp+trac-Nsd): -0.0389437
+sumNormal(comp+trac-Nsd): 1.21004
+sumNormal(comp+trac-Nsd): 0.585282
+sumNormal(comp+trac-Nsd): 0.273103
+sumNormal(comp+trac-Nsd): 0.117063
+sumNormal(comp+trac-Nsd): 0.0390556
+--------------------------------------------
+Angulo: 165; eps1: -3.35492; eps2: -0.193437; Mrdxx: -84.0919; Mrdyy: 11.5789
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 115.505
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 115.505
+d: 31.0368
+sumNormal(comp+trac-Nsd): 1813.59
+eps1: -3.5
+eps2: 20.26
+Soma limite regiao 2-3: 1813.59
+Regiao 1
+sumNormal(comp+trac-Nsd): 115.505
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 115.505
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -247.004
+sumNormal(comp+trac-Nsd): -95.9588
+sumNormal(comp+trac-Nsd): 2.22093
+sumNormal(comp+trac-Nsd): -0.166976
+sumNormal(comp+trac-Nsd): 1.02601
+sumNormal(comp+trac-Nsd): 0.429276
+sumNormal(comp+trac-Nsd): 0.131089
+sumNormal(comp+trac-Nsd): -1.48773e-05
+--------------------------------------------
+Angulo: 168; eps1: -3.30856; eps2: -0.255259; Mrdxx: -84.003; Mrdyy: 9.15419
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 151.233
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 151.233
+d: 30.9383
+sumNormal(comp+trac-Nsd): 1796.04
+eps1: -3.5
+eps2: 19.9262
+Soma limite regiao 2-3: 1796.04
+Regiao 1
+sumNormal(comp+trac-Nsd): 151.233
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 151.233
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -238.073
+sumNormal(comp+trac-Nsd): 146.627
+sumNormal(comp+trac-Nsd): -5.39598
+sumNormal(comp+trac-Nsd): 67.2961
+sumNormal(comp+trac-Nsd): 30.1202
+sumNormal(comp+trac-Nsd): 12.1546
+sumNormal(comp+trac-Nsd): 3.32747
+sumNormal(comp+trac-Nsd): -0.0122378
+sumNormal(comp+trac-Nsd): 1.65573
+sumNormal(comp+trac-Nsd): 0.821274
+sumNormal(comp+trac-Nsd): 0.4044
+sumNormal(comp+trac-Nsd): 0.196052
+sumNormal(comp+trac-Nsd): 0.0918996
+--------------------------------------------
+Angulo: 171; eps1: -3.26288; eps2: -0.316164; Mrdxx: -83.9166; Mrdyy: 6.78757
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 190.724
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 190.724
+d: 30.7549
+sumNormal(comp+trac-Nsd): 1778.48
+eps1: -3.5
+eps2: 19.5893
+Soma limite regiao 2-3: 1778.48
+Regiao 1
+sumNormal(comp+trac-Nsd): 190.724
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 190.724
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -228.2
+sumNormal(comp+trac-Nsd): 157.281
+sumNormal(comp+trac-Nsd): -6.332
+sumNormal(comp+trac-Nsd): 71.6679
+sumNormal(comp+trac-Nsd): 31.7163
+sumNormal(comp+trac-Nsd): 12.4542
+sumNormal(comp+trac-Nsd): 3.00163
+sumNormal(comp+trac-Nsd): -0.0129768
+sumNormal(comp+trac-Nsd): 1.49279
+sumNormal(comp+trac-Nsd): 0.739521
+sumNormal(comp+trac-Nsd): 0.363176
+sumNormal(comp+trac-Nsd): 0.175076
+sumNormal(comp+trac-Nsd): 0.0810434
+--------------------------------------------
+Angulo: 174; eps1: -3.2174; eps2: -0.376804; Mrdxx: -83.8024; Mrdyy: 4.47304
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 234.601
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 234.601
+d: 30.4873
+sumNormal(comp+trac-Nsd): 1761.38
+eps1: -3.5
+eps2: 19.2473
+Soma limite regiao 2-3: 1761.38
+Regiao 1
+sumNormal(comp+trac-Nsd): 234.601
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 234.601
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -217.23
+sumNormal(comp+trac-Nsd): -28.9674
+sumNormal(comp+trac-Nsd): 93.4036
+sumNormal(comp+trac-Nsd): 29.8648
+sumNormal(comp+trac-Nsd): -0.139603
+sumNormal(comp+trac-Nsd): 14.7155
+sumNormal(comp+trac-Nsd): 7.2512
+sumNormal(comp+trac-Nsd): 3.5466
+sumNormal(comp+trac-Nsd): 1.7012
+sumNormal(comp+trac-Nsd): 0.780225
+sumNormal(comp+trac-Nsd): 0.320168
+sumNormal(comp+trac-Nsd): 0.0902466
+sumNormal(comp+trac-Nsd): -8.56315e-06
+--------------------------------------------
+Angulo: 177; eps1: -3.1721; eps2: -0.437203; Mrdxx: -83.6655; Mrdyy: 2.21093
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 283.64
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 283.64
+d: 30.1361
+sumNormal(comp+trac-Nsd): 1748.03
+eps1: -3.5
+eps2: 18.8984
+Soma limite regiao 2-3: 1748.03
+Regiao 1
+sumNormal(comp+trac-Nsd): 283.64
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 283.64
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -204.971
+sumNormal(comp+trac-Nsd): -1.38274
+sumNormal(comp+trac-Nsd): 130.949
+sumNormal(comp+trac-Nsd): 62.2385
+sumNormal(comp+trac-Nsd): 29.7917
+sumNormal(comp+trac-Nsd): 14.0454
+sumNormal(comp+trac-Nsd): 6.29157
+sumNormal(comp+trac-Nsd): 2.44447
+sumNormal(comp+trac-Nsd): 0.528381
+sumNormal(comp+trac-Nsd): -0.000497134
+sumNormal(comp+trac-Nsd): 0.263894
+sumNormal(comp+trac-Nsd): 0.131687
+--------------------------------------------
+Angulo: 180; eps1: -3.12732; eps2: -0.496904; Mrdxx: -83.5444; Mrdyy: 2.39422e-14
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 234.601
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 234.601
+d: 30.4873
+sumNormal(comp+trac-Nsd): 1761.38
+eps1: -3.5
+eps2: 19.2473
+Soma limite regiao 2-3: 1761.38
+Regiao 1
+sumNormal(comp+trac-Nsd): 234.601
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 234.601
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -217.23
+sumNormal(comp+trac-Nsd): -28.9674
+sumNormal(comp+trac-Nsd): 93.4036
+sumNormal(comp+trac-Nsd): 29.8648
+sumNormal(comp+trac-Nsd): -0.139603
+sumNormal(comp+trac-Nsd): 14.7155
+sumNormal(comp+trac-Nsd): 7.2512
+sumNormal(comp+trac-Nsd): 3.5466
+sumNormal(comp+trac-Nsd): 1.7012
+sumNormal(comp+trac-Nsd): 0.780225
+sumNormal(comp+trac-Nsd): 0.320168
+sumNormal(comp+trac-Nsd): 0.0902466
+sumNormal(comp+trac-Nsd): -8.56315e-06
+--------------------------------------------
+Angulo: 183; eps1: -3.1721; eps2: -0.437203; Mrdxx: -83.6655; Mrdyy: -2.21093
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 190.724
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 190.724
+d: 30.7549
+sumNormal(comp+trac-Nsd): 1778.48
+eps1: -3.5
+eps2: 19.5893
+Soma limite regiao 2-3: 1778.48
+Regiao 1
+sumNormal(comp+trac-Nsd): 190.724
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 190.724
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -228.2
+sumNormal(comp+trac-Nsd): 157.281
+sumNormal(comp+trac-Nsd): -6.332
+sumNormal(comp+trac-Nsd): 71.6679
+sumNormal(comp+trac-Nsd): 31.7163
+sumNormal(comp+trac-Nsd): 12.4542
+sumNormal(comp+trac-Nsd): 3.00163
+sumNormal(comp+trac-Nsd): -0.0129768
+sumNormal(comp+trac-Nsd): 1.49279
+sumNormal(comp+trac-Nsd): 0.739521
+sumNormal(comp+trac-Nsd): 0.363176
+sumNormal(comp+trac-Nsd): 0.175076
+sumNormal(comp+trac-Nsd): 0.0810434
+--------------------------------------------
+Angulo: 186; eps1: -3.2174; eps2: -0.376804; Mrdxx: -83.8024; Mrdyy: -4.47304
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 151.233
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 151.233
+d: 30.9383
+sumNormal(comp+trac-Nsd): 1796.04
+eps1: -3.5
+eps2: 19.9262
+Soma limite regiao 2-3: 1796.04
+Regiao 1
+sumNormal(comp+trac-Nsd): 151.233
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 151.233
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -238.073
+sumNormal(comp+trac-Nsd): 146.627
+sumNormal(comp+trac-Nsd): -5.39598
+sumNormal(comp+trac-Nsd): 67.2961
+sumNormal(comp+trac-Nsd): 30.1202
+sumNormal(comp+trac-Nsd): 12.1546
+sumNormal(comp+trac-Nsd): 3.32747
+sumNormal(comp+trac-Nsd): -0.0122378
+sumNormal(comp+trac-Nsd): 1.65573
+sumNormal(comp+trac-Nsd): 0.821274
+sumNormal(comp+trac-Nsd): 0.4044
+sumNormal(comp+trac-Nsd): 0.196052
+sumNormal(comp+trac-Nsd): 0.0918996
+--------------------------------------------
+Angulo: 189; eps1: -3.26288; eps2: -0.316164; Mrdxx: -83.9166; Mrdyy: -6.78757
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 115.505
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 115.505
+d: 31.0368
+sumNormal(comp+trac-Nsd): 1813.59
+eps1: -3.5
+eps2: 20.26
+Soma limite regiao 2-3: 1813.59
+Regiao 1
+sumNormal(comp+trac-Nsd): 115.505
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 115.505
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -247.004
+sumNormal(comp+trac-Nsd): -95.9588
+sumNormal(comp+trac-Nsd): 2.22093
+sumNormal(comp+trac-Nsd): -0.166976
+sumNormal(comp+trac-Nsd): 1.02601
+sumNormal(comp+trac-Nsd): 0.429276
+sumNormal(comp+trac-Nsd): 0.131089
+sumNormal(comp+trac-Nsd): -1.48773e-05
+--------------------------------------------
+Angulo: 192; eps1: -3.30856; eps2: -0.255259; Mrdxx: -84.003; Mrdyy: -9.15419
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 83.0382
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 83.0382
+d: 31.0503
+sumNormal(comp+trac-Nsd): 1831.23
+eps1: -3.5
+eps2: 20.5927
+Soma limite regiao 2-3: 1831.23
+Regiao 1
+sumNormal(comp+trac-Nsd): 83.0382
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 83.0382
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -255.121
+sumNormal(comp+trac-Nsd): -114.221
+sumNormal(comp+trac-Nsd): -22.6366
+sumNormal(comp+trac-Nsd): 28.4395
+sumNormal(comp+trac-Nsd): 2.46114
+sumNormal(comp+trac-Nsd): -0.0389437
+sumNormal(comp+trac-Nsd): 1.21004
+sumNormal(comp+trac-Nsd): 0.585282
+sumNormal(comp+trac-Nsd): 0.273103
+sumNormal(comp+trac-Nsd): 0.117063
+sumNormal(comp+trac-Nsd): 0.0390556
+--------------------------------------------
+Angulo: 195; eps1: -3.35492; eps2: -0.193437; Mrdxx: -84.0919; Mrdyy: -11.5789
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 53.4249
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 53.4249
+d: 30.9787
+sumNormal(comp+trac-Nsd): 1849
+eps1: -3.5
+eps2: 20.926
+Soma limite regiao 2-3: 1849
+Regiao 1
+sumNormal(comp+trac-Nsd): 53.4249
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 53.4249
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -262.525
+sumNormal(comp+trac-Nsd): -130.879
+sumNormal(comp+trac-Nsd): -45.3093
+sumNormal(comp+trac-Nsd): 2.41227
+sumNormal(comp+trac-Nsd): -0.078977
+sumNormal(comp+trac-Nsd): 1.16559
+sumNormal(comp+trac-Nsd): 0.543046
+sumNormal(comp+trac-Nsd): 0.231969
+sumNormal(comp+trac-Nsd): 0.0764796
+sumNormal(comp+trac-Nsd): -4.10513e-06
+--------------------------------------------
+Angulo: 198; eps1: -3.40166; eps2: -0.131118; Mrdxx: -84.1539; Mrdyy: -14.0553
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 26.3357
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 26.3357
+d: 30.8222
+sumNormal(comp+trac-Nsd): 1866.86
+eps1: -3.5
+eps2: 21.2617
+Soma limite regiao 2-3: 1866.86
+Regiao 1
+sumNormal(comp+trac-Nsd): 26.3357
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 26.3357
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -269.297
+sumNormal(comp+trac-Nsd): -146.117
+sumNormal(comp+trac-Nsd): -66.0495
+sumNormal(comp+trac-Nsd): -21.3966
+sumNormal(comp+trac-Nsd): 2.0846
+sumNormal(comp+trac-Nsd): -0.0311399
+sumNormal(comp+trac-Nsd): 1.02597
+sumNormal(comp+trac-Nsd): 0.497226
+sumNormal(comp+trac-Nsd): 0.232996
+sumNormal(comp+trac-Nsd): 0.100916
+sumNormal(comp+trac-Nsd): 0.0348851
+--------------------------------------------
+Angulo: 201; eps1: -3.44909; eps2: -0.0678752; Mrdxx: -84.2077; Mrdyy: -16.5853
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 1.50416
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 1.50416
+d: 30.5812
+sumNormal(comp+trac-Nsd): 1885.11
+eps1: -3.5
+eps2: 21.6018
+Soma limite regiao 2-3: 1885.11
+Regiao 1
+sumNormal(comp+trac-Nsd): 1.50416
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 1.50416
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -275.505
+sumNormal(comp+trac-Nsd): -160.084
+sumNormal(comp+trac-Nsd): -85.0611
+sumNormal(comp+trac-Nsd): -43.2212
+sumNormal(comp+trac-Nsd): -21.2192
+sumNormal(comp+trac-Nsd): -9.9477
+sumNormal(comp+trac-Nsd): -4.24431
+sumNormal(comp+trac-Nsd): -1.37571
+sumNormal(comp+trac-Nsd): 0.0628186
+sumNormal(comp+trac-Nsd): -5.88397e-05
+--------------------------------------------
+Angulo: 204; eps1: -3.49694; eps2: -0.00407683; Mrdxx: -84.2317; Mrdyy: -19.1563
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -21.2827
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -21.2827
+d: 30.2563
+sumNormal(comp+trac-Nsd): 1903.36
+eps1: -3.5
+eps2: 21.9483
+Soma limite regiao 2-3: 1903.36
+Regiao 2
+sumNormal(comp+trac-Nsd): -21.2827
+sumNormal(comp+trac-Nsd): 1622.13
+sumNormal(comp+trac-Nsd): -21.2827
+sumNormal(comp+trac-Nsd): 1622.13
+sumNormal(comp+trac-Nsd): 1339.99
+sumNormal(comp+trac-Nsd): 999.463
+sumNormal(comp+trac-Nsd): 601.162
+sumNormal(comp+trac-Nsd): 301.761
+sumNormal(comp+trac-Nsd): 136.495
+sumNormal(comp+trac-Nsd): 55.2688
+sumNormal(comp+trac-Nsd): 16.1889
+sumNormal(comp+trac-Nsd): -0.226229
+sumNormal(comp+trac-Nsd): 7.94144
+sumNormal(comp+trac-Nsd): 3.84732
+sumNormal(comp+trac-Nsd): 1.80793
+sumNormal(comp+trac-Nsd): 0.790194
+sumNormal(comp+trac-Nsd): 0.281818
+sumNormal(comp+trac-Nsd): 0.0277531
+sumNormal(comp+trac-Nsd): -4.02893e-06
+--------------------------------------------
+Angulo: 207; eps1: -3.5; eps2: 0.0448423; Mrdxx: -84.0342; Mrdyy: -21.4346
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -42.1919
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -42.1919
+d: 29.8486
+sumNormal(comp+trac-Nsd): 1917.89
+eps1: -3.5
+eps2: 22.3033
+Soma limite regiao 2-3: 1917.89
+Regiao 2
+sumNormal(comp+trac-Nsd): -42.1919
+sumNormal(comp+trac-Nsd): 1628.06
+sumNormal(comp+trac-Nsd): -42.1919
+sumNormal(comp+trac-Nsd): 1628.06
+sumNormal(comp+trac-Nsd): 1336.22
+sumNormal(comp+trac-Nsd): 971.279
+sumNormal(comp+trac-Nsd): 558.182
+sumNormal(comp+trac-Nsd): 266.081
+sumNormal(comp+trac-Nsd): 107.86
+sumNormal(comp+trac-Nsd): 30.5065
+sumNormal(comp+trac-Nsd): -0.754803
+sumNormal(comp+trac-Nsd): 14.7599
+sumNormal(comp+trac-Nsd): 6.97163
+sumNormal(comp+trac-Nsd): 3.10043
+sumNormal(comp+trac-Nsd): 1.17079
+sumNormal(comp+trac-Nsd): 0.207481
+sumNormal(comp+trac-Nsd): -8.66488e-05
+--------------------------------------------
+Angulo: 210; eps1: -3.5; eps2: 0.0922898; Mrdxx: -83.8006; Mrdyy: -23.6453
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -61.35
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -61.35
+d: 29.359
+sumNormal(comp+trac-Nsd): 1930.51
+eps1: -3.5
+eps2: 22.6691
+Soma limite regiao 2-3: 1930.51
+Regiao 2
+sumNormal(comp+trac-Nsd): -61.35
+sumNormal(comp+trac-Nsd): 1634.01
+sumNormal(comp+trac-Nsd): -61.35
+sumNormal(comp+trac-Nsd): 1634.01
+sumNormal(comp+trac-Nsd): 1332.02
+sumNormal(comp+trac-Nsd): 938.934
+sumNormal(comp+trac-Nsd): 515.582
+sumNormal(comp+trac-Nsd): 232.411
+sumNormal(comp+trac-Nsd): 81.2598
+sumNormal(comp+trac-Nsd): 7.65792
+sumNormal(comp+trac-Nsd): -0.281473
+sumNormal(comp+trac-Nsd): 3.681
+sumNormal(comp+trac-Nsd): 1.69793
+sumNormal(comp+trac-Nsd): 0.707763
+sumNormal(comp+trac-Nsd): 0.213029
+sumNormal(comp+trac-Nsd): -2.85992e-05
+--------------------------------------------
+Angulo: 213; eps1: -3.5; eps2: 0.139528; Mrdxx: -83.5388; Mrdyy: -25.7943
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -78.8495
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -78.8495
+d: 28.789
+sumNormal(comp+trac-Nsd): 1942.25
+eps1: -3.5
+eps2: 23.0484
+Soma limite regiao 2-3: 1942.25
+Regiao 2
+sumNormal(comp+trac-Nsd): -78.8495
+sumNormal(comp+trac-Nsd): 1639.99
+sumNormal(comp+trac-Nsd): -78.8495
+sumNormal(comp+trac-Nsd): 1639.99
+sumNormal(comp+trac-Nsd): 1327.27
+sumNormal(comp+trac-Nsd): 902.056
+sumNormal(comp+trac-Nsd): 473.827
+sumNormal(comp+trac-Nsd): 200.695
+sumNormal(comp+trac-Nsd): 56.5843
+sumNormal(comp+trac-Nsd): -2.11353
+sumNormal(comp+trac-Nsd): 26.9796
+sumNormal(comp+trac-Nsd): 12.358
+sumNormal(comp+trac-Nsd): 5.102
+sumNormal(comp+trac-Nsd): 1.48899
+sumNormal(comp+trac-Nsd): -0.00129262
+sumNormal(comp+trac-Nsd): 0.743624
+sumNormal(comp+trac-Nsd): 0.371109
+sumNormal(comp+trac-Nsd): 0.184894
+sumNormal(comp+trac-Nsd): 0.0917972
+sumNormal(comp+trac-Nsd): 0.0452514
+sumNormal(comp+trac-Nsd): 0.0219792
+--------------------------------------------
+Angulo: 216; eps1: -3.5; eps2: 0.186777; Mrdxx: -83.2471; Mrdyy: -27.8695
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -94.7697
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -94.7697
+d: 28.14
+sumNormal(comp+trac-Nsd): 1953.4
+eps1: -3.5
+eps2: 23.4441
+Soma limite regiao 2-3: 1953.4
+Regiao 2
+sumNormal(comp+trac-Nsd): -94.7697
+sumNormal(comp+trac-Nsd): 1645.95
+sumNormal(comp+trac-Nsd): -94.7697
+sumNormal(comp+trac-Nsd): 1645.95
+sumNormal(comp+trac-Nsd): 1321.85
+sumNormal(comp+trac-Nsd): 861.059
+sumNormal(comp+trac-Nsd): 433.223
+sumNormal(comp+trac-Nsd): 170.897
+sumNormal(comp+trac-Nsd): 33.7627
+sumNormal(comp+trac-Nsd): -1.52844
+sumNormal(comp+trac-Nsd): 16.03
+sumNormal(comp+trac-Nsd): 7.22653
+sumNormal(comp+trac-Nsd): 2.84266
+sumNormal(comp+trac-Nsd): 0.655472
+sumNormal(comp+trac-Nsd): -0.000347699
+sumNormal(comp+trac-Nsd): 0.327525
+sumNormal(comp+trac-Nsd): 0.163579
+sumNormal(comp+trac-Nsd): 0.0816136
+sumNormal(comp+trac-Nsd): 0.0406324
+--------------------------------------------
+Angulo: 219; eps1: -3.5; eps2: 0.2341; Mrdxx: -82.9194; Mrdyy: -29.8547
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -109.213
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -109.213
+d: 27.4139
+sumNormal(comp+trac-Nsd): 1964.17
+eps1: -3.5
+eps2: 23.8597
+Soma limite regiao 2-3: 1964.17
+Regiao 2
+sumNormal(comp+trac-Nsd): -109.213
+sumNormal(comp+trac-Nsd): 1651.84
+sumNormal(comp+trac-Nsd): -109.213
+sumNormal(comp+trac-Nsd): 1651.84
+sumNormal(comp+trac-Nsd): 1311.75
+sumNormal(comp+trac-Nsd): 816.772
+sumNormal(comp+trac-Nsd): 394
+sumNormal(comp+trac-Nsd): 143.005
+sumNormal(comp+trac-Nsd): 12.756
+sumNormal(comp+trac-Nsd): -0.66
+sumNormal(comp+trac-Nsd): 6.03655
+sumNormal(comp+trac-Nsd): 2.68527
+sumNormal(comp+trac-Nsd): 1.01187
+sumNormal(comp+trac-Nsd): 0.175738
+sumNormal(comp+trac-Nsd): -3.24469e-05
+--------------------------------------------
+Angulo: 222; eps1: -3.5; eps2: 0.281431; Mrdxx: -82.5473; Mrdyy: -31.729
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -122.289
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -122.289
+d: 26.6127
+sumNormal(comp+trac-Nsd): 1974.75
+eps1: -3.5
+eps2: 24.2991
+Soma limite regiao 2-3: 1974.75
+Regiao 2
+sumNormal(comp+trac-Nsd): -122.289
+sumNormal(comp+trac-Nsd): 1657.57
+sumNormal(comp+trac-Nsd): -122.289
+sumNormal(comp+trac-Nsd): 1657.57
+sumNormal(comp+trac-Nsd): 1294.74
+sumNormal(comp+trac-Nsd): 770.372
+sumNormal(comp+trac-Nsd): 356.358
+sumNormal(comp+trac-Nsd): 117.044
+sumNormal(comp+trac-Nsd): -3.82262
+sumNormal(comp+trac-Nsd): 56.523
+sumNormal(comp+trac-Nsd): 26.2487
+sumNormal(comp+trac-Nsd): 11.1758
+sumNormal(comp+trac-Nsd): 3.66569
+sumNormal(comp+trac-Nsd): -0.00292322
+sumNormal(comp+trac-Nsd): 1.83071
+sumNormal(comp+trac-Nsd): 0.913719
+sumNormal(comp+trac-Nsd): 0.455355
+sumNormal(comp+trac-Nsd): 0.226205
+sumNormal(comp+trac-Nsd): 0.111638
+sumNormal(comp+trac-Nsd): 0.0543567
+sumNormal(comp+trac-Nsd): 0.0257166
+--------------------------------------------
+Angulo: 225; eps1: -3.5; eps2: 0.329174; Mrdxx: -82.1467; Mrdyy: -33.4856
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -134.116
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -134.116
+d: 25.7385
+sumNormal(comp+trac-Nsd): 1982.35
+eps1: -3.5
+eps2: 24.7672
+Soma limite regiao 2-3: 1982.35
+Regiao 2
+sumNormal(comp+trac-Nsd): -134.116
+sumNormal(comp+trac-Nsd): 1663.01
+sumNormal(comp+trac-Nsd): -134.116
+sumNormal(comp+trac-Nsd): 1663.01
+sumNormal(comp+trac-Nsd): 1270.1
+sumNormal(comp+trac-Nsd): 722.908
+sumNormal(comp+trac-Nsd): 320.504
+sumNormal(comp+trac-Nsd): 93.0158
+sumNormal(comp+trac-Nsd): -3.04175
+sumNormal(comp+trac-Nsd): 45.0114
+sumNormal(comp+trac-Nsd): 20.9549
+sumNormal(comp+trac-Nsd): 8.94282
+sumNormal(comp+trac-Nsd): 2.94626
+sumNormal(comp+trac-Nsd): -0.00117391
+sumNormal(comp+trac-Nsd): 1.47227
+sumNormal(comp+trac-Nsd): 0.735479
+sumNormal(comp+trac-Nsd): 0.367135
+sumNormal(comp+trac-Nsd): 0.182976
+sumNormal(comp+trac-Nsd): 0.0909
+sumNormal(comp+trac-Nsd): 0.0448628
+sumNormal(comp+trac-Nsd): 0.0218444
+--------------------------------------------
+Angulo: 228; eps1: -3.5; eps2: 0.377235; Mrdxx: -81.7086; Mrdyy: -35.1067
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -144.832
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -144.832
+d: 24.7938
+sumNormal(comp+trac-Nsd): 1986.49
+eps1: -3.5
+eps2: 25.2695
+Soma limite regiao 2-3: 1986.49
+Regiao 2
+sumNormal(comp+trac-Nsd): -144.832
+sumNormal(comp+trac-Nsd): 1667.96
+sumNormal(comp+trac-Nsd): -144.832
+sumNormal(comp+trac-Nsd): 1667.96
+sumNormal(comp+trac-Nsd): 1236.81
+sumNormal(comp+trac-Nsd): 675.286
+sumNormal(comp+trac-Nsd): 286.674
+sumNormal(comp+trac-Nsd): 70.8408
+sumNormal(comp+trac-Nsd): -2.17773
+sumNormal(comp+trac-Nsd): 34.3843
+sumNormal(comp+trac-Nsd): 16.1081
+sumNormal(comp+trac-Nsd): 6.96401
+sumNormal(comp+trac-Nsd): 2.39247
+sumNormal(comp+trac-Nsd): 0.10715
+sumNormal(comp+trac-Nsd): -1.04983e-05
+--------------------------------------------
+Angulo: 231; eps1: -3.5; eps2: 0.425824; Mrdxx: -81.2374; Mrdyy: -36.5817
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -154.604
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -154.604
+d: 23.7812
+sumNormal(comp+trac-Nsd): 1990.37
+eps1: -3.5
+eps2: 25.8132
+Soma limite regiao 2-3: 1990.37
+Regiao 2
+sumNormal(comp+trac-Nsd): -154.604
+sumNormal(comp+trac-Nsd): 1672.13
+sumNormal(comp+trac-Nsd): -154.604
+sumNormal(comp+trac-Nsd): 1672.13
+sumNormal(comp+trac-Nsd): 1194.31
+sumNormal(comp+trac-Nsd): 628.376
+sumNormal(comp+trac-Nsd): 255.023
+sumNormal(comp+trac-Nsd): 50.4059
+sumNormal(comp+trac-Nsd): -1.35944
+sumNormal(comp+trac-Nsd): 24.5624
+sumNormal(comp+trac-Nsd): 11.6093
+sumNormal(comp+trac-Nsd): 5.12659
+sumNormal(comp+trac-Nsd): 1.88396
+sumNormal(comp+trac-Nsd): 0.262347
+sumNormal(comp+trac-Nsd): 1.21322e-05
+--------------------------------------------
+Angulo: 234; eps1: -3.5; eps2: 0.475356; Mrdxx: -80.7394; Mrdyy: -37.9071
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -163.584
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -163.584
+d: 22.7033
+sumNormal(comp+trac-Nsd): 1994.01
+eps1: -3.5
+eps2: 26.407
+Soma limite regiao 2-3: 1994.01
+Regiao 2
+sumNormal(comp+trac-Nsd): -163.584
+sumNormal(comp+trac-Nsd): 1672.55
+sumNormal(comp+trac-Nsd): -163.584
+sumNormal(comp+trac-Nsd): 1672.55
+sumNormal(comp+trac-Nsd): 1144.83
+sumNormal(comp+trac-Nsd): 583.084
+sumNormal(comp+trac-Nsd): 225.545
+sumNormal(comp+trac-Nsd): 31.534
+sumNormal(comp+trac-Nsd): -0.705963
+sumNormal(comp+trac-Nsd): 15.434
+sumNormal(comp+trac-Nsd): 7.36853
+sumNormal(comp+trac-Nsd): 3.33235
+sumNormal(comp+trac-Nsd): 1.31346
+sumNormal(comp+trac-Nsd): 0.30381
+sumNormal(comp+trac-Nsd): 1.3342e-05
+--------------------------------------------
+Angulo: 237; eps1: -3.5; eps2: 0.526197; Mrdxx: -80.2094; Mrdyy: -39.0896
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -171.891
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -171.891
+d: 21.5632
+sumNormal(comp+trac-Nsd): 1997.45
+eps1: -3.5
+eps2: 27.0619
+Soma limite regiao 2-3: 1997.45
+Regiao 2
+sumNormal(comp+trac-Nsd): -171.891
+sumNormal(comp+trac-Nsd): 1659.04
+sumNormal(comp+trac-Nsd): -171.891
+sumNormal(comp+trac-Nsd): 1659.04
+sumNormal(comp+trac-Nsd): 1091.28
+sumNormal(comp+trac-Nsd): 541.126
+sumNormal(comp+trac-Nsd): 198.114
+sumNormal(comp+trac-Nsd): 13.995
+sumNormal(comp+trac-Nsd): -0.242492
+sumNormal(comp+trac-Nsd): 6.88104
+sumNormal(comp+trac-Nsd): 3.32043
+sumNormal(comp+trac-Nsd): 1.53925
+sumNormal(comp+trac-Nsd): 0.648452
+sumNormal(comp+trac-Nsd): 0.202997
+sumNormal(comp+trac-Nsd): 4.34281e-06
+--------------------------------------------
+Angulo: 240; eps1: -3.5; eps2: 0.578745; Mrdxx: -79.6398; Mrdyy: -40.149
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -179.621
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -179.621
+d: 20.364
+sumNormal(comp+trac-Nsd): 2000.67
+eps1: -3.5
+eps2: 27.7919
+Soma limite regiao 2-3: 2000.67
+Regiao 2
+sumNormal(comp+trac-Nsd): -179.621
+sumNormal(comp+trac-Nsd): 1624.1
+sumNormal(comp+trac-Nsd): -179.621
+sumNormal(comp+trac-Nsd): 1624.1
+sumNormal(comp+trac-Nsd): 1036.68
+sumNormal(comp+trac-Nsd): 502.393
+sumNormal(comp+trac-Nsd): 173.038
+sumNormal(comp+trac-Nsd): 0.936522
+sumNormal(comp+trac-Nsd): -0.0157466
+sumNormal(comp+trac-Nsd): 0.460413
+sumNormal(comp+trac-Nsd): 0.22234
+sumNormal(comp+trac-Nsd): 0.103298
+sumNormal(comp+trac-Nsd): 0.0437761
+sumNormal(comp+trac-Nsd): 0.0140149
+sumNormal(comp+trac-Nsd): 2.46096e-08
+--------------------------------------------
+Angulo: 243; eps1: -3.5; eps2: 0.633403; Mrdxx: -79.0195; Mrdyy: -41.1016
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -186.849
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -186.849
+d: 19.109
+sumNormal(comp+trac-Nsd): 2003.62
+eps1: -3.5
+eps2: 28.6158
+Soma limite regiao 2-3: 2003.62
+Regiao 2
+sumNormal(comp+trac-Nsd): -186.849
+sumNormal(comp+trac-Nsd): 1568.27
+sumNormal(comp+trac-Nsd): -186.849
+sumNormal(comp+trac-Nsd): 1568.27
+sumNormal(comp+trac-Nsd): 983.948
+sumNormal(comp+trac-Nsd): 466.619
+sumNormal(comp+trac-Nsd): 149.764
+sumNormal(comp+trac-Nsd): 0.891713
+sumNormal(comp+trac-Nsd): -0.00826977
+sumNormal(comp+trac-Nsd): 0.441748
+sumNormal(comp+trac-Nsd): 0.216746
+sumNormal(comp+trac-Nsd): 0.10424
+sumNormal(comp+trac-Nsd): 0.0479854
+sumNormal(comp+trac-Nsd): 0.0198579
+sumNormal(comp+trac-Nsd): 0.0057941
+--------------------------------------------
+Angulo: 246; eps1: -3.5; eps2: 0.690594; Mrdxx: -78.3338; Mrdyy: -41.9604
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -193.633
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -193.633
+d: 17.8016
+sumNormal(comp+trac-Nsd): 1999.42
+eps1: -3.5
+eps2: 29.5582
+Soma limite regiao 2-3: 1999.42
+Regiao 2
+sumNormal(comp+trac-Nsd): -193.633
+sumNormal(comp+trac-Nsd): 1501.33
+sumNormal(comp+trac-Nsd): -193.633
+sumNormal(comp+trac-Nsd): 1501.33
+sumNormal(comp+trac-Nsd): 934.822
+sumNormal(comp+trac-Nsd): 433.616
+sumNormal(comp+trac-Nsd): 127.945
+sumNormal(comp+trac-Nsd): 0.523505
+sumNormal(comp+trac-Nsd): -1.45441e-05
+--------------------------------------------
+Angulo: 249; eps1: -3.5; eps2: 0.75063; Mrdxx: -77.5587; Mrdyy: -42.7332
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -200.015
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -200.015
+d: 16.4455
+sumNormal(comp+trac-Nsd): 1966.06
+eps1: -3.5
+eps2: 30.6532
+Soma limite regiao 2-3: 1966.06
+Regiao 2
+sumNormal(comp+trac-Nsd): -200.015
+sumNormal(comp+trac-Nsd): 1431.96
+sumNormal(comp+trac-Nsd): -200.015
+sumNormal(comp+trac-Nsd): 1431.96
+sumNormal(comp+trac-Nsd): 889.625
+sumNormal(comp+trac-Nsd): 403.285
+sumNormal(comp+trac-Nsd): 107.745
+sumNormal(comp+trac-Nsd): 0.347539
+sumNormal(comp+trac-Nsd): -0.00431177
+sumNormal(comp+trac-Nsd): 0.171618
+sumNormal(comp+trac-Nsd): 0.0836543
+sumNormal(comp+trac-Nsd): 0.0396715
+sumNormal(comp+trac-Nsd): 0.01768
+--------------------------------------------
+Angulo: 252; eps1: -3.5; eps2: 0.811055; Mrdxx: -76.4443; Mrdyy: -43.4081
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -194.242
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -194.242
+d: 16.7655
+sumNormal(comp+trac-Nsd): 2019.24
+eps1: -3.5
+eps2: 29.6955
+Soma limite regiao 2-3: 2019.24
+Regiao 2
+sumNormal(comp+trac-Nsd): -194.242
+sumNormal(comp+trac-Nsd): 1513.61
+sumNormal(comp+trac-Nsd): -194.242
+sumNormal(comp+trac-Nsd): 1513.61
+sumNormal(comp+trac-Nsd): 963.102
+sumNormal(comp+trac-Nsd): 448.641
+sumNormal(comp+trac-Nsd): 131.765
+sumNormal(comp+trac-Nsd): -1.01617
+sumNormal(comp+trac-Nsd): 65.7725
+sumNormal(comp+trac-Nsd): 32.4761
+sumNormal(comp+trac-Nsd): 15.7538
+sumNormal(comp+trac-Nsd): 7.37464
+sumNormal(comp+trac-Nsd): 3.18067
+sumNormal(comp+trac-Nsd): 1.08261
+sumNormal(comp+trac-Nsd): 0.0333109
+sumNormal(comp+trac-Nsd): 2.73141e-06
+--------------------------------------------
+Angulo: 255; eps1: -3.5; eps2: 0.7486; Mrdxx: -73.5849; Mrdyy: -43.4088
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -182.384
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -182.384
+d: 17.6966
+sumNormal(comp+trac-Nsd): 2063.74
+eps1: -3.5
+eps2: 27.9337
+Soma limite regiao 2-3: 2063.74
+Regiao 2
+sumNormal(comp+trac-Nsd): -182.384
+sumNormal(comp+trac-Nsd): 1637.51
+sumNormal(comp+trac-Nsd): -182.384
+sumNormal(comp+trac-Nsd): 1637.51
+sumNormal(comp+trac-Nsd): 1073.11
+sumNormal(comp+trac-Nsd): 525.356
+sumNormal(comp+trac-Nsd): 173.683
+sumNormal(comp+trac-Nsd): -0.739164
+sumNormal(comp+trac-Nsd): 86.666
+sumNormal(comp+trac-Nsd): 43.0047
+sumNormal(comp+trac-Nsd): 21.141
+sumNormal(comp+trac-Nsd): 10.2026
+sumNormal(comp+trac-Nsd): 4.73208
+sumNormal(comp+trac-Nsd): 1.99654
+sumNormal(comp+trac-Nsd): 0.628708
+sumNormal(comp+trac-Nsd): 4.91719e-06
+--------------------------------------------
+Angulo: 258; eps1: -3.5; eps2: 0.642846; Mrdxx: -69.292; Mrdyy: -43.0768
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -163.408
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -163.408
+d: 19.6081
+sumNormal(comp+trac-Nsd): 2055.82
+eps1: -3.5
+eps2: 24.7776
+Soma limite regiao 2-3: 2055.82
+Regiao 2
+sumNormal(comp+trac-Nsd): -163.408
+sumNormal(comp+trac-Nsd): 1736.98
+sumNormal(comp+trac-Nsd): -163.408
+sumNormal(comp+trac-Nsd): 1736.98
+sumNormal(comp+trac-Nsd): 1191.09
+sumNormal(comp+trac-Nsd): 615.003
+sumNormal(comp+trac-Nsd): 224.374
+sumNormal(comp+trac-Nsd): 28.1424
+sumNormal(comp+trac-Nsd): -0.479975
+sumNormal(comp+trac-Nsd): 13.8217
+sumNormal(comp+trac-Nsd): 6.66831
+sumNormal(comp+trac-Nsd): 3.09351
+sumNormal(comp+trac-Nsd): 1.3066
+sumNormal(comp+trac-Nsd): 0.413273
+sumNormal(comp+trac-Nsd): -1.03965e-05
+--------------------------------------------
+Angulo: 261; eps1: -3.5; eps2: 0.534718; Mrdxx: -64.5637; Mrdyy: -42.5921
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -140.342
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -140.342
+d: 21.4659
+sumNormal(comp+trac-Nsd): 2042.19
+eps1: -3.5
+eps2: 22.1758
+Soma limite regiao 2-3: 2042.19
+Regiao 2
+sumNormal(comp+trac-Nsd): -140.342
+sumNormal(comp+trac-Nsd): 1818.34
+sumNormal(comp+trac-Nsd): -140.342
+sumNormal(comp+trac-Nsd): 1818.34
+sumNormal(comp+trac-Nsd): 1307.53
+sumNormal(comp+trac-Nsd): 723.323
+sumNormal(comp+trac-Nsd): 285.835
+sumNormal(comp+trac-Nsd): 68.4011
+sumNormal(comp+trac-Nsd): -1.33918
+sumNormal(comp+trac-Nsd): 33.4178
+sumNormal(comp+trac-Nsd): 16.009
+sumNormal(comp+trac-Nsd): 7.32707
+sumNormal(comp+trac-Nsd): 2.99194
+sumNormal(comp+trac-Nsd): 0.825875
+sumNormal(comp+trac-Nsd): -0.000119775
+sumNormal(comp+trac-Nsd): 0.412859
+sumNormal(comp+trac-Nsd): 0.206365
+sumNormal(comp+trac-Nsd): 0.103122
+sumNormal(comp+trac-Nsd): 0.0515006
+sumNormal(comp+trac-Nsd): 0.0256903
+--------------------------------------------
+Angulo: 264; eps1: -3.5; eps2: 0.424234; Mrdxx: -59.3518; Mrdyy: -41.9204
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -112.189
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -112.189
+d: 23.2648
+sumNormal(comp+trac-Nsd): 2028.69
+eps1: -3.5
+eps2: 19.9829
+Soma limite regiao 2-3: 2028.69
+Regiao 2
+sumNormal(comp+trac-Nsd): -112.189
+sumNormal(comp+trac-Nsd): 1872.63
+sumNormal(comp+trac-Nsd): -112.189
+sumNormal(comp+trac-Nsd): 1872.63
+sumNormal(comp+trac-Nsd): 1419.97
+sumNormal(comp+trac-Nsd): 837.971
+sumNormal(comp+trac-Nsd): 364.046
+sumNormal(comp+trac-Nsd): 117.351
+sumNormal(comp+trac-Nsd): 0.405154
+sumNormal(comp+trac-Nsd): -0.00894231
+sumNormal(comp+trac-Nsd): 0.198099
+sumNormal(comp+trac-Nsd): 0.0945767
+sumNormal(comp+trac-Nsd): 0.0428168
+sumNormal(comp+trac-Nsd): 0.0169371
+--------------------------------------------
+Angulo: 267; eps1: -3.5; eps2: 0.311446; Mrdxx: -53.6321; Mrdyy: -41.0187
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -77.5529
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -77.5529
+d: 25
+sumNormal(comp+trac-Nsd): 2015.26
+eps1: -3.5
+eps2: 18.1
+Soma limite regiao 2-3: 2015.26
+Regiao 2
+sumNormal(comp+trac-Nsd): -77.5529
+sumNormal(comp+trac-Nsd): 1900.91
+sumNormal(comp+trac-Nsd): -77.5529
+sumNormal(comp+trac-Nsd): 1900.91
+sumNormal(comp+trac-Nsd): 1524.38
+sumNormal(comp+trac-Nsd): 952.179
+sumNormal(comp+trac-Nsd): 461.88
+sumNormal(comp+trac-Nsd): 180.802
+sumNormal(comp+trac-Nsd): 46.8364
+sumNormal(comp+trac-Nsd): -0.774455
+sumNormal(comp+trac-Nsd): 22.9243
+sumNormal(comp+trac-Nsd): 11.0477
+sumNormal(comp+trac-Nsd): 5.12973
+sumNormal(comp+trac-Nsd): 2.17589
+sumNormal(comp+trac-Nsd): 0.700282
+sumNormal(comp+trac-Nsd): -0.000109289
+sumNormal(comp+trac-Nsd): 0.350062
+sumNormal(comp+trac-Nsd): 0.17497
+sumNormal(comp+trac-Nsd): 0.0874288
+sumNormal(comp+trac-Nsd): 0.0436594
+sumNormal(comp+trac-Nsd): 0.0217749
+--------------------------------------------
+Angulo: 270; eps1: -3.5; eps2: 0.19682; Mrdxx: -47.3997; Mrdyy: -39.8531
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -44.9174
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -44.9174
+d: 27.4517
+sumNormal(comp+trac-Nsd): 2011.67
+eps1: -3.5
+eps2: 16.4013
+Soma limite regiao 2-3: 2011.67
+Regiao 2
+sumNormal(comp+trac-Nsd): -44.9174
+sumNormal(comp+trac-Nsd): 1929.6
+sumNormal(comp+trac-Nsd): -44.9174
+sumNormal(comp+trac-Nsd): 1929.6
+sumNormal(comp+trac-Nsd): 1620.74
+sumNormal(comp+trac-Nsd): 1066.04
+sumNormal(comp+trac-Nsd): 565.602
+sumNormal(comp+trac-Nsd): 248.304
+sumNormal(comp+trac-Nsd): 97.8049
+sumNormal(comp+trac-Nsd): 25.3014
+sumNormal(comp+trac-Nsd): -0.301081
+sumNormal(comp+trac-Nsd): 12.4633
+sumNormal(comp+trac-Nsd): 6.07175
+sumNormal(comp+trac-Nsd): 2.88298
+sumNormal(comp+trac-Nsd): 1.29036
+sumNormal(comp+trac-Nsd): 0.494489
+sumNormal(comp+trac-Nsd): 0.096667
+sumNormal(comp+trac-Nsd): -6.83279e-06
+--------------------------------------------
+Angulo: 273; eps1: -3.5; eps2: 0.100616; Mrdxx: -39.3328; Mrdyy: -37.598
+--------------------------------------------
+sumNormal(comp+trac-Nsd): -2.12033
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: -2.12033
+d: 29.8281
+sumNormal(comp+trac-Nsd): 2007.95
+eps1: -3.5
+eps2: 14.9776
+Soma limite regiao 2-3: 2007.95
+Regiao 2
+sumNormal(comp+trac-Nsd): -2.12033
+sumNormal(comp+trac-Nsd): 1940.38
+sumNormal(comp+trac-Nsd): -2.12033
+sumNormal(comp+trac-Nsd): 1940.38
+sumNormal(comp+trac-Nsd): 1685.33
+sumNormal(comp+trac-Nsd): 1173.7
+sumNormal(comp+trac-Nsd): 671.527
+sumNormal(comp+trac-Nsd): 326.06
+sumNormal(comp+trac-Nsd): 156.939
+sumNormal(comp+trac-Nsd): 75.8688
+sumNormal(comp+trac-Nsd): 36.3549
+sumNormal(comp+trac-Nsd): 16.9294
+sumNormal(comp+trac-Nsd): 7.34838
+sumNormal(comp+trac-Nsd): 2.5988
+sumNormal(comp+trac-Nsd): 0.235279
+sumNormal(comp+trac-Nsd): -0.0003607
+sumNormal(comp+trac-Nsd): 0.117449
+sumNormal(comp+trac-Nsd): 0.0585419
+sumNormal(comp+trac-Nsd): 0.02909
+--------------------------------------------
+Angulo: 276; eps1: -3.5; eps2: 0.00445608; Mrdxx: -30.6998; Mrdyy: -34.8621
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 47.8597
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 47.8597
+d: 32.1228
+sumNormal(comp+trac-Nsd): 2004.07
+eps1: -3.5
+eps2: 13.7609
+Soma limite regiao 2-3: 2004.07
+Regiao 1
+sumNormal(comp+trac-Nsd): 47.8597
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 47.8597
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -247.515
+sumNormal(comp+trac-Nsd): 43.8326
+sumNormal(comp+trac-Nsd): -0.767117
+sumNormal(comp+trac-Nsd): 21.2109
+sumNormal(comp+trac-Nsd): 10.1414
+sumNormal(comp+trac-Nsd): 4.66703
+sumNormal(comp+trac-Nsd): 1.94493
+sumNormal(comp+trac-Nsd): 0.587648
+sumNormal(comp+trac-Nsd): -0.000308794
+sumNormal(comp+trac-Nsd): 0.293611
+sumNormal(comp+trac-Nsd): 0.146636
+sumNormal(comp+trac-Nsd): 0.07316
+--------------------------------------------
+Angulo: 279; eps1: -3.4041; eps2: -0.127863; Mrdxx: -21.6101; Mrdyy: -31.3985
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 105.657
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 105.657
+d: 34.3295
+sumNormal(comp+trac-Nsd): 2000.03
+eps1: -3.5
+eps2: 12.7038
+Soma limite regiao 2-3: 2000.03
+Regiao 1
+sumNormal(comp+trac-Nsd): 105.657
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 105.657
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -230.209
+sumNormal(comp+trac-Nsd): 71.766
+sumNormal(comp+trac-Nsd): -2.10252
+sumNormal(comp+trac-Nsd): 33.9784
+sumNormal(comp+trac-Nsd): 15.7246
+sumNormal(comp+trac-Nsd): 6.75769
+sumNormal(comp+trac-Nsd): 2.31425
+sumNormal(comp+trac-Nsd): 0.102531
+sumNormal(comp+trac-Nsd): -0.000147795
+sumNormal(comp+trac-Nsd): 0.0511898
+--------------------------------------------
+Angulo: 282; eps1: -3.30741; eps2: -0.256789; Mrdxx: -13.4433; Mrdyy: -28.113
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 171.705
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 171.705
+d: 36.4421
+sumNormal(comp+trac-Nsd): 1995.81
+eps1: -3.5
+eps2: 11.7719
+Soma limite regiao 2-3: 1995.81
+Regiao 1
+sumNormal(comp+trac-Nsd): 171.705
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 171.705
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -210.851
+sumNormal(comp+trac-Nsd): 85.1792
+sumNormal(comp+trac-Nsd): -3.10383
+sumNormal(comp+trac-Nsd): 39.838
+sumNormal(comp+trac-Nsd): 18.0672
+sumNormal(comp+trac-Nsd): 7.4067
+sumNormal(comp+trac-Nsd): 2.13269
+sumNormal(comp+trac-Nsd): -0.004525
+sumNormal(comp+trac-Nsd): 1.0633
+sumNormal(comp+trac-Nsd): 0.529196
+sumNormal(comp+trac-Nsd): 0.262287
+sumNormal(comp+trac-Nsd): 0.128869
+sumNormal(comp+trac-Nsd): 0.0621688
+--------------------------------------------
+Angulo: 285; eps1: -3.21655; eps2: -0.377935; Mrdxx: -6.30574; Mrdyy: -25.1124
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 218.29
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 218.29
+d: 38.4547
+sumNormal(comp+trac-Nsd): 1991.39
+eps1: -3.5
+eps2: 11.1059
+Soma limite regiao 2-3: 1991.39
+Regiao 1
+sumNormal(comp+trac-Nsd): 218.29
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 218.29
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -196.879
+sumNormal(comp+trac-Nsd): -20.4008
+sumNormal(comp+trac-Nsd): 91.1682
+sumNormal(comp+trac-Nsd): 33.4395
+sumNormal(comp+trac-Nsd): 6.03332
+sumNormal(comp+trac-Nsd): -0.0856139
+sumNormal(comp+trac-Nsd): 2.96752
+sumNormal(comp+trac-Nsd): 1.43937
+sumNormal(comp+trac-Nsd): 0.676484
+sumNormal(comp+trac-Nsd): 0.295336
+sumNormal(comp+trac-Nsd): 0.104836
+sumNormal(comp+trac-Nsd): 0.00960502
+--------------------------------------------
+Angulo: 288; eps1: -3.16134; eps2: -0.451542; Mrdxx: -0.0959035; Mrdyy: -22.5531
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 172.333
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 172.333
+d: 40.362
+sumNormal(comp+trac-Nsd): 1986.74
+eps1: -3.5
+eps2: 11.0803
+Soma limite regiao 2-3: 1986.74
+Regiao 1
+sumNormal(comp+trac-Nsd): 172.333
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 172.333
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -207.973
+sumNormal(comp+trac-Nsd): 79.1759
+sumNormal(comp+trac-Nsd): -2.83683
+sumNormal(comp+trac-Nsd): 37.13
+sumNormal(comp+trac-Nsd): 16.8867
+sumNormal(comp+trac-Nsd): 6.95994
+sumNormal(comp+trac-Nsd): 2.04531
+sumNormal(comp+trac-Nsd): -0.00395414
+sumNormal(comp+trac-Nsd): 1.01997
+sumNormal(comp+trac-Nsd): 0.507828
+sumNormal(comp+trac-Nsd): 0.251893
+sumNormal(comp+trac-Nsd): 0.123958
+sumNormal(comp+trac-Nsd): 0.0599992
+--------------------------------------------
+Angulo: 291; eps1: -3.21271; eps2: -0.383052; Mrdxx: 5.85649; Mrdyy: -20.6282
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 135.447
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 135.447
+d: 42.1586
+sumNormal(comp+trac-Nsd): 1981.83
+eps1: -3.5
+eps2: 11.0569
+Soma limite regiao 2-3: 1981.83
+Regiao 1
+sumNormal(comp+trac-Nsd): 135.447
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 135.447
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -216.832
+sumNormal(comp+trac-Nsd): 69.7872
+sumNormal(comp+trac-Nsd): -2.2386
+sumNormal(comp+trac-Nsd): 32.9652
+sumNormal(comp+trac-Nsd): 15.161
+sumNormal(comp+trac-Nsd): 6.41065
+sumNormal(comp+trac-Nsd): 2.07338
+sumNormal(comp+trac-Nsd): -0.00315587
+sumNormal(comp+trac-Nsd): 1.03438
+sumNormal(comp+trac-Nsd): 0.515431
+sumNormal(comp+trac-Nsd): 0.256092
+sumNormal(comp+trac-Nsd): 0.126457
+sumNormal(comp+trac-Nsd): 0.0616475
+--------------------------------------------
+Angulo: 294; eps1: -3.25951; eps2: -0.320649; Mrdxx: 11.5242; Mrdyy: -18.721
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 105.725
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 105.725
+d: 43.8397
+sumNormal(comp+trac-Nsd): 1976.61
+eps1: -3.5
+eps2: 11.0354
+Soma limite regiao 2-3: 1976.61
+Regiao 1
+sumNormal(comp+trac-Nsd): 105.725
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 105.725
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -223.928
+sumNormal(comp+trac-Nsd): 59.5991
+sumNormal(comp+trac-Nsd): -1.66642
+sumNormal(comp+trac-Nsd): 28.3749
+sumNormal(comp+trac-Nsd): 13.2064
+sumNormal(comp+trac-Nsd): 5.73303
+sumNormal(comp+trac-Nsd): 2.02406
+sumNormal(comp+trac-Nsd): 0.176511
+sumNormal(comp+trac-Nsd): -0.000200068
+sumNormal(comp+trac-Nsd): 0.0881502
+--------------------------------------------
+Angulo: 297; eps1: -3.30178; eps2: -0.264299; Mrdxx: 16.8541; Mrdyy: -16.8634
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 81.7413
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 81.7413
+d: 45.4006
+sumNormal(comp+trac-Nsd): 1971.04
+eps1: -3.5
+eps2: 11.0155
+Soma limite regiao 2-3: 1971.04
+Regiao 1
+sumNormal(comp+trac-Nsd): 81.7413
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 81.7413
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -229.613
+sumNormal(comp+trac-Nsd): 49.4275
+sumNormal(comp+trac-Nsd): -1.17281
+sumNormal(comp+trac-Nsd): 23.7197
+sumNormal(comp+trac-Nsd): 11.1715
+sumNormal(comp+trac-Nsd): 4.97387
+sumNormal(comp+trac-Nsd): 1.89416
+sumNormal(comp+trac-Nsd): 0.359085
+sumNormal(comp+trac-Nsd): -0.000285781
+sumNormal(comp+trac-Nsd): 0.179378
+sumNormal(comp+trac-Nsd): 0.0895405
+--------------------------------------------
+Angulo: 300; eps1: -3.33935; eps2: -0.214197; Mrdxx: 21.7903; Mrdyy: -15.078
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 62.4184
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 62.4184
+d: 46.8371
+sumNormal(comp+trac-Nsd): 1965.06
+eps1: -3.5
+eps2: 10.9968
+Soma limite regiao 2-3: 1965.06
+Regiao 1
+sumNormal(comp+trac-Nsd): 62.4184
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 62.4184
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -234.151
+sumNormal(comp+trac-Nsd): 39.8431
+sumNormal(comp+trac-Nsd): -0.780365
+sumNormal(comp+trac-Nsd): 19.2659
+sumNormal(comp+trac-Nsd): 9.17642
+sumNormal(comp+trac-Nsd): 4.18144
+sumNormal(comp+trac-Nsd): 1.69639
+sumNormal(comp+trac-Nsd): 0.456975
+sumNormal(comp+trac-Nsd): -0.000241502
+sumNormal(comp+trac-Nsd): 0.228331
+sumNormal(comp+trac-Nsd): 0.114036
+sumNormal(comp+trac-Nsd): 0.0568951
+--------------------------------------------
+Angulo: 303; eps1: -3.37223; eps2: -0.170358; Mrdxx: 26.2918; Mrdyy: -13.3871
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 46.9275
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 46.9275
+d: 48.1452
+sumNormal(comp+trac-Nsd): 1958.59
+eps1: -3.5
+eps2: 10.9792
+Soma limite regiao 2-3: 1958.59
+Regiao 1
+sumNormal(comp+trac-Nsd): 46.9275
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 46.9275
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -237.748
+sumNormal(comp+trac-Nsd): 31.2117
+sumNormal(comp+trac-Nsd): -0.490075
+sumNormal(comp+trac-Nsd): 15.1977
+sumNormal(comp+trac-Nsd): 7.31301
+sumNormal(comp+trac-Nsd): 3.40127
+sumNormal(comp+trac-Nsd): 1.45305
+sumNormal(comp+trac-Nsd): 0.48085
+sumNormal(comp+trac-Nsd): -0.000159315
+sumNormal(comp+trac-Nsd): 0.240306
+sumNormal(comp+trac-Nsd): 0.120064
+sumNormal(comp+trac-Nsd): 0.0599497
+--------------------------------------------
+Angulo: 306; eps1: -3.40063; eps2: -0.132492; Mrdxx: 30.3423; Mrdyy: -11.8123
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 34.6229
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 34.6229
+d: 49.3214
+sumNormal(comp+trac-Nsd): 1951.53
+eps1: -3.5
+eps2: 10.9624
+Soma limite regiao 2-3: 1951.53
+Regiao 1
+sumNormal(comp+trac-Nsd): 34.6229
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 34.6229
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -240.561
+sumNormal(comp+trac-Nsd): 23.739
+sumNormal(comp+trac-Nsd): -0.289672
+sumNormal(comp+trac-Nsd): 11.6302
+sumNormal(comp+trac-Nsd): 5.64662
+sumNormal(comp+trac-Nsd): 2.67257
+sumNormal(comp+trac-Nsd): 1.18997
+sumNormal(comp+trac-Nsd): 0.449781
+sumNormal(comp+trac-Nsd): 0.0799625
+sumNormal(comp+trac-Nsd): -1.56448e-05
+--------------------------------------------
+Angulo: 309; eps1: -3.42446; eps2: -0.100714; Mrdxx: 33.9117; Mrdyy: -10.3646
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 24.993
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 24.993
+d: 50.3623
+sumNormal(comp+trac-Nsd): 1943.79
+eps1: -3.5
+eps2: 10.9464
+Soma limite regiao 2-3: 1943.79
+Regiao 1
+sumNormal(comp+trac-Nsd): 24.993
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 24.993
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -242.716
+sumNormal(comp+trac-Nsd): 17.5106
+sumNormal(comp+trac-Nsd): -0.160692
+sumNormal(comp+trac-Nsd): 8.62349
+sumNormal(comp+trac-Nsd): 4.21854
+sumNormal(comp+trac-Nsd): 2.02571
+sumNormal(comp+trac-Nsd): 0.931703
+sumNormal(comp+trac-Nsd): 0.385304
+sumNormal(comp+trac-Nsd): 0.112256
+sumNormal(comp+trac-Nsd): -1.21675e-05
+sumNormal(comp+trac-Nsd): 0.0561197
+--------------------------------------------
+Angulo: 312; eps1: -3.44431; eps2: -0.0742483; Mrdxx: 37.0299; Mrdyy: -9.05992
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 17.6249
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 17.6249
+d: 51.2652
+sumNormal(comp+trac-Nsd): 1935.2
+eps1: -3.5
+eps2: 10.931
+Soma limite regiao 2-3: 1935.2
+Regiao 1
+sumNormal(comp+trac-Nsd): 17.6249
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 17.6249
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -244.315
+sumNormal(comp+trac-Nsd): 12.5264
+sumNormal(comp+trac-Nsd): -0.0836318
+sumNormal(comp+trac-Nsd): 6.19504
+sumNormal(comp+trac-Nsd): 3.04912
+sumNormal(comp+trac-Nsd): 1.4811
+sumNormal(comp+trac-Nsd): 0.698321
+sumNormal(comp+trac-Nsd): 0.307242
+sumNormal(comp+trac-Nsd): 0.111779
+sumNormal(comp+trac-Nsd): 0.0140672
+--------------------------------------------
+Angulo: 315; eps1: -3.45993; eps2: -0.0534229; Mrdxx: 39.6701; Mrdyy: -7.89731
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 12.1761
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 12.1761
+d: 52.0276
+sumNormal(comp+trac-Nsd): 1925.58
+eps1: -3.5
+eps2: 10.9161
+Soma limite regiao 2-3: 1925.58
+Regiao 1
+sumNormal(comp+trac-Nsd): 12.1761
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 12.1761
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -245.442
+sumNormal(comp+trac-Nsd): 8.72575
+sumNormal(comp+trac-Nsd): -0.0411642
+sumNormal(comp+trac-Nsd): 4.32951
+sumNormal(comp+trac-Nsd): 2.14098
+sumNormal(comp+trac-Nsd): 1.04911
+sumNormal(comp+trac-Nsd): 0.503771
+sumNormal(comp+trac-Nsd): 0.231254
+sumNormal(comp+trac-Nsd): 0.0950322
+sumNormal(comp+trac-Nsd): 0.0269309
+--------------------------------------------
+Angulo: 318; eps1: -3.47196; eps2: -0.0373897; Mrdxx: 41.8843; Mrdyy: -6.88122
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 8.35182
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 8.35182
+d: 52.6474
+sumNormal(comp+trac-Nsd): 1914.69
+eps1: -3.5
+eps2: 10.9016
+Soma limite regiao 2-3: 1914.69
+Regiao 1
+sumNormal(comp+trac-Nsd): 8.35182
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 8.35182
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -246.168
+sumNormal(comp+trac-Nsd): 6.00472
+sumNormal(comp+trac-Nsd): -0.0197241
+sumNormal(comp+trac-Nsd): 2.98644
+sumNormal(comp+trac-Nsd): 1.48185
+sumNormal(comp+trac-Nsd): 0.730682
+sumNormal(comp+trac-Nsd): 0.355384
+sumNormal(comp+trac-Nsd): 0.167807
+sumNormal(comp+trac-Nsd): 0.0740353
+--------------------------------------------
+Angulo: 321; eps1: -3.48069; eps2: -0.0257477; Mrdxx: 43.7067; Mrdyy: -6.00515
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 5.8823
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 5.8823
+d: 53.1229
+sumNormal(comp+trac-Nsd): 1902.2
+eps1: -3.5
+eps2: 10.8874
+Soma limite regiao 2-3: 1902.2
+Regiao 1
+sumNormal(comp+trac-Nsd): 5.8823
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 5.8823
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -246.56
+sumNormal(comp+trac-Nsd): 4.2257
+sumNormal(comp+trac-Nsd): -0.00986064
+sumNormal(comp+trac-Nsd): 2.10492
+sumNormal(comp+trac-Nsd): 1.04678
+sumNormal(comp+trac-Nsd): 0.518272
+sumNormal(comp+trac-Nsd): 0.254159
+sumNormal(comp+trac-Nsd): 0.122138
+sumNormal(comp+trac-Nsd): 0.0561355
+--------------------------------------------
+Angulo: 324; eps1: -3.48631; eps2: -0.0182578; Mrdxx: 45.1686; Mrdyy: -5.25422
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 4.5137
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 4.5137
+d: 53.4528
+sumNormal(comp+trac-Nsd): 1887.67
+eps1: -3.5
+eps2: 10.8734
+Soma limite regiao 2-3: 1887.67
+Regiao 1
+sumNormal(comp+trac-Nsd): 4.5137
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 4.5137
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -246.679
+sumNormal(comp+trac-Nsd): 3.22923
+sumNormal(comp+trac-Nsd): -0.00580161
+sumNormal(comp+trac-Nsd): 1.60997
+sumNormal(comp+trac-Nsd): 0.801645
+sumNormal(comp+trac-Nsd): 0.397812
+sumNormal(comp+trac-Nsd): 0.195978
+sumNormal(comp+trac-Nsd): 0.0950814
+--------------------------------------------
+Angulo: 327; eps1: -3.48957; eps2: -0.0139128; Mrdxx: 46.3594; Mrdyy: -4.60991
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 4.03567
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 4.03567
+d: 53.6362
+sumNormal(comp+trac-Nsd): 1870.48
+eps1: -3.5
+eps2: 10.8596
+Soma limite regiao 2-3: 1870.48
+Regiao 1
+sumNormal(comp+trac-Nsd): 4.03567
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 4.03567
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -246.578
+sumNormal(comp+trac-Nsd): 2.86785
+sumNormal(comp+trac-Nsd): -0.00460251
+sumNormal(comp+trac-Nsd): 1.43025
+sumNormal(comp+trac-Nsd): 0.712477
+sumNormal(comp+trac-Nsd): 0.353851
+sumNormal(comp+trac-Nsd): 0.174603
+sumNormal(comp+trac-Nsd): 0.0849947
+--------------------------------------------
+Angulo: 330; eps1: -3.49065; eps2: -0.0124716; Mrdxx: 47.3163; Mrdyy: -4.04933
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 4.28453
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 4.28453
+d: 53.6726
+sumNormal(comp+trac-Nsd): 1849.73
+eps1: -3.5
+eps2: 10.8458
+Soma limite regiao 2-3: 1849.73
+Regiao 1
+sumNormal(comp+trac-Nsd): 4.28453
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 4.28453
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -246.295
+sumNormal(comp+trac-Nsd): 3.01779
+sumNormal(comp+trac-Nsd): -0.00511937
+sumNormal(comp+trac-Nsd): 1.50481
+sumNormal(comp+trac-Nsd): 0.749464
+sumNormal(comp+trac-Nsd): 0.372077
+sumNormal(comp+trac-Nsd): 0.183455
+sumNormal(comp+trac-Nsd): 0.0891618
+--------------------------------------------
+Angulo: 333; eps1: -3.49006; eps2: -0.0132542; Mrdxx: 48.1025; Mrdyy: -3.55443
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 5.13102
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 5.13102
+d: 53.5618
+sumNormal(comp+trac-Nsd): 1824.08
+eps1: -3.5
+eps2: 10.8319
+Soma limite regiao 2-3: 1824.08
+Regiao 1
+sumNormal(comp+trac-Nsd): 5.13102
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 5.13102
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -245.862
+sumNormal(comp+trac-Nsd): 3.57573
+sumNormal(comp+trac-Nsd): -0.00721218
+sumNormal(comp+trac-Nsd): 1.78212
+sumNormal(comp+trac-Nsd): 0.886917
+sumNormal(comp+trac-Nsd): 0.439719
+sumNormal(comp+trac-Nsd): 0.21622
+sumNormal(comp+trac-Nsd): 0.104495
+sumNormal(comp+trac-Nsd): 0.0486395
+--------------------------------------------
+Angulo: 336; eps1: -3.48797; eps2: -0.0160454; Mrdxx: 48.747; Mrdyy: -3.10761
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 6.47095
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 6.47095
+d: 53.3043
+sumNormal(comp+trac-Nsd): 1791.41
+eps1: -3.5
+eps2: 10.818
+Soma limite regiao 2-3: 1791.41
+Regiao 1
+sumNormal(comp+trac-Nsd): 6.47095
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 6.47095
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -245.304
+sumNormal(comp+trac-Nsd): 4.45509
+sumNormal(comp+trac-Nsd): -0.0112252
+sumNormal(comp+trac-Nsd): 2.21861
+sumNormal(comp+trac-Nsd): 1.10286
+sumNormal(comp+trac-Nsd): 0.54561
+sumNormal(comp+trac-Nsd): 0.26714
+sumNormal(comp+trac-Nsd): 0.127945
+sumNormal(comp+trac-Nsd): 0.0583565
+--------------------------------------------
+Angulo: 339; eps1: -3.48485; eps2: -0.0202058; Mrdxx: 49.3062; Mrdyy: -2.69433
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 8.2231
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 8.2231
+d: 52.9006
+sumNormal(comp+trac-Nsd): 1748.82
+eps1: -3.5
+eps2: 10.8039
+Soma limite regiao 2-3: 1748.82
+Regiao 1
+sumNormal(comp+trac-Nsd): 8.2231
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 8.2231
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -244.64
+sumNormal(comp+trac-Nsd): 5.58588
+sumNormal(comp+trac-Nsd): -0.0176825
+sumNormal(comp+trac-Nsd): 2.77888
+sumNormal(comp+trac-Nsd): 1.37929
+sumNormal(comp+trac-Nsd): 0.680479
+sumNormal(comp+trac-Nsd): 0.331317
+sumNormal(comp+trac-Nsd): 0.156797
+sumNormal(comp+trac-Nsd): 0.069552
+--------------------------------------------
+Angulo: 342; eps1: -3.48079; eps2: -0.0256163; Mrdxx: 49.799; Mrdyy: -2.30048
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 10.3411
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 10.3411
+d: 52.352
+sumNormal(comp+trac-Nsd): 1697.47
+eps1: -3.5
+eps2: 10.7896
+Soma limite regiao 2-3: 1697.47
+Regiao 1
+sumNormal(comp+trac-Nsd): 10.3411
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 10.3411
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -243.879
+sumNormal(comp+trac-Nsd): 6.92265
+sumNormal(comp+trac-Nsd): -0.0272006
+sumNormal(comp+trac-Nsd): 3.43971
+sumNormal(comp+trac-Nsd): 1.70425
+sumNormal(comp+trac-Nsd): 0.838024
+sumNormal(comp+trac-Nsd): 0.405287
+sumNormal(comp+trac-Nsd): 0.189012
+sumNormal(comp+trac-Nsd): 0.0808977
+sumNormal(comp+trac-Nsd): 0.0268466
+--------------------------------------------
+Angulo: 345; eps1: -3.47579; eps2: -0.032283; Mrdxx: 50.2327; Mrdyy: -1.91655
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 12.8085
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 12.8085
+d: 51.6598
+sumNormal(comp+trac-Nsd): 1641.02
+eps1: -3.5
+eps2: 10.7749
+Soma limite regiao 2-3: 1641.02
+Regiao 1
+sumNormal(comp+trac-Nsd): 12.8085
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 12.8085
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -243.025
+sumNormal(comp+trac-Nsd): 8.44002
+sumNormal(comp+trac-Nsd): -0.040479
+sumNormal(comp+trac-Nsd): 4.18786
+sumNormal(comp+trac-Nsd): 2.07071
+sumNormal(comp+trac-Nsd): 1.01437
+sumNormal(comp+trac-Nsd): 0.486761
+sumNormal(comp+trac-Nsd): 0.223095
+sumNormal(comp+trac-Nsd): 0.0912961
+sumNormal(comp+trac-Nsd): 0.0254057
+--------------------------------------------
+Angulo: 348; eps1: -3.47013; eps2: -0.0398274; Mrdxx: 50.641; Mrdyy: -1.53745
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 15.6303
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 15.6303
+d: 50.8261
+sumNormal(comp+trac-Nsd): 1582.79
+eps1: -3.5
+eps2: 10.7597
+Soma limite regiao 2-3: 1582.79
+Regiao 1
+sumNormal(comp+trac-Nsd): 15.6303
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 15.6303
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -242.075
+sumNormal(comp+trac-Nsd): 10.1252
+sumNormal(comp+trac-Nsd): -0.0583076
+sumNormal(comp+trac-Nsd): 5.01633
+sumNormal(comp+trac-Nsd): 2.47473
+sumNormal(comp+trac-Nsd): 1.20714
+sumNormal(comp+trac-Nsd): 0.574148
+sumNormal(comp+trac-Nsd): 0.257854
+sumNormal(comp+trac-Nsd): 0.0997562
+sumNormal(comp+trac-Nsd): 0.0207202
+--------------------------------------------
+Angulo: 351; eps1: -3.46372; eps2: -0.0483728; Mrdxx: 51.0218; Mrdyy: -1.15897
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 18.8279
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 18.8279
+d: 49.853
+sumNormal(comp+trac-Nsd): 1525.03
+eps1: -3.5
+eps2: 10.744
+Soma limite regiao 2-3: 1525.03
+Regiao 1
+sumNormal(comp+trac-Nsd): 18.8279
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 18.8279
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -241.022
+sumNormal(comp+trac-Nsd): 11.974
+sumNormal(comp+trac-Nsd): -0.0815921
+sumNormal(comp+trac-Nsd): 5.92225
+sumNormal(comp+trac-Nsd): 2.91434
+sumNormal(comp+trac-Nsd): 1.41488
+sumNormal(comp+trac-Nsd): 0.666269
+sumNormal(comp+trac-Nsd): 0.292245
+sumNormal(comp+trac-Nsd): 0.105303
+sumNormal(comp+trac-Nsd): 0.0118497
+--------------------------------------------
+Angulo: 354; eps1: -3.45654; eps2: -0.0579495; Mrdxx: 51.3799; Mrdyy: -0.778141
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 22.4384
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 22.4384
+d: 48.7433
+sumNormal(comp+trac-Nsd): 1467.97
+eps1: -3.5
+eps2: 10.7277
+Soma limite regiao 2-3: 1467.97
+Regiao 1
+sumNormal(comp+trac-Nsd): 22.4384
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 22.4384
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -239.853
+sumNormal(comp+trac-Nsd): 13.9881
+sumNormal(comp+trac-Nsd): -0.111389
+sumNormal(comp+trac-Nsd): 6.90571
+sumNormal(comp+trac-Nsd): 3.389
+sumNormal(comp+trac-Nsd): 1.63676
+sumNormal(comp+trac-Nsd): 0.762177
+sumNormal(comp+trac-Nsd): 0.325266
+sumNormal(comp+trac-Nsd): 0.106907
+sumNormal(comp+trac-Nsd): -7.9678e-06
+--------------------------------------------
+Angulo: 357; eps1: -3.44854; eps2: -0.0686193; Mrdxx: 51.719; Mrdyy: -0.392551
+--------------------------------------------
+sumNormal(comp+trac-Nsd): 26.5145
+eps1: -3.5
+eps2: 0
+Soma limite regiao 1-2: 26.5145
+d: 47.5
+sumNormal(comp+trac-Nsd): 1412.23
+eps1: -3.5
+eps2: 10.7105
+Soma limite regiao 2-3: 1412.23
+Regiao 1
+sumNormal(comp+trac-Nsd): 26.5145
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): 26.5145
+sumNormal(comp-Nsd): -363.197
+sumNormal(comp+trac-Nsd): -238.555
+sumNormal(comp+trac-Nsd): 16.174
+sumNormal(comp+trac-Nsd): -0.148943
+sumNormal(comp+trac-Nsd): 7.96888
+sumNormal(comp+trac-Nsd): 3.89906
+sumNormal(comp+trac-Nsd): 1.87233
+sumNormal(comp+trac-Nsd): 0.861014
+sumNormal(comp+trac-Nsd): 0.355865
+sumNormal(comp+trac-Nsd): 0.103419
+sumNormal(comp+trac-Nsd): -1.03041e-05
+sumNormal(comp+trac-Nsd): 0.0517024
+--------------------------------------------
+Angulo: 360; eps1: -3.43979; eps2: -0.0802762; Mrdxx: 52.0569; Mrdyy: -4.81866e-16

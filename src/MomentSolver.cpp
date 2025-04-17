@@ -20,9 +20,9 @@ void MomentSolver::solveEquilibrium(Polygon &polygon, Reinforcement &reinforceme
     double axialForceRegion12Sum = computeAxialForceResultant(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
                                                               analyticalIntegration, internalForces, eps1Region12, eps2Region12, Nsd);
 
-    // std::cout << "eps1: " << strainDistribution.getTopFiberStrain() << std::endl;
-    // std::cout << "eps2: " << strainDistribution.getBottomFiberStrain() << std::endl;
-    // std::cout << "Soma limite regiao 1-2: " << axialForceRegion12Sum << std::endl;
+    std::cout << "eps1: " << strainDistribution.getTopFiberStrain() << std::endl;
+    std::cout << "eps2: " << strainDistribution.getBottomFiberStrain() << std::endl;
+    std::cout << "Soma limite regiao 1-2: " << axialForceRegion12Sum << std::endl;
 
     const auto &vectorReinforcement = reinforcement.getReinforcement();
     double temp = 0;
@@ -34,6 +34,8 @@ void MomentSolver::solveEquilibrium(Polygon &polygon, Reinforcement &reinforceme
 
     double effectiveDepth = polygon.getMaxY() - temp;
 
+    std::cout << "d: " << effectiveDepth << std::endl;
+
     double eps1Region23 = -concrete.getStrainConcreteRupture();
     double eps2Region23 = ((steel.getStrainSteelRupture() - eps1Region23) *
                            (polygon.getPolygonHeight() / effectiveDepth)) +
@@ -42,27 +44,27 @@ void MomentSolver::solveEquilibrium(Polygon &polygon, Reinforcement &reinforceme
     double axialForceRegion23Sum = computeAxialForceResultant(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
                                                               analyticalIntegration, internalForces, eps1Region23, eps2Region23, Nsd);
 
-    // std::cout << "eps1: " << strainDistribution.getTopFiberStrain() << std::endl;
-    // std::cout << "eps2: " << strainDistribution.getBottomFiberStrain() << std::endl;
-    // std::cout << "Soma limite regiao 2-3: " << axialForceRegion23Sum << std::endl;
+    std::cout << "eps1: " << strainDistribution.getTopFiberStrain() << std::endl;
+    std::cout << "eps2: " << strainDistribution.getBottomFiberStrain() << std::endl;
+    std::cout << "Soma limite regiao 2-3: " << axialForceRegion23Sum << std::endl;
 
     if (axialForceRegion23Sum <= 0)
     {
-        //std::cout << "Regiao 3" << std::endl;
+        std::cout << "Regiao 3" << std::endl;
         // Mrd = iterateInRegion3(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
            //                    analyticalIntegration, internalForces, Nsd);
         Mrd = testRegion3(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions, analyticalIntegration, internalForces, Nsd);
     }
     else if (axialForceRegion12Sum <= 0)
     {
-        //std::cout << "Regiao 2" << std::endl;
+        std::cout << "Regiao 2" << std::endl;
         // Mrd = iterateInRegion2(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
         //                        analyticalIntegration, internalForces, Nsd);
         Mrd = testRegion2(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions, analyticalIntegration, internalForces, Nsd);
     }
     else
     {
-        //std::cout << "Regiao 1" << std::endl;
+        std::cout << "Regiao 1" << std::endl;
         // Mrd = iterateInRegion1(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions,
         //                        analyticalIntegration, internalForces, Nsd);
         Mrd = testRegion1(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions, analyticalIntegration, internalForces, Nsd);
@@ -77,12 +79,14 @@ double MomentSolver::computeAxialForceResultant(Polygon &polygon, Reinforcement 
     {
         internalForces.setNormalSolicitation(Nsd);
         internalForces.computeMaxCompression(polygon, reinforcement, steel, concrete);
+        std::cout << "sumNormal(comp-Nsd): " << internalForces.getMaxNormalCompression() - Nsd << std::endl; 
         return internalForces.getMaxNormalCompression() - Nsd;
     }
     else if (strain1 == strain2 && strain1 == steel.getStrainSteelRupture())
     {
         internalForces.setNormalSolicitation(Nsd);
         internalForces.computeMaxTraction(polygon, reinforcement, steel);
+        std::cout << "sumNormal(trac-Nsd): " << internalForces.getMaxNormalTraction() - Nsd << std::endl;
         return internalForces.getMaxNormalTraction() - Nsd;
     }
     else
@@ -90,6 +94,7 @@ double MomentSolver::computeAxialForceResultant(Polygon &polygon, Reinforcement 
         setStrainDistribution(polygon, concrete, strainDistribution, strain1, strain2);
         setStressRegions(polygon, strainDistribution, stressRegions);
         setInternalForces(polygon, reinforcement, concrete, steel, strainDistribution, stressRegions, analyticalIntegration, internalForces, Nsd);
+        std::cout << "sumNormal(comp+trac-Nsd): " << internalForces.getNormalConcrete() + internalForces.getNormalSteel() - Nsd << std::endl;
         return internalForces.getNormalConcrete() + internalForces.getNormalSteel() - Nsd;
     }
 }

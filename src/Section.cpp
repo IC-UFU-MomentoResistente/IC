@@ -139,18 +139,7 @@ void Section::computeEnvelope(double Nsd)
 
         computeEquilibrium(Nsd, +0.003, -0.003);
 
-        momentSolver.solveEquilibrium(
-            workingPolygon, workingReinforcement, concrete, steel,
-            strainDistribution, stressRegions, analyticalIntegration,
-            internalForces, Nsd);
-
         envelopeMoments.push_back(momentSolver.getMoment());
-
-        std::cout << "Angulo: " << angle << "; "
-                  << "eps1: " << momentSolver.getTopFiberStrain() << "; "
-                  << "eps2: " << momentSolver.getBottomFiberStrain() << "; "
-                  << "Mrdxx: " << momentSolver.getMoment().getX() << "; "
-                  << "Mrdyy: " << momentSolver.getMoment().getY() << endl;
     }
 
     cout << "--------------------------------------------\n";
@@ -252,6 +241,7 @@ void Section::printSectionData()
 
     cout << "--------------------------------------------\n";
     cout << "Altura secao: " << workingPolygon.getPolygonHeight() << endl;
+    cout << "Altura util: " << workingReinforcement.getEffectiveDepth() << endl;
     cout << "yMaximo: " << workingPolygon.getMaxY() << endl;
     cout << "yMinimo: " << workingPolygon.getMinY() << endl;
     cout << "Area: " << workingPolygon.getPolygonArea() << endl;

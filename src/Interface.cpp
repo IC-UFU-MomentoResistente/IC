@@ -1024,6 +1024,7 @@ void Interface::effortSectionInterface(Section &section)
             section.resetWorkingState();
             section.applyAngleandCenterline(angle);
             section.verifyEquilibrium(Nsd, eps1, eps2);
+            section.workingReinforcement.setEffectiveDepth(section.workingPolygon.getMaxY());
             section.printSectionData();
         }
 
@@ -1045,6 +1046,7 @@ void Interface::effortSectionInterface(Section &section)
                 section.resetWorkingState();
                 section.applyAngleandCenterline(angle);
                 section.computeEquilibrium(Nsd, eps1, eps2);
+                section.workingReinforcement.setEffectiveDepth(section.workingPolygon.getMaxY());
                 section.printSectionData();
                 showPopUpSolver = true;
                 ImGui::OpenPopup("Calculo do Momento Resistente");

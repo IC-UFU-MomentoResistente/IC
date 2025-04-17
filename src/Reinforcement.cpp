@@ -5,6 +5,7 @@ Reinforcement::Reinforcement()
 	reinforcement = {};
 	diameters = {};
 	areas = {};
+	effectiveDepth = 0;
 }
 
 void Reinforcement::setReinforcement(vector<Point> collectedReinforcement, vector<double> collectedDiameters)
@@ -80,6 +81,26 @@ void Reinforcement::rotateAroundCentroidPolygon(double angle)
 	}
 }
 
+void Reinforcement::setEffectiveDepth(double maxY)
+{
+	double temp = 0;
+
+	for (size_t i = 0; i < reinforcement.size(); i++)
+	{
+		if (reinforcement[i].getY() <= temp)
+			temp = reinforcement[i].getY();
+	}
+
+	if (maxY > temp)
+	{
+		effectiveDepth = maxY - temp; // cm
+	}
+	else
+	{
+		effectiveDepth = 0;
+	}
+}
+
 vector<Point> Reinforcement::getReinforcement() const
 {
 	return reinforcement;
@@ -93,6 +114,11 @@ vector<double> Reinforcement::getDiameters() const
 vector<double> Reinforcement::getAreas() const
 {
 	return areas;
+}
+
+double Reinforcement::getEffectiveDepth() const
+{
+    return effectiveDepth;
 }
 
 void Reinforcement::SetNumPoints(int numPointsInput)

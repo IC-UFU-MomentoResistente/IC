@@ -191,7 +191,7 @@ double AnalyticalIntegration::computeMomentYYConcreteParabolic(double coordLN, d
 
             // double mcd1yy = (multFcd * fcd * 3 * (term1 + term2 + term3)) / (6 * n1 * n2 * n3);
 
-            double mcd1yy = (0.85*fcd*(3*coef1*coef1*(xEpc2*
+            double mcd1yy = (multFcd*fcd*(3*coef1*coef1*(xEpc2*
             (6+5*nConc+nConc*nConc)*eexp+
             (n1)*(n2)*(n3)*coordY)+
             3*coef1*coef2*((n1)*(n2)*(n3)*coordY*coordY+

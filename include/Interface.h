@@ -28,6 +28,7 @@ using std::vector;
 class Interface
 {
 public:
+    bool triggerAutoFit = false;    
     void initInterface();
     void interfaceLoop();
     void autorsWindow();
@@ -49,4 +50,5 @@ public:
     void crossSectionTable(Section &section);
     void RightTablePos(const char * nome1, const char * nome2, float posY, Section & section);
     void applyDarkElegantPlotStyle();
+    void fitPolygonWithMargin(const std::vector<Point>& pontos, float margem, ImGuiCond condicao);
 };

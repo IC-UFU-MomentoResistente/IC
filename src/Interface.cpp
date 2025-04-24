@@ -141,7 +141,7 @@ void Interface::crossSectionData(Section &section)
             tempNumPoints = 0; 
 
         ImGui::SetNextWindowPos(ImVec2(3, 47));
-        ImGui::SetNextWindowSize(ImVec2(420, 270));
+        ImGui::SetNextWindowSize(ImVec2(500, 350));
         ImGui::Begin("Inserir Dados da Seção Transversal", nullptr,
                      ImGuiWindowFlags_NoCollapse |
                          ImGuiWindowFlags_NoResize |
@@ -170,6 +170,7 @@ void Interface::crossSectionData(Section &section)
             section.reinforcement.setReinforcement(collectedReinforcement, collectedDiameters);
             section.reinforcement.computeArea(); // não esquece isso!
         
+            triggerAutoFit = true;
             
         }
 
@@ -872,13 +873,7 @@ void Interface::ReferenceValues()
         ImGui::BulletText("fck = 35 a 50 MPa: prédios comerciais, estruturas padrão");
         ImGui::BulletText("fck > 50 MPa: pilares esbeltos, pontes, grandes vãos");
 
-        ImGui::SeparatorText("Modos de Ruptura Comuns");
-
-        ImGui::BulletText("Flexão: falha por tração no aço ou compressão no concreto");
-        ImGui::BulletText("Corte: ruptura por cisalhamento, controlado com estribos");
-        ImGui::BulletText("Punção: comum em lajes lisas sem vigas");
-
-          ImGui::Separator();
+        ImGui::Separator();
     ImGui::TextWrapped("Nota: Os valores e fórmulas seguem as recomendações da NBR 6118:2023, podendo variar conforme o tipo estrutural e critérios de segurança do projeto.");
 }
 
@@ -1068,9 +1063,16 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
 
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
     
-
+    
     if (ImPlot::BeginPlot("Gráfico da Seção Transversal", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit))
     {
+        std::vector<Point> vertices = section.polygon.getPolygonVertices();
+
+        if (triggerAutoFit && vertices.size() > 2) {
+            fitPolygonWithMargin(vertices, 0.10f, ImGuiCond_Always);
+            triggerAutoFit = false; // ✅ Só aplica uma vez
+        }
+
         if (section.polygon.getPolygonVertices().size() > 2)
         {
             
@@ -1300,4 +1302,30 @@ void Interface::applyDarkElegantPlotStyle() {
     // Tamanhos de ticks
     style.MajorTickLen  = ImVec2(6, 6);
     style.MajorTickSize = ImVec2(1.0f, 1.0f);
+}
+
+void Interface::fitPolygonWithMargin(const std::vector<Point>& pontos, float margem, ImGuiCond condicao)
+{
+    if (pontos.empty()) return;
+
+    float xmin = FLT_MAX, xmax = -FLT_MAX;
+    float ymin = FLT_MAX, ymax = -FLT_MAX;
+
+    for (const auto& p : pontos) {
+        xmin = std::min(xmin, static_cast<float>(p.getX()));
+        xmax = std::max(xmax, static_cast<float>(p.getX()));
+        ymin = std::min(ymin, static_cast<float>(p.getY()));
+        ymax = std::max(ymax, static_cast<float>(p.getY()));
+    }
+
+    float dx = xmax - xmin;
+    float dy = ymax - ymin;
+
+    ImPlot::SetupAxesLimits(
+        xmin - margem * dx,
+        xmax + margem * dx,
+        ymin - margem * dy,
+        ymax + margem * dy,
+        condicao
+    );
 }

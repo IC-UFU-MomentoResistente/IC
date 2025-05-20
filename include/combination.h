@@ -10,8 +10,9 @@ public:
     double Normal;
     double MsdX;
     double MsdY;
-
-    Combination(double normal, double msdX, double msdY);
+    double Msolver;
+    bool isMomentValid;
+    Combination(double normal, double msdX, double msdY, double Msolver, bool isValid = true);
 };
 
 #endif

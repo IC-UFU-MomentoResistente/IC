@@ -25,9 +25,8 @@ void Interface::initInterface()
         0x0020, 0x00FF, // ASCII estendido
         0x0370, 0x03FF, // Grego
         0x2030, 0x2030, // Símbolo de por mil (‰)
-        0
-    };
-    
+        0};
+
     ImGuiIO &io = ImGui::GetIO();
     ImFont *customFont = io.Fonts->AddFontFromFileTTF("src/segoeuisl.ttf", 18.0f, &fontConfig, customRange);
 
@@ -97,7 +96,6 @@ void Interface::autorsWindow()
     {
         ImGui::CloseCurrentPopup();
     }
-   
 }
 
 void Interface::showSecondaryMenuBar(Section &section)
@@ -135,10 +133,10 @@ void Interface::crossSectionData(Section &section)
     {
         static double coordXPolygon, coordYPolygon;
         static bool showPopUpErrorPolygon = false;
-        static int tempNumPoints = 0; 
+        static int tempNumPoints = 0;
 
         if (tempNumPoints < 0)
-            tempNumPoints = 0; 
+            tempNumPoints = 0;
 
         ImGui::SetNextWindowPos(ImVec2(3, 47));
         ImGui::SetNextWindowSize(ImVec2(420, 270));
@@ -169,75 +167,72 @@ void Interface::crossSectionData(Section &section)
 
             section.reinforcement.setReinforcement(collectedReinforcement, collectedDiameters);
             section.reinforcement.computeArea(); // não esquece isso!
-        
-            
         }
 
         // Input para número de pontos
 
-         if (tempNumPoints != section.polygon.GetNumPoints()) {
-            section.polygon.SetNumPoints(tempNumPoints);  // Ajusta o número de pontos na classe Polygon
-        }
-       
-
- if (ImGui::BeginTable("Table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
-{
-    // Configura as colunas com larguras fixas e centralizadas
-    ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 100.0f);
-    ImGui::TableSetupColumn("x (cm)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
-    ImGui::TableSetupColumn("y (cm)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
-    ImGui::TableHeadersRow();
-
-    // Itera sobre todos os pontos do polígono
-    for (int row = 0; row < section.polygon.GetNumPoints(); row++)
-    {
-        // Usando PushID para garantir ID único para cada linha
-        ImGui::PushID(row); 
-        
-        ImGui::TableNextRow();
-
-        // Exibe o índice do ponto
-        ImGui::TableSetColumnIndex(0);  // Coluna para 'ID'
-        ImGui::Text("%d", row + 1); // Exibe o índice do ponto (começa de 1)
-        
-        // Exibe a coordenada X
-        ImGui::TableSetColumnIndex(1);  // Coluna para 'x'
-        char labelX[10];
-        snprintf(labelX, sizeof(labelX), "##xx", row); // Cria o label para cada coordenada X
-        float x, y;
-        section.polygon.GetTableData(row, &x, &y);  // Obter as coordenadas do ponto na linha 'row'
-
-        // Cria um campo editável para a coordenada x
-        if (ImGui::InputFloat(labelX, &x))
+        if (tempNumPoints != section.polygon.GetNumPoints())
         {
-            // Se o valor de x for alterado, atualiza o ponto correspondente
-            section.polygon.SetTableData(row, x, y); // Atualiza a coordenada 'x' diretamente no vetor
+            section.polygon.SetNumPoints(tempNumPoints); // Ajusta o número de pontos na classe Polygon
         }
 
-        // Exibe a coordenada Y
-        ImGui::TableSetColumnIndex(2);  // Coluna para 'y'
-        char labelY[10];
-        snprintf(labelY, sizeof(labelY), "##yy", row); // Cria o label para cada coordenada Y
-
-        // Cria um campo editável para a coordenada y
-        if (ImGui::InputFloat(labelY, &y))
+        if (ImGui::BeginTable("Table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
         {
-            // Se o valor de y for alterado, atualiza o ponto correspondente
-            section.polygon.SetTableData(row, x, y); // Atualiza a coordenada 'y' diretamente no vetor
-        }
-        
-        ImGui::PopID(); // Remove o ID do ponto atual após a linha ter sido processada
-    }
-            
+            // Configura as colunas com larguras fixas e centralizadas
+            ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+            ImGui::TableSetupColumn("x (cm)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+            ImGui::TableSetupColumn("y (cm)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+            ImGui::TableHeadersRow();
 
-    ImGui::EndTable();
-} 
+            // Itera sobre todos os pontos do polígono
+            for (int row = 0; row < section.polygon.GetNumPoints(); row++)
+            {
+                // Usando PushID para garantir ID único para cada linha
+                ImGui::PushID(row);
 
-        if (ImGui::Button("Limpar")) 
-        {
-                section.polygon.clearPolygonVertices();     
-                tempNumPoints = 0;
+                ImGui::TableNextRow();
+
+                // Exibe o índice do ponto
+                ImGui::TableSetColumnIndex(0); // Coluna para 'ID'
+                ImGui::Text("%d", row + 1);    // Exibe o índice do ponto (começa de 1)
+
+                // Exibe a coordenada X
+                ImGui::TableSetColumnIndex(1); // Coluna para 'x'
+                char labelX[10];
+                snprintf(labelX, sizeof(labelX), "##xx", row); // Cria o label para cada coordenada X
+                float x, y;
+                section.polygon.GetTableData(row, &x, &y); // Obter as coordenadas do ponto na linha 'row'
+
+                // Cria um campo editável para a coordenada x
+                if (ImGui::InputFloat(labelX, &x))
+                {
+                    // Se o valor de x for alterado, atualiza o ponto correspondente
+                    section.polygon.SetTableData(row, x, y); // Atualiza a coordenada 'x' diretamente no vetor
+                }
+
+                // Exibe a coordenada Y
+                ImGui::TableSetColumnIndex(2); // Coluna para 'y'
+                char labelY[10];
+                snprintf(labelY, sizeof(labelY), "##yy", row); // Cria o label para cada coordenada Y
+
+                // Cria um campo editável para a coordenada y
+                if (ImGui::InputFloat(labelY, &y))
+                {
+                    // Se o valor de y for alterado, atualiza o ponto correspondente
+                    section.polygon.SetTableData(row, x, y); // Atualiza a coordenada 'y' diretamente no vetor
+                }
+
+                ImGui::PopID(); // Remove o ID do ponto atual após a linha ter sido processada
             }
+
+            ImGui::EndTable();
+        }
+
+        if (ImGui::Button("Limpar"))
+        {
+            section.polygon.clearPolygonVertices();
+            tempNumPoints = 0;
+        }
 
         ImGui::SameLine();
 
@@ -251,7 +246,7 @@ void Interface::crossSectionData(Section &section)
                 section.polygon.computeMinCoordY();
                 section.polygon.computeHeight();
             }
-            else 
+            else
             {
                 showPopUpErrorPolygon = true;
                 ImGui::OpenPopup("Vértices vazios");
@@ -290,7 +285,7 @@ void Interface::crossSectionData(Section &section)
             if (ImGui::BeginPopupModal("Vértices vazios", NULL, ImGuiWindowFlags_AlwaysAutoResize))
             {
                 ImGui::Text("Adicione os vértices da seção e depois calcule os parâmetros");
-    
+
                 if (ImGui::Button("OK", ImVec2(120, 0)))
                 {
                     showPopUpErrorPolygon = false;
@@ -317,7 +312,7 @@ void Interface::interfaceMaterials(Section &section)
         ImGui::Begin("Inserir Dados dos Materiais", nullptr,
                      ImGuiWindowFlags_NoCollapse |
                          ImGuiWindowFlags_NoResize |
-                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);    
+                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
         if (ImGui::BeginTabBar("Tabela de Entrada de Dados de Materiais"))
         {
@@ -348,35 +343,32 @@ void Interface::interfaceMaterials(Section &section)
     }
 }
 
-
 void Interface::concreteInterface(Section &section)
 {
-    static int constitutiveModel = 1;
-    static double collectedFck = 35, collectedGammaC = 1.4, stress;
-    int x, y; 
-
+    static int constitutiveModel = 0;
+    static double collectedFck = 30, collectedGammaC = 1.4, stress;
+    int x, y;
 
     if (collectedFck < 0 || collectedGammaC < 0)
-        {
-            collectedFck = 35;
-            collectedGammaC = 1.4;
-        }
+    {
+        collectedFck = 35;
+        collectedGammaC = 1.4;
+    }
 
-        if(collectedFck > 90)
-        {
-            collectedFck = 90;
-        }
+    if (collectedFck > 90)
+    {
+        collectedFck = 90;
+    }
 
     ImGui::RadioButton("NBR 6118:2023", &constitutiveModel, 1);
     ImGui::SameLine();
     ImGui::RadioButton("NBR 6118:2014", &constitutiveModel, 0);
 
     if (constitutiveModel == 0)
-    
+
     {
         StressStrainConcreteModelType model61182014 = StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2014;
 
-        
         ImGui::PushItemWidth(70);
         ImGui::SetCursorPos(ImVec2(650, 70)); // Define a posição do cursor
         ImGui::BeginGroup();
@@ -384,14 +376,14 @@ void Interface::concreteInterface(Section &section)
         ImGui::InputDouble("fck (MPa):", &collectedFck, 0.0f, 0.0f, "%.3f");
         ImGui::InputDouble("γc: ", &collectedGammaC, 0.0f, 0.0f, "%.3f");
         ImGui::EndGroup();
-            
+
         section.concrete.setParameters(model61182014, collectedFck, collectedGammaC);
         section.concrete.setCurveStressStrain();
 
         ImVec2 plotSize = ImGui::GetContentRegionAvail();
         ImPlotStyle backup = ImPlot::GetStyle(); // salva estilo atual
         applyDarkElegantPlotStyle();
-        // inicialização do gráfico com os eixos    
+        // inicialização do gráfico com os eixos
         ImGui::SetCursorPos(ImVec2(0, 70)); // Define a posição do cursor
         if (ImPlot::BeginPlot("Diagrama Tensão-Deformação Concreto NBR 6118:2014", ImVec2(630, 430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
         {
@@ -425,7 +417,6 @@ void Interface::concreteInterface(Section &section)
         }
         ImPlot::GetStyle() = backup; // restaura estilo anterior
     }
-    
 
     if (constitutiveModel == 1)
     {
@@ -439,17 +430,16 @@ void Interface::concreteInterface(Section &section)
         ImGui::InputDouble("γc:", &collectedGammaC, 0.0f, 0.0f, "%.3f");
         ImGui::EndGroup();
 
-            
-            section.concrete.setParameters(model61182023, collectedFck, collectedGammaC);
-            section.concrete.setCurveStressStrain();
+        section.concrete.setParameters(model61182023, collectedFck, collectedGammaC);
+        section.concrete.setCurveStressStrain();
 
         ImPlotStyle backup = ImPlot::GetStyle(); // salva estilo atual
-        
+
         applyDarkElegantPlotStyle();
         ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
         ImGui::SetCursorPos(ImVec2(0, 70)); // Define a posição do cursor
-        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação Concreto NBR 6118:2023", ImVec2(630,430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
+        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação Concreto NBR 6118:2023", ImVec2(630, 430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
         {
             ImPlot::SetupAxis(ImAxis_X1, " ε ‰");
             ImPlot::SetupAxis(ImAxis_Y1, " σ (MPa)");
@@ -486,8 +476,7 @@ void Interface::concreteInterface(Section &section)
 void Interface::steelInterface(Section &section)
 {
     static double collectedFyk = 500, collectedGammaS = 1.15, collectedE = 210, stress;
-    
-    
+
     ImGui::PushItemWidth(70);
     ImGui::SetCursorPos(ImVec2(650, 70)); // Define a posição do cursor
     ImGui::BeginGroup();
@@ -496,7 +485,6 @@ void Interface::steelInterface(Section &section)
     ImGui::InputDouble("γs: ", &collectedGammaS, 0.0f, 0.0f, "%.3f");
     ImGui::InputDouble("E (GPa):", &collectedE, 0.0f, 0.0f, "%.3f");
     ImGui::EndGroup();
-       
 
     if (collectedFyk < 0 || collectedGammaS < 0 || collectedE < 0)
     {
@@ -510,46 +498,46 @@ void Interface::steelInterface(Section &section)
         collectedFyk = 1000;
     }
 
-        StressStrainSteelModelType modelPassive = StressStrainSteelModelType::PASSIVE_REINFORCEMENT;
-        section.steel.setParameters(modelPassive, collectedFyk, collectedGammaS, collectedE);
-        section.steel.setCurveStressStrain();
+    StressStrainSteelModelType modelPassive = StressStrainSteelModelType::PASSIVE_REINFORCEMENT;
+    section.steel.setParameters(modelPassive, collectedFyk, collectedGammaS, collectedE);
+    section.steel.setCurveStressStrain();
 
-        ImPlotStyle backup = ImPlot::GetStyle(); // salva estilo atual
+    ImPlotStyle backup = ImPlot::GetStyle(); // salva estilo atual
 
-        applyDarkElegantPlotStyle();
+    applyDarkElegantPlotStyle();
 
-        ImVec2 plotSize = ImGui::GetContentRegionAvail();
-        ImGui::SetCursorPos(ImVec2(0, 70)); // Define a posição do cursor
-        // inicialização do gráfico com os eixos
-        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação AÇO NBR 6118:2023", ImVec2(630,430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
-        {
-            ImPlot::SetupAxis(ImAxis_X1, " ε ‰ ");
-            ImPlot::SetupAxis(ImAxis_Y1, " σ (MPa)");
-            ImPlot::SetupAxesLimits((-section.steel.getStrainSteelRupture() * 1.1), (section.steel.getStrainSteelRupture() * 1.1),
-                                    (-section.steel.getFyd() * 1.5), (section.steel.getFyd() * 1.5), ImGuiCond_Always);
-            renderStrainSteelDiagram(section.steel.getCurveStressStrain(), "TensaoxDef");
+    ImVec2 plotSize = ImGui::GetContentRegionAvail();
+    ImGui::SetCursorPos(ImVec2(0, 70)); // Define a posição do cursor
+    // inicialização do gráfico com os eixos
+    if (ImPlot::BeginPlot("Diagrama Tensão-Deformação AÇO NBR 6118:2023", ImVec2(630, 430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
+    {
+        ImPlot::SetupAxis(ImAxis_X1, " ε ‰ ");
+        ImPlot::SetupAxis(ImAxis_Y1, " σ (MPa)");
+        ImPlot::SetupAxesLimits((-section.steel.getStrainSteelRupture() * 1.1), (section.steel.getStrainSteelRupture() * 1.1),
+                                (-section.steel.getFyd() * 1.5), (section.steel.getFyd() * 1.5), ImGuiCond_Always);
+        renderStrainSteelDiagram(section.steel.getCurveStressStrain(), "TensaoxDef");
 
-            ImPlot::Annotation(-section.steel.getStrainSteelYield(), section.steel.computeStress(-section.steel.getStrainSteelYield()), ImVec4(1, 1, 1, 0), ImVec2(-10, 2), section.steel.computeStress(-section.steel.getStrainSteelYield()), "fyd = %.2f MPa", section.steel.computeStress(-section.steel.getStrainSteelYield()));
-            ImPlot::Annotation(section.steel.getStrainSteelYield(), section.steel.computeStress(section.steel.getStrainSteelYield()), ImVec4(1, 1, 1, 0), ImVec2(10, -2), section.steel.computeStress(section.steel.getStrainSteelYield()), "fyd = %.2f MPa", section.steel.computeStress(section.steel.getStrainSteelYield()));
+        ImPlot::Annotation(-section.steel.getStrainSteelYield(), section.steel.computeStress(-section.steel.getStrainSteelYield()), ImVec4(1, 1, 1, 0), ImVec2(-10, 2), section.steel.computeStress(-section.steel.getStrainSteelYield()), "fyd = %.2f MPa", section.steel.computeStress(-section.steel.getStrainSteelYield()));
+        ImPlot::Annotation(section.steel.getStrainSteelYield(), section.steel.computeStress(section.steel.getStrainSteelYield()), ImVec4(1, 1, 1, 0), ImVec2(10, -2), section.steel.computeStress(section.steel.getStrainSteelYield()), "fyd = %.2f MPa", section.steel.computeStress(section.steel.getStrainSteelYield()));
 
-            ImPlot::Annotation(-section.steel.getStrainSteelYield(), 0, ImVec4(1, 1, 1, 0), ImVec2(-2, -1), -section.steel.getStrainSteelYield(), "%.2f‰", -section.steel.getStrainSteelYield());
-            ImPlot::Annotation(section.steel.getStrainSteelYield(), 0, ImVec4(1, 1, 1, 0), ImVec2(2, 1), section.steel.getStrainSteelYield(), "%.2f‰", section.steel.getStrainSteelYield());
+        ImPlot::Annotation(-section.steel.getStrainSteelYield(), 0, ImVec4(1, 1, 1, 0), ImVec2(-2, -1), -section.steel.getStrainSteelYield(), "%.2f‰", -section.steel.getStrainSteelYield());
+        ImPlot::Annotation(section.steel.getStrainSteelYield(), 0, ImVec4(1, 1, 1, 0), ImVec2(2, 1), section.steel.getStrainSteelYield(), "%.2f‰", section.steel.getStrainSteelYield());
 
-            double x_eyd[] = {-section.steel.getStrainSteelYield(), -section.steel.getStrainSteelYield()};
-            double y_eyd[] = {0, -section.steel.computeStress(section.steel.getStrainSteelYield())};
-            ImPlot::SetNextLineStyle(ImVec4(1.0f, 1.0f, 1.0f, 0.4f));
-            ImPlot::PlotLine("", x_eyd, y_eyd, 2, IM_COL32(255, 255, 255, 255));
+        double x_eyd[] = {-section.steel.getStrainSteelYield(), -section.steel.getStrainSteelYield()};
+        double y_eyd[] = {0, -section.steel.computeStress(section.steel.getStrainSteelYield())};
+        ImPlot::SetNextLineStyle(ImVec4(1.0f, 1.0f, 1.0f, 0.4f));
+        ImPlot::PlotLine("", x_eyd, y_eyd, 2, IM_COL32(255, 255, 255, 255));
 
-            double x_eyd2[] = {section.steel.getStrainSteelYield(), section.steel.getStrainSteelYield()};
-            double y_eyd2[] = {0, section.steel.computeStress(section.steel.getStrainSteelYield())};
-            ImPlot::SetNextLineStyle(ImVec4(1.0f, 1.0f, 1.0f, 0.4f));
-            ImPlot::PlotLine("", x_eyd2, y_eyd2, 2, IM_COL32(255, 255, 255, 255));
+        double x_eyd2[] = {section.steel.getStrainSteelYield(), section.steel.getStrainSteelYield()};
+        double y_eyd2[] = {0, section.steel.computeStress(section.steel.getStrainSteelYield())};
+        ImPlot::SetNextLineStyle(ImVec4(1.0f, 1.0f, 1.0f, 0.4f));
+        ImPlot::PlotLine("", x_eyd2, y_eyd2, 2, IM_COL32(255, 255, 255, 255));
 
-            // ImPlot::Annotation(reforco.epsilon_yd, tensaoY[3], ImVec4(1, 1, 1, 0), ImVec2(annotation_offset_x, 1), tensaoY[3], "fyd = %.2f MPa", tensaoY[3]);
-            ImPlot::EndPlot();
-        }
+        // ImPlot::Annotation(reforco.epsilon_yd, tensaoY[3], ImVec4(1, 1, 1, 0), ImVec2(annotation_offset_x, 1), tensaoY[3], "fyd = %.2f MPa", tensaoY[3]);
+        ImPlot::EndPlot();
+    }
 
-        ImPlot::GetStyle() = backup; // restaura estilo anterior
+    ImPlot::GetStyle() = backup; // restaura estilo anterior
 }
 
 void Interface::reinforcementInterface(Section &section)
@@ -564,18 +552,19 @@ void Interface::reinforcementInterface(Section &section)
         static double coordXiBar, coordXfBar, coordYiBar, coordYfBar;
         static bool showPopUpErrorBar = false;
 
-        if(section.reinforcement.getReinforcement().empty())
+        if (section.reinforcement.getReinforcement().empty())
             tempNumPoints = 0; // Se o vetor de armadura estiver vazio, o número de pontos temporário é 0
         else
-        tempNumPoints = section.reinforcement.getReinforcement().size(); // Atualiza o número de pontos temporário com o tamanho do vetor de armadura
+            tempNumPoints = section.reinforcement.getReinforcement().size(); // Atualiza o número de pontos temporário com o tamanho do vetor de armadura
 
         ImGui::Begin("Inserir Dados da Armadura Passiva", nullptr,
                      ImGuiWindowFlags_NoCollapse |
-                     ImGuiWindowFlags_NoResize |
-                     ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
+                         ImGuiWindowFlags_NoResize |
+                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
 
         ImGui::SeparatorText("Modo de Inserção");
-        ImGui::RadioButton("Uma barra", &barMode, 0); ImGui::SameLine();
+        ImGui::RadioButton("Uma barra", &barMode, 0);
+        ImGui::SameLine();
         ImGui::RadioButton("Linha de barras", &barMode, 1);
 
         if (barMode == 0)
@@ -584,7 +573,8 @@ void Interface::reinforcementInterface(Section &section)
 
             ImGui::PushItemWidth(100);
             ImGui::InputInt("Número de barras", &tempNumPoints);
-            if (tempNumPoints < 0) tempNumPoints = 0;
+            if (tempNumPoints < 0)
+                tempNumPoints = 0;
 
             if (tempNumPoints != section.reinforcement.getReinforcement().size())
                 section.reinforcement.SetNumPoints(tempNumPoints);
@@ -601,7 +591,8 @@ void Interface::reinforcementInterface(Section &section)
             ImGui::BeginGroup();
             ImGui::SeparatorText("Quantidade de barras:");
             ImGui::InputInt("Número de barras", &tempNumPoints);
-            if (tempNumPoints < 0) tempNumPoints = 0;
+            if (tempNumPoints < 0)
+                tempNumPoints = 0;
 
             if (tempNumPoints != section.reinforcement.getReinforcement().size())
                 section.reinforcement.SetNumPoints(tempNumPoints);
@@ -610,20 +601,22 @@ void Interface::reinforcementInterface(Section &section)
             if (ImGui::Button("Limpar Tudo"))
                 section.reinforcement.clearReinforcement();
             ImGui::PopID(); // Remove o ID do ponto atual após a linha ter sido processada
-            
+
             ImGui::SeparatorText("Linha de Barras:");
             ImGui::PushID(2); // Garante que o ID seja único para cada barra
             ImGui::InputInt("Número de barras", &numBar);
-            if (numBar < 2) numBar = 2;
-            ImGui::InputDouble("xi (cm)", &coordXiBar, 0.0, 0.0, "%.2f"); ImGui::SameLine();
+            if (numBar < 2)
+                numBar = 2;
+            ImGui::InputDouble("xi (cm)", &coordXiBar, 0.0, 0.0, "%.2f");
+            ImGui::SameLine();
             ImGui::InputDouble("xf (cm)", &coordXfBar, 0.0, 0.0, "%.2f");
-            ImGui::InputDouble("yi (cm)", &coordYiBar, 0.0, 0.0, "%.2f"); ImGui::SameLine();
+            ImGui::InputDouble("yi (cm)", &coordYiBar, 0.0, 0.0, "%.2f");
+            ImGui::SameLine();
             ImGui::InputDouble("yf (cm)", &coordYfBar, 0.0, 0.0, "%.2f");
             ImGui::SameLine();
             ImGui::InputDouble("Diâmetro (mm)", &diameterBar, 0.0, 0.0, "%.2f");
             ImGui::PopID();
             ImGui::EndGroup();
-
 
             if (ImGui::Button("Adicionar Linha"))
             {
@@ -642,8 +635,6 @@ void Interface::reinforcementInterface(Section &section)
                 else
                     showPopUpErrorBar = true;
             }
-
-           
         }
 
         // Tabela com dados das barras
@@ -723,165 +714,205 @@ void Interface::reinforcementInterface(Section &section)
     }
 }
 
-void Interface::ReferenceValues() 
+void Interface::ReferenceValues()
 {
-        ImGui::Text("Deslize o cursor sobre os valores para mais informações.");
-        ImGui::Separator();
-        if (ImGui::BeginTable("valores_normativos", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-            ImGui::TableSetupColumn("Material");
-            ImGui::TableSetupColumn("Parâmetro");
-            ImGui::TableSetupColumn("Valor Mínimo");
-            ImGui::TableSetupColumn("Valor Padrão");
-            ImGui::TableSetupColumn("Valor Máximo");
-            ImGui::TableHeadersRow();
-    
-            // ----- CONCRETO -----
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0); ImGui::Text("Concreto");
-            ImGui::TableSetColumnIndex(1); ImGui::Text("fck (MPa)");
-    
-            ImGui::TableSetColumnIndex(2); ImGui::Text("20");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Resistência mínima característica à compressão para concreto estrutural.");
-                ImGui::EndTooltip();
-            }
-    
-            ImGui::TableSetColumnIndex(3); ImGui::Text("25 a 50");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Faixa mais comum em projetos usuais de estruturas de concreto armado.");
-                ImGui::EndTooltip();
-            }
-    
-            ImGui::TableSetColumnIndex(4); ImGui::Text("90");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Valor máximo aceito pela NBR 6118 para uso direto no diagrama tensão-deformação.");
-                ImGui::EndTooltip();
-            }
-    
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0); ImGui::Text("Concreto");
-            ImGui::TableSetColumnIndex(1); ImGui::Text("γc");
-    
-            ImGui::TableSetColumnIndex(2); ImGui::Text("1.2");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Pode ser adotado em avaliações de estruturas existentes ou reforços.");
-                ImGui::EndTooltip();
-            }
-    
-            ImGui::TableSetColumnIndex(3); ImGui::Text("1.4");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Valor padrão para segurança do concreto em estado limite último (ELU).");
-                ImGui::EndTooltip();
-            }
-    
-            ImGui::TableSetColumnIndex(4); ImGui::Text("1.5");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Usado em casos excepcionais com grande incerteza nos materiais.");
-                ImGui::EndTooltip();
-            }
-    
-            // ----- AÇO -----
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0); ImGui::Text("Aço");
-            ImGui::TableSetColumnIndex(1); ImGui::Text("fyk (MPa)");
-    
-            ImGui::TableSetColumnIndex(2); ImGui::Text("250");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Aço CA-25, pouco usado atualmente.");
-                ImGui::EndTooltip();
-            }
-    
-            ImGui::TableSetColumnIndex(3); ImGui::Text("500");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Aço CA-50, o mais utilizado no Brasil.");
-                ImGui::EndTooltip();
-            }
-    
-            ImGui::TableSetColumnIndex(4); ImGui::Text("600");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Aço CA-60, usado em estruturas com alta exigência de resistência.");
-                ImGui::EndTooltip();
-            }
-    
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0); ImGui::Text("Aço");
-            ImGui::TableSetColumnIndex(1); ImGui::Text("γs");
-    
-            ImGui::TableSetColumnIndex(2); ImGui::Text("1.0");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Adotado em avaliações de estruturas existentes com dados confiáveis.");
-                ImGui::EndTooltip();
-            }
-    
-            ImGui::TableSetColumnIndex(3); ImGui::Text("1.15");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Valor padrão da norma para dimensionamento no ELU.");
-                ImGui::EndTooltip();
-            }
-    
-            ImGui::TableSetColumnIndex(4); ImGui::Text("1.2");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Usado raramente, para situações de alta incerteza.");
-                ImGui::EndTooltip();
-            }
-    
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0); ImGui::Text("Aço");
-            ImGui::TableSetColumnIndex(1); ImGui::Text("E (GPa)");
-    
-            ImGui::TableSetColumnIndex(2); ImGui::Text("200");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Valor inferior típico de alguns aços especiais.");
-                ImGui::EndTooltip();
-            }
-    
-            ImGui::TableSetColumnIndex(3); ImGui::Text("210");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Valor normativo para o módulo de elasticidade do aço CA-50/60.");
-                ImGui::EndTooltip();
-            }
-    
-            ImGui::TableSetColumnIndex(4); ImGui::Text("215");
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::Text("Valor superior teórico em casos específicos.");
-                ImGui::EndTooltip();
-            }
-    
-            ImGui::EndTable();
+    ImGui::Text("Deslize o cursor sobre os valores para mais informações.");
+    ImGui::Separator();
+    if (ImGui::BeginTable("valores_normativos", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+    {
+        ImGui::TableSetupColumn("Material");
+        ImGui::TableSetupColumn("Parâmetro");
+        ImGui::TableSetupColumn("Valor Mínimo");
+        ImGui::TableSetupColumn("Valor Padrão");
+        ImGui::TableSetupColumn("Valor Máximo");
+        ImGui::TableHeadersRow();
+
+        // ----- CONCRETO -----
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Concreto");
+        ImGui::TableSetColumnIndex(1);
+        ImGui::Text("fck (MPa)");
+
+        ImGui::TableSetColumnIndex(2);
+        ImGui::Text("20");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Resistência mínima característica à compressão para concreto estrutural.");
+            ImGui::EndTooltip();
         }
 
-        ImGui::Spacing();
-        ImGui::SeparatorText("Aplicações Típicas por Classe de Concreto");
+        ImGui::TableSetColumnIndex(3);
+        ImGui::Text("25 a 50");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Faixa mais comum em projetos usuais de estruturas de concreto armado.");
+            ImGui::EndTooltip();
+        }
 
-        ImGui::BulletText("fck = 20 a 30 MPa: residências, pequenas edificações");
-        ImGui::BulletText("fck = 35 a 50 MPa: prédios comerciais, estruturas padrão");
-        ImGui::BulletText("fck > 50 MPa: pilares esbeltos, pontes, grandes vãos");
+        ImGui::TableSetColumnIndex(4);
+        ImGui::Text("90");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Valor máximo aceito pela NBR 6118 para uso direto no diagrama tensão-deformação.");
+            ImGui::EndTooltip();
+        }
 
-        ImGui::SeparatorText("Modos de Ruptura Comuns");
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Concreto");
+        ImGui::TableSetColumnIndex(1);
+        ImGui::Text("γc");
 
-        ImGui::BulletText("Flexão: falha por tração no aço ou compressão no concreto");
-        ImGui::BulletText("Corte: ruptura por cisalhamento, controlado com estribos");
-        ImGui::BulletText("Punção: comum em lajes lisas sem vigas");
+        ImGui::TableSetColumnIndex(2);
+        ImGui::Text("1.2");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Pode ser adotado em avaliações de estruturas existentes ou reforços.");
+            ImGui::EndTooltip();
+        }
 
-          ImGui::Separator();
+        ImGui::TableSetColumnIndex(3);
+        ImGui::Text("1.4");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Valor padrão para segurança do concreto em estado limite último (ELU).");
+            ImGui::EndTooltip();
+        }
+
+        ImGui::TableSetColumnIndex(4);
+        ImGui::Text("1.5");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Usado em casos excepcionais com grande incerteza nos materiais.");
+            ImGui::EndTooltip();
+        }
+
+        // ----- AÇO -----
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Aço");
+        ImGui::TableSetColumnIndex(1);
+        ImGui::Text("fyk (MPa)");
+
+        ImGui::TableSetColumnIndex(2);
+        ImGui::Text("250");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Aço CA-25, pouco usado atualmente.");
+            ImGui::EndTooltip();
+        }
+
+        ImGui::TableSetColumnIndex(3);
+        ImGui::Text("500");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Aço CA-50, o mais utilizado no Brasil.");
+            ImGui::EndTooltip();
+        }
+
+        ImGui::TableSetColumnIndex(4);
+        ImGui::Text("600");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Aço CA-60, usado em estruturas com alta exigência de resistência.");
+            ImGui::EndTooltip();
+        }
+
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Aço");
+        ImGui::TableSetColumnIndex(1);
+        ImGui::Text("γs");
+
+        ImGui::TableSetColumnIndex(2);
+        ImGui::Text("1.0");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Adotado em avaliações de estruturas existentes com dados confiáveis.");
+            ImGui::EndTooltip();
+        }
+
+        ImGui::TableSetColumnIndex(3);
+        ImGui::Text("1.15");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Valor padrão da norma para dimensionamento no ELU.");
+            ImGui::EndTooltip();
+        }
+
+        ImGui::TableSetColumnIndex(4);
+        ImGui::Text("1.2");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Usado raramente, para situações de alta incerteza.");
+            ImGui::EndTooltip();
+        }
+
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Aço");
+        ImGui::TableSetColumnIndex(1);
+        ImGui::Text("E (GPa)");
+
+        ImGui::TableSetColumnIndex(2);
+        ImGui::Text("200");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Valor inferior típico de alguns aços especiais.");
+            ImGui::EndTooltip();
+        }
+
+        ImGui::TableSetColumnIndex(3);
+        ImGui::Text("210");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Valor normativo para o módulo de elasticidade do aço CA-50/60.");
+            ImGui::EndTooltip();
+        }
+
+        ImGui::TableSetColumnIndex(4);
+        ImGui::Text("215");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Valor superior teórico em casos específicos.");
+            ImGui::EndTooltip();
+        }
+
+        ImGui::EndTable();
+    }
+
+    ImGui::Spacing();
+    ImGui::SeparatorText("Aplicações Típicas por Classe de Concreto");
+
+    ImGui::BulletText("fck = 20 a 30 MPa: residências, pequenas edificações");
+    ImGui::BulletText("fck = 35 a 50 MPa: prédios comerciais, estruturas padrão");
+    ImGui::BulletText("fck > 50 MPa: pilares esbeltos, pontes, grandes vãos");
+
+    ImGui::SeparatorText("Modos de Ruptura Comuns");
+
+    ImGui::BulletText("Flexão: falha por tração no aço ou compressão no concreto");
+    ImGui::BulletText("Corte: ruptura por cisalhamento, controlado com estribos");
+    ImGui::BulletText("Punção: comum em lajes lisas sem vigas");
+
+    ImGui::Separator();
     ImGui::TextWrapped("Nota: Os valores e fórmulas seguem as recomendações da NBR 6118:2023, podendo variar conforme o tipo estrutural e critérios de segurança do projeto.");
 }
-
 
 void Interface::effortSectionInterface(Section &section)
 {
@@ -894,7 +925,6 @@ void Interface::effortSectionInterface(Section &section)
         static bool showPopUpSolver = false;
         static int tempNumPoints = 0;
 
-
         ImGui::Begin("Entrada de Dados: Esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
         ImGui::PushItemWidth(100);
         ImGui::SeparatorText("Número de combinações de esforços");
@@ -905,15 +935,16 @@ void Interface::effortSectionInterface(Section &section)
 
         if (tempNumPoints != section.combinations.size())
         {
-            section.combinations.resize(tempNumPoints, Combination(0.0f, 0.0f, 0.0f));
+            section.combinations.resize(tempNumPoints, Combination(0.0f, 0.0f, 0.0f, 0.0f));
         }
-       
-        if (ImGui::BeginTable("TabelaEsforcos", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+
+        if (ImGui::BeginTable("TabelaEsforcos", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp))
         {
             ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 50.0f);
             ImGui::TableSetupColumn("Nsd (kN)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
-            ImGui::TableSetupColumn("Mx (kN.m)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
-            ImGui::TableSetupColumn("My (kN.m)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
+            ImGui::TableSetupColumn("M,x (kN.m)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
+            /* -- Versão 1.0 Momento em apenas uma direção --
+            ImGui::TableSetupColumn("My (kN.m)", ImGuiTableColumnFlags_WidthFixed, 120.0f); */
             ImGui::TableHeadersRow();
 
             for (int i = 0; i < section.combinations.size(); ++i)
@@ -923,7 +954,7 @@ void Interface::effortSectionInterface(Section &section)
 
                 float nsd = section.combinations[i].Normal;
                 float mx = section.combinations[i].MsdX;
-                float my = section.combinations[i].MsdY;
+                // float my = section.combinations[i].MsdY;
 
                 // ID
                 ImGui::TableSetColumnIndex(0);
@@ -936,18 +967,24 @@ void Interface::effortSectionInterface(Section &section)
                 if (ImGui::InputFloat(labelN, &nsd))
                     section.combinations[i].Normal = nsd;
 
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::SetTooltip("Acrescente sinal Positivo para tração e Negativo para compressão");
+                }
+
                 // Mx
                 ImGui::TableSetColumnIndex(2);
                 char labelMx[16];
                 snprintf(labelMx, sizeof(labelMx), "##mx%d", i);
                 if (ImGui::InputFloat(labelMx, &mx))
                     section.combinations[i].MsdX = mx;
-                // My
+
+                /* My -- Versão 1.0 Momento em apenas uma direção
                 ImGui::TableSetColumnIndex(3);
                 char labelMy[16];
                 snprintf(labelMy, sizeof(labelMy), "##my%d", i);
                 if (ImGui::InputFloat(labelMy, &my))
-                    section.combinations[i].MsdY = my;
+                    section.combinations[i].MsdY = my; */
 
                 ImGui::PopID();
             }
@@ -959,7 +996,7 @@ void Interface::effortSectionInterface(Section &section)
         {
             if (section.combinations.size() > 0)
                 section.combinations.clear();
-                tempNumPoints = 0;
+            tempNumPoints = 0;
         }
 
         ImGui::SameLine();
@@ -967,24 +1004,25 @@ void Interface::effortSectionInterface(Section &section)
         if (ImGui::Button("Calcular"))
         {
             section.setSectionProperties(section.polygon, section.reinforcement, section.concrete, section.steel, NormativeIntegrationVersion::ABNT_NBR6118_2014);
-            section.internalForces.setNormalSolicitation(Nsd);
             section.internalForces.computeMaxCompression(section.polygon, section.reinforcement, section.steel, section.concrete);
             section.internalForces.computeMaxTraction(section.polygon, section.reinforcement, section.steel);
 
-            if (section.internalForces.getNormalSolicitation() < section.internalForces.getMaxNormalCompression() ||
-                section.internalForces.getNormalSolicitation() > section.internalForces.getMaxNormalTraction())
+            for (int i = 0; i < section.combinations.size(); ++i)
             {
-                showPopUpErrorAxialForce = true;
-                ImGui::OpenPopup("Erro de Esforço Normal");
-            }
-            else
-            {
-                section.computeSectionEquilibriumSolver(Nsd);
-                showPopUpSolver = true;
-                ImGui::OpenPopup("Calculo do Momento Resistente");
+                section.internalForces.setNormalSolicitation(section.combinations[i].Normal);
+
+                if (section.internalForces.getNormalSolicitation() < section.internalForces.getMaxNormalCompression() || section.internalForces.getNormalSolicitation() > section.internalForces.getMaxNormalTraction())
+                    section.combinations[i].isMomentValid = false;
+
+                else
+                {
+                    section.computeSectionEquilibriumSolver(section.combinations[i].Normal);
+                    section.combinations[i].Msolver = section.momentSolver.getMomentCapacity();
+                    section.combinations[i].isMomentValid = true;
+                }
             }
         }
-        
+
         ImGui::SeparatorText("Debug");
 
         if (ImGui::Button("Comparar"))
@@ -995,7 +1033,7 @@ void Interface::effortSectionInterface(Section &section)
             section.computeInternalForces(Nsd);
             section.printSectionData();
         }
-        
+
         ImGui::PushItemWidth(50);
         ImGui::BeginGroup();
         ImGui::InputDouble("eps1: (mm/m)", &eps1, 0.0f, 0.0f, "%.3f");
@@ -1044,6 +1082,7 @@ void Interface::effortSectionInterface(Section &section)
                 ImGui::EndPopup();
             }
         }
+
         ImGui::End();
         ImGui::EndMenu();
     }
@@ -1051,10 +1090,10 @@ void Interface::effortSectionInterface(Section &section)
 
 void Interface::crossSectionPlotInterface(Section &section, float posY)
 {
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO &io = ImGui::GetIO();
 
-    float largura = io.DisplaySize.x - 300.0f;           // considerando a janela da direita com 300px
-    float altura  = io.DisplaySize.y - posY;             // altura que sobra a partir de posY
+    float largura = io.DisplaySize.x - 300.0f; // considerando a janela da direita com 300px
+    float altura = io.DisplaySize.y - posY;    // altura que sobra a partir de posY
 
     ImGui::SetNextWindowPos(ImVec2(0, posY), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(largura, altura), ImGuiCond_Always);
@@ -1062,18 +1101,17 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
     ImGui::Begin("Grafico da Secao Transversal",
                  nullptr,
                  ImGuiWindowFlags_NoMove |
-                 ImGuiWindowFlags_NoResize |
-                 ImGuiWindowFlags_NoCollapse |
-                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBringToFrontOnFocus);
+                     ImGuiWindowFlags_NoResize |
+                     ImGuiWindowFlags_NoCollapse |
+                     ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
-    
 
     if (ImPlot::BeginPlot("Gráfico da Seção Transversal", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit))
     {
         if (section.polygon.getPolygonVertices().size() > 2)
         {
-            
+
             renderPolygon(section.polygon.getPolygonVertices(), "Vertices", "Polygon");
             renderPolygon(section.stressRegions.getCompressedRegion().getPolygonVertices(), "vComp", "pComp");
             renderPolygon(section.stressRegions.getParabolicRegion().getPolygonVertices(), "vParab", "pParab");
@@ -1086,7 +1124,6 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
 
     ImGui::End();
 }
-
 
 void Interface::renderPolygon(const vector<Point> &polygonVertices, string nameVertices, string namePolygon)
 {
@@ -1152,12 +1189,10 @@ void Interface::renderStrainConcreteRuptureDiagram(const vector<Point> &vectorPo
             yTemp[i] = vectorPoint[i].getY();
         }
 
-        
         ImPlot::PushStyleColor(ImPlotCol_Fill, ImVec4(0.0f, 0.58f, 0.90f, 0.3f)); // azul com transparência
         ImPlot::PlotShaded((nameVectorPoint + "_fill").c_str(), xTemp.data(), yTemp.data(), static_cast<int>(vectorPoint.size()), 0.0);
         ImPlot::PopStyleColor();
 
-        
         ImPlot::PushStyleColor(ImPlotCol_Line, ImVec4(0.0f, 0.58f, 0.90f, 1.0f)); // RGB(0, 150, 255)
         ImPlot::PushStyleVar(ImPlotStyleVar_LineWeight, 2.5f);
         ImPlot::PlotLine(nameVectorPoint.c_str(), xTemp.data(), yTemp.data(), static_cast<int>(vectorPoint.size()));
@@ -1165,7 +1200,6 @@ void Interface::renderStrainConcreteRuptureDiagram(const vector<Point> &vectorPo
         ImPlot::PopStyleColor();
     }
 }
-
 
 void Interface::renderStrainSteelDiagram(const vector<Point> &vectorPoint, string nameVectorPoint)
 {
@@ -1179,11 +1213,11 @@ void Interface::renderStrainSteelDiagram(const vector<Point> &vectorPoint, strin
             xTemp[i] = vectorPoint[i].getX();
             yTemp[i] = vectorPoint[i].getY();
         }
-        
+
         ImPlot::PushStyleColor(ImPlotCol_Fill, ImVec4(0.0f, 0.58f, 0.90f, 0.3f)); // azul com transparência
         ImPlot::PlotShaded((nameVectorPoint + "_fill").c_str(), xTemp.data(), yTemp.data(), static_cast<int>(vectorPoint.size()), 0.0);
         ImPlot::PopStyleColor();
-        
+
         ImPlot::PushStyleColor(ImPlotCol_Line, ImVec4(0.0f, 0.58f, 0.90f, 1.0f)); // RGB(0, 150, 255)
         ImPlot::PushStyleVar(ImPlotStyleVar_LineWeight, 2.5f);
         ImPlot::PlotLine(nameVectorPoint.c_str(), xTemp.data(), yTemp.data(), static_cast<int>(vectorPoint.size()));
@@ -1194,27 +1228,110 @@ void Interface::renderStrainSteelDiagram(const vector<Point> &vectorPoint, strin
 
 void Interface::EffortsTable(Section &section)
 {
+    static int selectedEffort = -1;
+    static bool showPopUpSolver = false;
+    static bool showPopUpErrorAxialForce = false;
+
     if (ImGui::BeginTable("Tabela", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
     {
         ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 30.0f);
-        ImGui::TableSetupColumn("Nsd (kN)", ImGuiTableColumnFlags_WidthFixed, 50.0f);
-        ImGui::TableSetupColumn("Msd,x (kN.m)", ImGuiTableColumnFlags_WidthFixed, 85.0f);
-        ImGui::TableSetupColumn("Msd,y (kN.m)", ImGuiTableColumnFlags_WidthFixed, 85.0f);
+        ImGui::TableSetupColumn("Nsd (kN)", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+        ImGui::TableSetupColumn("M,x (kN.m)", ImGuiTableColumnFlags_WidthFixed, 70.0f);
+        ImGui::TableSetupColumn("M. Res. (kN.m)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
         ImGui::TableHeadersRow();
 
         for (size_t i = 0; i < section.combinations.size(); ++i)
         {
             ImGui::TableNextRow();
+
+            // Coluna 0 - ID (com Selectable para ativar popup)
             ImGui::TableSetColumnIndex(0);
+            std::string rowId = "##row" + std::to_string(i);
+            if (ImGui::Selectable(rowId.c_str(), selectedEffort == (int)i, ImGuiSelectableFlags_SpanAllColumns))
+            {
+                selectedEffort = static_cast<int>(i);
+
+                section.computeSectionEquilibriumSolver(section.combinations[i].Normal);
+
+                if (section.combinations[i].isMomentValid)
+                    showPopUpSolver = true;
+                else
+                    showPopUpErrorAxialForce = true;
+            }
+            ImGui::SameLine();
             ImGui::Text("%d", static_cast<int>(i + 1));
+
+            // Coluna 1 - Nsd
             ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%.3f", section.combinations[i].Normal);
+            ImGui::Text("%.2f", section.combinations[i].Normal);
+
+            // Coluna 2 - MsdX
             ImGui::TableSetColumnIndex(2);
-            ImGui::Text("%.3f", section.combinations[i].MsdX);
+            ImGui::Text("%.2f", section.combinations[i].MsdX);
+
+            // Coluna 3 - M. Resistente (com destaque em vermelho se inválido)
             ImGui::TableSetColumnIndex(3);
-            ImGui::Text("%.3f", section.combinations[i].MsdY);
+            if (!section.combinations[i].isMomentValid)
+            {
+                ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));
+                ImGui::TextUnformatted("ERRO!");
+                ImGui::PopStyleColor();
+            }
+
+            else
+            {
+                ImGui::Text("%.2f", section.combinations[i].Msolver);
+            }
         }
+
         ImGui::EndTable();
+    }
+
+    // --- POPUP: Momento resistente calculado com sucesso
+    if (showPopUpSolver && selectedEffort >= 0)
+    {
+        ImGui::OpenPopup("Calculo do Momento Resistente");
+        if (ImGui::BeginPopupModal("Calculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text("Momento Resistente: %.4f", section.momentSolver.getMomentCapacity());
+            ImGui::Separator();
+            ImGui::Text("eps1: %.4f", section.momentSolver.getTopFiberStrain());
+            ImGui::Text("eps2: %.4f", section.momentSolver.getBottomFiberStrain());
+            ImGui::Separator();
+            ImGui::Text("Iterações: %d", section.momentSolver.getIterations());
+
+            if (ImGui::Button("OK", ImVec2(120, 0)))
+            {
+                showPopUpSolver = false;
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+    }
+
+    if (showPopUpErrorAxialForce && selectedEffort >= 0)
+    {
+        ImGui::OpenPopup("Erro de Esforço Normal");
+        if (ImGui::BeginPopupModal("Erro de Esforço Normal", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            float Nsd = section.combinations[selectedEffort].Normal;
+
+            ImGui::Text("O esforço normal solicitante está fora do intervalo resistente da seção.");
+            ImGui::Separator();
+            ImGui::Text("Nsd: %.2f", Nsd);
+            ImGui::Text("Intervalo permitido:");
+            ImGui::BulletText("Máx. Compressão: %.2f kN", section.internalForces.getMaxNormalCompression());
+            ImGui::BulletText("Máx. Tração: %.2f kN", section.internalForces.getMaxNormalTraction());
+
+            if (ImGui::Button("OK", ImVec2(120, 0)))
+            {
+                showPopUpErrorAxialForce = false;
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
     }
 }
 
@@ -1256,9 +1373,9 @@ void Interface::RightTablePos(const char *nome1, const char *nome2, float posY, 
     ImGui::SetNextWindowSize(ImVec2(larguraFixa, alturaCadaJanela), ImGuiCond_Always);
     ImGui::Begin(nome1, nullptr,
                  ImGuiWindowFlags_NoMove |
-                 ImGuiWindowFlags_NoResize |
-                 ImGuiWindowFlags_NoCollapse |
-                 ImGuiWindowFlags_NoTitleBar);
+                     ImGuiWindowFlags_NoResize |
+                     ImGuiWindowFlags_NoCollapse |
+                     ImGuiWindowFlags_NoTitleBar);
 
     ImGui::Text("Tabela de Pontos:");
     crossSectionTable(section);
@@ -1272,9 +1389,9 @@ void Interface::RightTablePos(const char *nome1, const char *nome2, float posY, 
     ImGui::SetNextWindowSize(ImVec2(larguraFixa, alturaCadaJanela), ImGuiCond_Always);
     ImGui::Begin(nome2, nullptr,
                  ImGuiWindowFlags_NoMove |
-                 ImGuiWindowFlags_NoResize |
-                 ImGuiWindowFlags_NoCollapse |
-                 ImGuiWindowFlags_NoTitleBar);
+                     ImGuiWindowFlags_NoResize |
+                     ImGuiWindowFlags_NoCollapse |
+                     ImGuiWindowFlags_NoTitleBar);
 
     ImGui::Text("Tabela de Esforços:");
     EffortsTable(section);
@@ -1282,22 +1399,23 @@ void Interface::RightTablePos(const char *nome1, const char *nome2, float posY, 
     ImGui::End();
 }
 
-void Interface::applyDarkElegantPlotStyle() {
-    ImPlotStyle& style = ImPlot::GetStyle();
+void Interface::applyDarkElegantPlotStyle()
+{
+    ImPlotStyle &style = ImPlot::GetStyle();
 
     // Fundo transparente
-    style.Colors[ImPlotCol_PlotBg]        = ImVec4(0, 0, 0, 0.0f);
-    style.Colors[ImPlotCol_FrameBg]       = ImVec4(0, 0, 0, 0.0f);
-    style.Colors[ImPlotCol_PlotBorder]    = ImVec4(1, 1, 1, 0.05f);
-    style.Colors[ImPlotCol_LegendBorder]        = ImVec4(1, 1, 1, 0.05f); // redundante, mas ajuda
+    style.Colors[ImPlotCol_PlotBg] = ImVec4(0, 0, 0, 0.0f);
+    style.Colors[ImPlotCol_FrameBg] = ImVec4(0, 0, 0, 0.0f);
+    style.Colors[ImPlotCol_PlotBorder] = ImVec4(1, 1, 1, 0.05f);
+    style.Colors[ImPlotCol_LegendBorder] = ImVec4(1, 1, 1, 0.05f); // redundante, mas ajuda
 
     // Eixos discretos (novos enums)
-    style.Colors[ImPlotCol_AxisBg]        = ImVec4(0, 0, 0, 0.1);  // fundo atrás do eixo
-    style.Colors[ImPlotCol_AxisGrid]      = ImVec4(1, 1, 1, 0.1); // linhas de grade
-    style.Colors[ImPlotCol_AxisTick]      = ImVec4(1, 1, 1, 0.2);  // tracinhos
-    style.Colors[ImPlotCol_AxisText]      = ImVec4(1, 1, 1, 1.0f);  // labels dos eixos
+    style.Colors[ImPlotCol_AxisBg] = ImVec4(0, 0, 0, 0.1);    // fundo atrás do eixo
+    style.Colors[ImPlotCol_AxisGrid] = ImVec4(1, 1, 1, 0.1);  // linhas de grade
+    style.Colors[ImPlotCol_AxisTick] = ImVec4(1, 1, 1, 0.2);  // tracinhos
+    style.Colors[ImPlotCol_AxisText] = ImVec4(1, 1, 1, 1.0f); // labels dos eixos
 
     // Tamanhos de ticks
-    style.MajorTickLen  = ImVec2(6, 6);
+    style.MajorTickLen = ImVec2(6, 6);
     style.MajorTickSize = ImVec2(1.0f, 1.0f);
 }

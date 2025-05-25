@@ -1,5 +1,9 @@
 #pragma once 
 
+#include "cereal/cereal.hpp"
+#include "cereal/types/vector.hpp"
+#include "cereal/types/string.hpp"
+
 #include "point.h"
 #include <vector>
 #include <string>
@@ -33,6 +37,6 @@ public:
     template <class Archive>
     void serialize (Archive& archive)
     {
-        archive(CERAL_NVP(id), CEREAL_NVP(vertices));
+        archive(CEREAL_NVP(id), CEREAL_NVP(vertices));
     }
 };

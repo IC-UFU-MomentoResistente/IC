@@ -7,17 +7,25 @@
             "command": "g++",
             "args": [
                 "-std=c++17",
-                "-I", "include",
+                "-I", "include/adapters/gateways",
+                "-I", "include/adapters/controllers",
+                "-I", "include/core/common",
+                "-I", "include/core/entities",
+                "-I", "include/core/use_cases",
                 "-I", "lib/raylib/src",
                 "-I", "lib/imgui",
                 "-I", "lib/implot",
                 "-I", "lib/rlImGui",
+                "-I", "lib/cereal/include",
                 "-L", "lib/raylib/build",
                 "-L", "lib/imgui/build",
                 "-L", "lib/implot/build",
                 "-L", "lib/rlImGui/build",
                 "-g",
                 "-o", "build/main.exe",
+                "src/adapters/gateways/*.cpp",
+                "src/core/entities/*.cpp",
+                "src/core/use_cases/*.cpp",
                 "src/main.cpp",
                 "-l:libimgui.a",
                 "-l:libimplot.a",
@@ -41,16 +49,23 @@
             "command": "g++",
             "args": [
                 "-std=c++17",
-                "-I", "include",
-                "-I", "lib/catch2/",
+                "-I", "include/adapters/gateways",
+                "-I", "include/adapters/controllers",
+                "-I", "include/core/common",
+                "-I", "include/core/entities",
+                "-I", "include/core/use_cases",
+                "-I", "lib/cereal/include",
+                "-I", "lib/catch2",
                 "-o", "build/tests.exe",
-                "tests/test_main.cpp"
+                "src/core/entities/*.cpp",
+                "tests/test_main.cpp",
+                "tests/test_polygon.cpp"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": false
             },
             "problemMatcher": []
-        }
+        },
     ]
 }

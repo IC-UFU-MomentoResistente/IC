@@ -1,5 +1,7 @@
 #pragma once
 
+#include "cereal/cereal.hpp"
+
 // Forward declaration para serializar Point diretamente
 namespace cereal
 {

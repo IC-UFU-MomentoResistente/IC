@@ -56,10 +56,10 @@
                 "-I", "include/core/use_cases",
                 "-I", "lib/cereal/include",
                 "-I", "lib/catch2",
-                "-o", "build/tests.exe",
+                "-o", "build/catch2.exe",
                 "src/core/entities/*.cpp",
-                "tests/test_main.cpp",
-                "tests/test_polygon.cpp"
+                "tests/test_main_catch2.cpp",
+                "tests/test_polygon_catch2.cpp"
             ],
             "group": {
                 "kind": "build",

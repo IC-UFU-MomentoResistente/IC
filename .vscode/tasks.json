@@ -24,6 +24,7 @@
                 "-g",
                 "-o", "build/main.exe",
                 "src/adapters/gateways/*.cpp",
+                "src/adapters/controllers/*.cpp",
                 "src/core/entities/*.cpp",
                 "src/core/use_cases/*.cpp",
                 "src/main.cpp",

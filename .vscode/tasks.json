@@ -44,7 +44,7 @@
             "detail": "Compilação do projeto com raylib, imgui, implot e rlImGui"
         },
         {
-            "label": "build-tests",
+            "label": "build-tests-catch2",
             "type": "shell",
             "command": "g++",
             "args": [
@@ -67,5 +67,39 @@
             },
             "problemMatcher": []
         },
+        {
+            "label": "build-tests-gtest",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++17",
+                "-mconsole",
+                "-I", "include/adapters/gateways",
+                "-I", "include/adapters/controllers",
+                "-I", "include/core/common",
+                "-I", "include/core/entities",
+                "-I", "include/core/use_cases",
+                "-I", "lib/cereal/include",
+                "-I", "lib/googletest/googletest/include",
+                "-I", "lib/googletest/googlemock/include",
+                "-L", "lib/googletest/build/lib",
+                "-o", "build/gtests.exe",
+                "src/core/entities/*.cpp",
+                "src/core/use_cases/*.cpp",
+                "src/adapters/gateways/*.cpp",
+                "tests/test_polygon_gtest.cpp",
+                "tests/test_createPolygonUseCase_gtest.cpp",
+                "-lgtest_main",
+                "-lgmock_main",
+                "-lgtest",
+                "-lgmock",
+                "-lpthread"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": []
+        }
     ]
 }

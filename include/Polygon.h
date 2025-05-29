@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Point.h"
+
 #define _USE_MATH_DEFINES
 #include <iostream>
 #include <cmath>
@@ -8,8 +10,6 @@
 #include <cmath>
 #include <vector>
 #include <stdexcept>
-
-#include "Point.h"
 
 using std::invalid_argument;
 using std::vector;
@@ -25,6 +25,22 @@ private:
 	double polygonArea;
 	double staticMomentX;
 	double staticMomentY;
+
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& archive)
+	{
+		archive(
+			CEREAL_NVP(polygonVertices),
+			CEREAL_NVP(geometricCenter),
+			CEREAL_NVP(maxY),
+			CEREAL_NVP(minY),
+			CEREAL_NVP(polygonHeight),
+			CEREAL_NVP(polygonArea),
+			CEREAL_NVP(staticMomentX),
+			CEREAL_NVP(staticMomentY)			
+		);
+	}
 
 public:
 	Polygon();

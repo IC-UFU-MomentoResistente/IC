@@ -19,6 +19,11 @@
 #include "MomentCapacitySolver.h"
 #include "Section.h"
 
+#include <fstream>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/types/string.hpp>
+
 using std::cout;
 using std::endl;
 using std::vector;
@@ -31,7 +36,7 @@ public:
     void initInterface();
     void interfaceLoop();
     void autorsWindow();
-    void showPrimaryMenuBar();
+    void showPrimaryMenuBar(Section &section);
     void showSecondaryMenuBar(Section &section);
     void crossSectionData(Section &section);
     void interfaceMaterials(Section &section);
@@ -49,4 +54,7 @@ public:
     void crossSectionTable(Section &section);
     void RightTablePos(const char * nome1, const char * nome2, float posY, Section & section);
     void applyDarkElegantPlotStyle();
+
+    void saveSectionData(Section &section, const std::string &filename);
+    void loadSectionData(Section &section, const std::string &filename);
 };

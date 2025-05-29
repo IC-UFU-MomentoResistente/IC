@@ -16,6 +16,17 @@ private:
 	vector<double> diameters;
 	vector<double> areas;
 
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& archive)
+	{
+		archive(
+			CEREAL_NVP(reinforcement),
+			CEREAL_NVP(diameters),
+			CEREAL_NVP(areas)
+		);
+	}
+
 public:
 	Reinforcement();
 

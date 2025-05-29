@@ -47,14 +47,22 @@ void Interface::interfaceLoop()
 {
 }
 
-void Interface::showPrimaryMenuBar()
+void Interface::showPrimaryMenuBar(Section &section)
 {
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("Arquivo"))
         {
-            ImGui::MenuItem("Salvar");
-            ImGui::MenuItem("Carregar");
+            if(ImGui::MenuItem("Salvar"))
+            {
+                saveSectionData(section, "projeto.json");
+            }
+
+            if(ImGui::MenuItem("Carregar"))
+            {
+                loadSectionData(section, "projeto.json");
+            }
+            
             ImGui::EndMenu();
         }
 
@@ -1418,4 +1426,39 @@ void Interface::applyDarkElegantPlotStyle()
     // Tamanhos de ticks
     style.MajorTickLen = ImVec2(6, 6);
     style.MajorTickSize = ImVec2(1.0f, 1.0f);
+}
+
+void Interface::saveSectionData(Section &section, const std::string &filename)
+{
+    std::ofstream os(filename, std::ios::binary);
+    
+    if (!os.is_open())
+    {
+        std::cerr << "Erro ao abrir o arquivo para escrita: " << filename << '\n';
+        return;
+    }
+
+    cereal::JSONOutputArchive archive(os);
+    archive(CEREAL_NVP(section));
+    std::cout << "Dados da seção salvos com sucesso em: " << filename << '\n';
+}
+
+void Interface::loadSectionData(Section &section, const std::string &filename)
+{
+    std::ifstream is(filename, std::ios::binary);
+
+    if(!is.is_open())
+    {
+        std::cerr << "Erro ao abrir o arquivo para leitura: " << filename << '\n';
+        return;
+    }
+
+    cereal::JSONInputArchive archive(is);
+    archive(CEREAL_NVP(section));
+    std::cout << "Dados da secao carregados de: " << filename << '\n';
+
+    section.setPolygon(section.polygon);
+    section.setReinforcement(section.reinforcement);
+    section.setConcrete(section.concrete);
+    section.setSteel(section.steel);
 }

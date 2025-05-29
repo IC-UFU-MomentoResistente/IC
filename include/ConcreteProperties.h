@@ -25,6 +25,24 @@ private:
 	vector<Point> curveStressStrain;
 	StressStrainConcreteModelType modelType;
 
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& archive)
+	{
+		archive(
+			CEREAL_NVP(fck),
+			CEREAL_NVP(gammaC),
+			CEREAL_NVP(fcd),
+			CEREAL_NVP(factorMultiplierFcd),
+			CEREAL_NVP(strainConcretePlastic),
+			CEREAL_NVP(strainConcreteRupture),
+			CEREAL_NVP(strengthReductionFactor),
+			CEREAL_NVP(stressStrainExponent),
+			CEREAL_NVP(curveStressStrain),
+			CEREAL_NVP(modelType)
+		);
+	}
+
 public:
 	ConcreteProperties();
 

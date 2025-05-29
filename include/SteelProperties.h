@@ -23,6 +23,22 @@ private:
     vector<Point> curveStressStrain;
     StressStrainSteelModelType modelType;
 
+    friend class cereal::access;
+    template <class Archive>
+    void serialize(Archive &archive)
+    {
+        archive(
+            CEREAL_NVP(fyk),
+            CEREAL_NVP(gammaS),
+            CEREAL_NVP(E),
+            CEREAL_NVP(fyd),
+            CEREAL_NVP(strainSteelYield),
+            CEREAL_NVP(strainSteelRupture),
+            CEREAL_NVP(curveStressStrain),
+            CEREAL_NVP(modelType)
+        );
+    }
+
 public:
     SteelProperties();
 

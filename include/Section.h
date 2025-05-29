@@ -45,4 +45,33 @@ public:
     SteelProperties collectedSteel, NormativeIntegrationVersion modelVersion);
     void computeSectionEquilibriumSolver(double Nsd);
     void printSectionData();
+
+    template <class Archive>
+    void save(Archive& archive) const
+    {
+        archive(
+            CEREAL_NVP(polygon),
+            CEREAL_NVP(reinforcement),
+            CEREAL_NVP(concrete),
+            CEREAL_NVP(steel),
+            CEREAL_NVP(combinations)
+        );
+    }
+
+    template <class Archive>
+    void load(Archive& archive)
+    {
+        archive(
+            CEREAL_NVP(polygon),
+            CEREAL_NVP(reinforcement),
+            CEREAL_NVP(concrete),
+            CEREAL_NVP(steel),
+            CEREAL_NVP(combinations)
+        );
+
+        setPolygon(polygon);
+        setReinforcement(reinforcement);
+        setConcrete(concrete);
+        setSteel(steel);
+    }
 };

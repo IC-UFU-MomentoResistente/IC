@@ -50,5 +50,54 @@
             ],
             "detail": "Compilação do projeto com raylib, imgui, implot e rlImGui"
         },
+        {
+            "label": "build_executavel",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++17",
+                "-I", "include",
+                "-I", "lib/raylib/src",
+                "-I", "lib/imgui",
+                "-I", "lib/imgui/backends",
+                "-I", "lib/implot",
+                "-I", "lib/rlImGui",
+                "-I", "lib/cereal/include",
+                "-L", "lib/raylib/build",
+                "-L", "lib/rlImGui/build",
+                "-o", "build/projeto.exe",
+                "src/main.cpp",
+                "lib/imgui/*.cpp",
+                "lib/implot/*.cpp",
+                "src/Interface.cpp",
+                "src/Point.cpp",
+                "src/Polygon.cpp",
+                "src/Reinforcement.cpp",
+                "src/ConcreteProperties.cpp",
+                "src/SteelProperties.cpp",
+                "src/StrainDistribution.cpp",
+                "src/PolygonStressREgions.cpp",
+                "src/AnalyticalIntegration.cpp",
+                "src/InternalForces.cpp",
+                "src/MomentCapacitySolver.cpp",
+                "src/Section.cpp",
+                "src/combination.cpp",
+                "-l:libraylib.a",
+                "-l:librlImGui.a",
+                "-lopengl32",
+                "-lgdi32",
+                "-lwinmm",
+                "-static-libgcc",
+                "-static-libstdc++"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "detail": "Compilação executavel"
+        }
     ]
 }

@@ -1,6 +1,10 @@
 #include "Interface.h"
+#include "segoeuisl_data.h"
+
+#include <iostream>
 #include <functional>
 #include <algorithm>
+
 
 void Interface::initInterface()
 {
@@ -28,7 +32,15 @@ void Interface::initInterface()
         0};
 
     ImGuiIO &io = ImGui::GetIO();
-    ImFont *customFont = io.Fonts->AddFontFromFileTTF("src/segoeuisl.ttf", 18.0f, &fontConfig, customRange);
+    //ImFont *customFont = io.Fonts->AddFontFromFileTTF("src/segoeuisl.ttf", 18.0f, &fontConfig, customRange);
+
+    ImFont *customFont = io.Fonts->AddFontFromMemoryTTF(
+        (void*) segoeuisl_ttf,
+        segoeuisl_ttf_len,
+        18.0f,
+        &fontConfig,
+        customRange
+    );
 
     if (customFont)
     {

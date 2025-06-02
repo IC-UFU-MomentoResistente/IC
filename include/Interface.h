@@ -13,7 +13,7 @@
 #include "ConcreteProperties.h"
 #include "SteelProperties.h"
 #include "StrainDistribution.h"
-#include "PolygonStressRegions.h"   
+#include "PolygonStressRegions.h"
 #include "AnalyticalIntegration.h"
 #include "InternalForces.h"
 #include "MomentCapacitySolver.h"
@@ -21,12 +21,14 @@
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::string;
 using std::vector;
 
 class Interface
 {
+private:
+    bool shouldAutoFit = false;
+
 public:
     void initInterface();
     void interfaceLoop();
@@ -47,6 +49,7 @@ public:
     void renderStrainSteelDiagram(const vector<Point> &vectorPoint, string nameVectorPoint);
     void EffortsTable(Section &section);
     void crossSectionTable(Section &section);
-    void RightTablePos(const char * nome1, const char * nome2, float posY, Section & section);
+    void RightTablePos(const char *nome1, const char *nome2, float posY, Section &section);
     void applyDarkElegantPlotStyle();
+    void autoFitToPointsWithMargin(const vector<Point> &points, float margin = 0.1f);
 };

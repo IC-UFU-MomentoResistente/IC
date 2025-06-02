@@ -153,6 +153,7 @@ void Interface::crossSectionData(Section &section)
         if (ImGui::Button("Seção T"))
         {
             section.polygon.clearPolygonVertices();
+            section.reinforcement.clearReinforcement();
 
             vector<Point> collectedPoints = {
                 {7.5, 0}, {10, 30}, {20, 40}, {20, 50}, {-20, 50}, {-20, 40}, {-10, 30}, {-7.5, 0}};
@@ -167,6 +168,8 @@ void Interface::crossSectionData(Section &section)
 
             section.reinforcement.setReinforcement(collectedReinforcement, collectedDiameters);
             section.reinforcement.computeArea(); // não esquece isso!
+
+            shouldAutoFit = true;
         }
 
         // Input para número de pontos
@@ -231,6 +234,7 @@ void Interface::crossSectionData(Section &section)
         if (ImGui::Button("Limpar"))
         {
             section.polygon.clearPolygonVertices();
+
             tempNumPoints = 0;
         }
 
@@ -1112,6 +1116,12 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
         if (section.polygon.getPolygonVertices().size() > 2)
         {
 
+            if (shouldAutoFit)
+            {
+                autoFitToPointsWithMargin(section.polygon.getPolygonVertices(), 0.1f);
+                shouldAutoFit = false;
+            }
+
             renderPolygon(section.polygon.getPolygonVertices(), "Vertices", "Polygon");
             renderPolygon(section.stressRegions.getCompressedRegion().getPolygonVertices(), "vComp", "pComp");
             renderPolygon(section.stressRegions.getParabolicRegion().getPolygonVertices(), "vParab", "pParab");
@@ -1418,4 +1428,40 @@ void Interface::applyDarkElegantPlotStyle()
     // Tamanhos de ticks
     style.MajorTickLen = ImVec2(6, 6);
     style.MajorTickSize = ImVec2(1.0f, 1.0f);
+}
+
+void Interface::autoFitToPointsWithMargin(const vector<Point> &points, float margin)
+{
+    if (points.size() < 2)
+        return;
+
+    double minX = points[0].getX();
+    double maxX = points[0].getX();
+    double minY = points[0].getY();
+    double maxY = points[0].getY();
+
+    for (const Point &p : points)
+    {
+        if (p.getX() < minX)
+            minX = p.getX();
+        if (p.getX() > maxX)
+            maxX = p.getX();
+        if (p.getY() < minY)
+            minY = p.getY();
+        if (p.getY() > maxY)
+            maxY = p.getY();
+    }
+
+    double marginX = 0.1 * (maxX - minX);
+    double marginY = 0.1 * (maxY - minY);
+
+    if (marginX == 0)
+        marginX = 1.0;
+    if (marginY == 0)
+        marginY = 1.0;
+
+    ImPlot::SetupAxesLimits(
+        minX - marginX, maxX + marginX,
+        minY - marginY, maxY + marginY,
+        ImGuiCond_Always);
 }

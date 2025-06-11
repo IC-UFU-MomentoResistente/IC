@@ -29,8 +29,8 @@ public:
     AnalyticalIntegration analyticalIntegration;
     InternalForces internalForces;
     MomentCapacitySolver momentSolver;
-    std::vector<Combination> combinations;
 
+    std::vector<Combination> combinations;
     Section();
 
     void setPolygon(Polygon collectedPolygon);

@@ -57,7 +57,6 @@ void Interface::initInterface()
 
 void Interface::interfaceLoop()
 {
-  
 }
 
 void Interface::showPrimaryMenuBar(Section &section)
@@ -84,20 +83,10 @@ void Interface::showPrimaryMenuBar(Section &section)
             autorsWindow();
             ImGui::EndMenu();
         }
-        
-        if (ImGui::BeginMenu("VISUAL"))
-        {
-            ImGuiStyle &style = ImGui::GetStyle();
-            ImGui::ShowStyleEditor();
-            ImGui::EndMenu();
-        }
-
 
         ImGui::EndMainMenuBar();
     }
-
 }
-
 
 void Interface::autorsWindow()
 {
@@ -319,19 +308,9 @@ void Interface::crossSectionData(Section &section)
 
         if (showPopUpErrorPolygon)
         {
-            vector<Point> collectedPoints = {{7.5, 0}, {10, 30}, {20, 40}, {20, 50}, {-20, 50}, {-20, 40}, {-10, 30}, {-7.5, 0}};
-            vector<Point> collectedReinforcement = {
-                {5, 2.5},
-                {5, 7.5},
-                {-5, 7.5},
-                {-5, 2.5},
-            };
-
-            vector<double> collectedDiameters = {10, 10, 10, 10};
-            section.polygon.setVertices(collectedPoints);
-            section.reinforcement.setReinforcement(collectedReinforcement, collectedDiameters);
-        }
-        crossSectionTable(section);
+            if (ImGui::BeginPopupModal("Vértices vazios", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("Adicione os vértices da seção e depois calcule os parâmetros");
 
                 if (ImGui::Button("OK", ImVec2(120, 0)))
                 {
@@ -768,7 +747,7 @@ void Interface::reinforcementInterface(Section &section)
     }
 }
 
-void Interface::ReferenceValues() 
+void Interface::ReferenceValues()
 {
     ImGui::Text("Deslize o cursor sobre os valores para mais informações.");
     ImGui::Separator();

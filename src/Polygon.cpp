@@ -10,6 +10,7 @@ Polygon::Polygon()
     polygonArea = 0;
     staticMomentX = 0;
     staticMomentY = 0;
+    numPoints = 0;
 }
 
 void Polygon::setVertices(std::vector<Point> collectedVertices)
@@ -208,8 +209,10 @@ double Polygon::getVet0Y() const
 
 void Polygon::SetNumPoints(int numPointsInput)
 {
-    if (numPointsInput < 0) numPointsInput = 0;
-    polygonVertices.resize(numPointsInput);  // Ajusta o tamanho do vetor de vértices
+    numPoints = numPointsInput;
+
+    if (numPoints < 0) numPoints = 0;
+    polygonVertices.resize(numPoints);  // Ajusta o tamanho do vetor de vértices
 }
 
 int Polygon::GetNumPoints() const

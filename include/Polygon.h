@@ -25,6 +25,7 @@ private:
 	double polygonArea;
 	double staticMomentX;
 	double staticMomentY;
+	double numPoints;
 
 	friend class cereal::access;
 	template <class Archive>
@@ -38,7 +39,8 @@ private:
 			CEREAL_NVP(polygonHeight),
 			CEREAL_NVP(polygonArea),
 			CEREAL_NVP(staticMomentX),
-			CEREAL_NVP(staticMomentY)			
+			CEREAL_NVP(staticMomentY),
+			CEREAL_NVP(numPoints)		
 		);
 	}
 

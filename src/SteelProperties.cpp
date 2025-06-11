@@ -1,13 +1,14 @@
 #include "SteelProperties.h"
 
-SteelProperties::SteelProperties()
-{
-    fyk = 0;
-    E = 0;
-    fyd = 0;
-    strainSteelYield = 0;
-    strainSteelRupture = 0;
-}
+SteelProperties::SteelProperties() : 
+    fyk(500.0), 
+    gammaS(1.15), 
+    E(210.0), 
+    fyd(0.0), 
+    strainSteelYield(0.0), 
+    strainSteelRupture(0.0)
+    
+    {}
 
 void SteelProperties::setParameters(StressStrainSteelModelType model, double collectedFyk, double collectedGammaS, double collectedE)
 {

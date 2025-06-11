@@ -1,15 +1,15 @@
 #include "ConcreteProperties.h"
 
-ConcreteProperties::ConcreteProperties()
+ConcreteProperties::ConcreteProperties() :
+	fck(30.0),
+	gammaC(1.4),
+	fcd(0.0),
+	factorMultiplierFcd(0.0),
+	strainConcretePlastic(0.0),
+	strainConcreteRupture(0.0),
+	strengthReductionFactor(0.0),
+	stressStrainExponent(0.0)
 {
-	fck = 0;
-	gammaC = 0;
-	fcd = 0;
-	factorMultiplierFcd = 0;
-	strainConcretePlastic = 0;
-	strainConcreteRupture = 0;
-	strengthReductionFactor = 0;
-	stressStrainExponent = 0;
 	curveStressStrain = {};
 	modelType = StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2023;
 }

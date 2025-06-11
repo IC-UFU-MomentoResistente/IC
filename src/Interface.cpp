@@ -78,13 +78,6 @@ void Interface::showPrimaryMenuBar(Section &section)
             ImGui::EndMenu();
         }
 
-        if (ImGui::BeginMenu("Resultado"))
-        {
-            ImGui::MenuItem("Gerar relatório");
-            ImGui::MenuItem("Visualizar Gráficos");
-            ImGui::EndMenu();
-        }
-
         if (ImGui::BeginMenu("Autores"))
         {
             autorsWindow();
@@ -155,6 +148,8 @@ void Interface::crossSectionData(Section &section)
         static bool showPopUpErrorPolygon = false;
         static int tempNumPoints = 0;
 
+        tempNumPoints = section.polygon.GetNumPoints();
+
         if (tempNumPoints < 0)
             tempNumPoints = 0;
 
@@ -167,7 +162,17 @@ void Interface::crossSectionData(Section &section)
 
         ImGui::SeparatorText("Quantidade de pontos do polígono:");
         ImGui::PushItemWidth(100);
-        ImGui::InputInt("##xx", &tempNumPoints); // Input para número de pontos
+
+        // InputInt com botões + e -. O 1 e 10 são os steps.
+        if (ImGui::InputInt("##xx", &tempNumPoints, 1, 10)) 
+        {
+            if (tempNumPoints < 0) tempNumPoints = 0;
+
+            section.polygon.SetNumPoints(tempNumPoints);
+            section.setPolygon(section.polygon);
+            section.setSteel(section.steel);
+        }
+
         ImGui::SeparatorText("Seções transversais pré-definidas:");
 
         if (ImGui::Button("Seção T"))
@@ -183,6 +188,7 @@ void Interface::crossSectionData(Section &section)
             vector<double> collectedDiameters = {10, 10, 10, 10};
 
             tempNumPoints = collectedPoints.size();
+            section.polygon.SetNumPoints(tempNumPoints);
             section.polygon.setVertices(collectedPoints);
 
             section.reinforcement.setReinforcement(collectedReinforcement, collectedDiameters);
@@ -191,10 +197,10 @@ void Interface::crossSectionData(Section &section)
 
         // Input para número de pontos
 
-        if (tempNumPoints != section.polygon.GetNumPoints())
-        {
-            section.polygon.SetNumPoints(tempNumPoints); // Ajusta o número de pontos na classe Polygon
-        }
+        // if (tempNumPoints != section.polygon.GetNumPoints())
+        // {
+        //     section.polygon.SetNumPoints(tempNumPoints); // Ajusta o número de pontos na classe Polygon
+        // }
 
         if (ImGui::BeginTable("Table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
         {
@@ -366,8 +372,11 @@ void Interface::interfaceMaterials(Section &section)
 void Interface::concreteInterface(Section &section)
 {
     static int constitutiveModel = 0;
-    static double collectedFck = 30, collectedGammaC = 1.4, stress;
+    static double collectedFck = 0.0, collectedGammaC = 0.0, stress;
     int x, y;
+
+    collectedFck = section.concrete.getFck();
+    collectedGammaC = section.concrete.getGammaC();
 
     if (collectedFck < 0 || collectedGammaC < 0)
     {
@@ -495,9 +504,13 @@ void Interface::concreteInterface(Section &section)
 
 void Interface::steelInterface(Section &section)
 {
-    static double collectedFyk = 500, collectedGammaS = 1.15, collectedE = 210, stress;
+    static double collectedFyk = 0.0, collectedGammaS = 0.0, collectedE = 0.0, stress;
 
-    ImGui::PushItemWidth(70);
+    collectedFyk = section.steel.getFyk();
+    collectedGammaS = section.steel.getGammaS();
+    collectedE = section.steel.getE();
+
+    ImGui::PushItemWidth(70); 
     ImGui::SetCursorPos(ImVec2(650, 70)); // Define a posição do cursor
     ImGui::BeginGroup();
     ImGui::Text("Parâmetros da Armadura Passiva");
@@ -943,20 +956,28 @@ void Interface::effortSectionInterface(Section &section)
         static double Nsd, Mx, My, eps1, eps2;
         static bool showPopUpErrorAxialForce = false;
         static bool showPopUpSolver = false;
-        static int tempNumPoints = 0;
+        static int tempNumCombinations = 0;
+
+        tempNumCombinations = section.combinations.size();
 
         ImGui::Begin("Entrada de Dados: Esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
         ImGui::PushItemWidth(100);
         ImGui::SeparatorText("Número de combinações de esforços");
-        ImGui::InputInt("##XX:", &tempNumPoints);
-
-        if (tempNumPoints < 0)
-            tempNumPoints = 0;
-
-        if (tempNumPoints != section.combinations.size())
+        
+        if (ImGui::InputInt("##XX:", &tempNumCombinations, 1, 10))
         {
-            section.combinations.resize(tempNumPoints, Combination(0.0f, 0.0f, 0.0f, 0.0f));
+            if (tempNumCombinations < 0) tempNumCombinations = 0;
+
+            section.combinations.resize(tempNumCombinations, Combination(0.0f, 0.0f, 0.0f, 0.0f, false));
         }
+
+        // if (tempNumPoints < 0)
+        //     tempNumPoints = 0;
+
+        // if (tempNumPoints != section.combinations.size())
+        // {
+        //     section.combinations.resize(tempNumPoints, Combination(0.0f, 0.0f, 0.0f, 0.0f));
+        // }
 
         if (ImGui::BeginTable("TabelaEsforcos", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp))
         {
@@ -1016,7 +1037,7 @@ void Interface::effortSectionInterface(Section &section)
         {
             if (section.combinations.size() > 0)
                 section.combinations.clear();
-            tempNumPoints = 0;
+            tempNumCombinations = 0;
         }
 
         ImGui::SameLine();

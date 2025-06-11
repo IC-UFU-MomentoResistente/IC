@@ -32,6 +32,7 @@ using std::vector;
 
 class Interface
 {
+
 public:
     void initInterface();
     void interfaceLoop();
@@ -57,4 +58,5 @@ public:
 
     void saveSectionData(Section &section, const std::string &filename);
     void loadSectionData(Section &section, const std::string &filename);
+    void showStyleEditorPopup();
 };

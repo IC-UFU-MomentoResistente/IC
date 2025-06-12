@@ -1068,14 +1068,14 @@ void Interface::effortSectionInterface(Section &section)
 
         if (showPopUpSolver)
         {
-            if (ImGui::BeginPopupModal("Calculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            if (ImGui::BeginPopupModal("Cálculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
             {
-                ImGui::Text("Momento Resistente: %.4f", section.momentSolver.getMomentCapacity());
+                ImGui::Text("Momento Resistente: %.2f (kN.m)", section.momentSolver.getMomentCapacity());
                 ImGui::Separator();
-                ImGui::Text("eps1: %.4f", section.momentSolver.getTopFiberStrain());
-                ImGui::Text("eps2: %.4f", section.momentSolver.getBottomFiberStrain());
+                ImGui::Text("Valor de ε1: %.4f", section.momentSolver.getTopFiberStrain());
+                ImGui::Text("Valor de ε2: %.4f", section.momentSolver.getBottomFiberStrain());
                 ImGui::Separator();
-                ImGui::Text("iteracoes: %d", section.momentSolver.getIterations());
+                ImGui::Text("Iteracoes: %d", section.momentSolver.getIterations());
 
                 if (ImGui::Button("OK", ImVec2(120, 0)))
                 {
@@ -1300,13 +1300,16 @@ void Interface::EffortsTable(Section &section)
     // --- POPUP: Momento resistente calculado com sucesso
     if (showPopUpSolver && selectedEffort >= 0)
     {
-        ImGui::OpenPopup("Calculo do Momento Resistente");
-        if (ImGui::BeginPopupModal("Calculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        ImGuiIO &io = ImGui::GetIO();
+        ImVec2 posjanela = ImVec2(io.DisplaySize.x - 260, io.DisplaySize.y / 3.0f);
+        ImGui::OpenPopup("Cálculo do Momento Resistente");
+        ImGui::SetNextWindowPos(posjanela, ImGuiCond_Always);
+        if (ImGui::BeginPopupModal("Cálculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
         {
-            ImGui::Text("Momento Resistente: %.4f", section.momentSolver.getMomentCapacity());
+            ImGui::Text("Momento Resistente: %.2f (kN.m)", section.momentSolver.getMomentCapacity());
             ImGui::Separator();
-            ImGui::Text("eps1: %.4f", section.momentSolver.getTopFiberStrain());
-            ImGui::Text("eps2: %.4f", section.momentSolver.getBottomFiberStrain());
+            ImGui::Text("Valor de ε 1: %.4f", section.momentSolver.getTopFiberStrain());
+            ImGui::Text("Valor de ε 2: %.4f", section.momentSolver.getBottomFiberStrain());
             ImGui::Separator();
             ImGui::Text("Iterações: %d", section.momentSolver.getIterations());
 
@@ -1322,7 +1325,12 @@ void Interface::EffortsTable(Section &section)
 
     if (showPopUpErrorAxialForce && selectedEffort >= 0)
     {
+
+        ImGuiIO &io = ImGui::GetIO();
+        ImVec2 posjanela = ImVec2(io.DisplaySize.x - 260, io.DisplaySize.y / 3.0f);
+
         ImGui::OpenPopup("Erro de Esforço Normal");
+        ImGui::SetNextWindowPos(posjanela, ImGuiCond_Always);
         if (ImGui::BeginPopupModal("Erro de Esforço Normal", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
             float Nsd = section.combinations[selectedEffort].Normal;

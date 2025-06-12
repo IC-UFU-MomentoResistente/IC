@@ -142,19 +142,39 @@ void Interface::showSecondaryMenuBar(Section &section)
 
 void Interface::crossSectionData(Section &section)
 {
-    if (ImGui::BeginMenu("Seção Transversal")) // Primeira versão, não é a final - precisa incrementar vértices temporarios - não adicionar vertices negativos e tal
+    if (ImGui::BeginMenu("Seção Transversal"))
     {
         static double coordXPolygon, coordYPolygon;
         static bool showPopUpErrorPolygon = false;
         static int tempNumPoints = 0;
 
-        tempNumPoints = section.polygon.GetNumPoints();
+        // Adicione uma enum para controlar o modo de entrada
+        enum SectionInputMode {
+            VERTEX_EDIT,
+            RECTANGLE_INPUT,
+            T_SECTION_INPUT,
+            CIRCULAR_INPUT
+        };
+        static SectionInputMode currentInputMode = VERTEX_EDIT; // Estado inicial: edição por vértice
 
+        // Variáveis para os dados notáveis
+        static float rectBase = 10.0f; // Exemplo de valor inicial para retângulo
+        static float rectHeight = 20.0f;
+
+        static float t_bf = 20.0f;
+        static float t_hf = 5.0f;
+        static float t_bw = 5.0f;
+        static float t_hw = 20.0f;
+
+        static float circleRadius = 10.0f;
+        static int circleSegments = 32;
+
+        tempNumPoints = section.polygon.GetNumPoints();
         if (tempNumPoints < 0)
             tempNumPoints = 0;
 
         ImGui::SetNextWindowPos(ImVec2(3, 47));
-        ImGui::SetNextWindowSize(ImVec2(420, 270));
+        ImGui::SetNextWindowSize(ImVec2(420, 400)); // Aumentei um pouco a altura para acomodar novos inputs
         ImGui::Begin("Inserir Dados da Seção Transversal", nullptr,
                      ImGuiWindowFlags_NoCollapse |
                          ImGuiWindowFlags_NoResize |
@@ -164,45 +184,160 @@ void Interface::crossSectionData(Section &section)
         ImGui::PushItemWidth(100);
 
         // InputInt com botões + e -. O 1 e 10 são os steps.
-        if (ImGui::InputInt("##xx", &tempNumPoints, 1, 10)) 
+        if (ImGui::InputInt("##xx", &tempNumPoints, 1, 10))
         {
             if (tempNumPoints < 0) tempNumPoints = 0;
-
             section.polygon.SetNumPoints(tempNumPoints);
-            section.setPolygon(section.polygon);
-            section.setSteel(section.steel);
+            // Ao mudar o número de pontos manualmente, assumimos edição por vértice
+            currentInputMode = VERTEX_EDIT;
         }
+        ImGui::PopItemWidth(); // Pop do PushItemWidth
 
         ImGui::SeparatorText("Seções transversais pré-definidas:");
 
+        // Botões para ativar os modos de seção padrão
+        // if (ImGui::Button("Seção T (Exemplo Atual)"))
+        // {
+        //     section.polygon.clearPolygonVertices();
+        //     vector<Point> collectedPoints = {
+        //         {7.5, 0}, {10, 30}, {20, 40}, {20, 50}, {-20, 50}, {-20, 40}, {-10, 30}, {-7.5, 0}};
+        //     vector<Point> collectedReinforcement = {
+        //         {5, 2.5}, {5, 7.5}, {-5, 7.5}, {-5, 2.5}};
+        //     vector<double> collectedDiameters = {10, 10, 10, 10};
+
+        //     tempNumPoints = collectedPoints.size();
+        //     section.polygon.SetNumPoints(tempNumPoints);
+        //     section.polygon.setVertices(collectedPoints);
+
+        //     section.reinforcement.setReinforcement(collectedReinforcement, collectedDiameters);
+        //     section.reinforcement.computeArea(); // não esquece isso!
+
+        //     currentInputMode = VERTEX_EDIT; // Após carregar, volta para edição por vértice (ou pode ter um modo T_LOADED)
+        // }
+        // ImGui::SameLine();
+
+        if (ImGui::Button("Seção Retangular"))
+        {
+            currentInputMode = RECTANGLE_INPUT;
+        }
+        
+        ImGui::SameLine();
+        
         if (ImGui::Button("Seção T"))
         {
-            section.polygon.clearPolygonVertices();
-
-            vector<Point> collectedPoints = {
-                {7.5, 0}, {10, 30}, {20, 40}, {20, 50}, {-20, 50}, {-20, 40}, {-10, 30}, {-7.5, 0}};
-
-            vector<Point> collectedReinforcement = {
-                {5, 2.5}, {5, 7.5}, {-5, 7.5}, {-5, 2.5}};
-
-            vector<double> collectedDiameters = {10, 10, 10, 10};
-
-            tempNumPoints = collectedPoints.size();
-            section.polygon.SetNumPoints(tempNumPoints);
-            section.polygon.setVertices(collectedPoints);
-
-            section.reinforcement.setReinforcement(collectedReinforcement, collectedDiameters);
-            section.reinforcement.computeArea(); // não esquece isso!
+            currentInputMode = T_SECTION_INPUT;
+        }
+        
+        ImGui::SameLine();
+        
+        if (ImGui::Button("Seção Circular"))
+        {
+            currentInputMode = CIRCULAR_INPUT; 
         }
 
-        // Input para número de pontos
+        // ---------- Lógica para modos de entrada de seção padrão ----------
 
-        // if (tempNumPoints != section.polygon.GetNumPoints())
-        // {
-        //     section.polygon.SetNumPoints(tempNumPoints); // Ajusta o número de pontos na classe Polygon
-        // }
+        if (currentInputMode == RECTANGLE_INPUT)
+        {
+            ImGui::SeparatorText("Dados da Seção Retangular:");
+            ImGui::InputFloat("Base (cm)", &rectBase);
+            ImGui::InputFloat("Altura (cm)", &rectHeight);
 
-        if (ImGui::BeginTable("Table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+            if (ImGui::Button("Gerar Retângulo"))
+            {
+                // Limpa os vértices existentes
+                section.polygon.clearPolygonVertices();
+
+                // Gera os vértices para um retângulo centralizado na origem
+                // ou em qualquer ponto de referência que você desejar.
+                // Exemplo: retângulo com centro na origem
+                float halfBase = rectBase / 2.0f;
+                float halfHeight = rectHeight / 2.0f;
+
+                vector<Point> rectPoints = {
+                    {-halfBase, -halfHeight},
+                    { halfBase, -halfHeight},
+                    { halfBase,  halfHeight},
+                    {-halfBase,  halfHeight}
+                };
+                section.polygon.setVertices(rectPoints);
+                section.polygon.SetNumPoints(rectPoints.size()); // Atualiza o número de pontos
+
+                // Volta para o modo de edição por vértice, pois os vértices foram gerados
+                currentInputMode = VERTEX_EDIT;
+            }
+        }
+        else if (currentInputMode == T_SECTION_INPUT) 
+        {
+            ImGui::SeparatorText("Dados da Seção T:");
+            ImGui::InputFloat("Largura Mesa (bf cm)", &t_bf);
+            ImGui::InputFloat("Altura Mesa (hf cm)", &t_hf);
+            ImGui::InputFloat("Largura Barra (bw cm)", &t_bw);
+            ImGui::InputFloat("Altura", &t_hw);
+
+            if (ImGui::Button("Gerar Seção T"))
+            {
+                section.polygon.clearPolygonVertices();
+
+                float half_bf = t_bf / 2.0f;
+                float top_y = t_hw + t_hf;
+                float bottom_y_flange = t_hw;
+
+                float half_bw = t_bw / 2.0f;
+                float bottom_y_web = 0.0f;
+
+                std::vector<Point> tPoints = 
+                {
+                    { half_bf, top_y },
+                    { half_bf, bottom_y_flange },
+                    { half_bw, bottom_y_flange },
+                    { half_bw, bottom_y_web },
+                    {-half_bw, bottom_y_web },
+                    {-half_bw, bottom_y_flange },
+                    {-half_bf, bottom_y_flange },
+                    {-half_bf, top_y }
+                };
+                
+                section.polygon.setVertices(tPoints);
+                section.polygon.SetNumPoints(tPoints.size()); 
+                currentInputMode = VERTEX_EDIT; 
+            }
+        }
+        else if (currentInputMode == CIRCULAR_INPUT) 
+        {
+            ImGui::SeparatorText("Dados Seção Circular:");
+            ImGui::InputFloat("Raio (cm)", &circleRadius);
+            ImGui::InputInt("Número de Segmentos", &circleSegments);
+
+            if (circleSegments < 3) circleSegments = 3;
+
+            if (ImGui::Button("Gerar Círculo"))
+            {
+                section.polygon.clearPolygonVertices();
+
+                std::vector<Point> circlePoints;
+
+                float angleStep = (2.0f * M_PI) / circleSegments;
+
+                for (int i = 0; i < circleSegments; ++i)
+                {
+                    float angle = i * angleStep;
+                    float x = circleRadius * cos(angle);
+                    float y = circleRadius * sin(angle);
+                    circlePoints.push_back({x, y});
+                }
+
+                section.polygon.setVertices(circlePoints);
+                section.polygon.SetNumPoints(circlePoints.size());
+                currentInputMode = VERTEX_EDIT;
+            }
+        }
+
+
+        ImGui::SeparatorText("Edição de Vértices:");
+
+        // A tabela de edição de vértices só deve ser mostrada se não estivermos em um modo de input de seção padrão
+        if (currentInputMode == VERTEX_EDIT && ImGui::BeginTable("Table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
         {
             // Configura as colunas com larguras fixas e centralizadas
             ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 100.0f);
@@ -213,39 +348,35 @@ void Interface::crossSectionData(Section &section)
             // Itera sobre todos os pontos do polígono
             for (int row = 0; row < section.polygon.GetNumPoints(); row++)
             {
-                // Usando PushID para garantir ID único para cada linha
                 ImGui::PushID(row);
 
                 ImGui::TableNextRow();
 
-                // Exibe o índice do ponto
                 ImGui::TableSetColumnIndex(0); // Coluna para 'ID'
                 ImGui::Text("%d", row + 1);    // Exibe o índice do ponto (começa de 1)
 
-                // Exibe a coordenada X
                 ImGui::TableSetColumnIndex(1); // Coluna para 'x'
                 char labelX[10];
-                snprintf(labelX, sizeof(labelX), "##xx", row); // Cria o label para cada coordenada X
+                snprintf(labelX, sizeof(labelX), "##xx%d", row); // ID único para cada InputFloat
                 float x, y;
                 section.polygon.GetTableData(row, &x, &y); // Obter as coordenadas do ponto na linha 'row'
 
                 // Cria um campo editável para a coordenada x
                 if (ImGui::InputFloat(labelX, &x))
                 {
-                    // Se o valor de x for alterado, atualiza o ponto correspondente
                     section.polygon.SetTableData(row, x, y); // Atualiza a coordenada 'x' diretamente no vetor
+                    currentInputMode = VERTEX_EDIT; // Se o usuário edita a tabela, volta para o modo de edição
                 }
 
-                // Exibe a coordenada Y
                 ImGui::TableSetColumnIndex(2); // Coluna para 'y'
                 char labelY[10];
-                snprintf(labelY, sizeof(labelY), "##yy", row); // Cria o label para cada coordenada Y
+                snprintf(labelY, sizeof(labelY), "##yy%d", row); // ID único para cada InputFloat
 
                 // Cria um campo editável para a coordenada y
                 if (ImGui::InputFloat(labelY, &y))
                 {
-                    // Se o valor de y for alterado, atualiza o ponto correspondente
                     section.polygon.SetTableData(row, x, y); // Atualiza a coordenada 'y' diretamente no vetor
+                    currentInputMode = VERTEX_EDIT; // Se o usuário edita a tabela, volta para o modo de edição
                 }
 
                 ImGui::PopID(); // Remove o ID do ponto atual após a linha ter sido processada
@@ -253,11 +384,23 @@ void Interface::crossSectionData(Section &section)
 
             ImGui::EndTable();
         }
+        else if (currentInputMode == VERTEX_EDIT) {
+             // Mensagem para o usuário quando o modo é edição mas a tabela não é mostrada (ex: 0 pontos)
+             if (section.polygon.GetNumPoints() == 0) {
+                 ImGui::Text("Adicione pontos ou selecione uma seção padrão.");
+             }
+        }
+
+
+        // ... (o restante do seu código permanece praticamente o mesmo) ...
 
         if (ImGui::Button("Limpar"))
         {
             section.polygon.clearPolygonVertices();
+            section.stressRegions.clearStressRegions();
+            section.reinforcement.clearReinforcement();
             tempNumPoints = 0;
+            currentInputMode = VERTEX_EDIT; // Resetar o modo ao limpar
         }
 
         ImGui::SameLine();
@@ -301,7 +444,7 @@ void Interface::crossSectionData(Section &section)
         ImGui::SameLine();
         ImGui::Text("MinY: %.2f |", section.polygon.getMinY());
         ImGui::SameLine();
-        ImGui::Text("Height: %.2f |", section.polygon.getMaxY());
+        ImGui::Text("Height: %.2f |", section.polygon.getMaxY() - section.polygon.getMinY()); // Corrigi para usar getHeight
         ImGui::SameLine();
         ImGui::Text("CG: %.2f, %.2f |", section.polygon.getGeometricCenter().getX(), section.polygon.getGeometricCenter().getY());
         ImGui::Text("Vet0: %.2f, %.2f |", section.polygon.getVet0X(), section.polygon.getVet0Y());
@@ -633,6 +776,7 @@ void Interface::reinforcementInterface(Section &section)
             ImGui::SameLine();
             if (ImGui::Button("Limpar Tudo"))
                 section.reinforcement.clearReinforcement();
+                
             ImGui::PopID(); // Remove o ID do ponto atual após a linha ter sido processada
 
             ImGui::SeparatorText("Linha de Barras:");

@@ -77,6 +77,13 @@ void PolygonStressRegions::generateStressRegions()
     rectangularRegion = regionBetweenHeights(originalPolygon, ruptureHeight, plasticHeight);
 }
 
+void PolygonStressRegions::clearStressRegions()
+{
+    compressedRegion.clearPolygonVertices();
+    parabolicRegion.clearPolygonVertices();
+    rectangularRegion.clearPolygonVertices();
+}
+
 Polygon PolygonStressRegions::getOriginalPolygon() const
 {
     return originalPolygon;

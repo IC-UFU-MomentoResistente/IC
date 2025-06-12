@@ -23,6 +23,7 @@ public:
     Polygon regionAboveHeight(Polygon polygon, bool upperCut, double cutCoordY);
     Polygon regionBetweenHeights(Polygon polygon, double upperCut, double lowerCut);
     void generateStressRegions();
+    void clearStressRegions();
     
     Polygon getOriginalPolygon() const;
     Polygon getCompressedRegion() const;

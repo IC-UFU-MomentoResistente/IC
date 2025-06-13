@@ -41,6 +41,8 @@ void ConcreteProperties::setParameters(StressStrainConcreteModelType model, doub
 		if (strainConcretePlastic > strainConcreteRupture)
 			strainConcretePlastic = strainConcreteRupture;
 	}
+
+	strengthReductionFactor = (collectedFck <= 40) ? 1 : pow(40.0 / collectedFck, 1.0 / 3.0);
 }
 
 double ConcreteProperties::computeStress(double strain)

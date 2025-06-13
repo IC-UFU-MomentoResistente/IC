@@ -23,6 +23,7 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
     double coordEpc2 = stressRegions.getPlasticHeight(); // cm
     double fcd = concrete.getFcd(); // MPa
     double multFcd = concrete.getFactorMultiplierFcd();
+    double etaC = concrete.getStrenghtReductionFactor();
     double nConc = concrete.getStressStrainExponent();
 
     double NCTP = 0;
@@ -45,8 +46,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
             double coef1 = (y1 * x2 - y2 * x1) / (y1 - y2); // m
             double coef2 = (x1 - x2) / (y1 - y2); // m
 
-            double nc1 = analyticalIntegration.computeNormalConcreteParabolic(coordLN, coordEpc2, nConc, fcd, multFcd, coef1, coef2, y1);
-            double nc2 = analyticalIntegration.computeNormalConcreteParabolic(coordLN, coordEpc2, nConc, fcd, multFcd, coef1, coef2, y2);
+            double nc1 = analyticalIntegration.computeNormalConcreteParabolic(coordLN, coordEpc2, nConc, fcd, multFcd, etaC, coef1, coef2, y1);
+            double nc2 = analyticalIntegration.computeNormalConcreteParabolic(coordLN, coordEpc2, nConc, fcd, multFcd, etaC, coef1, coef2, y2);
 
             NCTP = NCTP + nc2 - nc1;
         }
@@ -66,8 +67,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
             double coef1 = (y1 * x2 - y2 * x1) / (y1 - y2); // m
             double coef2 = (x1 - x2) / (y1 - y2); // m
 
-            double nc1 = analyticalIntegration.computeNormalConcreteRectangular(multFcd, fcd, coef1, coef2, y1);
-            double nc2 = analyticalIntegration.computeNormalConcreteRectangular(multFcd, fcd, coef1, coef2, y2);
+            double nc1 = analyticalIntegration.computeNormalConcreteRectangular(multFcd, fcd, etaC, coef1, coef2, y1);
+            double nc2 = analyticalIntegration.computeNormalConcreteRectangular(multFcd, fcd, etaC, coef1, coef2, y2);
 
             NCTR = NCTR + nc2 - nc1;
         }
@@ -83,6 +84,7 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
     double coordEpc2 = stressRegions.getPlasticHeight(); // cm
     double fcd = concrete.getFcd(); // MPa
     double multFcd = concrete.getFactorMultiplierFcd();
+    double etaC = concrete.getStrenghtReductionFactor();
     double nConc = concrete.getStressStrainExponent();
 
     double MCTP = 0;
@@ -105,8 +107,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
             double coef1 = (y1 * x2 - y2 * x1) / (y1 - y2); // m
             double coef2 = (x1 - x2) / (y1 - y2); // m
 
-            double mc1 = analyticalIntegration.computeMomentConcreteParabolic(coordLN, coordEpc2, nConc, fcd, multFcd, coef1, coef2, y1);
-            double mc2 = analyticalIntegration.computeMomentConcreteParabolic(coordLN, coordEpc2, nConc, fcd, multFcd, coef1, coef2, y2);
+            double mc1 = analyticalIntegration.computeMomentConcreteParabolic(coordLN, coordEpc2, nConc, fcd, multFcd, etaC, coef1, coef2, y1);
+            double mc2 = analyticalIntegration.computeMomentConcreteParabolic(coordLN, coordEpc2, nConc, fcd, multFcd, etaC, coef1, coef2, y2);
 
             MCTP = MCTP + mc2 - mc1;
         }
@@ -126,8 +128,8 @@ PolygonStressRegions &stressRegions, StrainDistribution &strainDistribution)
             double coef1 = (y1 * x2 - y2 * x1) / (y1 - y2); // m
             double coef2 = (x1 - x2) / (y1 - y2); // m
 
-            double mc1 = analyticalIntegration.computeMomentConcreteRectangular(multFcd, fcd, coef1, coef2, y1);
-            double mc2 = analyticalIntegration.computeMomentConcreteRectangular(multFcd, fcd, coef1, coef2, y2);
+            double mc1 = analyticalIntegration.computeMomentConcreteRectangular(multFcd, fcd, etaC, coef1, coef2, y1);
+            double mc2 = analyticalIntegration.computeMomentConcreteRectangular(multFcd, fcd, etaC, coef1, coef2, y2);
 
             MCTR = MCTR + mc2 - mc1;
         }

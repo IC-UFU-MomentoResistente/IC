@@ -196,25 +196,29 @@ void Interface::crossSectionData(Section &section)
         ImGui::SeparatorText("Seções transversais pré-definidas:");
 
         // Botões para ativar os modos de seção padrão
-        // if (ImGui::Button("Seção T (Exemplo Atual)"))
-        // {
-        //     section.polygon.clearPolygonVertices();
-        //     vector<Point> collectedPoints = {
-        //         {7.5, 0}, {10, 30}, {20, 40}, {20, 50}, {-20, 50}, {-20, 40}, {-10, 30}, {-7.5, 0}};
-        //     vector<Point> collectedReinforcement = {
-        //         {5, 2.5}, {5, 7.5}, {-5, 7.5}, {-5, 2.5}};
-        //     vector<double> collectedDiameters = {10, 10, 10, 10};
+        if (ImGui::Button("Seção T (Exemplo Atual)"))
+        {
+            section.polygon.clearPolygonVertices();
+            section.reinforcement.clearReinforcement();
 
-        //     tempNumPoints = collectedPoints.size();
-        //     section.polygon.SetNumPoints(tempNumPoints);
-        //     section.polygon.setVertices(collectedPoints);
+            vector<Point> collectedPoints = {
+                {7.5, 0}, {10, 30}, {20, 40}, {20, 50}, {-20, 50}, {-20, 40}, {-10, 30}, {-7.5, 0}};
 
-        //     section.reinforcement.setReinforcement(collectedReinforcement, collectedDiameters);
-        //     section.reinforcement.computeArea(); // não esquece isso!
+            vector<Point> collectedReinforcement = {
+                {5, 2.5}, {5, 7.5}, {-5, 7.5}, {-5, 2.5}};
 
-        //     currentInputMode = VERTEX_EDIT; // Após carregar, volta para edição por vértice (ou pode ter um modo T_LOADED)
-        // }
-        // ImGui::SameLine();
+            vector<double> collectedDiameters = {10, 10, 10, 10};
+
+            tempNumPoints = collectedPoints.size();
+            section.polygon.setVertices(collectedPoints);
+
+            section.reinforcement.setReinforcement(collectedReinforcement, collectedDiameters);
+            section.reinforcement.computeArea(); // não esquece isso!
+
+            shouldAutoFit = true;
+        }
+        
+        ImGui::SameLine();
 
         if (ImGui::Button("Seção Retangular"))
         {
@@ -1249,14 +1253,14 @@ void Interface::effortSectionInterface(Section &section)
 
         if (showPopUpSolver)
         {
-            if (ImGui::BeginPopupModal("Calculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            if (ImGui::BeginPopupModal("Cálculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
             {
-                ImGui::Text("Momento Resistente: %.4f", section.momentSolver.getMomentCapacity());
+                ImGui::Text("Momento Resistente: %.2f (kN.m)", section.momentSolver.getMomentCapacity());
                 ImGui::Separator();
-                ImGui::Text("eps1: %.4f", section.momentSolver.getTopFiberStrain());
-                ImGui::Text("eps2: %.4f", section.momentSolver.getBottomFiberStrain());
+                ImGui::Text("Valor de ε1: %.4f", section.momentSolver.getTopFiberStrain());
+                ImGui::Text("Valor de ε2: %.4f", section.momentSolver.getBottomFiberStrain());
                 ImGui::Separator();
-                ImGui::Text("iteracoes: %d", section.momentSolver.getIterations());
+                ImGui::Text("Iteracoes: %d", section.momentSolver.getIterations());
 
                 if (ImGui::Button("OK", ImVec2(120, 0)))
                 {
@@ -1296,6 +1300,12 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
     {
         if (section.polygon.getPolygonVertices().size() > 2)
         {
+
+            if (shouldAutoFit)
+            {
+                autoFitToPointsWithMargin(section.polygon.getPolygonVertices(), 0.1f);
+                shouldAutoFit = false;
+            }
 
             renderPolygon(section.polygon.getPolygonVertices(), "Vertices", "Polygon");
             renderPolygon(section.stressRegions.getCompressedRegion().getPolygonVertices(), "vComp", "pComp");
@@ -1475,13 +1485,16 @@ void Interface::EffortsTable(Section &section)
     // --- POPUP: Momento resistente calculado com sucesso
     if (showPopUpSolver && selectedEffort >= 0)
     {
-        ImGui::OpenPopup("Calculo do Momento Resistente");
-        if (ImGui::BeginPopupModal("Calculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        ImGuiIO &io = ImGui::GetIO();
+        ImVec2 posjanela = ImVec2(io.DisplaySize.x - 260, io.DisplaySize.y / 3.0f);
+        ImGui::OpenPopup("Cálculo do Momento Resistente");
+        ImGui::SetNextWindowPos(posjanela, ImGuiCond_Always);
+        if (ImGui::BeginPopupModal("Cálculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
         {
-            ImGui::Text("Momento Resistente: %.4f", section.momentSolver.getMomentCapacity());
+            ImGui::Text("Momento Resistente: %.2f (kN.m)", section.momentSolver.getMomentCapacity());
             ImGui::Separator();
-            ImGui::Text("eps1: %.4f", section.momentSolver.getTopFiberStrain());
-            ImGui::Text("eps2: %.4f", section.momentSolver.getBottomFiberStrain());
+            ImGui::Text("Valor de ε 1: %.4f", section.momentSolver.getTopFiberStrain());
+            ImGui::Text("Valor de ε 2: %.4f", section.momentSolver.getBottomFiberStrain());
             ImGui::Separator();
             ImGui::Text("Iterações: %d", section.momentSolver.getIterations());
 
@@ -1497,7 +1510,12 @@ void Interface::EffortsTable(Section &section)
 
     if (showPopUpErrorAxialForce && selectedEffort >= 0)
     {
+
+        ImGuiIO &io = ImGui::GetIO();
+        ImVec2 posjanela = ImVec2(io.DisplaySize.x - 260, io.DisplaySize.y / 3.0f);
+
         ImGui::OpenPopup("Erro de Esforço Normal");
+        ImGui::SetNextWindowPos(posjanela, ImGuiCond_Always);
         if (ImGui::BeginPopupModal("Erro de Esforço Normal", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
             float Nsd = section.combinations[selectedEffort].Normal;
@@ -1638,4 +1656,39 @@ void Interface::loadSectionData(Section &section, const std::string &filename)
     section.setReinforcement(section.reinforcement);
     section.setConcrete(section.concrete);
     section.setSteel(section.steel);
+}
+void Interface::autoFitToPointsWithMargin(const vector<Point> &points, float margin)
+{
+    if (points.size() < 2)
+        return;
+
+    double minX = points[0].getX();
+    double maxX = points[0].getX();
+    double minY = points[0].getY();
+    double maxY = points[0].getY();
+
+    for (const Point &p : points)
+    {
+        if (p.getX() < minX)
+            minX = p.getX();
+        if (p.getX() > maxX)
+            maxX = p.getX();
+        if (p.getY() < minY)
+            minY = p.getY();
+        if (p.getY() > maxY)
+            maxY = p.getY();
+    }
+
+    double marginX = 0.1 * (maxX - minX);
+    double marginY = 0.1 * (maxY - minY);
+
+    if (marginX == 0)
+        marginX = 1.0;
+    if (marginY == 0)
+        marginY = 1.0;
+
+    ImPlot::SetupAxesLimits(
+        minX - marginX, maxX + marginX,
+        minY - marginY, maxY + marginY,
+        ImGuiCond_Always);
 }

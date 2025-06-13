@@ -158,8 +158,8 @@ void Interface::crossSectionData(Section &section)
         static SectionInputMode currentInputMode = VERTEX_EDIT; // Estado inicial: edição por vértice
 
         // Variáveis para os dados notáveis
-        static float rectBase = 10.0f; // Exemplo de valor inicial para retângulo
-        static float rectHeight = 20.0f;
+        static float rectBase = 20.0f; // Exemplo de valor inicial para retângulo
+        static float rectHeight = 40.0f;
 
         static float t_bf = 20.0f;
         static float t_hf = 5.0f;
@@ -270,13 +270,15 @@ void Interface::crossSectionData(Section &section)
                 // Volta para o modo de edição por vértice, pois os vértices foram gerados
                 currentInputMode = VERTEX_EDIT;
             }
+
+            shouldAutoFit = true;
         }
         else if (currentInputMode == T_SECTION_INPUT) 
         {
             ImGui::SeparatorText("Dados da Seção T:");
             ImGui::InputFloat("Largura Mesa (bf cm)", &t_bf);
             ImGui::InputFloat("Altura Mesa (hf cm)", &t_hf);
-            ImGui::InputFloat("Largura Barra (bw cm)", &t_bw);
+            ImGui::InputFloat("Largura alma (bw cm)", &t_bw);
             ImGui::InputFloat("Altura", &t_hw);
 
             if (ImGui::Button("Gerar Seção T"))
@@ -306,6 +308,8 @@ void Interface::crossSectionData(Section &section)
                 section.polygon.SetNumPoints(tPoints.size()); 
                 currentInputMode = VERTEX_EDIT; 
             }
+
+            shouldAutoFit = true;
         }
         else if (currentInputMode == CIRCULAR_INPUT) 
         {
@@ -335,6 +339,8 @@ void Interface::crossSectionData(Section &section)
                 section.polygon.SetNumPoints(circlePoints.size());
                 currentInputMode = VERTEX_EDIT;
             }
+
+            shouldAutoFit = true;
         }
 
 
@@ -518,7 +524,7 @@ void Interface::interfaceMaterials(Section &section)
 
 void Interface::concreteInterface(Section &section)
 {
-    static int constitutiveModel = 0;
+    static int constitutiveModel = 1;
     static double collectedFck = 0.0, collectedGammaC = 0.0, stress;
     int x, y;
 

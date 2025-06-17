@@ -444,8 +444,8 @@ void Interface::crossSectionData(Section &section)
 
         if (ImGui::Button("Rotacionar"))
         {
-            section.polygon.rotateAroundCentroid(10);
-            section.reinforcement.rotateAroundCentroidPolygon(10, section.polygon.getGeometricCenter());
+            section.polygon.rotateAroundCentroid(78);
+            section.reinforcement.rotateAroundCentroidPolygon(78, section.polygon.getGeometricCenter());
         }
 
         ImGui::Text("Area: %.2f |", section.polygon.getPolygonArea());

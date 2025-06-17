@@ -507,7 +507,18 @@ double MomentCapacitySolver::testRegion2(Polygon &polygon, Reinforcement &reinfo
 {
     double epsA = -concrete.getStrainConcreteRupture(); // fixo
     double epsBmin = 0;
-    double epsBmax = steel.getStrainSteelRupture();
+    
+    const auto &vectorReinf = reinforcement.getReinforcement();
+    double yLowestRebar = 0;
+    for (const auto &bar : vectorReinf) 
+    {
+        if (bar.getY() <= yLowestRebar)
+            yLowestRebar = bar.getY();
+    }
+
+    double d = polygon.getMaxY() - yLowestRebar;
+    double h = polygon.getPolygonHeight();
+    double epsBmax = ((steel.getStrainSteelRupture() - epsA) * (h / d)) + epsA;
 
     // Lambda com captura de contexto
     auto func = [&](double epsB) 

@@ -10,40 +10,53 @@
 #include "AnalyticalIntegration.h"
 #include "InternalForces.h"
 #include "Combination.h"
-#include "MomentCapacitySolver.h"
+#include "MomentSolver.h"
 
 using std::vector;
 using std::cout;
 using std::endl;
 
-
 class Section
 {
 public:
-    Polygon polygon;
-    Reinforcement reinforcement;
+    Polygon originalPolygon;
+    Polygon workingPolygon;
+    Reinforcement originalReinforcement;
+    Reinforcement workingReinforcement;
     ConcreteProperties concrete;
     SteelProperties steel;
     StrainDistribution strainDistribution;
     PolygonStressRegions stressRegions;
     AnalyticalIntegration analyticalIntegration;
     InternalForces internalForces;
-    MomentCapacitySolver momentSolver;
+    MomentSolver momentSolver;
 
-    std::vector<Combination> combinations;
+    vector<Combination> combinations;
+    vector<Point> envelopeMoments;
+
     Section();
 
-    void setPolygon(Polygon collectedPolygon);
-    void setReinforcement(Reinforcement collectedReinforcement);
-    void setConcrete(ConcreteProperties collectedConcrete);
-    void setSteel(SteelProperties collectedSteel);
-    void setStrainDistribution(double strain1, double strain2);
-    void setStressRegions();
-    void setIntegrationVersion(NormativeIntegrationVersion modelVersion);
-    void computeInternalForces(double Nsd);
-    void setSectionProperties(Polygon collectedPolygon, Reinforcement collectedReinforcement, ConcreteProperties collectedConcrete,
-    SteelProperties collectedSteel, NormativeIntegrationVersion modelVersion);
-    void computeSectionEquilibriumSolver(double Nsd);
+    void defineGeometry(const Polygon& polygon, const Reinforcement& reinforcement);
+    void defineMaterials(const ConcreteProperties& c, const SteelProperties& s);
+    void defineIntegrationModel(NormativeIntegrationVersion modelVersion);
+
+    void resetWorkingState();
+    void applyAngleandCenterline(double angleDegrees);
+
+    void verifyEquilibrium(double Nsd, double eps1, double eps2);
+    void computeEquilibrium(double Nsd, double eps1, double eps2);
+    void computeEnvelope(double Nsd);
+
+    const Polygon& getWorkingPolygon() const { return workingPolygon; }
+    const Reinforcement& getWorkingReinforcement() const { return workingReinforcement; }
+    const vector<Point>& getEnvelopeMoments() const { return envelopeMoments; }
+    const MomentSolver& getMomentSolver() const { return momentSolver; }
+    const InternalForces& getInternalForces() const { return internalForces; }
+    const PolygonStressRegions& getStressRegions() const { return stressRegions; }
+    std::vector<Combination> getCombinations() const { return combinations; }
+
+    //void computeSectionEquilibriumSolver(double Nsd);
+    //void computeSectionMomentEnvelope(double Nsd);
     void printSectionData();
 
     template <class Archive>

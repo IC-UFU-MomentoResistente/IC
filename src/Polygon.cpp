@@ -11,6 +11,7 @@ Polygon::Polygon()
     staticMomentX = 0;
     staticMomentY = 0;
     numPoints = 0;
+	angle = 0;
 }
 
 void Polygon::setVertices(std::vector<Point> collectedVertices)
@@ -27,6 +28,11 @@ void Polygon::setVertices(std::vector<Point> collectedVertices)
 void Polygon::addVertice(double coordX, double coordY)
 {
     polygonVertices.push_back(Point(coordX, coordY));  // Adiciona um novo vértice
+}
+
+void Polygon::setAngle(double collectedAngle)
+{
+	angle = collectedAngle;
 }
 
 void Polygon::removeLastVertice()
@@ -146,9 +152,9 @@ void Polygon::translateToCentroid()
     }
 }
 
-void Polygon::rotateAroundCentroid(double angle)
+void Polygon::rotateAroundCentroid()
 {
-    double rad = angle * M_PI / 180;
+    double rad = angle * 3.14159265358979323846 / 180;
     double cosAngle = cos(rad);
     double sinAngle = sin(rad);
 
@@ -156,6 +162,7 @@ void Polygon::rotateAroundCentroid(double angle)
     {
         double rotateX = (polygonVertices[i].getX() * cosAngle) - (polygonVertices[i].getY() * sinAngle);
         double rotateY = (polygonVertices[i].getX() * sinAngle) + (polygonVertices[i].getY() * cosAngle);
+        
         polygonVertices[i].setX(rotateX);
         polygonVertices[i].setY(rotateY);
     }
@@ -169,6 +176,11 @@ std::vector<Point> Polygon::getPolygonVertices() const
 Point Polygon::getGeometricCenter() const
 {
     return geometricCenter;  // Retorna o centro geométrico do polígono
+}
+
+double Polygon::getAngle() const
+{
+    return angle;
 }
 
 double Polygon::getMaxY() const

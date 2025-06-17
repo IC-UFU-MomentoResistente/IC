@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 
 #include "raylib.h"
@@ -14,7 +15,7 @@
 #include "PolygonStressRegions.h"
 #include "AnalyticalIntegration.h"
 #include "InternalForces.h"
-#include "MomentCapacitySolver.h"
+#include "MomentSolver.h"
 #include "Section.h"
 #include "Interface.h"
 #include "Combination.h"
@@ -25,6 +26,17 @@ using std::vector;
 
 int main()
 {
+	std::ofstream logFile("log_resultados.txt");
+
+	if (!logFile.is_open())
+	{
+		std::cerr << "Erro ao abrir o arquivo de log" << std::endl;
+		return 1;
+	}
+
+	std::streambuf* coutbuf = std::cout.rdbuf();
+	std::cout.rdbuf(logFile.rdbuf());
+
 	Section section;
 	Interface interface;
 
@@ -39,6 +51,7 @@ int main()
 		interface.showPrimaryMenuBar(section);
 		interface.showSecondaryMenuBar(section);
 		interface.crossSectionPlotInterface(section, 56);
+		interface.envelopeMomentsPlotInterface(section, 56);
 		interface.RightTablePos("Tabela de Pontos", "Tabela de Esforços", 56, section);
 
 		// bool showDemoWindow = true;
@@ -52,6 +65,10 @@ int main()
 	ImPlot::DestroyContext();
 	rlImGuiShutdown();
 	CloseWindow();
+
+	std::cout.rdbuf(coutbuf);
+
+	logFile.close();
 
 	return 0;
 }

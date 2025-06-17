@@ -31,7 +31,7 @@
                 "src/PolygonStressREgions.cpp",
                 "src/AnalyticalIntegration.cpp",
                 "src/InternalForces.cpp",
-                "src/MomentCapacitySolver.cpp",
+                "src/MomentSolver.cpp",
                 "src/Section.cpp",
                 "src/combination.cpp",
                 "-l:libimgui.a",

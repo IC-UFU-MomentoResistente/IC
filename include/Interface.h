@@ -16,7 +16,7 @@
 #include "PolygonStressRegions.h"
 #include "AnalyticalIntegration.h"
 #include "InternalForces.h"
-#include "MomentCapacitySolver.h"
+#include "MomentSolver.h"
 #include "Section.h"
 
 #include <fstream>
@@ -48,6 +48,7 @@ public:
     void ReferenceValues();
     void effortSectionInterface(Section &section);
     void crossSectionPlotInterface(Section &section, float posY);
+    void envelopeMomentsPlotInterface(Section &section, float posY);
     void renderPolygon(const vector<Point> &polygonVertices, string nameVertices, string namePolygon);
     void renderVectorPoint(const vector<Point> &vector, string nameReinforcement);
     void renderStrainConcreteRuptureDiagram(const vector<Point> &vectorPoint, string nameVectorPoint);

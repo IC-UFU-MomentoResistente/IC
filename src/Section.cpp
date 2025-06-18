@@ -35,6 +35,15 @@ void Section::defineMaterials(const ConcreteProperties &c, const SteelProperties
 {
     concrete = c;
     steel = s;
+
+    if (c.getModelType() == StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2014)
+    {
+        defineIntegrationModel(NormativeIntegrationVersion::ABNT_NBR6118_2014);
+    }
+    else 
+    {
+        defineIntegrationModel(NormativeIntegrationVersion::ABNT_NBR6118_2023);   
+    }
 }
 
 void Section::defineIntegrationModel(NormativeIntegrationVersion modelVersion)

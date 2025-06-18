@@ -63,8 +63,8 @@ public:
     void save(Archive& archive) const
     {
         archive(
-            CEREAL_NVP(polygon),
-            CEREAL_NVP(reinforcement),
+            CEREAL_NVP(originalPolygon),
+            CEREAL_NVP(originalReinforcement),
             CEREAL_NVP(concrete),
             CEREAL_NVP(steel),
             CEREAL_NVP(combinations)
@@ -75,16 +75,14 @@ public:
     void load(Archive& archive)
     {
         archive(
-            CEREAL_NVP(polygon),
-            CEREAL_NVP(reinforcement),
+            CEREAL_NVP(originalPolygon),
+            CEREAL_NVP(originalReinforcement),
             CEREAL_NVP(concrete),
             CEREAL_NVP(steel),
             CEREAL_NVP(combinations)
         );
 
-        setPolygon(polygon);
-        setReinforcement(reinforcement);
-        setConcrete(concrete);
-        setSteel(steel);
+        defineGeometry(originalPolygon, originalReinforcement);
+        defineMaterials(concrete, steel);
     }
 };

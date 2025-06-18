@@ -168,7 +168,7 @@ void Interface::crossSectionData(Section &section)
         static float circleRadius = 10.0f;
         static int circleSegments = 32;
 
-        tempNumPoints = section.polygon.GetNumPoints();
+        tempNumPoints = section.originalPolygon.GetNumPoints();
         if (tempNumPoints < 0)
             tempNumPoints = 0;
 
@@ -186,7 +186,7 @@ void Interface::crossSectionData(Section &section)
         if (ImGui::InputInt("##xx", &tempNumPoints, 1, 10))
         {
             if (tempNumPoints < 0) tempNumPoints = 0;
-            section.polygon.SetNumPoints(tempNumPoints);
+            section.originalPolygon.SetNumPoints(tempNumPoints);
             // Ao mudar o número de pontos manualmente, assumimos edição por vértice
             currentInputMode = VERTEX_EDIT;
         }
@@ -197,8 +197,8 @@ void Interface::crossSectionData(Section &section)
         // Botões para ativar os modos de seção padrão
         if (ImGui::Button("Seção T (Exemplo Atual)"))
         {
-            section.polygon.clearPolygonVertices();
-            section.reinforcement.clearReinforcement();
+            section.originalPolygon.clearPolygonVertices();
+            section.originalReinforcement.clearReinforcement();
 
             vector<Point> collectedPoints = {
                 {7.5, 0}, {10, 30}, {20, 40}, {20, 50}, {-20, 50}, {-20, 40}, {-10, 30}, {-7.5, 0}};
@@ -212,10 +212,8 @@ void Interface::crossSectionData(Section &section)
             section.originalReinforcement.computeArea();
 
             tempNumPoints = collectedPoints.size();
-            section.polygon.setVertices(collectedPoints);
 
-            section.reinforcement.setReinforcement(collectedReinforcement, collectedDiameters);
-            section.reinforcement.computeArea(); // não esquece isso!
+            section.defineGeometry(section.originalPolygon, section.originalReinforcement);
 
             shouldAutoFit = true;
         }
@@ -252,7 +250,7 @@ void Interface::crossSectionData(Section &section)
             if (ImGui::Button("Gerar Retângulo"))
             {
                 // Limpa os vértices existentes
-                section.polygon.clearPolygonVertices();
+                section.originalPolygon.clearPolygonVertices();
 
                 // Gera os vértices para um retângulo centralizado na origem
                 // ou em qualquer ponto de referência que você desejar.
@@ -266,8 +264,10 @@ void Interface::crossSectionData(Section &section)
                     { halfBase,  halfHeight},
                     {-halfBase,  halfHeight}
                 };
-                section.polygon.setVertices(rectPoints);
-                section.polygon.SetNumPoints(rectPoints.size()); // Atualiza o número de pontos
+                section.originalPolygon.setVertices(rectPoints);
+                section.originalPolygon.SetNumPoints(rectPoints.size()); // Atualiza o número de pontos
+
+                section.defineGeometry(section.originalPolygon, section.originalReinforcement);
 
                 // Volta para o modo de edição por vértice, pois os vértices foram gerados
                 currentInputMode = VERTEX_EDIT;
@@ -285,7 +285,7 @@ void Interface::crossSectionData(Section &section)
 
             if (ImGui::Button("Gerar Seção T"))
             {
-                section.polygon.clearPolygonVertices();
+                section.originalPolygon.clearPolygonVertices();
 
                 float half_bf = t_bf / 2.0f;
                 float top_y = t_hw + t_hf;
@@ -306,8 +306,9 @@ void Interface::crossSectionData(Section &section)
                     {-half_bf, top_y }
                 };
                 
-                section.polygon.setVertices(tPoints);
-                section.polygon.SetNumPoints(tPoints.size()); 
+                section.originalPolygon.setVertices(tPoints);
+                section.originalPolygon.SetNumPoints(tPoints.size()); 
+                section.defineGeometry(section.originalPolygon, section.originalReinforcement);
                 currentInputMode = VERTEX_EDIT; 
             }
 
@@ -323,7 +324,7 @@ void Interface::crossSectionData(Section &section)
 
             if (ImGui::Button("Gerar Círculo"))
             {
-                section.polygon.clearPolygonVertices();
+                section.originalPolygon.clearPolygonVertices();
 
                 std::vector<Point> circlePoints;
 
@@ -337,8 +338,9 @@ void Interface::crossSectionData(Section &section)
                     circlePoints.push_back({x, y});
                 }
 
-                section.polygon.setVertices(circlePoints);
-                section.polygon.SetNumPoints(circlePoints.size());
+                section.originalPolygon.setVertices(circlePoints);
+                section.originalPolygon.SetNumPoints(circlePoints.size());
+                section.defineGeometry(section.originalPolygon, section.originalReinforcement);
                 currentInputMode = VERTEX_EDIT;
             }
 
@@ -358,7 +360,7 @@ void Interface::crossSectionData(Section &section)
             ImGui::TableHeadersRow();
 
             // Itera sobre todos os pontos do polígono
-            for (int row = 0; row < section.polygon.GetNumPoints(); row++)
+            for (int row = 0; row < section.originalPolygon.GetNumPoints(); row++)
             {
                 ImGui::PushID(row);
 
@@ -371,12 +373,12 @@ void Interface::crossSectionData(Section &section)
                 char labelX[10];
                 snprintf(labelX, sizeof(labelX), "##xx%d", row); // ID único para cada InputFloat
                 float x, y;
-                section.polygon.GetTableData(row, &x, &y); // Obter as coordenadas do ponto na linha 'row'
+                section.originalPolygon.GetTableData(row, &x, &y); // Obter as coordenadas do ponto na linha 'row'
 
                 // Cria um campo editável para a coordenada x
                 if (ImGui::InputFloat(labelX, &x))
                 {
-                    section.polygon.SetTableData(row, x, y); // Atualiza a coordenada 'x' diretamente no vetor
+                    section.originalPolygon.SetTableData(row, x, y); // Atualiza a coordenada 'x' diretamente no vetor
                     currentInputMode = VERTEX_EDIT; // Se o usuário edita a tabela, volta para o modo de edição
                 }
 
@@ -387,7 +389,7 @@ void Interface::crossSectionData(Section &section)
                 // Cria um campo editável para a coordenada y
                 if (ImGui::InputFloat(labelY, &y))
                 {
-                    section.polygon.SetTableData(row, x, y); // Atualiza a coordenada 'y' diretamente no vetor
+                    section.originalPolygon.SetTableData(row, x, y); // Atualiza a coordenada 'y' diretamente no vetor
                     currentInputMode = VERTEX_EDIT; // Se o usuário edita a tabela, volta para o modo de edição
                 }
 
@@ -398,7 +400,7 @@ void Interface::crossSectionData(Section &section)
         }
         else if (currentInputMode == VERTEX_EDIT) {
              // Mensagem para o usuário quando o modo é edição mas a tabela não é mostrada (ex: 0 pontos)
-             if (section.polygon.GetNumPoints() == 0) {
+             if (section.originalPolygon.GetNumPoints() == 0) {
                  ImGui::Text("Adicione pontos ou selecione uma seção padrão.");
              }
         }
@@ -408,9 +410,11 @@ void Interface::crossSectionData(Section &section)
 
         if (ImGui::Button("Limpar"))
         {
-            section.polygon.clearPolygonVertices();
+            section.originalPolygon.clearPolygonVertices();
+            section.workingPolygon.clearPolygonVertices();
             section.stressRegions.clearStressRegions();
-            section.reinforcement.clearReinforcement();
+            section.originalReinforcement.clearReinforcement();
+            section.workingPolygon.clearPolygonVertices();
             tempNumPoints = 0;
             currentInputMode = VERTEX_EDIT; // Resetar o modo ao limpar
         }
@@ -434,28 +438,28 @@ void Interface::crossSectionData(Section &section)
 
         if (ImGui::Button("Transladar"))
         {
-            section.polygon.translateToCentroid();
-            section.reinforcement.translateToCentroidPolygon(section.polygon.getGeometricCenter());
+            section.originalPolygon.translateToCentroid();
+            section.originalReinforcement.translateToCentroidPolygon(section.originalPolygon.getGeometricCenter());
         }
 
         ImGui::SameLine();
 
-        if (ImGui::Button("Rotacionar"))
-        {
-            section.polygon.rotateAroundCentroid(78);
-            section.reinforcement.rotateAroundCentroidPolygon(78, section.polygon.getGeometricCenter());
-        }
+        // if (ImGui::Button("Rotacionar"))
+        // {
+        //     section.originalPolygon.rotateAroundCentroid(78);
+        //     section.originalReinforcement.rotateAroundCentroidPolygon(78, section.originalPolygon.getGeometricCenter());
+        // }
 
-        ImGui::Text("Area: %.2f |", section.polygon.getPolygonArea());
+        ImGui::Text("Area: %.2f |", section.workingPolygon.getPolygonArea());
         ImGui::SameLine();
-        ImGui::Text("MaxY: %.2f |", section.polygon.getMaxY());
+        ImGui::Text("MaxY: %.2f |", section.workingPolygon.getMaxY());
         ImGui::SameLine();
-        ImGui::Text("MinY: %.2f |", section.polygon.getMinY());
+        ImGui::Text("MinY: %.2f |", section.workingPolygon.getMinY());
         ImGui::SameLine();
-        ImGui::Text("Height: %.2f |", section.polygon.getMaxY() - section.polygon.getMinY()); // Corrigi para usar getHeight
+        ImGui::Text("Height: %.2f |", section.workingPolygon.getMaxY() - section.workingPolygon.getMinY()); // Corrigi para usar getHeight
         ImGui::SameLine();
-        ImGui::Text("CG: %.2f, %.2f |", section.polygon.getGeometricCenter().getX(), section.polygon.getGeometricCenter().getY());
-        ImGui::Text("Vet0: %.2f, %.2f |", section.polygon.getVet0X(), section.polygon.getVet0Y());
+        ImGui::Text("CG: %.2f, %.2f |", section.workingPolygon.getGeometricCenter().getX(), section.workingPolygon.getGeometricCenter().getY());
+        ImGui::Text("Vet0: %.2f, %.2f |", section.workingPolygon.getVet0X(), section.workingPolygon.getVet0Y());
 
         // Popup de erro
         if (showPopUpErrorPolygon)
@@ -736,10 +740,10 @@ void Interface::reinforcementInterface(Section &section)
         static double coordXiBar, coordXfBar, coordYiBar, coordYfBar;
         static bool showPopUpErrorBar = false;
 
-        if (section.reinforcement.getReinforcement().empty())
+        if (section.originalReinforcement.getReinforcement().empty())
             tempNumPoints = 0; // Se o vetor de armadura estiver vazio, o número de pontos temporário é 0
         else
-            tempNumPoints = section.reinforcement.getReinforcement().size(); // Atualiza o número de pontos temporário com o tamanho do vetor de armadura
+            tempNumPoints = section.originalReinforcement.getReinforcement().size(); // Atualiza o número de pontos temporário com o tamanho do vetor de armadura
 
         ImGui::Begin("Inserir Dados da Armadura Passiva", nullptr,
                      ImGuiWindowFlags_NoCollapse |
@@ -792,7 +796,7 @@ void Interface::reinforcementInterface(Section &section)
 
             ImGui::SameLine();
             if (ImGui::Button("Limpar Tudo"))
-                section.reinforcement.clearReinforcement();
+                section.originalReinforcement.clearReinforcement();
                 
             ImGui::PopID(); // Remove o ID do ponto atual após a linha ter sido processada
 
@@ -1210,9 +1214,10 @@ void Interface::effortSectionInterface(Section &section)
 
         if (ImGui::Button("Calcular"))
         {
-            section.setSectionProperties(section.polygon, section.reinforcement, section.concrete, section.steel, NormativeIntegrationVersion::ABNT_NBR6118_2014);
-            section.internalForces.computeMaxCompression(section.polygon, section.reinforcement, section.steel, section.concrete);
-            section.internalForces.computeMaxTraction(section.polygon, section.reinforcement, section.steel);
+            section.defineGeometry(section.originalPolygon, section.originalReinforcement);
+            section.defineMaterials(section.concrete, section.steel);
+            section.internalForces.computeMaxCompression(section.workingPolygon, section.workingReinforcement, section.steel, section.concrete);
+            section.internalForces.computeMaxTraction(section.workingPolygon, section.workingReinforcement, section.steel);
 
             for (int i = 0; i < section.combinations.size(); ++i)
             {
@@ -1223,9 +1228,11 @@ void Interface::effortSectionInterface(Section &section)
 
                 else
                 {
-                    section.computeSectionEquilibriumSolver(section.combinations[i].Normal);
-                    section.combinations[i].Msolver = section.momentSolver.getMomentCapacity();
+                    section.computeEnvelope(section.combinations[i].Normal);
+                    section.combinations[i].MsolverXX = section.momentSolver.getMoment().getX();
+                    section.combinations[i].MsolverYY = section.momentSolver.getMoment().getY();
                     section.combinations[i].isMomentValid = true;
+                    shouldAutoFit = true;
                 }
             }
         }
@@ -1286,7 +1293,8 @@ void Interface::effortSectionInterface(Section &section)
         {
             if (ImGui::BeginPopupModal("Cálculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
             {
-                ImGui::Text("Momento Resistente: %.2f (kN.m)", section.momentSolver.getMomentCapacity());
+                ImGui::Text("MrdXX: %.2f (kN.m)", section.momentSolver.getMoment().getX());
+                ImGui::Text("MrdYY: %.2f (kN.m)", section.momentSolver.getMoment().getY());
                 ImGui::Separator();
                 ImGui::Text("Valor de ε1: %.4f", section.momentSolver.getTopFiberStrain());
                 ImGui::Text("Valor de ε2: %.4f", section.momentSolver.getBottomFiberStrain());
@@ -1312,8 +1320,9 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
 {
     ImGuiIO &io = ImGui::GetIO();
 
-    float largura = io.DisplaySize.x - 300.0f; // considerando a janela da direita com 300px
-    float altura = io.DisplaySize.y - posY;    // altura que sobra a partir de posY
+    float largura = io.DisplaySize.x - 300.0f;
+    float alturaDisponivel = io.DisplaySize.y - posY;
+    float altura = alturaDisponivel * 0.5f; // 50%
 
     ImGui::SetNextWindowPos(ImVec2(0, posY), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(largura, altura), ImGuiCond_Always);
@@ -1335,11 +1344,11 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
 
             if (shouldAutoFit)
             {
-                autoFitToPointsWithMargin(section.polygon.getPolygonVertices(), 0.1f);
+                autoFitToPointsWithMargin(section.workingPolygon.getPolygonVertices(), 0.1f);
                 shouldAutoFit = false;
             }
 
-            renderPolygon(section.polygon.getPolygonVertices(), "Vertices", "Polygon");
+            renderPolygon(section.workingPolygon.getPolygonVertices(), "Vertices", "Polygon");
             renderPolygon(section.stressRegions.getCompressedRegion().getPolygonVertices(), "vComp", "pComp");
             renderPolygon(section.stressRegions.getParabolicRegion().getPolygonVertices(), "vParab", "pParab");
             renderPolygon(section.stressRegions.getRectangularRegion().getPolygonVertices(), "vRec", "pRec");
@@ -1359,8 +1368,8 @@ void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
 
     float largura = io.DisplaySize.x - 300.0f;
     float alturaDisponivel = io.DisplaySize.y - posY;
-    float altura = alturaDisponivel * 0.4f; // 40%
-    float novaPosY = posY + alturaDisponivel * 0.6f; // começa logo após a primeira janela
+    float altura = alturaDisponivel * 0.5f; // 50%
+    float novaPosY = posY + alturaDisponivel * 0.5f; // começa logo após a primeira janela
 
     ImGui::SetNextWindowPos(ImVec2(0, novaPosY), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(largura, altura), ImGuiCond_Always);
@@ -1375,6 +1384,12 @@ void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
 
     if (ImPlot::BeginPlot("Envoltoria de Momentos Resistentes", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit))
     {
+        if (shouldAutoFit)
+        {
+            autoFitToPointsWithMargin(section.getEnvelopeMoments(), 0.1f);
+            shouldAutoFit = false;
+        }
+        
         renderPolygon(section.envelopeMoments, "Vertices", "Envoltoria");
 
         ImPlot::EndPlot();
@@ -1509,7 +1524,7 @@ void Interface::EffortsTable(Section &section)
             {
                 selectedEffort = static_cast<int>(i);
 
-                section.computeSectionEquilibriumSolver(section.combinations[i].Normal);
+                section.computeEnvelope(section.combinations[i].Normal);
 
                 if (section.combinations[i].isMomentValid)
                     showPopUpSolver = true;
@@ -1535,11 +1550,10 @@ void Interface::EffortsTable(Section &section)
                 ImGui::TextUnformatted("ERRO!");
                 ImGui::PopStyleColor();
             }
-
             else
             {
-                ImGui::Text("%.2f", section.combinations[i].Msolver);
-            }
+                ImGui::Text("%.2f", section.combinations[i].MsolverXX);
+            }   
         }
 
         ImGui::EndTable();
@@ -1554,7 +1568,8 @@ void Interface::EffortsTable(Section &section)
         ImGui::SetNextWindowPos(posjanela, ImGuiCond_Always);
         if (ImGui::BeginPopupModal("Cálculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
         {
-            ImGui::Text("Momento Resistente: %.2f (kN.m)", section.momentSolver.getMomentCapacity());
+            ImGui::Text("MrdXX: %.2f (kN.m)", section.momentSolver.getMoment().getX());
+            ImGui::Text("MrdYY: %.2f (kN.m)", section.momentSolver.getMoment().getY());
             ImGui::Separator();
             ImGui::Text("Valor de ε 1: %.4f", section.momentSolver.getTopFiberStrain());
             ImGui::Text("Valor de ε 2: %.4f", section.momentSolver.getBottomFiberStrain());
@@ -1715,11 +1730,10 @@ void Interface::loadSectionData(Section &section, const std::string &filename)
     archive(CEREAL_NVP(section));
     std::cout << "Dados da secao carregados de: " << filename << '\n';
 
-    section.setPolygon(section.polygon);
-    section.setReinforcement(section.reinforcement);
-    section.setConcrete(section.concrete);
-    section.setSteel(section.steel);
+    section.defineGeometry(section.originalPolygon, section.originalReinforcement);
+    section.defineMaterials(section.concrete, section.steel);
 }
+
 void Interface::autoFitToPointsWithMargin(const vector<Point> &points, float margin)
 {
     if (points.size() < 2)

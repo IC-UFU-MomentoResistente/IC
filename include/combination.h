@@ -13,11 +13,12 @@ public:
     double Normal;
     double MsdX;
     double MsdY;
-    double Msolver;
+    double MsolverXX;
+    double MsolverYY;
     bool isMomentValid;
 
     Combination();
-    Combination(double normal, double msdX, double msdY, double Msolver, bool isValid = true);
+    Combination(double normal, double msdX, double msdY, double MsolverXX, double MsolverYY, bool isValid = true);
 
     friend class cereal::access;
     template <class Archive>
@@ -27,7 +28,8 @@ public:
             CEREAL_NVP(Normal),
             CEREAL_NVP(MsdX),
             CEREAL_NVP(MsdY),
-            CEREAL_NVP(Msolver),
+            CEREAL_NVP(MsolverXX),
+            CEREAL_NVP(MsolverYY),
             CEREAL_NVP(isMomentValid)
         );
     }

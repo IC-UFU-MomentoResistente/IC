@@ -59,5 +59,5 @@ public:
 	double getStrenghtReductionFactor() const;
 	double getStressStrainExponent() const;
 	vector<Point> getCurveStressStrain() const;
+    StressStrainConcreteModelType getModelType() const;
 };
-

@@ -159,3 +159,8 @@ vector<Point> ConcreteProperties::getCurveStressStrain() const
 {
 	return curveStressStrain;
 }
+
+StressStrainConcreteModelType ConcreteProperties::getModelType() const
+{
+	return modelType;
+}

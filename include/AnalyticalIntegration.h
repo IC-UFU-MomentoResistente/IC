@@ -29,11 +29,10 @@ public:
     double computeMomentConcreteRectangular(double multFcd, double fcd, double etaC, double coef1, double coef2, double coordY);
     double computeMomentConcreteParabolic(double coordLN, double coordEpc2, double nConc, double fcd, 
                                           double multFcd, double etaC, double coef1, double coef2, double coordY);
-                                          double multFcd, double coef1, double coef2, double coordY);
-    double computeMomentXXConcreteRectangular(double multFcd, double fcd, double coef1, double coef2, double coordY);
+    double computeMomentXXConcreteRectangular(double multFcd, double fcd, double etaC, double coef1, double coef2, double coordY);
     double computeMomentXXConcreteParabolic(double coordLN, double coordEpc2, double nConc, double fcd, 
-                                          double multFcd, double coef1, double coef2, double coordY);
-    double computeMomentYYConcreteRectangular(double multFcd, double fcd, double coef1, double coef2, double coordY);
+                                          double multFcd, double etaC, double coef1, double coef2, double coordY);
+    double computeMomentYYConcreteRectangular(double multFcd, double fcd, double etaC, double coef1, double coef2, double coordY);
     double computeMomentYYConcreteParabolic(double coordLN, double coordEpc2, double nConc, double fcd, 
-                                          double multFcd, double coef1, double coef2, double coordY);
+                                          double multFcd, double etaC, double coef1, double coef2, double coordY);
 };

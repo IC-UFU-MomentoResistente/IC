@@ -44,7 +44,7 @@ public:
     void effortSectionInterface(Section &section);
     void crossSectionPlotInterface(Section &section, float posY);
     void renderPolygon(const vector<Point> &polygonVertices, string nameVertices, string namePolygon);
-    void renderVectorPoint(const vector<Point> &vector, string nameReinforcement);
+    void renderReinforcement(Section &section, std::string plotLabel);
     void renderStrainConcreteRuptureDiagram(const vector<Point> &vectorPoint, string nameVectorPoint);
     void renderStrainSteelDiagram(const vector<Point> &vectorPoint, string nameVectorPoint);
     void EffortsTable(Section &section);

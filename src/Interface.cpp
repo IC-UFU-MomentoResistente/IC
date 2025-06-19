@@ -238,39 +238,16 @@ void Interface::crossSectionData(Section &section)
             tempNumPoints = 0;
         }
 
-        ImGui::SameLine();
-
-        if (ImGui::Button("Calcular parametros"))
+        if (!section.polygon.getPolygonVertices().empty())
         {
-            if (!section.polygon.getPolygonVertices().empty())
-            {
-                section.polygon.computeArea();
-                section.polygon.computeCentroid();
-                section.polygon.computeMaxCoordY();
-                section.polygon.computeMinCoordY();
-                section.polygon.computeHeight();
-            }
-            else
-            {
-                showPopUpErrorPolygon = true;
-                ImGui::OpenPopup("Vértices vazios");
-            }
+            section.polygon.computeArea();
+            section.polygon.computeCentroid();
+            section.polygon.computeMaxCoordY();
+            section.polygon.computeMinCoordY();
+            section.polygon.computeHeight();
         }
-
-        ImGui::SameLine();
-
-        if (ImGui::Button("Transladar"))
+        else
         {
-            section.polygon.translateToCentroid();
-            section.reinforcement.translateToCentroidPolygon(section.polygon.getGeometricCenter());
-        }
-
-        ImGui::SameLine();
-
-        if (ImGui::Button("Rotacionar"))
-        {
-            section.polygon.rotateAroundCentroid(10);
-            section.reinforcement.rotateAroundCentroidPolygon(10, section.polygon.getGeometricCenter());
         }
 
         ImGui::Text("Area: %.2f |", section.polygon.getPolygonArea());
@@ -283,22 +260,6 @@ void Interface::crossSectionData(Section &section)
         ImGui::SameLine();
         ImGui::Text("CG: %.2f, %.2f |", section.polygon.getGeometricCenter().getX(), section.polygon.getGeometricCenter().getY());
         ImGui::Text("Vet0: %.2f, %.2f |", section.polygon.getVet0X(), section.polygon.getVet0Y());
-
-        if (showPopUpErrorPolygon)
-        {
-            if (ImGui::BeginPopupModal("Vértices vazios", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-            {
-                ImGui::Text("Adicione os vértices da seção e depois calcule os parâmetros");
-
-                if (ImGui::Button("OK", ImVec2(120, 0)))
-                {
-                    showPopUpErrorPolygon = false;
-                    ImGui::CloseCurrentPopup();
-                }
-
-                ImGui::EndPopup();
-            }
-        }
 
         ImGui::End(); // Finaliza a janela
         ImGui::EndMenu();
@@ -389,7 +350,7 @@ void Interface::concreteInterface(Section &section)
         applyDarkElegantPlotStyle();
         // inicialização do gráfico com os eixos
         ImGui::SetCursorPos(ImVec2(0, 70)); // Define a posição do cursor
-        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação Concreto NBR 6118:2014", ImVec2(630, 430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
+        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação concreto NBR 6118:2014", ImVec2(630, 430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
         {
             ImPlot::SetupAxis(ImAxis_X1, " ε ‰");
             ImPlot::SetupAxis(ImAxis_Y1, " σ (MPa)");
@@ -513,7 +474,7 @@ void Interface::steelInterface(Section &section)
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
     ImGui::SetCursorPos(ImVec2(0, 70)); // Define a posição do cursor
     // inicialização do gráfico com os eixos
-    if (ImPlot::BeginPlot("Diagrama Tensão-Deformação AÇO NBR 6118:2023", ImVec2(630, 430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
+    if (ImPlot::BeginPlot("Diagrama Tensão-Deformação aço NBR 6118:2023", ImVec2(630, 430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
     {
         ImPlot::SetupAxis(ImAxis_X1, " ε ‰ ");
         ImPlot::SetupAxis(ImAxis_Y1, " σ (MPa)");
@@ -908,12 +869,6 @@ void Interface::ReferenceValues()
     ImGui::BulletText("fck = 35 a 50 MPa: prédios comerciais, estruturas padrão");
     ImGui::BulletText("fck > 50 MPa: pilares esbeltos, pontes, grandes vãos");
 
-    ImGui::SeparatorText("Modos de Ruptura Comuns");
-
-    ImGui::BulletText("Flexão: falha por tração no aço ou compressão no concreto");
-    ImGui::BulletText("Corte: ruptura por cisalhamento, controlado com estribos");
-    ImGui::BulletText("Punção: comum em lajes lisas sem vigas");
-
     ImGui::Separator();
     ImGui::TextWrapped("Nota: Os valores e fórmulas seguem as recomendações da NBR 6118:2023, podendo variar conforme o tipo estrutural e critérios de segurança do projeto.");
 }
@@ -927,7 +882,7 @@ void Interface::effortSectionInterface(Section &section)
         static double Nsd, Mx, My, eps1, eps2;
         static bool showPopUpErrorAxialForce = false;
         static bool showPopUpSolver = false;
-        static int tempNumPoints = 0;
+        static int tempNumPoints = 1;
 
         ImGui::Begin("Entrada de Dados: Esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
         ImGui::PushItemWidth(100);
@@ -935,7 +890,7 @@ void Interface::effortSectionInterface(Section &section)
         ImGui::InputInt("##XX:", &tempNumPoints);
 
         if (tempNumPoints < 0)
-            tempNumPoints = 0;
+            tempNumPoints = 1;
 
         if (tempNumPoints != section.combinations.size())
         {
@@ -1126,7 +1081,7 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
             renderPolygon(section.stressRegions.getCompressedRegion().getPolygonVertices(), "vComp", "pComp");
             renderPolygon(section.stressRegions.getParabolicRegion().getPolygonVertices(), "vParab", "pParab");
             renderPolygon(section.stressRegions.getRectangularRegion().getPolygonVertices(), "vRec", "pRec");
-            renderVectorPoint(section.reinforcement.getReinforcement(), "Barras");
+            renderReinforcement(section, "Barras");
         }
 
         ImPlot::EndPlot();
@@ -1169,20 +1124,96 @@ void Interface::renderPolygon(const vector<Point> &polygonVertices, string nameV
     }
 }
 
-void Interface::renderVectorPoint(const vector<Point> &vectorPoint, string nameVectorPoint)
-{
-    if (!vectorPoint.empty())
-    {
-        vector<double> xTemp(vectorPoint.size());
-        vector<double> yTemp(vectorPoint.size());
+#include "implot.h"
+#include <vector>
+#include <string>
+#include <cmath> // Para std::fabs
 
-        for (size_t i = 0; i < vectorPoint.size(); i++)
-        {
-            xTemp[i] = vectorPoint[i].getX();
-            yTemp[i] = vectorPoint[i].getY();
+// Assumindo que você tem uma classe Section com um membro 'reinforcement'
+// e que 'reinforcement' tem os métodos GetNumPoints() e GetTableData()
+// e que Point::getX(), Point::getY() existem.
+// class Section {
+// public:
+//     Reinforcement reinforcement; // Supondo que Reinforcement é uma classe aninhada ou membro
+// };
+
+// Exemplo simplificado de como Reinforcement pode ser:
+// class Reinforcement {
+// public:
+//     struct BarData {
+//         double x, y, diameter;
+//     };
+//     std::vector<BarData> bars;
+//     size_t GetNumPoints() const { return bars.size(); }
+//     void GetTableData(size_t index, double* out_x, double* out_y, double* out_d) const {
+//         if (index < bars.size()) {
+//             *out_x = bars[index].x;
+//             *out_y = bars[index].y;
+//             *out_d = bars[index].diameter;
+//         }
+//     }
+//     const std::vector<Point>& getReinforcement() const {
+//         // Se o seu getReinforcement() retorna um vector<Point>,
+//         // e Point só tem X e Y, precisaremos do diâmetro de outra forma.
+//         // Assumindo que GetTableData é a forma de obter X, Y, Diâmetro.
+//         static std::vector<Point> dummy; // Apenas para compilar, ajustar conforme sua Point
+//         return dummy;
+//     }
+// };
+
+// Função para desenhar as armaduras
+// Agora ela recebe a Section para acessar os dados da armadura.
+void Interface::renderReinforcement(Section &section, std::string plotLabel)
+{
+    // Esta função DEVE ser chamada DENTRO de um ImPlot::BeginPlot()
+    // para que ImPlot::PlotToPixels() funcione corretamente.
+
+    // Obter a escala de pixels por unidade de dados (cm).
+    // Isso deve ser feito APENAS UMA VEZ por frame, dentro do BeginPlot.
+    ImPlotPoint p1_data = ImPlotPoint(0, 0);
+    ImPlotPoint p2_data = ImPlotPoint(1.0, 0); // 1.0 cm de distância
+    ImVec2 p1_pixels = ImPlot::PlotToPixels(p1_data);
+    ImVec2 p2_pixels = ImPlot::PlotToPixels(p2_data);
+    float pixels_per_cm_x = std::fabs(p2_pixels.x - p1_pixels.x);
+
+    // Iterar sobre cada barra de armadura para desenhá-la individualmente
+    for (size_t i = 0; i < section.reinforcement.GetNumPoints(); ++i)
+    {
+        double x_bar, y_bar, diameter_bar_mm;
+        // Obter as coordenadas e o diâmetro da barra.
+        section.reinforcement.GetTableData(i, &x_bar, &y_bar, &diameter_bar_mm);
+
+        // Converter o diâmetro de mm para cm (ou para a unidade do seu plot).
+        float diameter_bar_cm = static_cast<float>(diameter_bar_mm / 10.0); // Diâmetro em cm
+
+        // Calcular o tamanho do marcador em pixels para esta barra.
+        float marker_size_pixels = (diameter_bar_cm * pixels_per_cm_x) / 2;
+
+        // Garantir um tamanho mínimo para visualização, mesmo para diâmetros muito pequenos
+        if (marker_size_pixels < 1.0f)
+        { // Exemplo: tamanho mínimo de 2 pixels
+            marker_size_pixels = 1.0f;
         }
 
-        ImPlot::PlotScatter(nameVectorPoint.c_str(), xTemp.data(), yTemp.data(), static_cast<int>(vectorPoint.size()));
+        // Configurar o estilo do marcador para a barra atual.
+        ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle,
+                                   marker_size_pixels,
+                                   ImVec4(0.0f, 0.0f, 1.0f, 1.0f), // Cor azul
+                                   1.0f,                           // Espessura da borda
+                                   ImVec4(0.0f, 0.0f, 0.8f, 1.0f)  // Cor da borda
+        );
+
+        // Desenhar a barra individualmente.
+        // É importante que o rótulo do PlotScatter seja único para cada barra
+        // se você quiser interatividade individual (ex: tooltips).
+        // Podemos usar um label_id com o índice.
+        char bar_label[32];
+        snprintf(bar_label, sizeof(bar_label), "%s Bar %zu", plotLabel.c_str(), i + 1);
+
+        double single_x[] = {x_bar}; // PlotScatter espera um array, mesmo para um único ponto
+        double single_y[] = {y_bar};
+
+        ImPlot::PlotScatter(bar_label, single_x, single_y, 1);
     }
 }
 

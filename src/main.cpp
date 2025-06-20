@@ -34,7 +34,7 @@ int main()
 		return 1;
 	}
 
-	std::streambuf* coutbuf = std::cout.rdbuf();
+	std::streambuf *coutbuf = std::cout.rdbuf();
 	std::cout.rdbuf(logFile.rdbuf());
 
 	Section section;

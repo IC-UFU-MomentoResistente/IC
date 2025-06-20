@@ -14,7 +14,7 @@ private:
 
     friend class cereal::access;
     template <class Archive>
-    void serialize(Archive& archive)
+    void serialize(Archive &archive)
     {
         archive(CEREAL_NVP(x), CEREAL_NVP(y));
     }
@@ -29,5 +29,5 @@ public:
 
     double setX(double coordX);
     double setY(double coordY);
-    Point setPoint(double coordX, double coordY); 
+    Point setPoint(double coordX, double coordY);
 };

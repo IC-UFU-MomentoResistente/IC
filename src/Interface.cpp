@@ -5,7 +5,6 @@
 #include <functional>
 #include <algorithm>
 
-
 void Interface::initInterface()
 {
 
@@ -32,15 +31,14 @@ void Interface::initInterface()
         0};
 
     ImGuiIO &io = ImGui::GetIO();
-    //ImFont *customFont = io.Fonts->AddFontFromFileTTF("src/segoeuisl.ttf", 18.0f, &fontConfig, customRange);
+    // ImFont *customFont = io.Fonts->AddFontFromFileTTF("src/segoeuisl.ttf", 18.0f, &fontConfig, customRange);
 
     ImFont *customFont = io.Fonts->AddFontFromMemoryTTF(
-        (void*) segoeuisl_ttf,
+        (void *)segoeuisl_ttf,
         segoeuisl_ttf_len,
         18.0f,
         &fontConfig,
-        customRange
-    );
+        customRange);
 
     if (customFont)
     {
@@ -65,16 +63,16 @@ void Interface::showPrimaryMenuBar(Section &section)
     {
         if (ImGui::BeginMenu("Arquivo"))
         {
-            if(ImGui::MenuItem("Salvar"))
+            if (ImGui::MenuItem("Salvar"))
             {
                 saveSectionData(section, "projeto.json");
             }
 
-            if(ImGui::MenuItem("Carregar"))
+            if (ImGui::MenuItem("Carregar"))
             {
                 loadSectionData(section, "projeto.json");
             }
-            
+
             ImGui::EndMenu();
         }
 
@@ -144,11 +142,13 @@ void Interface::crossSectionData(Section &section)
 {
     if (ImGui::BeginMenu("Seção Transversal"))
     {
+
         static bool showPopUpErrorPolygon = false;
         static int tempNumPoints = 0;
 
         // Adicione uma enum para controlar o modo de entrada
-        enum SectionInputMode {
+        enum SectionInputMode
+        {
             VERTEX_EDIT,
             RECTANGLE_INPUT,
             T_SECTION_INPUT,
@@ -185,8 +185,10 @@ void Interface::crossSectionData(Section &section)
         // InputInt com botões + e -. O 1 e 10 são os steps.
         if (ImGui::InputInt("##xx", &tempNumPoints, 1, 10))
         {
-            if (tempNumPoints < 0) tempNumPoints = 0;
+            if (tempNumPoints < 0)
+                tempNumPoints = 0;
             section.originalPolygon.SetNumPoints(tempNumPoints);
+
             // Ao mudar o número de pontos manualmente, assumimos edição por vértice
             currentInputMode = VERTEX_EDIT;
         }
@@ -195,7 +197,7 @@ void Interface::crossSectionData(Section &section)
         ImGui::SeparatorText("Seções transversais pré-definidas:");
 
         // Botões para ativar os modos de seção padrão
-        if (ImGui::Button("Seção T (Exemplo Atual)"))
+        /* if (ImGui::Button("Seção T (Exemplo Atual)"))
         {
             section.originalPolygon.clearPolygonVertices();
             section.originalReinforcement.clearReinforcement();
@@ -217,32 +219,34 @@ void Interface::crossSectionData(Section &section)
 
             shouldAutoFit = true;
         }
-        
-        ImGui::SameLine();
+        */
 
         if (ImGui::Button("Seção Retangular"))
         {
             currentInputMode = RECTANGLE_INPUT;
         }
-        
+
         ImGui::SameLine();
-        
+
         if (ImGui::Button("Seção T"))
         {
             currentInputMode = T_SECTION_INPUT;
         }
-        
+
         ImGui::SameLine();
-        
+
         if (ImGui::Button("Seção Circular"))
         {
-            currentInputMode = CIRCULAR_INPUT; 
+            currentInputMode = CIRCULAR_INPUT;
         }
 
         // ---------- Lógica para modos de entrada de seção padrão ----------
 
         if (currentInputMode == RECTANGLE_INPUT)
         {
+            section.originalPolygon.clearPolygonVertices();
+            section.originalReinforcement.clearReinforcement();
+            section.workingPolygon.clearPolygonVertices();
             ImGui::SeparatorText("Dados da Seção Retangular:");
             ImGui::InputFloat("Base (cm)", &rectBase);
             ImGui::InputFloat("Altura (cm)", &rectHeight);
@@ -260,10 +264,9 @@ void Interface::crossSectionData(Section &section)
 
                 vector<Point> rectPoints = {
                     {-halfBase, -halfHeight},
-                    { halfBase, -halfHeight},
-                    { halfBase,  halfHeight},
-                    {-halfBase,  halfHeight}
-                };
+                    {halfBase, -halfHeight},
+                    {halfBase, halfHeight},
+                    {-halfBase, halfHeight}};
                 section.originalPolygon.setVertices(rectPoints);
                 section.originalPolygon.SetNumPoints(rectPoints.size()); // Atualiza o número de pontos
 
@@ -275,8 +278,11 @@ void Interface::crossSectionData(Section &section)
 
             shouldAutoFit = true;
         }
-        else if (currentInputMode == T_SECTION_INPUT) 
+        else if (currentInputMode == T_SECTION_INPUT)
         {
+            section.originalPolygon.clearPolygonVertices();
+            section.originalReinforcement.clearReinforcement();
+            section.workingPolygon.clearPolygonVertices();
             ImGui::SeparatorText("Dados da Seção T:");
             ImGui::InputFloat("Largura Mesa (bf cm)", &t_bf);
             ImGui::InputFloat("Altura Mesa (hf cm)", &t_hf);
@@ -294,33 +300,36 @@ void Interface::crossSectionData(Section &section)
                 float half_bw = t_bw / 2.0f;
                 float bottom_y_web = 0.0f;
 
-                std::vector<Point> tPoints = 
-                {
-                    { half_bf, top_y },
-                    { half_bf, bottom_y_flange },
-                    { half_bw, bottom_y_flange },
-                    { half_bw, bottom_y_web },
-                    {-half_bw, bottom_y_web },
-                    {-half_bw, bottom_y_flange },
-                    {-half_bf, bottom_y_flange },
-                    {-half_bf, top_y }
-                };
-                
+                std::vector<Point> tPoints =
+                    {
+                        {half_bf, top_y},
+                        {half_bf, bottom_y_flange},
+                        {half_bw, bottom_y_flange},
+                        {half_bw, bottom_y_web},
+                        {-half_bw, bottom_y_web},
+                        {-half_bw, bottom_y_flange},
+                        {-half_bf, bottom_y_flange},
+                        {-half_bf, top_y}};
+
                 section.originalPolygon.setVertices(tPoints);
-                section.originalPolygon.SetNumPoints(tPoints.size()); 
+                section.originalPolygon.SetNumPoints(tPoints.size());
                 section.defineGeometry(section.originalPolygon, section.originalReinforcement);
-                currentInputMode = VERTEX_EDIT; 
+                currentInputMode = VERTEX_EDIT;
             }
 
             shouldAutoFit = true;
         }
-        else if (currentInputMode == CIRCULAR_INPUT) 
+        else if (currentInputMode == CIRCULAR_INPUT)
         {
+            section.originalPolygon.clearPolygonVertices();
+            section.originalReinforcement.clearReinforcement();
+            section.workingPolygon.clearPolygonVertices();
             ImGui::SeparatorText("Dados Seção Circular:");
             ImGui::InputFloat("Raio (cm)", &circleRadius);
             ImGui::InputInt("Número de Segmentos", &circleSegments);
 
-            if (circleSegments < 3) circleSegments = 3;
+            if (circleSegments < 3)
+                circleSegments = 3;
 
             if (ImGui::Button("Gerar Círculo"))
             {
@@ -346,7 +355,6 @@ void Interface::crossSectionData(Section &section)
 
             shouldAutoFit = true;
         }
-
 
         ImGui::SeparatorText("Edição de Vértices:");
 
@@ -379,7 +387,7 @@ void Interface::crossSectionData(Section &section)
                 if (ImGui::InputFloat(labelX, &x))
                 {
                     section.originalPolygon.SetTableData(row, x, y); // Atualiza a coordenada 'x' diretamente no vetor
-                    currentInputMode = VERTEX_EDIT; // Se o usuário edita a tabela, volta para o modo de edição
+                    currentInputMode = VERTEX_EDIT;                  // Se o usuário edita a tabela, volta para o modo de edição
                 }
 
                 ImGui::TableSetColumnIndex(2); // Coluna para 'y'
@@ -390,7 +398,7 @@ void Interface::crossSectionData(Section &section)
                 if (ImGui::InputFloat(labelY, &y))
                 {
                     section.originalPolygon.SetTableData(row, x, y); // Atualiza a coordenada 'y' diretamente no vetor
-                    currentInputMode = VERTEX_EDIT; // Se o usuário edita a tabela, volta para o modo de edição
+                    currentInputMode = VERTEX_EDIT;                  // Se o usuário edita a tabela, volta para o modo de edição
                 }
 
                 ImGui::PopID(); // Remove o ID do ponto atual após a linha ter sido processada
@@ -398,13 +406,14 @@ void Interface::crossSectionData(Section &section)
 
             ImGui::EndTable();
         }
-        else if (currentInputMode == VERTEX_EDIT) {
-             // Mensagem para o usuário quando o modo é edição mas a tabela não é mostrada (ex: 0 pontos)
-             if (section.originalPolygon.GetNumPoints() == 0) {
-                 ImGui::Text("Adicione pontos ou selecione uma seção padrão.");
-             }
+        else if (currentInputMode == VERTEX_EDIT)
+        {
+            // Mensagem para o usuário quando o modo é edição mas a tabela não é mostrada (ex: 0 pontos)
+            if (section.originalPolygon.GetNumPoints() == 0)
+            {
+                ImGui::Text("Adicione pontos ou selecione uma seção padrão.");
+            }
         }
-
 
         // ... (o restante do seu código permanece praticamente o mesmo) ...
 
@@ -434,7 +443,7 @@ void Interface::crossSectionData(Section &section)
             }
         }
 
-        ImGui::SeparatorText("Parâmetros Geométricos da Seção");   
+        ImGui::SeparatorText("Parâmetros Geométricos da Seção");
 
         if (ImGui::Button("Transladar"))
         {
@@ -569,7 +578,7 @@ void Interface::concreteInterface(Section &section)
         applyDarkElegantPlotStyle();
         // inicialização do gráfico com os eixos
         ImGui::SetCursorPos(ImVec2(0, 70)); // Define a posição do cursor
-        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação Concreto NBR 6118:2014", ImVec2(630, 430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
+        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação concreto NBR 6118:2014", ImVec2(630, 430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
         {
             ImPlot::SetupAxis(ImAxis_X1, " ε ‰");
             ImPlot::SetupAxis(ImAxis_Y1, " σ (MPa)");
@@ -623,7 +632,7 @@ void Interface::concreteInterface(Section &section)
         ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
         ImGui::SetCursorPos(ImVec2(0, 70)); // Define a posição do cursor
-        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação Concreto NBR 6118:2023", ImVec2(630, 430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
+        if (ImPlot::BeginPlot("Diagrama Tensão-Deformação concreto NBR 6118:2023", ImVec2(630, 430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
         {
             ImPlot::SetupAxis(ImAxis_X1, " ε ‰");
             ImPlot::SetupAxis(ImAxis_Y1, " σ (MPa)");
@@ -659,13 +668,21 @@ void Interface::concreteInterface(Section &section)
 
 void Interface::steelInterface(Section &section)
 {
+
+    std::vector<Point> annotationPoints;
+
+    annotationPoints.push_back(Point(-10, section.steel.computeStress(-section.steel.getStrainSteelYield())));
+    annotationPoints.push_back(Point(-section.steel.getStrainSteelYield(), section.steel.computeStress(-section.steel.getStrainSteelYield())));
+    annotationPoints.push_back(Point(section.steel.getStrainSteelYield(), section.steel.computeStress(section.steel.getStrainSteelYield())));
+    annotationPoints.push_back(Point(10, section.steel.computeStress(section.steel.getStrainSteelYield())));
+
     static double collectedFyk = 0.0, collectedGammaS = 0.0, collectedE = 0.0, stress;
 
     collectedFyk = section.steel.getFyk();
     collectedGammaS = section.steel.getGammaS();
     collectedE = section.steel.getE();
 
-    ImGui::PushItemWidth(70); 
+    ImGui::PushItemWidth(70);
     ImGui::SetCursorPos(ImVec2(650, 70)); // Define a posição do cursor
     ImGui::BeginGroup();
     ImGui::Text("Parâmetros da Armadura Passiva");
@@ -697,13 +714,13 @@ void Interface::steelInterface(Section &section)
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
     ImGui::SetCursorPos(ImVec2(0, 70)); // Define a posição do cursor
     // inicialização do gráfico com os eixos
-    if (ImPlot::BeginPlot("Diagrama Tensão-Deformação AÇO NBR 6118:2023", ImVec2(630, 430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
+    if (ImPlot::BeginPlot("Diagrama Tensão-Deformação aço NBR 6118:2023", ImVec2(630, 430), ImPlotFlags_Equal | ImPlotFlags_NoInputs | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend))
     {
         ImPlot::SetupAxis(ImAxis_X1, " ε ‰ ");
         ImPlot::SetupAxis(ImAxis_Y1, " σ (MPa)");
         ImPlot::SetupAxesLimits((-section.steel.getStrainSteelRupture() * 1.1), (section.steel.getStrainSteelRupture() * 1.1),
                                 (-section.steel.getFyd() * 1.5), (section.steel.getFyd() * 1.5), ImGuiCond_Always);
-        renderStrainSteelDiagram(section.steel.getCurveStressStrain(), "TensaoxDef");
+        renderStrainSteelDiagram(annotationPoints, "TensaoxDef");
 
         ImPlot::Annotation(-section.steel.getStrainSteelYield(), section.steel.computeStress(-section.steel.getStrainSteelYield()), ImVec4(1, 1, 1, 0), ImVec2(-10, 2), section.steel.computeStress(-section.steel.getStrainSteelYield()), "fyd = %.2f MPa", section.steel.computeStress(-section.steel.getStrainSteelYield()));
         ImPlot::Annotation(section.steel.getStrainSteelYield(), section.steel.computeStress(section.steel.getStrainSteelYield()), ImVec4(1, 1, 1, 0), ImVec2(10, -2), section.steel.computeStress(section.steel.getStrainSteelYield()), "fyd = %.2f MPa", section.steel.computeStress(section.steel.getStrainSteelYield()));
@@ -797,7 +814,7 @@ void Interface::reinforcementInterface(Section &section)
             ImGui::SameLine();
             if (ImGui::Button("Limpar Tudo"))
                 section.originalReinforcement.clearReinforcement();
-                
+
             ImGui::PopID(); // Remove o ID do ponto atual após a linha ter sido processada
 
             ImGui::SeparatorText("Linha de Barras:");
@@ -860,7 +877,7 @@ void Interface::reinforcementInterface(Section &section)
 
                 if (ImGui::InputDouble(labelX, &x, 0.0, 0.0, "%.2f")) // Cria um campo editável para a coordenada x
                 {
-                    section.originalReinforcement.SetTableData(i, x, y, d); // Atualiza a coordenada 'x' diretamente no vetor
+                    section.originalReinforcement.SetTableData(i, x, y, d);                        // Atualiza a coordenada 'x' diretamente no vetor
                     section.defineGeometry(section.workingPolygon, section.originalReinforcement); // Atualiza a geometria da seção
                 }
                 ImGui::TableSetColumnIndex(2); // Coluna para 'y'
@@ -869,7 +886,7 @@ void Interface::reinforcementInterface(Section &section)
 
                 if (ImGui::InputDouble(labelY, &y, 0.0, 0.0, "%.2f")) // Cria um campo editável para a coordenada y
                 {
-                    section.originalReinforcement.SetTableData(i, x, y, d); // Atualiza a coordenada 'y' diretamente no vetor
+                    section.originalReinforcement.SetTableData(i, x, y, d);                        // Atualiza a coordenada 'y' diretamente no vetor
                     section.defineGeometry(section.workingPolygon, section.originalReinforcement); // Atualiza a geometria da seção
                 }
 
@@ -880,8 +897,8 @@ void Interface::reinforcementInterface(Section &section)
                 {
                     if (d > 0)
                     {
-                        section.originalReinforcement.SetTableData(i, x, y, d); // Atualiza o diâmetro diretamente no vetor
-                        section.originalReinforcement.computeArea();             // Recalcula a área da armadura
+                        section.originalReinforcement.SetTableData(i, x, y, d);                        // Atualiza o diâmetro diretamente no vetor
+                        section.originalReinforcement.computeArea();                                   // Recalcula a área da armadura
                         section.defineGeometry(section.workingPolygon, section.originalReinforcement); // Atualiza a geometria da seção
                     }
                     else
@@ -1107,12 +1124,6 @@ void Interface::ReferenceValues()
     ImGui::BulletText("fck = 35 a 50 MPa: prédios comerciais, estruturas padrão");
     ImGui::BulletText("fck > 50 MPa: pilares esbeltos, pontes, grandes vãos");
 
-    ImGui::SeparatorText("Modos de Ruptura Comuns");
-
-    ImGui::BulletText("Flexão: falha por tração no aço ou compressão no concreto");
-    ImGui::BulletText("Corte: ruptura por cisalhamento, controlado com estribos");
-    ImGui::BulletText("Punção: comum em lajes lisas sem vigas");
-
     ImGui::Separator();
     ImGui::TextWrapped("Nota: Os valores e fórmulas seguem as recomendações da NBR 6118:2023, podendo variar conforme o tipo estrutural e critérios de segurança do projeto.");
 }
@@ -1126,36 +1137,34 @@ void Interface::effortSectionInterface(Section &section)
         static double Nsd, Mx, My, eps1, eps2, angle;
         static bool showPopUpErrorAxialForce = false;
         static bool showPopUpSolver = false;
-        static int tempNumCombinations = 0;
-
-        tempNumCombinations = section.combinations.size();
+        static int tempNumCombinations = 1;
 
         ImGui::Begin("Entrada de Dados: Esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
         ImGui::PushItemWidth(100);
         ImGui::SeparatorText("Número de combinações de esforços");
-        
-        if (ImGui::InputInt("##XX:", &tempNumCombinations, 1, 10))
+
+        if (section.combinations.empty())
         {
-            if (tempNumCombinations < 0) tempNumCombinations = 0;
+            section.combinations.resize(1, Combination(0.0f, 0.0f, 0.0f, 0.0f, false));
+            // Não precisa setar tempNumCombinations aqui, pois ele já é static 1
+            // e só é alterado pelo input do usuário ou pelo resize.
+        }
+
+        if (ImGui::InputInt("##XX:", &tempNumCombinations))
+        {
+
+            if (tempNumCombinations < 1)
+                tempNumCombinations = 1;
 
             section.combinations.resize(tempNumCombinations, Combination(0.0f, 0.0f, 0.0f, 0.0f, false));
         }
 
-        // if (tempNumPoints < 0)
-        //     tempNumPoints = 0;
-
-        // if (tempNumPoints != section.combinations.size())
-        // {
-        //     section.combinations.resize(tempNumPoints, Combination(0.0f, 0.0f, 0.0f, 0.0f));
-        // }
-
-        if (ImGui::BeginTable("TabelaEsforcos", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp))
+        if (ImGui::BeginTable("TabelaEsforcos", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp))
         {
             ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 50.0f);
             ImGui::TableSetupColumn("Nsd (kN)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
             ImGui::TableSetupColumn("M,x (kN.m)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
-            /* -- Versão 1.0 Momento em apenas uma direção --
-            ImGui::TableSetupColumn("My (kN.m)", ImGuiTableColumnFlags_WidthFixed, 120.0f); */
+            ImGui::TableSetupColumn("M,y (kN.m)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
             ImGui::TableHeadersRow();
 
             for (int i = 0; i < section.combinations.size(); ++i)
@@ -1165,7 +1174,7 @@ void Interface::effortSectionInterface(Section &section)
 
                 float nsd = section.combinations[i].Normal;
                 float mx = section.combinations[i].MsdX;
-                // float my = section.combinations[i].MsdY;
+                float my = section.combinations[i].MsdY;
 
                 // ID
                 ImGui::TableSetColumnIndex(0);
@@ -1178,11 +1187,6 @@ void Interface::effortSectionInterface(Section &section)
                 if (ImGui::InputFloat(labelN, &nsd))
                     section.combinations[i].Normal = nsd;
 
-                if (ImGui::IsItemHovered())
-                {
-                    ImGui::SetTooltip("Acrescente sinal Positivo para tração e Negativo para compressão");
-                }
-
                 // Mx
                 ImGui::TableSetColumnIndex(2);
                 char labelMx[16];
@@ -1190,12 +1194,12 @@ void Interface::effortSectionInterface(Section &section)
                 if (ImGui::InputFloat(labelMx, &mx))
                     section.combinations[i].MsdX = mx;
 
-                /* My -- Versão 1.0 Momento em apenas uma direção
+                // My
                 ImGui::TableSetColumnIndex(3);
                 char labelMy[16];
                 snprintf(labelMy, sizeof(labelMy), "##my%d", i);
                 if (ImGui::InputFloat(labelMy, &my))
-                    section.combinations[i].MsdY = my; */
+                    section.combinations[i].MsdY = my;
 
                 ImGui::PopID();
             }
@@ -1207,7 +1211,7 @@ void Interface::effortSectionInterface(Section &section)
         {
             if (section.combinations.size() > 0)
                 section.combinations.clear();
-            tempNumCombinations = 0;
+            tempNumCombinations = 1;
         }
 
         ImGui::SameLine();
@@ -1265,7 +1269,7 @@ void Interface::effortSectionInterface(Section &section)
         ImGui::BeginGroup();
         ImGui::InputDouble("eps1: (mm/m)", &eps1, 0.0f, 0.0f, "%.3f");
         ImGui::InputDouble("eps2: (mm/m)", &eps2, 0.0f, 0.0f, "%.3f");
-        // ImGui::InputDouble("My (kN.m)", &My, 0.0f, 0.0f, "%.3f");
+        ImGui::InputDouble("My (kN.m)", &My, 0.0f, 0.0f, "%.3f");
         ImGui::EndGroup();
 
         if (showPopUpErrorAxialForce)
@@ -1289,7 +1293,7 @@ void Interface::effortSectionInterface(Section &section)
             }
         }
 
-        if (showPopUpSolver)
+        /* if (showPopUpSolver)
         {
             if (ImGui::BeginPopupModal("Cálculo do Momento Resistente", NULL, ImGuiWindowFlags_AlwaysAutoResize))
             {
@@ -1310,7 +1314,7 @@ void Interface::effortSectionInterface(Section &section)
                 ImGui::EndPopup();
             }
         }
-
+            */
         ImGui::End();
         ImGui::EndMenu();
     }
@@ -1336,7 +1340,6 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
 
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
-    
     if (ImPlot::BeginPlot("Gráfico da Seção Transversal", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit))
     {
         if (section.workingPolygon.getPolygonVertices().size() > 2)
@@ -1361,14 +1364,13 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
     ImGui::End();
 }
 
-
 void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
 {
     ImGuiIO &io = ImGui::GetIO();
 
     float largura = io.DisplaySize.x - 300.0f;
     float alturaDisponivel = io.DisplaySize.y - posY;
-    float altura = alturaDisponivel * 0.5f; // 50%
+    float altura = alturaDisponivel * 0.5f;          // 50%
     float novaPosY = posY + alturaDisponivel * 0.5f; // começa logo após a primeira janela
 
     ImGui::SetNextWindowPos(ImVec2(0, novaPosY), ImGuiCond_Always);
@@ -1389,7 +1391,7 @@ void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
             autoFitToPointsWithMargin(section.getEnvelopeMoments(), 0.1f);
             shouldAutoFit = false;
         }
-        
+
         renderPolygon(section.envelopeMoments, "Vertices", "Envoltoria");
 
         ImPlot::EndPlot();
@@ -1410,8 +1412,6 @@ void Interface::renderPolygon(const vector<Point> &polygonVertices, string nameV
             xTemp[i] = polygonVertices[i].getX();
             yTemp[i] = polygonVertices[i].getY();
         }
-
-        ImPlot::PlotScatter(nameVertices.c_str(), xTemp.data(), yTemp.data(), static_cast<int>(polygonVertices.size()));
 
         if (polygonVertices.size() > 2)
         {
@@ -1476,6 +1476,7 @@ void Interface::renderStrainConcreteRuptureDiagram(const vector<Point> &vectorPo
 
 void Interface::renderStrainSteelDiagram(const vector<Point> &vectorPoint, string nameVectorPoint)
 {
+
     if (!vectorPoint.empty())
     {
         vector<double> xTemp(vectorPoint.size());
@@ -1510,7 +1511,7 @@ void Interface::EffortsTable(Section &section)
         ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 30.0f);
         ImGui::TableSetupColumn("Nsd (kN)", ImGuiTableColumnFlags_WidthFixed, 60.0f);
         ImGui::TableSetupColumn("M,x (kN.m)", ImGuiTableColumnFlags_WidthFixed, 70.0f);
-        ImGui::TableSetupColumn("M. Res. (kN.m)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+        ImGui::TableSetupColumn("M,y (kN.m)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
         ImGui::TableHeadersRow();
 
         for (size_t i = 0; i < section.combinations.size(); ++i)
@@ -1527,7 +1528,8 @@ void Interface::EffortsTable(Section &section)
                 section.computeEnvelope(section.combinations[i].Normal);
 
                 if (section.combinations[i].isMomentValid)
-                    showPopUpSolver = true;
+                {
+                }
                 else
                     showPopUpErrorAxialForce = true;
             }
@@ -1553,7 +1555,7 @@ void Interface::EffortsTable(Section &section)
             else
             {
                 ImGui::Text("%.2f", section.combinations[i].MsolverXX);
-            }   
+            }
         }
 
         ImGui::EndTable();
@@ -1704,7 +1706,7 @@ void Interface::applyDarkElegantPlotStyle()
 void Interface::saveSectionData(Section &section, const std::string &filename)
 {
     std::ofstream os(filename, std::ios::binary);
-    
+
     if (!os.is_open())
     {
         std::cerr << "Erro ao abrir o arquivo para escrita: " << filename << '\n';
@@ -1720,7 +1722,7 @@ void Interface::loadSectionData(Section &section, const std::string &filename)
 {
     std::ifstream is(filename, std::ios::binary);
 
-    if(!is.is_open())
+    if (!is.is_open())
     {
         std::cerr << "Erro ao abrir o arquivo para leitura: " << filename << '\n';
         return;

@@ -41,6 +41,15 @@ public:
     void showPrimaryMenuBar(Section &section);
     void showSecondaryMenuBar(Section &section);
     void crossSectionData(Section &section);
+    void inputSectionRectangle(Section &section);
+    void inputSectionT(Section &section);
+    void inputSectionCircular(Section &section);
+    void inputSectionPolygonal(Section &section);
+    void inputSectionDebug(Section &section);
+    void showGeometricParameters(Section &section);
+    void showPopUpErrorPolygon();
+    void clearInputSection(Section &section);
+    void clearSection(Section &section);
     void interfaceMaterials(Section &section);
     void concreteInterface(Section &section);
     void steelInterface(Section &section);

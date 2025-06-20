@@ -144,342 +144,318 @@ void Interface::crossSectionData(Section &section)
 {
     if (ImGui::BeginMenu("Seção Transversal"))
     {
-        static bool showPopUpErrorPolygon = false;
-        static int tempNumPoints = 0;
-
-        // Adicione uma enum para controlar o modo de entrada
-        enum SectionInputMode {
-            VERTEX_EDIT,
-            RECTANGLE_INPUT,
-            T_SECTION_INPUT,
-            CIRCULAR_INPUT
-        };
-        static SectionInputMode currentInputMode = VERTEX_EDIT; // Estado inicial: edição por vértice
-
-        // Variáveis para os dados notáveis
-        static float rectBase = 20.0f; // Exemplo de valor inicial para retângulo
-        static float rectHeight = 40.0f;
-
-        static float t_bf = 20.0f;
-        static float t_hf = 5.0f;
-        static float t_bw = 5.0f;
-        static float t_hw = 20.0f;
-
-        static float circleRadius = 10.0f;
-        static int circleSegments = 32;
-
-        tempNumPoints = section.originalPolygon.GetNumPoints();
-        if (tempNumPoints < 0)
-            tempNumPoints = 0;
-
         ImGui::SetNextWindowPos(ImVec2(3, 47));
-        ImGui::SetNextWindowSize(ImVec2(420, 400)); // Aumentei um pouco a altura para acomodar novos inputs
+        ImGui::SetNextWindowSize(ImVec2(420, 400)); 
+
         ImGui::Begin("Inserir Dados da Seção Transversal", nullptr,
                      ImGuiWindowFlags_NoCollapse |
                          ImGuiWindowFlags_NoResize |
                          ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
-
-        ImGui::SeparatorText("Quantidade de pontos do polígono:");
-        ImGui::PushItemWidth(100);
-
-        // InputInt com botões + e -. O 1 e 10 são os steps.
-        if (ImGui::InputInt("##xx", &tempNumPoints, 1, 10))
+        
+        if (ImGui::BeginTabBar("Tabela de Entrada de Dados da Seção Transversal"))
         {
-            if (tempNumPoints < 0) tempNumPoints = 0;
-            section.originalPolygon.SetNumPoints(tempNumPoints);
-            // Ao mudar o número de pontos manualmente, assumimos edição por vértice
-            currentInputMode = VERTEX_EDIT;
-        }
-        ImGui::PopItemWidth(); // Pop do PushItemWidth
+            if (ImGui::BeginTabItem("Retangular"))
+            {
+                inputSectionRectangle(section);
+                clearInputSection(section);
+                ImGui::EndTabItem();
+            }
 
-        ImGui::SeparatorText("Seções transversais pré-definidas:");
+            if (ImGui::BeginTabItem("T"))
+            {
+                inputSectionT(section);
+                clearInputSection(section);
+                ImGui::EndTabItem();
+            }
 
-        // Botões para ativar os modos de seção padrão
-        if (ImGui::Button("Seção T (Exemplo Atual)"))
-        {
-            section.originalPolygon.clearPolygonVertices();
-            section.originalReinforcement.clearReinforcement();
+            if (ImGui::BeginTabItem("Circular"))
+            {
+                inputSectionCircular(section);
+                clearInputSection(section);
+                ImGui::EndTabItem();
+            }
 
-            vector<Point> collectedPoints = {
-                {7.5, 0}, {10, 30}, {20, 40}, {20, 50}, {-20, 50}, {-20, 40}, {-10, 30}, {-7.5, 0}};
+            if (ImGui::BeginTabItem("Poligonal"))
+            {
+                inputSectionPolygonal(section);
+                clearInputSection(section);
+                ImGui::EndTabItem();
+            }
 
-            std::vector<Point> collectedReinf = {
-                {5, 2.5}, {5, 7.5}, {-5, 7.5}, {-5, 2.5}};
-            std::vector<double> collectedDiameters = {10, 10, 10, 10};
+            if (ImGui::BeginTabItem("Debug"))
+            {
+                inputSectionDebug(section);
+                clearInputSection(section);
+                ImGui::EndTabItem();
+            }
+            
+            showGeometricParameters(section);
 
-            section.originalPolygon.setVertices(collectedPoints);
-            section.originalReinforcement.setReinforcement(collectedReinf, collectedDiameters);
-            section.originalReinforcement.computeArea();
-
-            tempNumPoints = collectedPoints.size();
-
-            section.defineGeometry(section.originalPolygon, section.originalReinforcement);
-
-            shouldAutoFit = true;
+            ImGui::EndTabBar();
         }
         
-        ImGui::SameLine();
-
-        if (ImGui::Button("Seção Retangular"))
-        {
-            currentInputMode = RECTANGLE_INPUT;
-        }
-        
-        ImGui::SameLine();
-        
-        if (ImGui::Button("Seção T"))
-        {
-            currentInputMode = T_SECTION_INPUT;
-        }
-        
-        ImGui::SameLine();
-        
-        if (ImGui::Button("Seção Circular"))
-        {
-            currentInputMode = CIRCULAR_INPUT; 
-        }
-
-        // ---------- Lógica para modos de entrada de seção padrão ----------
-
-        if (currentInputMode == RECTANGLE_INPUT)
-        {
-            ImGui::SeparatorText("Dados da Seção Retangular:");
-            ImGui::InputFloat("Base (cm)", &rectBase);
-            ImGui::InputFloat("Altura (cm)", &rectHeight);
-
-            if (ImGui::Button("Gerar Retângulo"))
-            {
-                // Limpa os vértices existentes
-                section.originalPolygon.clearPolygonVertices();
-
-                // Gera os vértices para um retângulo centralizado na origem
-                // ou em qualquer ponto de referência que você desejar.
-                // Exemplo: retângulo com centro na origem
-                float halfBase = rectBase / 2.0f;
-                float halfHeight = rectHeight / 2.0f;
-
-                vector<Point> rectPoints = {
-                    {-halfBase, -halfHeight},
-                    { halfBase, -halfHeight},
-                    { halfBase,  halfHeight},
-                    {-halfBase,  halfHeight}
-                };
-                section.originalPolygon.setVertices(rectPoints);
-                section.originalPolygon.SetNumPoints(rectPoints.size()); // Atualiza o número de pontos
-
-                section.defineGeometry(section.originalPolygon, section.originalReinforcement);
-
-                // Volta para o modo de edição por vértice, pois os vértices foram gerados
-                currentInputMode = VERTEX_EDIT;
-            }
-
-            shouldAutoFit = true;
-        }
-        else if (currentInputMode == T_SECTION_INPUT) 
-        {
-            ImGui::SeparatorText("Dados da Seção T:");
-            ImGui::InputFloat("Largura Mesa (bf cm)", &t_bf);
-            ImGui::InputFloat("Altura Mesa (hf cm)", &t_hf);
-            ImGui::InputFloat("Largura alma (bw cm)", &t_bw);
-            ImGui::InputFloat("Altura", &t_hw);
-
-            if (ImGui::Button("Gerar Seção T"))
-            {
-                section.originalPolygon.clearPolygonVertices();
-
-                float half_bf = t_bf / 2.0f;
-                float top_y = t_hw + t_hf;
-                float bottom_y_flange = t_hw;
-
-                float half_bw = t_bw / 2.0f;
-                float bottom_y_web = 0.0f;
-
-                std::vector<Point> tPoints = 
-                {
-                    { half_bf, top_y },
-                    { half_bf, bottom_y_flange },
-                    { half_bw, bottom_y_flange },
-                    { half_bw, bottom_y_web },
-                    {-half_bw, bottom_y_web },
-                    {-half_bw, bottom_y_flange },
-                    {-half_bf, bottom_y_flange },
-                    {-half_bf, top_y }
-                };
-                
-                section.originalPolygon.setVertices(tPoints);
-                section.originalPolygon.SetNumPoints(tPoints.size()); 
-                section.defineGeometry(section.originalPolygon, section.originalReinforcement);
-                currentInputMode = VERTEX_EDIT; 
-            }
-
-            shouldAutoFit = true;
-        }
-        else if (currentInputMode == CIRCULAR_INPUT) 
-        {
-            ImGui::SeparatorText("Dados Seção Circular:");
-            ImGui::InputFloat("Raio (cm)", &circleRadius);
-            ImGui::InputInt("Número de Segmentos", &circleSegments);
-
-            if (circleSegments < 3) circleSegments = 3;
-
-            if (ImGui::Button("Gerar Círculo"))
-            {
-                section.originalPolygon.clearPolygonVertices();
-
-                std::vector<Point> circlePoints;
-
-                float angleStep = (2.0f * M_PI) / circleSegments;
-
-                for (int i = 0; i < circleSegments; ++i)
-                {
-                    float angle = i * angleStep;
-                    float x = circleRadius * cos(angle);
-                    float y = circleRadius * sin(angle);
-                    circlePoints.push_back({x, y});
-                }
-
-                section.originalPolygon.setVertices(circlePoints);
-                section.originalPolygon.SetNumPoints(circlePoints.size());
-                section.defineGeometry(section.originalPolygon, section.originalReinforcement);
-                currentInputMode = VERTEX_EDIT;
-            }
-
-            shouldAutoFit = true;
-        }
-
-
-        ImGui::SeparatorText("Edição de Vértices:");
-
-        // A tabela de edição de vértices só deve ser mostrada se não estivermos em um modo de input de seção padrão
-        if (currentInputMode == VERTEX_EDIT && ImGui::BeginTable("Table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
-        {
-            // Configura as colunas com larguras fixas e centralizadas
-            ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 100.0f);
-            ImGui::TableSetupColumn("x (cm)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
-            ImGui::TableSetupColumn("y (cm)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
-            ImGui::TableHeadersRow();
-
-            // Itera sobre todos os pontos do polígono
-            for (int row = 0; row < section.originalPolygon.GetNumPoints(); row++)
-            {
-                ImGui::PushID(row);
-
-                ImGui::TableNextRow();
-
-                ImGui::TableSetColumnIndex(0); // Coluna para 'ID'
-                ImGui::Text("%d", row + 1);    // Exibe o índice do ponto (começa de 1)
-
-                ImGui::TableSetColumnIndex(1); // Coluna para 'x'
-                char labelX[10];
-                snprintf(labelX, sizeof(labelX), "##xx%d", row); // ID único para cada InputFloat
-                float x, y;
-                section.originalPolygon.GetTableData(row, &x, &y); // Obter as coordenadas do ponto na linha 'row'
-
-                // Cria um campo editável para a coordenada x
-                if (ImGui::InputFloat(labelX, &x))
-                {
-                    section.originalPolygon.SetTableData(row, x, y); // Atualiza a coordenada 'x' diretamente no vetor
-                    currentInputMode = VERTEX_EDIT; // Se o usuário edita a tabela, volta para o modo de edição
-                }
-
-                ImGui::TableSetColumnIndex(2); // Coluna para 'y'
-                char labelY[10];
-                snprintf(labelY, sizeof(labelY), "##yy%d", row); // ID único para cada InputFloat
-
-                // Cria um campo editável para a coordenada y
-                if (ImGui::InputFloat(labelY, &y))
-                {
-                    section.originalPolygon.SetTableData(row, x, y); // Atualiza a coordenada 'y' diretamente no vetor
-                    currentInputMode = VERTEX_EDIT; // Se o usuário edita a tabela, volta para o modo de edição
-                }
-
-                ImGui::PopID(); // Remove o ID do ponto atual após a linha ter sido processada
-            }
-
-            ImGui::EndTable();
-        }
-        else if (currentInputMode == VERTEX_EDIT) {
-             // Mensagem para o usuário quando o modo é edição mas a tabela não é mostrada (ex: 0 pontos)
-             if (section.originalPolygon.GetNumPoints() == 0) {
-                 ImGui::Text("Adicione pontos ou selecione uma seção padrão.");
-             }
-        }
-
-
-        // ... (o restante do seu código permanece praticamente o mesmo) ...
-
-        if (ImGui::Button("Limpar"))
-        {
-            section.originalPolygon.clearPolygonVertices();
-            section.workingPolygon.clearPolygonVertices();
-            section.stressRegions.clearStressRegions();
-            section.originalReinforcement.clearReinforcement();
-            section.workingPolygon.clearPolygonVertices();
-            tempNumPoints = 0;
-            currentInputMode = VERTEX_EDIT; // Resetar o modo ao limpar
-        }
-
-        ImGui::SameLine();
-
-        if (ImGui::Button("Calcular parâmetros"))
-        {
-            if (!section.originalPolygon.getPolygonVertices().empty())
-            {
-                section.defineGeometry(section.originalPolygon, section.originalReinforcement);
-            }
-            else
-            {
-                showPopUpErrorPolygon = true;
-                ImGui::OpenPopup("Vértices vazios");
-            }
-        }
-
-        ImGui::SeparatorText("Parâmetros Geométricos da Seção");   
-
-        if (ImGui::Button("Transladar"))
-        {
-            section.originalPolygon.translateToCentroid();
-            section.originalReinforcement.translateToCentroidPolygon(section.originalPolygon.getGeometricCenter());
-        }
-
-        ImGui::SameLine();
-
-        // if (ImGui::Button("Rotacionar"))
-        // {
-        //     section.originalPolygon.rotateAroundCentroid(78);
-        //     section.originalReinforcement.rotateAroundCentroidPolygon(78, section.originalPolygon.getGeometricCenter());
-        // }
-
-        ImGui::Text("Area: %.2f |", section.workingPolygon.getPolygonArea());
-        ImGui::SameLine();
-        ImGui::Text("MaxY: %.2f |", section.workingPolygon.getMaxY());
-        ImGui::SameLine();
-        ImGui::Text("MinY: %.2f |", section.workingPolygon.getMinY());
-        ImGui::SameLine();
-        ImGui::Text("Height: %.2f |", section.workingPolygon.getMaxY() - section.workingPolygon.getMinY()); // Corrigi para usar getHeight
-        ImGui::SameLine();
-        ImGui::Text("CG: %.2f, %.2f |", section.workingPolygon.getGeometricCenter().getX(), section.workingPolygon.getGeometricCenter().getY());
-        ImGui::Text("Vet0: %.2f, %.2f |", section.workingPolygon.getVet0X(), section.workingPolygon.getVet0Y());
-
-        // Popup de erro
-        if (showPopUpErrorPolygon)
-        {
-            if (ImGui::BeginPopupModal("Vértices vazios", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-            {
-                ImGui::Text("Adicione os vértices da seção e depois calcule os parâmetros");
-
-                if (ImGui::Button("OK", ImVec2(120, 0)))
-                {
-                    showPopUpErrorPolygon = false;
-                    ImGui::CloseCurrentPopup();
-                }
-                ImGui::EndPopup();
-            }
-        }
-
         ImGui::End();     // Fim da janela
         ImGui::EndMenu(); // Fim do menu
     }
+}
+
+void Interface::inputSectionRectangle(Section &section)
+{
+    static float rectBase = 20.0f; 
+    static float rectHeight = 40.0f;
+    
+    ImGui::SeparatorText("Dados da Seção Retangular:");
+    ImGui::InputFloat("Base (cm)", &rectBase);
+    ImGui::InputFloat("Altura (cm)", &rectHeight);
+
+    if (ImGui::Button("Gerar Retângulo"))
+    {
+        section.originalPolygon.clearPolygonVertices();
+
+        // Gera os vértices para um retângulo centralizado na origem
+        float halfBase = rectBase / 2.0f;
+        float halfHeight = rectHeight / 2.0f;
+
+        vector<Point> rectPoints = {
+            {-halfBase, -halfHeight},
+            { halfBase, -halfHeight},
+            { halfBase,  halfHeight},
+            {-halfBase,  halfHeight}
+        };
+
+        section.originalPolygon.setVertices(rectPoints);
+        section.originalPolygon.SetNumPoints(rectPoints.size()); // Atualiza o número de pontos
+        section.defineGeometry(section.originalPolygon, section.originalReinforcement);
+    }
+
+    //shouldAutoFit = true;
+}
+
+void Interface::inputSectionT(Section &section)
+{
+    static float t_bf = 20.0f;
+    static float t_hf = 5.0f;
+    static float t_bw = 5.0f;
+    static float t_hw = 20.0f;
+
+    ImGui::SeparatorText("Dados da Seção T:");
+    ImGui::InputFloat("Largura Mesa (bf cm)", &t_bf);
+    ImGui::InputFloat("Altura Mesa (hf cm)", &t_hf);
+    ImGui::InputFloat("Largura alma (bw cm)", &t_bw);
+    ImGui::InputFloat("Altura", &t_hw);
+
+    if (ImGui::Button("Gerar Seção T"))
+    {
+        section.originalPolygon.clearPolygonVertices();
+
+        float half_bf = t_bf / 2.0f;
+        float top_y = t_hw + t_hf;
+        float bottom_y_flange = t_hw;
+
+        float half_bw = t_bw / 2.0f;
+        float bottom_y_web = 0.0f;
+
+        std::vector<Point> tPoints = 
+        {
+            { half_bf, top_y },
+            { half_bf, bottom_y_flange },
+            { half_bw, bottom_y_flange },
+            { half_bw, bottom_y_web },
+            {-half_bw, bottom_y_web },
+            {-half_bw, bottom_y_flange },
+            {-half_bf, bottom_y_flange },
+            {-half_bf, top_y }
+        };
+        
+        section.originalPolygon.setVertices(tPoints);
+        section.originalPolygon.SetNumPoints(tPoints.size()); 
+        section.defineGeometry(section.originalPolygon, section.originalReinforcement);
+    }
+
+    shouldAutoFit = true;
+}
+
+void Interface::inputSectionCircular(Section &section)
+{
+    static float circleRadius = 10.0f;
+    static int circleSegments = 32;
+
+    ImGui::SeparatorText("Dados Seção Circular:");
+    ImGui::InputFloat("Raio (cm)", &circleRadius);
+    ImGui::InputInt("Número de Segmentos", &circleSegments);
+
+    if (circleSegments < 3) circleSegments = 3;
+
+    if (ImGui::Button("Gerar Círculo"))
+    {
+        section.originalPolygon.clearPolygonVertices();
+
+        std::vector<Point> circlePoints;
+
+        float angleStep = (2.0f * M_PI) / circleSegments;
+
+        for (int i = 0; i < circleSegments; ++i)
+        {
+            float angle = i * angleStep;
+            float x = circleRadius * cos(angle);
+            float y = circleRadius * sin(angle);
+            circlePoints.push_back({x, y});
+        }
+
+        section.originalPolygon.setVertices(circlePoints);
+        section.originalPolygon.SetNumPoints(circlePoints.size());
+        section.defineGeometry(section.originalPolygon, section.originalReinforcement);
+    }
+
+    shouldAutoFit = true;
+}
+
+void Interface::inputSectionPolygonal(Section &section)
+{
+    static int tempNumPoints = 0;
+
+    tempNumPoints = section.originalPolygon.GetNumPoints();
+    if (tempNumPoints < 0)
+        tempNumPoints = 0;
+
+    ImGui::SeparatorText("Quantidade de pontos do polígono:");
+    ImGui::PushItemWidth(100);
+
+    // InputInt com botões + e -. O 1 e 10 são os steps.
+    if (ImGui::InputInt("##xx", &tempNumPoints, 1, 10))
+    {
+        if (tempNumPoints < 0) tempNumPoints = 0;
+        section.originalPolygon.SetNumPoints(tempNumPoints);
+    }
+    ImGui::PopItemWidth(); // Pop do PushItemWidth
+
+    ImGui::SeparatorText("Edição de Vértices:");
+
+    if (ImGui::BeginTable("Table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+    {
+        // Configura as colunas com larguras fixas e centralizadas
+        ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+        ImGui::TableSetupColumn("x (cm)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+        ImGui::TableSetupColumn("y (cm)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+        ImGui::TableHeadersRow();
+
+        // Itera sobre todos os pontos do polígono
+        for (int row = 0; row < section.originalPolygon.GetNumPoints(); row++)
+        {
+            ImGui::PushID(row);
+
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0); // Coluna para 'ID'
+            ImGui::Text("%d", row + 1);    // Exibe o índice do ponto (começa de 1)
+
+            ImGui::TableSetColumnIndex(1); // Coluna para 'x'
+            char labelX[10];
+            snprintf(labelX, sizeof(labelX), "##xx%d", row); // ID único para cada InputFloat
+            float x, y;
+            section.originalPolygon.GetTableData(row, &x, &y); // Obter as coordenadas do ponto na linha 'row'
+
+            // Cria um campo editável para a coordenada x
+            if (ImGui::InputFloat(labelX, &x))
+            {
+                section.originalPolygon.SetTableData(row, x, y); // Atualiza a coordenada 'x' diretamente no vetor
+                section.defineGeometry(section.originalPolygon, section.originalReinforcement);
+            }
+
+            ImGui::TableSetColumnIndex(2); // Coluna para 'y'
+            char labelY[10];
+            snprintf(labelY, sizeof(labelY), "##yy%d", row); // ID único para cada InputFloat
+
+            // Cria um campo editável para a coordenada y
+            if (ImGui::InputFloat(labelY, &y))
+            {
+                section.originalPolygon.SetTableData(row, x, y); // Atualiza a coordenada 'y' diretamente no vetor
+                section.defineGeometry(section.originalPolygon, section.originalReinforcement);
+            }
+
+            ImGui::PopID(); // Remove o ID do ponto atual após a linha ter sido processada
+        }
+
+        ImGui::EndTable();
+    }
+    else 
+    {
+        // Mensagem para o usuário quando o modo é edição mas a tabela não é mostrada (ex: 0 pontos)
+        if (section.originalPolygon.GetNumPoints() == 0) {
+            ImGui::Text("Adicione pontos ou selecione uma seção padrão.");
+        }
+    }
+}
+
+void Interface::inputSectionDebug(Section &section)
+{
+    if (ImGui::Button("Seção T (Exemplo Atual)"))
+    {
+        section.originalPolygon.clearPolygonVertices();
+        section.originalReinforcement.clearReinforcement();
+
+        vector<Point> collectedPoints = {
+            {7.5, 0}, {10, 30}, {20, 40}, {20, 50}, {-20, 50}, {-20, 40}, {-10, 30}, {-7.5, 0}};
+
+        std::vector<Point> collectedReinf = {
+            {5, 2.5}, {5, 7.5}, {-5, 7.5}, {-5, 2.5}};
+        std::vector<double> collectedDiameters = {10, 10, 10, 10};
+
+        section.originalPolygon.setVertices(collectedPoints);
+        section.originalReinforcement.setReinforcement(collectedReinf, collectedDiameters);
+        section.originalReinforcement.computeArea();
+
+        section.defineGeometry(section.originalPolygon, section.originalReinforcement);
+
+        shouldAutoFit = true;
+    }
+}
+
+void Interface::showGeometricParameters(Section &section)
+{
+    ImGui::SeparatorText("Parâmetros Geométricos da Seção");   
+
+    ImGui::Text("Area: %.2f", section.workingPolygon.getPolygonArea());
+    ImGui::Text("MaxY: %.2f", section.workingPolygon.getMaxY());
+    ImGui::Text("MinY: %.2f", section.workingPolygon.getMinY());
+    ImGui::Text("Height: %.2f", section.workingPolygon.getMaxY() - section.workingPolygon.getMinY()); // Corrigi para usar getHeight
+    ImGui::Text("CG: %.2f, %.2f", section.workingPolygon.getGeometricCenter().getX(), section.workingPolygon.getGeometricCenter().getY());
+}
+
+void Interface::showPopUpErrorPolygon()
+{
+    if (ImGui::BeginPopupModal("Vértices vazios", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::Text("Adicione a seção");
+
+        if (ImGui::Button("OK", ImVec2(120, 0)))
+        {
+            //showPopUpErrorPolygon = false;
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+}
+
+void Interface::clearInputSection(Section &section)
+{
+    if (ImGui::Button("Limpar"))
+    {
+        section.originalPolygon.clearPolygonVertices();
+        section.workingPolygon.clearPolygonVertices();
+        section.stressRegions.clearStressRegions();
+        section.originalReinforcement.clearReinforcement();
+        section.workingPolygon.clearPolygonVertices();
+    }
+}
+
+void Interface::clearSection(Section &section)
+{
+    section.originalPolygon.clearPolygonVertices();
+    section.workingPolygon.clearPolygonVertices();
+    section.stressRegions.clearStressRegions();
+    section.originalReinforcement.clearReinforcement();
+    section.workingPolygon.clearPolygonVertices();
 }
 
 void Interface::interfaceMaterials(Section &section)
@@ -1236,37 +1212,6 @@ void Interface::effortSectionInterface(Section &section)
                 }
             }
         }
-
-        ImGui::SeparatorText("Debug");
-
-        ImGui::SameLine();
-
-        if (ImGui::Button("Envoltoria"))
-        {
-            section.internalForces.computeMaxCompression(section.workingPolygon, section.workingReinforcement, section.steel, section.concrete);
-            section.internalForces.computeMaxTraction(section.workingPolygon, section.workingReinforcement, section.steel);
-
-            if (section.internalForces.getNormalSolicitation() < section.internalForces.getMaxNormalCompression() ||
-                section.internalForces.getNormalSolicitation() > section.internalForces.getMaxNormalTraction())
-            {
-                showPopUpErrorAxialForce = true;
-                ImGui::OpenPopup("Erro de Esforço Normal");
-            }
-            else
-            {
-                section.resetWorkingState();
-                section.computeEnvelope(Nsd);
-                showPopUpSolver = true;
-                ImGui::OpenPopup("Calculo do Momento Resistente");
-            }
-        }
-
-        ImGui::PushItemWidth(50);
-        ImGui::BeginGroup();
-        ImGui::InputDouble("eps1: (mm/m)", &eps1, 0.0f, 0.0f, "%.3f");
-        ImGui::InputDouble("eps2: (mm/m)", &eps2, 0.0f, 0.0f, "%.3f");
-        // ImGui::InputDouble("My (kN.m)", &My, 0.0f, 0.0f, "%.3f");
-        ImGui::EndGroup();
 
         if (showPopUpErrorAxialForce)
         {

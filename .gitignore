@@ -34,3 +34,6 @@
 **/*.json
 **/*.ini
 **/*.txt
+
+/build/*
+!build/.gitkeep

@@ -33,11 +33,14 @@ public:
 
     vector<Combination> combinations;
     vector<Point> envelopeMoments;
+    double version = 0.1;
 
     Section();
 
     void defineGeometry(const Polygon& polygon, const Reinforcement& reinforcement);
-    void defineMaterials(const ConcreteProperties& c, const SteelProperties& s);
+    void definePolygon(const Polygon &polygon);
+    void defineReinforcement(const Reinforcement &reinforcement);
+    void defineMaterials(const ConcreteProperties &c, const SteelProperties &s);
     void defineIntegrationModel(NormativeIntegrationVersion modelVersion);
 
     void resetWorkingState();
@@ -63,6 +66,7 @@ public:
     void save(Archive& archive) const
     {
         archive(
+            CEREAL_NVP(version),
             CEREAL_NVP(originalPolygon),
             CEREAL_NVP(originalReinforcement),
             CEREAL_NVP(concrete),
@@ -75,6 +79,7 @@ public:
     void load(Archive& archive)
     {
         archive(
+            CEREAL_NVP(version),
             CEREAL_NVP(originalPolygon),
             CEREAL_NVP(originalReinforcement),
             CEREAL_NVP(concrete),

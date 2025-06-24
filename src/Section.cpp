@@ -20,12 +20,22 @@ void Section::defineGeometry(const Polygon &polygon, const Reinforcement &reinfo
     originalPolygon = polygon;
     originalReinforcement = reinforcement;
 
+    definePolygon(polygon);
+
+    defineReinforcement(reinforcement);
+}
+
+void Section::definePolygon(const Polygon &polygon)
+{
     workingPolygon = polygon;
     workingPolygon.computeArea();
     workingPolygon.computeCentroid();
     workingPolygon.translateToCentroid();
     workingPolygon.computeHeight();
+}
 
+void Section::defineReinforcement(const Reinforcement &reinforcement)
+{
     workingReinforcement = reinforcement;
     workingReinforcement.translateToCentroidPolygon(workingPolygon.getGeometricCenter());
     workingReinforcement.computeArea();

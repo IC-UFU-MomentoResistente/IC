@@ -270,7 +270,7 @@ void Interface::inputSectionT(Section &section)
     ImGui::InputFloat("Largura Mesa (bf cm)", &t_bf);
     ImGui::InputFloat("Altura Mesa (hf cm)", &t_hf);
     ImGui::InputFloat("Largura alma (bw cm)", &t_bw);
-    ImGui::InputFloat("Altura", &t_hw);
+    ImGui::InputFloat("Altura alma (hw cm)", &t_hw);
 
     if (ImGui::Button("Gerar Seção T"))
     {
@@ -287,14 +287,14 @@ void Interface::inputSectionT(Section &section)
 
         std::vector<Point> tPoints = 
         {
-            { half_bf, top_y },
-            { half_bf, bottom_y_flange },
-            { half_bw, bottom_y_flange },
-            { half_bw, bottom_y_web },
             {-half_bw, bottom_y_web },
-            {-half_bw, bottom_y_flange },
+            { half_bw, bottom_y_web },
+            { half_bw, bottom_y_flange },
+            { half_bf, bottom_y_flange },
+            { half_bf, top_y },
+            {-half_bf, top_y },
             {-half_bf, bottom_y_flange },
-            {-half_bf, top_y }
+            {-half_bw, bottom_y_flange },
         };
         
         section.originalPolygon.setVertices(tPoints);

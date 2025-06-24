@@ -65,12 +65,19 @@ void Interface::showPrimaryMenuBar(Section &section)
         {
             if (ImGui::MenuItem("Salvar"))
             {
-                saveSectionData(section, "projeto.json");
+                //saveSectionData(section, "projeto.json");
+                IGFD::FileDialogConfig configSave;
+                configSave.path = ".";
+                configSave.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
+                ImGuiFileDialog::Instance()->OpenDialog("SaveFileDialog", "Salvar Projeto", ".json", configSave);
             }
 
             if (ImGui::MenuItem("Carregar"))
             {
-                loadSectionData(section, "projeto.json");
+                //loadSectionData(section, "projeto.json");
+                IGFD::FileDialogConfig configLoad;
+                configLoad.path = ".";
+                ImGuiFileDialog::Instance()->OpenDialog("LoadFileDialog", "Carregar Projeto", ".json", configLoad);
             }
 
             ImGui::EndMenu();
@@ -83,6 +90,27 @@ void Interface::showPrimaryMenuBar(Section &section)
         }
 
         ImGui::EndMainMenuBar();
+    }
+
+    if (ImGuiFileDialog::Instance()->Display("SaveFileDialog")) //
+    {
+        if (ImGuiFileDialog::Instance()->IsOk()) // true se o utilizador clicou OK
+        {
+            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName(); // Pega o caminho completo com o nome do arquivo e extensão
+            saveSectionData(section, filePathName);
+        }
+
+        ImGuiFileDialog::Instance()->Close(); // Sempre feche o diálogo após processar
+    }
+
+    if (ImGuiFileDialog::Instance()->Display("LoadFileDialog")) //
+    {
+        if (ImGuiFileDialog::Instance()->IsOk()) // true se o utilizador clicou OK
+        {
+            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName(); // Pega o caminho completo com o nome do arquivo e extensão
+            loadSectionData(section, filePathName);
+        }
+        ImGuiFileDialog::Instance()->Close(); // Sempre feche o diálogo após processar
     }
 }
 
@@ -152,30 +180,30 @@ void Interface::crossSectionData(Section &section)
         
         if (ImGui::BeginTabBar("Tabela de Entrada de Dados da Seção Transversal"))
         {
-            if (ImGui::BeginTabItem("Retangular"))
+            if (ImGui::BeginTabItem("Poligonal"))
+            {
+                inputSectionPolygonal(section);
+                clearInputSection(section);
+                ImGui::EndTabItem();
+            }
+            
+            if (ImGui::BeginTabItem("Seção Retangular"))
             {
                 inputSectionRectangle(section);
                 clearInputSection(section);
                 ImGui::EndTabItem();
             }
 
-            if (ImGui::BeginTabItem("T"))
+            if (ImGui::BeginTabItem("Seção T"))
             {
                 inputSectionT(section);
                 clearInputSection(section);
                 ImGui::EndTabItem();
             }
 
-            if (ImGui::BeginTabItem("Circular"))
+            if (ImGui::BeginTabItem("Seção Circular"))
             {
                 inputSectionCircular(section);
-                clearInputSection(section);
-                ImGui::EndTabItem();
-            }
-
-            if (ImGui::BeginTabItem("Poligonal"))
-            {
-                inputSectionPolygonal(section);
                 clearInputSection(section);
                 ImGui::EndTabItem();
             }
@@ -209,6 +237,8 @@ void Interface::inputSectionRectangle(Section &section)
     if (ImGui::Button("Gerar Retângulo"))
     {
         section.originalPolygon.clearPolygonVertices();
+        section.originalReinforcement.clearReinforcement();
+        section.workingPolygon.clearPolygonVertices();
 
         // Gera os vértices para um retângulo centralizado na origem
         float halfBase = rectBase / 2.0f;
@@ -224,9 +254,9 @@ void Interface::inputSectionRectangle(Section &section)
         section.originalPolygon.setVertices(rectPoints);
         section.originalPolygon.SetNumPoints(rectPoints.size()); // Atualiza o número de pontos
         section.defineGeometry(section.originalPolygon, section.originalReinforcement);
-    }
 
-    //shouldAutoFit = true;
+        shouldAutoFit = true;
+    }
 }
 
 void Interface::inputSectionT(Section &section)
@@ -245,6 +275,8 @@ void Interface::inputSectionT(Section &section)
     if (ImGui::Button("Gerar Seção T"))
     {
         section.originalPolygon.clearPolygonVertices();
+        section.originalReinforcement.clearReinforcement();
+        section.workingPolygon.clearPolygonVertices();
 
         float half_bf = t_bf / 2.0f;
         float top_y = t_hw + t_hf;
@@ -268,9 +300,9 @@ void Interface::inputSectionT(Section &section)
         section.originalPolygon.setVertices(tPoints);
         section.originalPolygon.SetNumPoints(tPoints.size()); 
         section.defineGeometry(section.originalPolygon, section.originalReinforcement);
-    }
 
-    shouldAutoFit = true;
+        shouldAutoFit = true;
+    }
 }
 
 void Interface::inputSectionCircular(Section &section)
@@ -303,9 +335,9 @@ void Interface::inputSectionCircular(Section &section)
         section.originalPolygon.setVertices(circlePoints);
         section.originalPolygon.SetNumPoints(circlePoints.size());
         section.defineGeometry(section.originalPolygon, section.originalReinforcement);
-    }
 
-    shouldAutoFit = true;
+        shouldAutoFit = true;
+    }   
 }
 
 void Interface::inputSectionPolygonal(Section &section)
@@ -413,11 +445,16 @@ void Interface::showGeometricParameters(Section &section)
 {
     ImGui::SeparatorText("Parâmetros Geométricos da Seção");   
 
-    ImGui::Text("Area: %.2f", section.workingPolygon.getPolygonArea());
-    ImGui::Text("MaxY: %.2f", section.workingPolygon.getMaxY());
-    ImGui::Text("MinY: %.2f", section.workingPolygon.getMinY());
-    ImGui::Text("Height: %.2f", section.workingPolygon.getMaxY() - section.workingPolygon.getMinY()); // Corrigi para usar getHeight
+    ImGui::Text("Area: %.2f (cm²) |", section.workingPolygon.getPolygonArea());
+    ImGui::SameLine();
+    ImGui::Text("Altura: %.2f (cm) |", section.workingPolygon.getMaxY() - section.workingPolygon.getMinY()); // Corrigi para usar getHeight
+    ImGui::SameLine();
     ImGui::Text("CG: %.2f, %.2f", section.workingPolygon.getGeometricCenter().getX(), section.workingPolygon.getGeometricCenter().getY());
+
+    ImGui::SeparatorText("Aviso");
+
+    ImGui::BulletText("Contorno externo no sentido anti-horário.");
+    ImGui::BulletText("Contorno interno no sentido horário.");
 }
 
 void Interface::showPopUpErrorPolygon()
@@ -718,7 +755,7 @@ void Interface::reinforcementInterface(Section &section)
         ImGui::SetNextWindowPos(ImVec2(191, 47));
 
         static int barMode = 0, numBar = 0, tempNumPoints = 0;
-        static double coordXBar, coordYBar, diameterBar = 0;
+        static double coordXBar, coordYBar, diameterBar = 10;
         static double coordXiBar, coordXfBar, coordYiBar, coordYfBar;
         static bool showPopUpErrorBar = false;
 
@@ -749,14 +786,14 @@ void Interface::reinforcementInterface(Section &section)
             if (tempNumPoints != section.originalReinforcement.getReinforcement().size())
             {
                 section.originalReinforcement.SetNumPoints(tempNumPoints);
-                section.defineGeometry(section.workingPolygon, section.originalReinforcement);
+                section.defineReinforcement(section.originalReinforcement);            
             }
 
             ImGui::SameLine();
             if (ImGui::Button("Limpar Tudo"))
             {
                 section.originalReinforcement.clearReinforcement();
-                section.defineGeometry(section.workingPolygon, section.originalReinforcement);
+                section.defineReinforcement(section.originalReinforcement);            
             }
         }
 
@@ -773,7 +810,7 @@ void Interface::reinforcementInterface(Section &section)
             if (tempNumPoints != section.originalReinforcement.getReinforcement().size())
             {
                 section.originalReinforcement.SetNumPoints(tempNumPoints);
-                section.defineGeometry(section.workingPolygon, section.originalReinforcement);
+                section.defineReinforcement(section.originalReinforcement);
             }
 
             ImGui::SameLine();
@@ -811,7 +848,7 @@ void Interface::reinforcementInterface(Section &section)
                         section.originalReinforcement.addReinforcement(x, y, diameterBar);
                     }
                     section.originalReinforcement.computeArea();
-                    section.defineGeometry(section.workingPolygon, section.originalReinforcement);
+                    section.defineReinforcement(section.originalReinforcement);
                 }
                 else
                     showPopUpErrorBar = true;
@@ -843,7 +880,7 @@ void Interface::reinforcementInterface(Section &section)
                 if (ImGui::InputDouble(labelX, &x, 0.0, 0.0, "%.2f")) // Cria um campo editável para a coordenada x
                 {
                     section.originalReinforcement.SetTableData(i, x, y, d);                        // Atualiza a coordenada 'x' diretamente no vetor
-                    section.defineGeometry(section.workingPolygon, section.originalReinforcement); // Atualiza a geometria da seção
+                    section.defineReinforcement(section.originalReinforcement); // Atualiza a geometria da seção
                 }
                 ImGui::TableSetColumnIndex(2); // Coluna para 'y'
                 char labelY[10];
@@ -852,7 +889,7 @@ void Interface::reinforcementInterface(Section &section)
                 if (ImGui::InputDouble(labelY, &y, 0.0, 0.0, "%.2f")) // Cria um campo editável para a coordenada y
                 {
                     section.originalReinforcement.SetTableData(i, x, y, d);                        // Atualiza a coordenada 'y' diretamente no vetor
-                    section.defineGeometry(section.workingPolygon, section.originalReinforcement); // Atualiza a geometria da seção
+                    section.defineReinforcement(section.originalReinforcement); // Atualiza a geometria da seção
                 }
 
                 ImGui::TableSetColumnIndex(3); // Coluna para 'Diâmetro'
@@ -864,7 +901,7 @@ void Interface::reinforcementInterface(Section &section)
                     {
                         section.originalReinforcement.SetTableData(i, x, y, d);                        // Atualiza o diâmetro diretamente no vetor
                         section.originalReinforcement.computeArea();                                   // Recalcula a área da armadura
-                        section.defineGeometry(section.workingPolygon, section.originalReinforcement); // Atualiza a geometria da seção
+                        section.defineReinforcement(section.originalReinforcement); // Atualiza a geometria da seção
                     }
                     else
                     {
@@ -1117,7 +1154,6 @@ void Interface::effortSectionInterface(Section &section)
 
         if (ImGui::InputInt("##XX:", &tempNumCombinations))
         {
-
             if (tempNumCombinations < 1)
                 tempNumCombinations = 1;
 
@@ -1176,6 +1212,8 @@ void Interface::effortSectionInterface(Section &section)
         {
             if (section.combinations.size() > 0)
                 section.combinations.clear();
+            if (section.envelopeMoments.size() > 0)
+                section.envelopeMoments.clear();
             tempNumCombinations = 1;
         }
 
@@ -1201,6 +1239,7 @@ void Interface::effortSectionInterface(Section &section)
                     section.combinations[i].MsolverXX = section.momentSolver.getMoment().getX();
                     section.combinations[i].MsolverYY = section.momentSolver.getMoment().getY();
                     section.combinations[i].isMomentValid = true;
+                    section.combinations[i].isCalculated = true;
                     shouldAutoFit = true;
                 }
             }
@@ -1472,7 +1511,37 @@ void Interface::EffortsTable(Section &section)
 
             // Coluna 1 - Nsd
             ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%.2f", section.combinations[i].Normal);
+            if (!section.combinations[i].isMomentValid)
+            {
+                ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255)); // Vermelho se inválido
+                ImGui::Text("%.2f", section.combinations[i].Normal);
+                ImGui::PopStyleColor();
+            }
+            else
+            {
+                ImGui::Text("%.2f", section.combinations[i].Normal);
+            }
+
+            // if (!section.combinations[i].isCalculated)
+            // {
+            //     ImGui::Text("%.2f", section.combinations[i].Normal);
+            // }
+            // else
+            // {
+            //     if (!section.combinations[i].isMomentValid)
+            //     {
+            //         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255)); // Vermelho se inválido
+            //         ImGui::Text("%.2f", section.combinations[i].Normal);
+            //         ImGui::PopStyleColor();
+            //     }
+                
+            //     if (section.combinations[i].isMomentValid)
+            //     {
+            //         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0, 255, 0, 255)); 
+            //         ImGui::Text("%.2f", section.combinations[i].Normal);
+            //         ImGui::PopStyleColor();
+            //     }
+            // }
 
             // Coluna 2 - MsdX
             ImGui::TableSetColumnIndex(2);
@@ -1480,16 +1549,20 @@ void Interface::EffortsTable(Section &section)
 
             // Coluna 3 - M. Resistente (com destaque em vermelho se inválido)
             ImGui::TableSetColumnIndex(3);
-            if (!section.combinations[i].isMomentValid)
-            {
-                ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));
-                ImGui::TextUnformatted("ERRO!");
-                ImGui::PopStyleColor();
-            }
-            else
-            {
-                ImGui::Text("%.2f", section.combinations[i].MsolverXX);
-            }
+            ImGui::Text("%.2f", section.combinations[i].MsdY);
+
+            // if (!section.combinations[i].isMomentValid)
+            // {
+            //     ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));
+            //     ImGui::TextUnformatted("ERRO!");
+            //     ImGui::PopStyleColor();
+            // }
+            // else
+            // {
+            //     ImGui::Text("%.2f", section.combinations[i].MsolverXX);
+            // }
+
+
         }
 
         ImGui::EndTable();

@@ -29,3 +29,8 @@
 # Executables
 *.out
 *.app
+
+**/*.exe
+**/*.json
+**/*.ini
+**/*.txt

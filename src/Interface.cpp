@@ -1,9 +1,11 @@
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "Interface.h"
 #include "segoeuisl_data.h"
 
 #include <iostream>
 #include <functional>
 #include <algorithm>
+#include <imgui_internal.h>
 
 void Interface::initInterface()
 {
@@ -92,6 +94,21 @@ void Interface::showPrimaryMenuBar(Section &section)
         ImGui::EndMainMenuBar();
     }
 
+    static ImVec2 dialogMinSize = ImVec2(800, 600);  // Tamanho mínimo padrão
+    static ImVec2 dialogMaxSize = ImVec2(FLT_MAX, FLT_MAX);
+
+    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+    ImVec2 dialogCurrentSize = (ImGui::GetIO().DisplaySize) * 0.5f;
+
+    // Garanta que o tamanho esteja dentro dos limites min/max
+    dialogCurrentSize.x = ImMax(dialogCurrentSize.x, dialogMinSize.x);
+    dialogCurrentSize.y = ImMax(dialogCurrentSize.y, dialogMinSize.y);
+    dialogCurrentSize.x = ImMin(dialogCurrentSize.x, dialogMaxSize.x);
+    dialogCurrentSize.y = ImMin(dialogCurrentSize.y, dialogMaxSize.y);
+
+    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f)); // Centraliza no primeiro aparecimento
+    ImGui::SetNextWindowSize(dialogCurrentSize, ImGuiCond_Appearing); // Define o tamanho no primeiro aparecimento
+
     if (ImGuiFileDialog::Instance()->Display("SaveFileDialog")) //
     {
         if (ImGuiFileDialog::Instance()->IsOk()) // true se o utilizador clicou OK
@@ -102,6 +119,9 @@ void Interface::showPrimaryMenuBar(Section &section)
 
         ImGuiFileDialog::Instance()->Close(); // Sempre feche o diálogo após processar
     }
+
+    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f)); // Centraliza no primeiro aparecimento
+    ImGui::SetNextWindowSize(dialogCurrentSize, ImGuiCond_Appearing); // Define o tamanho no primeiro aparecimento
 
     if (ImGuiFileDialog::Instance()->Display("LoadFileDialog")) //
     {
@@ -1317,7 +1337,6 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
     {
         if (section.workingPolygon.getPolygonVertices().size() > 2)
         {
-
             if (shouldAutoFit)
             {
                 autoFitToPointsWithMargin(section.workingPolygon.getPolygonVertices(), 0.1f);

@@ -8,3 +8,12 @@ Combination::Combination(double normal, double msdX, double msdY, double msolver
     : Normal(normal), MsdX(msdX), MsdY(msdY), MsolverXX(msolverxx), MsolverYY(msolveryy), isMomentValid(isValid), isCalculated(isCalculated)
 {
 }
+
+vector<Point> Combination::getMsd() const
+{
+    vector<Point> result{};
+    Point msd = Point(MsdX, MsdY);
+    result.push_back(msd);
+    
+    return result;
+}

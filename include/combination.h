@@ -1,6 +1,8 @@
 #ifndef COMBINATION_H
 #define COMBINATION_H
 
+#include "Point.h"
+
 #include <vector>
 #include <string>
 
@@ -20,6 +22,8 @@ public:
 
     Combination();
     Combination(double normal, double msdX, double msdY, double MsolverXX, double MsolverYY, bool isValid = true, bool isCalculated = false);
+
+    vector<Point> getMsd() const;
 
     friend class cereal::access;
     template <class Archive>

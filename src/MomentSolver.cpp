@@ -109,8 +109,8 @@ Point MomentSolver::computeMomentResultant(Polygon &polygon, Reinforcement &rein
     double Mrdxx = internalForces.getMomentXXSection();
     double Mrdyy = internalForces.getMomentYYSection();
     Point result = {0, 0};
-    result.setX(Mrdxx);
-    result.setY(Mrdyy);
+    result.setX(Mrdyy);
+    result.setY(Mrdxx);
     return result;
 }
 

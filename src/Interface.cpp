@@ -80,6 +80,8 @@ void Interface::showPrimaryMenuBar(Section &section)
                 IGFD::FileDialogConfig configLoad;
                 configLoad.path = ".";
                 ImGuiFileDialog::Instance()->OpenDialog("LoadFileDialog", "Carregar Projeto", ".json", configLoad);
+                shouldAutoFit = true;
+                shouldAutoFitEnv = true;
             }
 
             ImGui::EndMenu();
@@ -1170,8 +1172,7 @@ void Interface::effortSectionInterface(Section &section)
         if (section.combinations.empty())
         {
             section.combinations.resize(1, Combination(0.0f, 0.0f, 0.0f, 0.0f, false));
-            // Não precisa setar tempNumCombinations aqui, pois ele já é static 1
-            // e só é alterado pelo input do usuário ou pelo resize.
+            mappingID.resize(1);
         }
 
         if (ImGui::InputInt("##XX:", &tempNumCombinations))
@@ -1180,6 +1181,7 @@ void Interface::effortSectionInterface(Section &section)
                 tempNumCombinations = 1;
 
             section.combinations.resize(tempNumCombinations, Combination(0.0f, 0.0f, 0.0f, 0.0f, false));
+            mappingID.resize(tempNumCombinations);
         }
 
         if (ImGui::BeginTable("TabelaEsforcos", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp))
@@ -1243,28 +1245,41 @@ void Interface::effortSectionInterface(Section &section)
 
         if (ImGui::Button("Calcular"))
         {
-            section.defineGeometry(section.originalPolygon, section.originalReinforcement);
-            section.defineMaterials(section.concrete, section.steel);
-            section.internalForces.computeMaxCompression(section.workingPolygon, section.workingReinforcement, section.steel, section.concrete);
-            section.internalForces.computeMaxTraction(section.workingPolygon, section.workingReinforcement, section.steel);
-
-            for (int i = 0; i < section.combinations.size(); ++i)
+            if (section.workingPolygon.getPolygonVertices().empty() || section.workingReinforcement.getReinforcement().empty())
             {
-                section.internalForces.setNormalSolicitation(section.combinations[i].Normal);
+                ImGui::OpenPopup("Erro de Esforço Normal");
+                showPopUpErrorAxialForce = true;
+            }
+            else
+            {
+                section.defineGeometry(section.originalPolygon, section.originalReinforcement);
+                section.defineMaterials(section.concrete, section.steel);
+                section.internalForces.computeMaxCompression(section.workingPolygon, section.workingReinforcement, section.steel, section.concrete);
+                section.internalForces.computeMaxTraction(section.workingPolygon, section.workingReinforcement, section.steel);
 
-                if (section.internalForces.getNormalSolicitation() < section.internalForces.getMaxNormalCompression() || section.internalForces.getNormalSolicitation() > section.internalForces.getMaxNormalTraction())
-                    section.combinations[i].isMomentValid = false;
-
-                else
+                for (int i = 0; i < section.combinations.size(); ++i)
                 {
-                    section.computeEnvelope(section.combinations[i].Normal);
-                    section.combinations[i].MsolverXX = section.momentSolver.getMoment().getX();
-                    section.combinations[i].MsolverYY = section.momentSolver.getMoment().getY();
-                    section.combinations[i].isMomentValid = true;
-                    section.combinations[i].isCalculated = true;
-                    shouldAutoFit = true;
+                    section.internalForces.setNormalSolicitation(section.combinations[i].Normal);
+
+                    if (section.internalForces.getNormalSolicitation() < section.internalForces.getMaxNormalCompression() || section.internalForces.getNormalSolicitation() > section.internalForces.getMaxNormalTraction())
+                        section.combinations[i].isMomentValid = false;
+
+                    else
+                    {
+                        section.computeEnvelope(section.combinations[i].Normal);
+                        section.combinations[i].MsolverXX = section.momentSolver.getMoment().getX();
+                        section.combinations[i].MsolverYY = section.momentSolver.getMoment().getY();
+                        section.combinations[i].isMomentValid = true;
+                        section.combinations[i].isCalculated = true;
+                        shouldAutoFit = true;
+                        shouldAutoFitEnv = true;
+
+                        for (size_t j = 0; j < mappingID.size(); ++j)
+                            mappingID[j] = false; // Limpa o mapeamento antes de selecionar
+                    }
                 }
             }
+
         }
 
         if (showPopUpErrorAxialForce)
@@ -1319,12 +1334,11 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
 {
     ImGuiIO &io = ImGui::GetIO();
 
-    float largura = io.DisplaySize.x - 300.0f;
+    float largura = (io.DisplaySize.x - 300.0f)* 0.5; // 50% da largura total da tela
     float alturaDisponivel = io.DisplaySize.y - posY;
-    float altura = alturaDisponivel * 0.5f; // 50%
 
     ImGui::SetNextWindowPos(ImVec2(0, posY), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(largura, altura), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(largura, alturaDisponivel), ImGuiCond_Always);
 
     ImGui::Begin("Grafico da Secao Transversal",
                  nullptr,
@@ -1333,15 +1347,26 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
                      ImGuiWindowFlags_NoCollapse |
                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
+    ImPlotStyle backup = ImPlot::GetStyle(); // salva estilo atual
+
+    applyDarkElegantPlotStyle();
+    
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
-    if (ImPlot::BeginPlot("Gráfico da Seção Transversal", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit))
+    if (ImPlot::BeginPlot("Gráfico da Seção Transversal", ImVec2(plotSize.x, plotSize.y), 
+    ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend | ImPlotFlags_NoInputs))
     {
+        ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_AutoFit);
+        ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_AutoFit);
+
+        ImPlot::PushStyleVar(ImPlotStyleVar_FitPadding, ImVec2(0.1f, 0.1f));
+
         if (section.workingPolygon.getPolygonVertices().size() > 2)
         {
             if (shouldAutoFit)
             {
                 autoFitToPointsWithMargin(section.workingPolygon.getPolygonVertices(), 0.1f);
+ 
                 shouldAutoFit = false;
             }
 
@@ -1349,12 +1374,13 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
             renderPolygon(section.stressRegions.getCompressedRegion().getPolygonVertices(), "vComp", "pComp");
             renderPolygon(section.stressRegions.getParabolicRegion().getPolygonVertices(), "vParab", "pParab");
             renderPolygon(section.stressRegions.getRectangularRegion().getPolygonVertices(), "vRec", "pRec");
-            renderVectorPoint(section.workingReinforcement.getReinforcement(), "Barras");
+            //renderVectorPoint(section.workingReinforcement.getReinforcement(), "Barras");
+            renderReinforcement(section, "Barras");
         }
 
         ImPlot::EndPlot();
     }
-
+    ImPlot::GetStyle() = backup; // restaura estilo anterior
     ImGui::End();
 }
 
@@ -1362,13 +1388,12 @@ void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
 {
     ImGuiIO &io = ImGui::GetIO();
 
-    float largura = io.DisplaySize.x - 300.0f;
+    float largura = (io.DisplaySize.x - 300.0f) * 0.5; // 50% da largura total da tela
     float alturaDisponivel = io.DisplaySize.y - posY;
-    float altura = alturaDisponivel * 0.5f;          // 50%
-    float novaPosY = posY + alturaDisponivel * 0.5f; // começa logo após a primeira janela
+    float posicaoX = (largura); // Centraliza a janela horizontalmente
 
-    ImGui::SetNextWindowPos(ImVec2(0, novaPosY), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(largura, altura), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(posicaoX, posY), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(largura,  alturaDisponivel), ImGuiCond_Always);
 
     ImGui::Begin("Envoltoria", nullptr,
                  ImGuiWindowFlags_NoMove |
@@ -1376,21 +1401,44 @@ void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
                      ImGuiWindowFlags_NoCollapse |
                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
-    ImVec2 plotSize = ImGui::GetContentRegionAvail();
+    ImPlotStyle backup = ImPlot::GetStyle(); // salva estilo atual
 
-    if (ImPlot::BeginPlot("Envoltoria de Momentos Resistentes", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit))
+    applyDarkElegantPlotStyle();
+    
+    ImVec2 plotSize = ImGui::GetContentRegionAvail();
+    
+    if (ImPlot::BeginPlot("Envoltoria de Momentos Resistentes", ImVec2(plotSize.x, plotSize.y), 
+    ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend | ImPlotFlags_NoInputs))
     {
-        if (shouldAutoFit)
+        ImPlot::SetupAxis(ImAxis_X1, "MsdY (kN.m)", ImPlotAxisFlags_AutoFit);
+        ImPlot::SetupAxis(ImAxis_Y1, "MsdX (kN.m)", ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_Invert);
+
+        ImPlot::PushStyleVar(ImPlotStyleVar_FitPadding, ImVec2(0.1f, 0.1f));
+
+        if (shouldAutoFitEnv)
         {
             autoFitToPointsWithMargin(section.getEnvelopeMoments(), 0.1f);
-            shouldAutoFit = false;
+            shouldAutoFitEnv = false;
         }
 
         renderPolygon(section.envelopeMoments, "Vertices", "Envoltoria");
+        
+        if (section.combinations.size() > 0)
+        {
+            for (size_t i = 0; i < mappingID.size(); i++)
+            {
+                if (mappingID[i] == true)
+                {
+                    ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 5, ImVec4(1.0f, 0.0f, 0.0f, 1.0f), 1.0f, ImVec4(0.8f, 0.0f, 0.0f, 1.0f));
+                    std::vector<Point> singlePointVector = {section.combinations[i].getMsd()};
+                    renderVectorPoint(singlePointVector, "Msd Solicitante");
+                }
+            }
+        }
 
         ImPlot::EndPlot();
     }
-
+    ImPlot::GetStyle() = backup; // restaura estilo anterior
     ImGui::End();
 }
 
@@ -1518,6 +1566,11 @@ void Interface::EffortsTable(Section &section)
             if (ImGui::Selectable(rowId.c_str(), selectedEffort == (int)i, ImGuiSelectableFlags_SpanAllColumns))
             {
                 selectedEffort = static_cast<int>(i);
+                
+                for (size_t j = 0; j < mappingID.size(); ++j)
+                    mappingID[j] = false; // Limpa o mapeamento antes de selecionar
+
+                mappingID[i] = true;
 
                 section.computeEnvelope(section.combinations[i].Normal);
 
@@ -1526,6 +1579,7 @@ void Interface::EffortsTable(Section &section)
                 }
                 else
                     showPopUpErrorAxialForce = true;
+
             }
             ImGui::SameLine();
             ImGui::Text("%d", static_cast<int>(i + 1));
@@ -1620,10 +1674,15 @@ void Interface::EffortsTable(Section &section)
     {
 
         ImGuiIO &io = ImGui::GetIO();
+        
         ImVec2 posjanela = ImVec2(io.DisplaySize.x - 260, io.DisplaySize.y / 3.0f);
 
         ImGui::OpenPopup("Erro de Esforço Normal");
-        ImGui::SetNextWindowPos(posjanela, ImGuiCond_Always);
+        
+        //ImGui::SetNextWindowPos(posjanela, ImGuiCond_Always);
+        
+        ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
         if (ImGui::BeginPopupModal("Erro de Esforço Normal", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
             float Nsd = section.combinations[selectedEffort].Normal;
@@ -1798,4 +1857,57 @@ void Interface::autoFitToPointsWithMargin(const vector<Point> &points, float mar
         minX - marginX, maxX + marginX,
         minY - marginY, maxY + marginY,
         ImGuiCond_Always);
+}
+
+void Interface::renderReinforcement(Section &section, std::string plotLabel)
+{
+    // Esta função DEVE ser chamada DENTRO de um ImPlot::BeginPlot()
+    // para que ImPlot::PlotToPixels() funcione corretamente.
+
+    // Obter a escala de pixels por unidade de dados (cm).
+    // Isso deve ser feito APENAS UMA VEZ por frame, dentro do BeginPlot.
+    ImPlotPoint p1_data = ImPlotPoint(0, 0);
+    ImPlotPoint p2_data = ImPlotPoint(1.0, 0); // 1.0 cm de distância
+    ImVec2 p1_pixels = ImPlot::PlotToPixels(p1_data);
+    ImVec2 p2_pixels = ImPlot::PlotToPixels(p2_data);
+    float pixels_per_cm_x = std::fabs(p2_pixels.x - p1_pixels.x);
+
+    // Iterar sobre cada barra de armadura para desenhá-la individualmente
+    for (size_t i = 0; i < section.getWorkingReinforcement().GetNumPoints(); ++i)
+    {
+        double x_bar, y_bar, diameter_bar_mm;
+        // Obter as coordenadas e o diâmetro da barra.
+        section.workingReinforcement.GetTableData(i, &x_bar, &y_bar, &diameter_bar_mm);
+
+        // Converter o diâmetro de mm para cm (ou para a unidade do seu plot).
+        float diameter_bar_cm = static_cast<float>(diameter_bar_mm / 10.0); // Diâmetro em cm
+
+        // Calcular o tamanho do marcador em pixels para esta barra.
+        float marker_size_pixels = (diameter_bar_cm * pixels_per_cm_x) / 2;
+
+        // Garantir um tamanho mínimo para visualização, mesmo para diâmetros muito pequenos
+        if (marker_size_pixels < 1.0f)
+        { // Exemplo: tamanho mínimo de 2 pixels
+            marker_size_pixels = 1.0f;
+        }
+// Configurar o estilo do marcador para a barra atual.
+        ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle,
+                                   marker_size_pixels,
+                                   ImVec4(0.0f, 0.0f, 1.0f, 1.0f), // Cor azul
+                                   1.0f,                           // Espessura da borda
+                                   ImVec4(0.0f, 0.0f, 0.8f, 1.0f)  // Cor da borda
+        );
+
+        // Desenhar a barra individualmente.
+        // É importante que o rótulo do PlotScatter seja único para cada barra
+        // se você quiser interatividade individual (ex: tooltips).
+        // Podemos usar um label_id com o índice.
+        char bar_label[32];
+        snprintf(bar_label, sizeof(bar_label), "%s Bar %zu", plotLabel.c_str(), i + 1);
+
+        double single_x[] = {x_bar}; // PlotScatter espera um array, mesmo para um único ponto
+        double single_y[] = {y_bar};
+
+        ImPlot::PlotScatter(bar_label, single_x, single_y, 1);
+    }
 }

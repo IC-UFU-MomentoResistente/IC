@@ -35,6 +35,8 @@ class Interface
 {
 private:
     bool shouldAutoFit = false;
+    bool shouldAutoFitEnv = false;
+    std::vector<bool> mappingID = {};
 
 public:
     void initInterface();
@@ -72,4 +74,5 @@ public:
     void saveSectionData(Section &section, const std::string &filename);
     void loadSectionData(Section &section, const std::string &filename);
     void autoFitToPointsWithMargin(const vector<Point> &points, float margin = 0.1f);
+    void renderReinforcement(Section &section, std::string plotLabel);
 };

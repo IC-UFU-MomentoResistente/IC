@@ -94,20 +94,22 @@ void Interface::showPrimaryMenuBar(Section &section)
         ImGui::EndMainMenuBar();
     }
 
-    static ImVec2 dialogMinSize = ImVec2(800, 600);  // Tamanho mínimo padrão
-    static ImVec2 dialogMaxSize = ImVec2(FLT_MAX, FLT_MAX);
+    ImVec2 dialogPos;
+    dialogPos.y = ImGui::GetFrameHeight(); // Pega a altura da última frame (útil para menus)
+    dialogPos.x = 0; // Alinhar à esquerda da janela principal
 
-    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-    ImVec2 dialogCurrentSize = (ImGui::GetIO().DisplaySize) * 0.5f;
+    ImVec2 dialogCurrentSize = ImGui::GetIO().DisplaySize * 0.4f;
 
-    // Garanta que o tamanho esteja dentro dos limites min/max
+    static ImVec2 dialogMinSize = ImVec2(400, 300);
+    static ImVec2 dialogMaxSize = ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+
     dialogCurrentSize.x = ImMax(dialogCurrentSize.x, dialogMinSize.x);
     dialogCurrentSize.y = ImMax(dialogCurrentSize.y, dialogMinSize.y);
     dialogCurrentSize.x = ImMin(dialogCurrentSize.x, dialogMaxSize.x);
     dialogCurrentSize.y = ImMin(dialogCurrentSize.y, dialogMaxSize.y);
 
-    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f)); // Centraliza no primeiro aparecimento
-    ImGui::SetNextWindowSize(dialogCurrentSize, ImGuiCond_Appearing); // Define o tamanho no primeiro aparecimento
+    ImGui::SetNextWindowPos(dialogPos, ImGuiCond_Appearing);
+    ImGui::SetNextWindowSize(dialogCurrentSize, ImGuiCond_Appearing);
 
     if (ImGuiFileDialog::Instance()->Display("SaveFileDialog")) //
     {
@@ -120,8 +122,8 @@ void Interface::showPrimaryMenuBar(Section &section)
         ImGuiFileDialog::Instance()->Close(); // Sempre feche o diálogo após processar
     }
 
-    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f)); // Centraliza no primeiro aparecimento
-    ImGui::SetNextWindowSize(dialogCurrentSize, ImGuiCond_Appearing); // Define o tamanho no primeiro aparecimento
+    ImGui::SetNextWindowPos(dialogPos, ImGuiCond_Appearing);
+    ImGui::SetNextWindowSize(dialogCurrentSize, ImGuiCond_Appearing);
 
     if (ImGuiFileDialog::Instance()->Display("LoadFileDialog")) //
     {

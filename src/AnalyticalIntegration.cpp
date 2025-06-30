@@ -50,7 +50,18 @@ double AnalyticalIntegration::computeNormalConcreteParabolic(double coordLN, dou
             double n1 = nConc + 1;
             double n2 = nConc + 2;
             double n3 = nConc + 3;
-            double eexp = pow(((g + xEpc2 - coordY) / xEpc2), n1);
+
+            double base_eexp = (g + xEpc2 - coordY) / xEpc2;
+            double eexp = 0;
+
+            if (base_eexp <= 0)
+            {
+                eexp = 0; // Avoid negative exponent
+            }
+            else
+            {
+                eexp = pow(base_eexp, n1);
+            }
 
             double ncd1 = -multFcd * fcd *
                         (-((xEpc2 * eexp * (coef1 * n2 + coef2 * (g + xEpc2 + nConc * coordY + coordY))) / (n1 * n2)) -
@@ -66,7 +77,18 @@ double AnalyticalIntegration::computeNormalConcreteParabolic(double coordLN, dou
             double n1 = nConc + 1;
             double n2 = nConc + 2;
             double n3 = nConc + 3;
-            double eexp = pow(((g + xEpc2 - coordY) / xEpc2), n1);
+
+            double base_eexp = (g + xEpc2 - coordY) / xEpc2;
+            double eexp = 0;
+
+            if (base_eexp <= 0)
+            {
+                eexp = 0; // Avoid negative exponent
+            }
+            else
+            {
+                eexp = pow(base_eexp, n1);
+            }
 
             double ncd1 = -multFcd * etaC * fcd * 
                         (-((xEpc2 * eexp * (coef1 * n2 + coef2 * (g + xEpc2 + nConc * coordY + coordY))) / (n1 * n2)) -
@@ -120,7 +142,18 @@ double AnalyticalIntegration::computeMomentXXConcreteParabolic(double coordLN, d
             double n1 = nConc + 1;
             double n2 = nConc + 2;
             double n3 = nConc + 3;
-            double eexp = pow(((g + xEpc2 - coordY) / xEpc2), n1);
+
+            double base_eexp = (g + xEpc2 - coordY) / xEpc2;
+            double eexp = 0;
+
+            if (base_eexp <= 0)
+            {
+                eexp = 0; // Avoid negative exponent
+            }
+            else
+            {
+                eexp = pow(base_eexp, n1);
+            }
 
             double mcd1xx = (multFcd * fcd * (3 * coef1 * ((n1) * (n2) * (n3)*coordY * coordY + 2 * xEpc2 * eexp * 
             (((g) + xEpc2) * (n3) + (3 + 4 * nConc + nConc * nConc) * coordY)) + 2 * coef2 * 
@@ -140,7 +173,18 @@ double AnalyticalIntegration::computeMomentXXConcreteParabolic(double coordLN, d
             double n1 = nConc + 1;
             double n2 = nConc + 2;
             double n3 = nConc + 3;
-            double eexp = pow(((g + xEpc2 - coordY) / xEpc2), n1);
+
+            double base_eexp = (g + xEpc2 - coordY) / xEpc2;
+            double eexp = 0;
+
+            if (base_eexp <= 0)
+            {
+                eexp = 0; // Avoid negative exponent
+            }
+            else
+            {
+                eexp = pow(base_eexp, n1);
+            }
 
             double mcd1xx = (multFcd * etaC * fcd * (3 * coef1 * ((n1) * (n2) * (n3)*coordY * coordY + 2 * xEpc2 * eexp * 
             (((g) + xEpc2) * (n3) + (3 + 4 * nConc + nConc * nConc) * coordY)) + 2 * coef2 * 
@@ -195,7 +239,18 @@ double AnalyticalIntegration::computeMomentYYConcreteParabolic(double coordLN, d
             double n1 = nConc + 1;
             double n2 = nConc + 2;
             double n3 = nConc + 3;
-            double eexp = pow(((g + xEpc2 - coordY) / xEpc2), n1);
+
+            double base_eexp = (g + xEpc2 - coordY) / xEpc2;
+            double eexp = 0;
+
+            if (base_eexp <= 0)
+            {
+                eexp = 0; // Avoid negative exponent
+            }
+            else
+            {
+                eexp = pow(base_eexp, n1);
+            }
 
             double mcd1yy = (multFcd*fcd*(3*coef1*coef1*(xEpc2*
             (6+5*nConc+nConc*nConc)*eexp+
@@ -221,7 +276,18 @@ double AnalyticalIntegration::computeMomentYYConcreteParabolic(double coordLN, d
             double n1 = nConc + 1;
             double n2 = nConc + 2;
             double n3 = nConc + 3;
-            double eexp = pow(((g + xEpc2 - coordY) / xEpc2), n1);
+
+            double base_eexp = (g + xEpc2 - coordY) / xEpc2;
+            double eexp = 0;
+
+            if (base_eexp <= 0)
+            {
+                eexp = 0; // Avoid negative exponent
+            }
+            else
+            {
+                eexp = pow(base_eexp, n1);
+            }
 
             double mcd1yy = (multFcd*etaC*fcd*(3*coef1*coef1*(xEpc2*
             (6+5*nConc+nConc*nConc)*eexp+

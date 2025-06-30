@@ -65,6 +65,11 @@ void Interface::showPrimaryMenuBar(Section &section)
     {
         if (ImGui::BeginMenu("Arquivo"))
         {
+            if (ImGui::MenuItem("Novo"))
+            {
+                clearSection(section);
+            }
+
             if (ImGui::MenuItem("Salvar"))
             {
                 //saveSectionData(section, "projeto.json");
@@ -515,6 +520,8 @@ void Interface::clearSection(Section &section)
     section.stressRegions.clearStressRegions();
     section.originalReinforcement.clearReinforcement();
     section.workingPolygon.clearPolygonVertices();
+    section.envelopeMoments.clear();
+    section.combinations.clear();
 }
 
 void Interface::interfaceMaterials(Section &section)
@@ -568,17 +575,6 @@ void Interface::concreteInterface(Section &section)
     collectedFck = section.concrete.getFck();
     collectedGammaC = section.concrete.getGammaC();
 
-    if (collectedFck < 0 || collectedGammaC < 0)
-    {
-        collectedFck = 35;
-        collectedGammaC = 1.4;
-    }
-
-    if (collectedFck > 90)
-    {
-        collectedFck = 90;
-    }
-
     ImGui::RadioButton("NBR 6118:2023", &constitutiveModel, 1);
     ImGui::SameLine();
     ImGui::RadioButton("NBR 6118:2014", &constitutiveModel, 0);
@@ -595,6 +591,17 @@ void Interface::concreteInterface(Section &section)
         ImGui::InputDouble("fck (MPa):", &collectedFck, 0.0f, 0.0f, "%.3f");
         ImGui::InputDouble("γc: ", &collectedGammaC, 0.0f, 0.0f, "%.3f");
         ImGui::EndGroup();
+
+        if (collectedFck < 0 || collectedGammaC < 0)
+        {
+            collectedFck = 30;
+            collectedGammaC = 1.4;
+        }
+
+        if (collectedFck > 90)
+        {
+            collectedFck = 90;
+        }
 
         section.concrete.setParameters(model61182014, collectedFck, collectedGammaC);
         section.concrete.setCurveStressStrain();
@@ -648,6 +655,17 @@ void Interface::concreteInterface(Section &section)
         ImGui::InputDouble("fck (MPa):", &collectedFck, 0.0f, 0.0f, "%.3f");
         ImGui::InputDouble("γc:", &collectedGammaC, 0.0f, 0.0f, "%.3f");
         ImGui::EndGroup();
+
+        if (collectedFck < 0 || collectedGammaC < 0)
+        {
+            collectedFck = 30;
+            collectedGammaC = 1.4;
+        }
+
+        if (collectedFck > 90)
+        {
+            collectedFck = 90;
+        }
 
         section.concrete.setParameters(model61182023, collectedFck, collectedGammaC);
         section.concrete.setCurveStressStrain();
@@ -848,6 +866,7 @@ void Interface::reinforcementInterface(Section &section)
             ImGui::InputInt("Número de barras", &numBar);
             if (numBar < 2)
                 numBar = 2;
+            ImGui::InputDouble("Diâmetro das barras (mm)", &diameterBar, 0.0, 0.0, "%.2f");
             ImGui::InputDouble("xi (cm)", &coordXiBar, 0.0, 0.0, "%.2f");
             ImGui::SameLine();
             ImGui::InputDouble("xf (cm)", &coordXfBar, 0.0, 0.0, "%.2f");
@@ -855,9 +874,13 @@ void Interface::reinforcementInterface(Section &section)
             ImGui::SameLine();
             ImGui::InputDouble("yf (cm)", &coordYfBar, 0.0, 0.0, "%.2f");
             ImGui::SameLine();
-            ImGui::InputDouble("Diâmetro (mm)", &diameterBar, 0.0, 0.0, "%.2f");
             ImGui::PopID();
             ImGui::EndGroup();
+
+            if (diameterBar < 0)
+            {
+                diameterBar = 0; // Valor padrão se o diâmetro for negativo
+            }
 
             if (ImGui::Button("Adicionar Linha"))
             {
@@ -1164,6 +1187,8 @@ void Interface::effortSectionInterface(Section &section)
         static bool showPopUpErrorAxialForce = false;
         static bool showPopUpSolver = false;
         static int tempNumCombinations = 1;
+        static bool showPopUpErrorPolygon = false;
+        static bool showPopUpErrorBar = false;
 
         ImGui::Begin("Entrada de Dados: Esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
         ImGui::PushItemWidth(100);
@@ -1245,6 +1270,19 @@ void Interface::effortSectionInterface(Section &section)
 
         if (ImGui::Button("Calcular"))
         {
+
+            bool hasPolygon = !section.workingPolygon.getPolygonVertices().empty();
+            bool hasReinforcement = !section.workingReinforcement.getReinforcement().empty();
+
+            if (!hasPolygon)
+            {
+                showPopUpErrorPolygon = true;
+            }
+            else if (!hasReinforcement)
+            {
+                showPopUpErrorBar = true;
+            }
+
             if (section.workingPolygon.getPolygonVertices().empty() || section.workingReinforcement.getReinforcement().empty())
             {
                 ImGui::OpenPopup("Erro de Esforço Normal");
@@ -1296,6 +1334,58 @@ void Interface::effortSectionInterface(Section &section)
                 if (ImGui::Button("OK", ImVec2(120, 0)))
                 {
                     showPopUpErrorAxialForce = false;
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
+            }
+        }
+
+        if (showPopUpErrorPolygon == true)
+        {
+            ImGuiIO &io = ImGui::GetIO();
+
+            ImGui::OpenPopup("Erro de inserção de dados");
+
+            // Define a posição para o centro da tela
+            ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+            ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+            if (ImGui::BeginPopupModal("Erro de inserção de dados", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("O polígono não foi definido corretamente.");
+                ImGui::Separator();
+
+                ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f); // Centraliza o botão
+                if (ImGui::Button("OK", ImVec2(120, 0)))
+                {
+                    showPopUpErrorPolygon = false;
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
+            }
+        }
+
+        if (showPopUpErrorBar == true)
+        {
+            ImGuiIO &io = ImGui::GetIO();
+
+            ImGui::OpenPopup("Erro de inserção de dados");
+
+            // Define a posição para o centro da tela
+            ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+            ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+            if (ImGui::BeginPopupModal("Erro de inserção de dados", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("A armadura não foi definida corretamente.");
+                ImGui::Separator();
+
+                ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f); // Centraliza o botão
+                if (ImGui::Button("OK", ImVec2(120, 0)))
+                {
+                    showPopUpErrorBar = false;
                     ImGui::CloseCurrentPopup();
                 }
 
@@ -1547,6 +1637,8 @@ void Interface::EffortsTable(Section &section)
     static int selectedEffort = -1;
     static bool showPopUpSolver = false;
     static bool showPopUpErrorAxialForce = false;
+    static bool showPopUpErrorPolygon = false;
+    static bool showPopUpErrorBar = false;
 
     if (ImGui::BeginTable("Tabela", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
     {
@@ -1568,8 +1660,8 @@ void Interface::EffortsTable(Section &section)
                 selectedEffort = static_cast<int>(i);
                 
                 for (size_t j = 0; j < mappingID.size(); ++j)
-                    mappingID[j] = false; // Limpa o mapeamento antes de selecionar
-
+                    mappingID[j] = false; 
+                    
                 mappingID[i] = true;
 
                 section.computeEnvelope(section.combinations[i].Normal);
@@ -1581,42 +1673,31 @@ void Interface::EffortsTable(Section &section)
                     showPopUpErrorAxialForce = true;
 
             }
+
             ImGui::SameLine();
             ImGui::Text("%d", static_cast<int>(i + 1));
 
             // Coluna 1 - Nsd
             ImGui::TableSetColumnIndex(1);
-            if (!section.combinations[i].isMomentValid)
+            if (section.combinations[i].isCalculated)
             {
-                ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255)); // Vermelho se inválido
-                ImGui::Text("%.2f", section.combinations[i].Normal);
-                ImGui::PopStyleColor();
+                if (!section.combinations[i].isMomentValid)
+                {
+                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255)); // Vermelho se inválido
+                    ImGui::Text("%.2f", section.combinations[i].Normal);
+                    ImGui::PopStyleColor();
+                }
+                else
+                {
+                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0, 255, 0, 255)); // Verde se válido
+                    ImGui::Text("%.2f", section.combinations[i].Normal);
+                    ImGui::PopStyleColor();
+                }
             }
             else
             {
-                ImGui::Text("%.2f", section.combinations[i].Normal);
+                ImGui::Text("%.2f", section.combinations[i].Normal); // Cor padrão se ainda não calculado
             }
-
-            // if (!section.combinations[i].isCalculated)
-            // {
-            //     ImGui::Text("%.2f", section.combinations[i].Normal);
-            // }
-            // else
-            // {
-            //     if (!section.combinations[i].isMomentValid)
-            //     {
-            //         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255)); // Vermelho se inválido
-            //         ImGui::Text("%.2f", section.combinations[i].Normal);
-            //         ImGui::PopStyleColor();
-            //     }
-                
-            //     if (section.combinations[i].isMomentValid)
-            //     {
-            //         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0, 255, 0, 255)); 
-            //         ImGui::Text("%.2f", section.combinations[i].Normal);
-            //         ImGui::PopStyleColor();
-            //     }
-            // }
 
             // Coluna 2 - MsdX
             ImGui::TableSetColumnIndex(2);
@@ -1625,22 +1706,61 @@ void Interface::EffortsTable(Section &section)
             // Coluna 3 - M. Resistente (com destaque em vermelho se inválido)
             ImGui::TableSetColumnIndex(3);
             ImGui::Text("%.2f", section.combinations[i].MsdY);
-
-            // if (!section.combinations[i].isMomentValid)
-            // {
-            //     ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));
-            //     ImGui::TextUnformatted("ERRO!");
-            //     ImGui::PopStyleColor();
-            // }
-            // else
-            // {
-            //     ImGui::Text("%.2f", section.combinations[i].MsolverXX);
-            // }
-
-
         }
 
         ImGui::EndTable();
+    }
+
+    if (showPopUpErrorPolygon == true)
+    {
+        ImGuiIO &io = ImGui::GetIO();
+
+        ImGui::OpenPopup("Erro de inserção de dados");
+
+        // Define a posição para o centro da tela
+        ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+        if (ImGui::BeginPopupModal("Erro de inserção de dados", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text("O polígono não foi definido corretamente.");
+            ImGui::Separator();
+
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f); // Centraliza o botão
+            if (ImGui::Button("OK##PopUpErrorPolygon", ImVec2(120, 0)))
+            {
+                showPopUpErrorPolygon = false;
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+    }
+
+    if (showPopUpErrorBar == true)
+    {
+        ImGuiIO &io = ImGui::GetIO();
+
+        ImGui::OpenPopup("Erro de inserção de dados");
+
+        // Define a posição para o centro da tela
+        ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+        if (ImGui::BeginPopupModal("Erro de inserção de dados", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text("A armadura não foi definida corretamente.");
+            ImGui::Separator();
+
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f); // Centraliza o botão
+            if (ImGui::Button("OK##PopUpErrorBar", ImVec2(120, 0)))
+            {
+                showPopUpErrorBar = false;
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
     }
 
     // --- POPUP: Momento resistente calculado com sucesso
@@ -1670,18 +1790,17 @@ void Interface::EffortsTable(Section &section)
         }
     }
 
+
     if (showPopUpErrorAxialForce && selectedEffort >= 0)
     {
 
         ImGuiIO &io = ImGui::GetIO();
-        
-        ImVec2 posjanela = ImVec2(io.DisplaySize.x - 260, io.DisplaySize.y / 3.0f);
 
-        ImGui::OpenPopup("Erro de Esforço Normal");
-        
-        //ImGui::SetNextWindowPos(posjanela, ImGuiCond_Always);
-        
-        ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+        ImGui::OpenPopup("Erro de esforço normal");
+
+        // Define a posição para o centro da tela
+        ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
         if (ImGui::BeginPopupModal("Erro de Esforço Normal", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
@@ -1694,6 +1813,7 @@ void Interface::EffortsTable(Section &section)
             ImGui::BulletText("Máx. Compressão: %.2f kN", section.internalForces.getMaxNormalCompression());
             ImGui::BulletText("Máx. Tração: %.2f kN", section.internalForces.getMaxNormalTraction());
 
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f); // Centraliza o botão
             if (ImGui::Button("OK", ImVec2(120, 0)))
             {
                 showPopUpErrorAxialForce = false;
@@ -1703,7 +1823,63 @@ void Interface::EffortsTable(Section &section)
             ImGui::EndPopup();
         }
     }
+
+    if (showPopUpErrorPolygon == true)
+    {
+        ImGuiIO &io = ImGui::GetIO();
+
+        ImGui::OpenPopup("Erro de inserção de dados");
+
+        // Define a posição para o centro da tela
+        ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+        if (ImGui::BeginPopupModal("Erro de inserção de dados", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text("O polígono não foi definido corretamente.");
+            ImGui::Separator();
+
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f); // Centraliza o botão
+            if (ImGui::Button("OK", ImVec2(120, 0)))
+            {
+                showPopUpErrorPolygon = false;
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+    }
+
+    if (showPopUpErrorBar == true)
+    {
+        ImGuiIO &io = ImGui::GetIO();
+
+        ImGui::OpenPopup("Erro de inserção de dados");
+
+        // Define a posição para o centro da tela
+        ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+        if (ImGui::BeginPopupModal("Erro de inserção de dados", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text("A armadura não foi definida corretamente.");
+            ImGui::Separator();
+
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f); // Centraliza o botão
+            if (ImGui::Button("OK", ImVec2(120, 0)))
+            {
+                showPopUpErrorBar = false;
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+    }
 }
+
+
+
+
 
 void Interface::crossSectionTable(Section &section)
 {

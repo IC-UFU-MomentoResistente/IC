@@ -36,13 +36,13 @@ void ConcreteProperties::setParameters(StressStrainConcreteModelType model, doub
 		factorMultiplierFcd = 0.85 * (1 - (collectedFck - 50) / 200);
 		strainConcretePlastic = 2 + 0.085 * pow((collectedFck - 50), 0.53);
 		strainConcreteRupture = 2.6 + 35 * pow(((90 - collectedFck) / 100), 4);
-		stressStrainExponent = 1.4 + 23.4 * pow(((90 - fck) / 100), 4);
+		stressStrainExponent = 1.4 + 23.4 * pow(((90 - collectedFck) / 100), 4);
 
 		if (strainConcretePlastic > strainConcreteRupture)
 			strainConcretePlastic = strainConcreteRupture;
 	}
 
-	strengthReductionFactor = (collectedFck <= 40) ? 1 : pow(40.0 / collectedFck, 1.0 / 3.0);
+	strengthReductionFactor = (collectedFck <= 40) ? 1 : pow((40.0 / collectedFck), (1.0 / 3.0));
 }
 
 double ConcreteProperties::computeStress(double strain)
@@ -67,7 +67,7 @@ double ConcreteProperties::computeStress(double strain)
 
 	case StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2023:
 
-		strengthReductionFactor = (fck <= 40) ? 1 : pow(40.0 / fck, 1.0 / 3.0);
+		strengthReductionFactor = (fck <= 40) ? 1 : pow((40.0 / fck), (1.0 / 3.0));
 
 		if (absStrain <= strainConcretePlastic)
 			return 0.85 * strengthReductionFactor * fcd * (1 - (pow((1 - (absStrain / strainConcretePlastic)), stressStrainExponent)));

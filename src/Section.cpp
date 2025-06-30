@@ -118,7 +118,7 @@ void Section::verifyEquilibrium(double Nsd, double eps1, double eps2)
 
 void Section::computeEquilibrium(double Nsd, double eps1, double eps2)
 {
-    verifyEquilibrium(Nsd, +0.003, -0.003); // eps1, eps2
+    verifyEquilibrium(Nsd, eps1, eps2); // eps1, eps2
 
     momentSolver.solveEquilibrium(
         workingPolygon, workingReinforcement, concrete, steel,
@@ -148,7 +148,7 @@ void Section::computeEnvelope(double Nsd)
         294, 297, 300, 303, 306, 309, 312, 315, 318, 321, 324, 327, 330, 333, 336,
         339, 342, 345, 348, 351, 354, 357, 360
     };
-
+    
     cout << "--------------------------------------------\n";
 
     for (double angle : angles)

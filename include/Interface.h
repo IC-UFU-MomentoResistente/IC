@@ -38,6 +38,7 @@ private:
     bool shouldAutoFitEnv = false;
     bool showCorrupedFileError = false;
     bool showEmptySectionSaveError = false;
+    bool relatorio = false;
     std::vector<bool> mappingID = {};
 
 public:

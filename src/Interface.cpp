@@ -573,6 +573,7 @@ void Interface::clearInputSection(Section &section)
         section.stressRegions.clearStressRegions();
         section.originalReinforcement.clearReinforcement();
         section.workingPolygon.clearPolygonVertices();
+        relatorio = false;
     }
 }
 
@@ -880,15 +881,16 @@ void Interface::reinforcementInterface(Section &section)
         ImGui::RadioButton("Uma barra", &barMode, 0);
         ImGui::SameLine();
         ImGui::RadioButton("Linha de barras", &barMode, 1);
-
+        ImGui::PushItemWidth(100);
+        ImGui::InputInt("Número de barras", &tempNumPoints);
+            if (tempNumPoints < 0)
+                tempNumPoints = 0;
+            
         if (barMode == 0)
         {
             ImGui::SeparatorText("Barra Individual");
 
             ImGui::PushItemWidth(100);
-            ImGui::InputInt("Número de barras", &tempNumPoints);
-            if (tempNumPoints < 0)
-                tempNumPoints = 0;
 
             if (tempNumPoints != section.originalReinforcement.getReinforcement().size())
             {
@@ -896,11 +898,13 @@ void Interface::reinforcementInterface(Section &section)
                 section.defineReinforcement(section.originalReinforcement);            
             }
 
-            ImGui::SameLine();
+            
             if (ImGui::Button("Limpar Tudo"))
             {
                 section.originalReinforcement.clearReinforcement();
-                section.defineReinforcement(section.originalReinforcement);            
+                section.defineReinforcement(section.originalReinforcement);      
+                section.stressRegions.clearStressRegions();    
+                relatorio = false;  
             }
         }
 
@@ -910,19 +914,20 @@ void Interface::reinforcementInterface(Section &section)
             ImGui::PushItemWidth(100);
             ImGui::BeginGroup();
             ImGui::SeparatorText("Quantidade de barras:");
-            ImGui::InputInt("Número de barras", &tempNumPoints);
-            if (tempNumPoints < 0)
-                tempNumPoints = 0;
-
+           
             if (tempNumPoints != section.originalReinforcement.getReinforcement().size())
             {
                 section.originalReinforcement.SetNumPoints(tempNumPoints);
                 section.defineReinforcement(section.originalReinforcement);
             }
 
-            ImGui::SameLine();
             if (ImGui::Button("Limpar Tudo"))
-                section.originalReinforcement.clearReinforcement();
+            {
+            section.originalReinforcement.clearReinforcement();
+            section.defineReinforcement(section.originalReinforcement);
+            section.stressRegions.clearStressRegions();
+            relatorio = false;
+            }
 
             ImGui::PopID(); // Remove o ID do ponto atual após a linha ter sido processada
 
@@ -1329,6 +1334,9 @@ void Interface::effortSectionInterface(Section &section)
             if (section.envelopeMoments.size() > 0)
                 section.envelopeMoments.clear();
             tempNumCombinations = 1;
+            
+            section.stressRegions.clearStressRegions();
+            relatorio = false;
         }
 
         ImGui::SameLine();
@@ -1381,6 +1389,7 @@ void Interface::effortSectionInterface(Section &section)
                             mappingID[j] = false; // Limpa o mapeamento antes de selecionar
                     }
                 }
+                relatorio = true; 
             }
 
         }
@@ -1945,25 +1954,26 @@ void Interface::EffortsTable(Section &section)
 
 void Interface::crossSectionTable(Section &section)
 {
-    if (ImGui::BeginTable("Tabela", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
-    {
-        ImGui::TableSetupColumn("ID");
-        ImGui::TableSetupColumn("x (cm)");
-        ImGui::TableSetupColumn("y (cm)");
-        ImGui::TableHeadersRow();
+    ImGui::SeparatorText("Propriedades da Seção Transversal");
+    ImGui::Text("Área: %.2f cm²", section.workingPolygon.getPolygonArea());
+    ImGui::Text("Ix,cg: cm");
+    ImGui::Text("Iy,cg: cm");
+    ImGui::Text("X,cg: %.2f cm", section.workingPolygon.getGeometricCenter().getX());
+    ImGui::Text("Y,cg: %.2f cm", section.workingPolygon.getGeometricCenter().getY());
 
-        for (size_t i = 0; i < section.workingPolygon.getPolygonVertices().size(); ++i)
-        {
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::Text("%d", static_cast<int>(i + 1));
-            ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%.3f", section.workingPolygon.getPolygonVertices()[i].getX());
-            ImGui::TableSetColumnIndex(2);
-            ImGui::Text("%.3f", section.workingPolygon.getPolygonVertices()[i].getY());
-        }
-        ImGui::EndTable();
-    }
+    ImGui::SeparatorText("Propriedades da Armadura");
+    ImGui::Text("Área de armadura: cm²");
+    ImGui::Text("Fyk: %.2f MPa", section.steel.getFyk());
+
+    ImGui::SeparatorText("Propriedades do Concreto");
+    ImGui::Text("Área do concreto: cm²");
+    ImGui::Text("Fck: %.2f MPa", section.concrete.getFck());
+
+    ImGui::SeparatorText("Momentos Resistentes");
+    ImGui::Text("Mrd,x(max):");
+    ImGui::Text("Mrd,x(min):");
+    ImGui::Text("Mrd,y(max):");
+    ImGui::Text("Mrd,y(min):");
 }
 
 void Interface::RightTablePos(const char *nome1, const char *nome2, float posY, Section &section)
@@ -1985,8 +1995,14 @@ void Interface::RightTablePos(const char *nome1, const char *nome2, float posY, 
                      ImGuiWindowFlags_NoCollapse |
                      ImGuiWindowFlags_NoTitleBar);
 
-    ImGui::Text("Tabela de Pontos:");
-    crossSectionTable(section);
+    ImGui::Text("Relatório:");
+    
+    if (relatorio == true) {
+         crossSectionTable(section);
+    }
+    else 
+    {
+    }
 
     ImGui::End();
 
@@ -2153,11 +2169,7 @@ void Interface::autoFitToPointsWithMargin(const vector<Point> &points, float mar
 
 void Interface::renderReinforcement(Section &section, std::string plotLabel)
 {
-    // Esta função DEVE ser chamada DENTRO de um ImPlot::BeginPlot()
-    // para que ImPlot::PlotToPixels() funcione corretamente.
-
-    // Obter a escala de pixels por unidade de dados (cm).
-    // Isso deve ser feito APENAS UMA VEZ por frame, dentro do BeginPlot.
+ 
     ImPlotPoint p1_data = ImPlotPoint(0, 0);
     ImPlotPoint p2_data = ImPlotPoint(1.0, 0); // 1.0 cm de distância
     ImVec2 p1_pixels = ImPlot::PlotToPixels(p1_data);
@@ -2190,10 +2202,7 @@ void Interface::renderReinforcement(Section &section, std::string plotLabel)
                                    ImVec4(0.0f, 0.0f, 0.8f, 1.0f)  // Cor da borda
         );
 
-        // Desenhar a barra individualmente.
-        // É importante que o rótulo do PlotScatter seja único para cada barra
-        // se você quiser interatividade individual (ex: tooltips).
-        // Podemos usar um label_id com o índice.
+        
         char bar_label[32];
         snprintf(bar_label, sizeof(bar_label), "%s Bar %zu", plotLabel.c_str(), i + 1);
 

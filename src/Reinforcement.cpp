@@ -23,10 +23,16 @@ void Reinforcement::setReinforcement(vector<Point> collectedReinforcement, vecto
 	}
 }
 
+// Reinforcement.cpp
 void Reinforcement::addReinforcement(double coordX, double coordY, double diameter)
 {
-	reinforcement.push_back(Point(coordX, coordY));
-	diameters.push_back(diameter);
+    reinforcement.push_back(Point(coordX, coordY));
+    diameters.push_back(diameter);
+    
+    // Diâmetro em mm, área em cm^2
+    double tempArea = M_PI * std::pow(diameter / 20.0, 2); 
+    if (diameter <= 0) tempArea = 0.0; // Garante area zero para diametro zero
+    areas.push_back(tempArea);
 }
 
 void Reinforcement::removeLastReinforcement()
@@ -43,14 +49,25 @@ void Reinforcement::clearReinforcement()
 	areas.clear();
 }
 
+// Reinforcement.cpp
 void Reinforcement::computeArea()
 {
-	for (size_t i = 0; i < reinforcement.size(); i++)
-	{
-		double tempDiameter = diameters[i] / 10; // cm
-		double tempArea = pow(tempDiameter, 2) * 3.141592653589793 / 4;
-		areas.push_back(tempArea);
-	}
+    areas.clear(); // LIMPA O VETOR DE AREAS ANTES DE REPREENCHER
+    for (size_t i = 0; i < diameters.size(); ++i) // Itera sobre os diâmetros
+    {
+        double currentDiameter_mm = diameters[i];
+         
+        double tempDiameter_cm = currentDiameter_mm / 10.0; // mm para cm
+        double tempArea_cm2 = std::pow(tempDiameter_cm, 2) * M_PI / 4.0;
+
+        // Garante que diâmetros inválidos (<=0) resultem em área zero
+        if (currentDiameter_mm <= 0) {
+            tempArea_cm2 = 0.0;
+        }
+        
+        areas.push_back(tempArea_cm2); // Adiciona a área calculada
+    }
+   
 }
 
 void Reinforcement::translateToCentroidPolygon(Point centroid)
@@ -121,30 +138,66 @@ double Reinforcement::getEffectiveDepth() const
     return effectiveDepth;
 }
 
+
 void Reinforcement::SetNumPoints(int numPointsInput)
 {
-    if (numPointsInput < 0) numPointsInput = 0;
-    reinforcement.resize(numPointsInput);  // Ajusta o tamanho do vetor de vértices
-	diameters.resize(numPointsInput);  // Ajusta o tamanho do vetor de diâmetros
+    if (numPointsInput < 0) numPointsInput = 0; // Garante que não é negativo
+
+    size_t newSize = static_cast<size_t>(numPointsInput);
+    size_t oldSize = reinforcement.size();
+
+    // Redimensiona todos os três vetores
+    reinforcement.resize(newSize);
+    diameters.resize(newSize);
+    areas.resize(newSize); // Redimensiona o vetor de áreas também
+
+    if (newSize > oldSize)
+    {
+        for (size_t i = oldSize; i < newSize; ++i)
+        {
+            reinforcement[i] = Point(0.0, 0.0); // Ponto padrão
+            diameters[i] = 10.0; // DIÂMETRO PADRÃO NÃO-ZERO (10 mm)
+            areas[i] = 0.0; // A área será recalculada pelo computeArea() posteriormente
+                           
+        }
+    }
+    
 }
 
 int Reinforcement::GetNumPoints() const
 {
-    return reinforcement.size();  // Retorna o número de pontos
+    return reinforcement.size();  
 }
 
 void Reinforcement::GetTableData(int index, double* x, double* y, double* d) const
 {
     if (index < 0 || index >= GetNumPoints()) return;
-    *x = reinforcement[index].getX();  // Obtém a coordenada X do vértice
-    *y = reinforcement[index].getY();  // Obtém a coordenada Y do vértice
-	*d = diameters[index];  // Obtém o diâmetro do vértice
+    *x = reinforcement[index].getX();  
+    *y = reinforcement[index].getY();  
+	*d = diameters[index];  
 }
 
+// Reinforcement.cpp
 void Reinforcement::SetTableData(int index, double x, double y, double d)
 {
     if (index < 0 || index >= GetNumPoints()) return;
-    reinforcement[index].setX(x);  // Define a coordenada X do vértice
-    reinforcement[index].setY(y);  // Define a coordenada Y do vértice
-	diameters[index] = d;  // Define o diâmetro do vértice
+
+    reinforcement[index].setX(x);
+    reinforcement[index].setY(y);
+    diameters[index] = d;
+
+    // IMPORTANTE: Recalcular a área individual da barra.
+    // Isso é redundante se computeArea() for chamado logo em seguida na Interface.
+    // MAS, para robustez da classe Reinforcement em si, é bom que a área de 'areas[index]'
+    // reflita o 'diameters[index]' assim que ele é setado.
+    // Duplicar o calculo da area aqui:
+    double tempDiameter_cm = d / 10.0; // mm para cm
+    double tempArea_cm2 = std::pow(tempDiameter_cm, 2) * M_PI / 4.0;
+    if (d <= 0) tempArea_cm2 = 0.0;
+    areas[index] = tempArea_cm2; // Atualiza a area para este indice
+}
+
+
+void Reinforcement::addNewDefaultReinforcement(double defaultDiameter) {
+    addReinforcement(0.0, 0.0, defaultDiameter);
 }

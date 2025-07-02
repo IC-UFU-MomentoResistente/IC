@@ -48,4 +48,5 @@ public:
     int GetNumPoints() const;
     void GetTableData(int index, double *x, double *y, double *d) const;
     void SetTableData(int index, double x, double y, double d);
+	void addNewDefaultReinforcement(double defaultDiameter);
 };

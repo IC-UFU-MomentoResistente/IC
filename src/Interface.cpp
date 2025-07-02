@@ -72,16 +72,21 @@ void Interface::showPrimaryMenuBar(Section &section)
 
             if (ImGui::MenuItem("Salvar"))
             {
-                //saveSectionData(section, "projeto.json");
-                IGFD::FileDialogConfig configSave;
-                configSave.path = ".";
-                configSave.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
-                ImGuiFileDialog::Instance()->OpenDialog("SaveFileDialog", "Salvar Projeto", ".json", configSave);
+                if (section.originalPolygon.getPolygonVertices().empty() && section.originalReinforcement.getReinforcement().empty())
+                {
+                    showEmptySectionSaveError = true;
+                }
+                else
+                {
+                    IGFD::FileDialogConfig configSave;
+                    configSave.path = ".";
+                    configSave.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
+                    ImGuiFileDialog::Instance()->OpenDialog("SaveFileDialog", "Salvar Projeto", ".json", configSave);
+                }    
             }
 
             if (ImGui::MenuItem("Carregar"))
             {
-                //loadSectionData(section, "projeto.json");
                 IGFD::FileDialogConfig configLoad;
                 configLoad.path = ".";
                 ImGuiFileDialog::Instance()->OpenDialog("LoadFileDialog", "Carregar Projeto", ".json", configLoad);
@@ -101,45 +106,103 @@ void Interface::showPrimaryMenuBar(Section &section)
         ImGui::EndMainMenuBar();
     }
 
-    ImVec2 dialogPos;
-    dialogPos.y = ImGui::GetFrameHeight(); // Pega a altura da última frame (útil para menus)
-    dialogPos.x = 0; // Alinhar à esquerda da janela principal
+    // Obtém o tamanho da área de exibição do ImGui
+    ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 
-    ImVec2 dialogCurrentSize = ImGui::GetIO().DisplaySize * 0.4f;
+    // Define um tamanho desejado para o diálogo, como 40% da largura/altura da tela
+    ImVec2 dialogCurrentSize = displaySize * 0.4f;
 
+    // Define os tamanhos mínimo e máximo para o diálogo
     static ImVec2 dialogMinSize = ImVec2(400, 300);
-    static ImVec2 dialogMaxSize = ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+    static ImVec2 dialogMaxSize = ImVec2(displaySize.x, displaySize.y);
 
+    // Garante que o tamanho atual do diálogo esteja dentro dos limites min/max
     dialogCurrentSize.x = ImMax(dialogCurrentSize.x, dialogMinSize.x);
     dialogCurrentSize.y = ImMax(dialogCurrentSize.y, dialogMinSize.y);
     dialogCurrentSize.x = ImMin(dialogCurrentSize.x, dialogMaxSize.x);
     dialogCurrentSize.y = ImMin(dialogCurrentSize.y, dialogMaxSize.y);
 
-    ImGui::SetNextWindowPos(dialogPos, ImGuiCond_Appearing);
+    // Calcula a posição para centralizar a janela
+    // Subtrai metade do tamanho do diálogo da metade do tamanho da tela
+    ImVec2 centeredPos;
+    centeredPos.x = (displaySize.x - dialogCurrentSize.x) * 0.5f;
+    centeredPos.y = (displaySize.y - dialogCurrentSize.y) * 0.5f;
+
+    // --- Fim das modificações ---
+
+    // Aplica a posição calculada antes de exibir o File Dialog de Salvar
+    ImGui::SetNextWindowPos(centeredPos, ImGuiCond_Appearing);
     ImGui::SetNextWindowSize(dialogCurrentSize, ImGuiCond_Appearing);
 
-    if (ImGuiFileDialog::Instance()->Display("SaveFileDialog")) //
+    if (ImGuiFileDialog::Instance()->Display("SaveFileDialog"))
     {
-        if (ImGuiFileDialog::Instance()->IsOk()) // true se o utilizador clicou OK
+        if (ImGuiFileDialog::Instance()->IsOk())
         {
-            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName(); // Pega o caminho completo com o nome do arquivo e extensão
+            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
             saveSectionData(section, filePathName);
         }
-
-        ImGuiFileDialog::Instance()->Close(); // Sempre feche o diálogo após processar
+        ImGuiFileDialog::Instance()->Close();
     }
 
-    ImGui::SetNextWindowPos(dialogPos, ImGuiCond_Appearing);
+    // Aplica a posição calculada antes de exibir o File Dialog de Carregar
+    ImGui::SetNextWindowPos(centeredPos, ImGuiCond_Appearing);
     ImGui::SetNextWindowSize(dialogCurrentSize, ImGuiCond_Appearing);
 
-    if (ImGuiFileDialog::Instance()->Display("LoadFileDialog")) //
+    if (ImGuiFileDialog::Instance()->Display("LoadFileDialog"))
     {
-        if (ImGuiFileDialog::Instance()->IsOk()) // true se o utilizador clicou OK
+        if (ImGuiFileDialog::Instance()->IsOk())
         {
-            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName(); // Pega o caminho completo com o nome do arquivo e extensão
+            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
             loadSectionData(section, filePathName);
         }
-        ImGuiFileDialog::Instance()->Close(); // Sempre feche o diálogo após processar
+        ImGuiFileDialog::Instance()->Close();
+    }
+
+    if (showCorrupedFileError)
+    {
+        ImGuiIO &io = ImGui::GetIO();
+        ImGui::OpenPopup("Erro ao Carregar Projeto");
+        ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+        ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+
+        if (ImGui::BeginPopupModal("Erro ao Carregar Projeto", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text("O arquivo selecionado está corrompido ou não é um arquivo de projeto válido.");
+            ImGui::Text("Por favor, selecione um arquivo de projeto válido ou crie um novo.");
+            ImGui::Separator();
+
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f);
+            if (ImGui::Button("OK", ImVec2(120, 0)))
+            {
+                showCorrupedFileError = false;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+    }
+
+    if (showEmptySectionSaveError)
+    {
+        ImGuiIO &io = ImGui::GetIO();
+        ImGui::OpenPopup("Erro ao Salvar Projeto");
+        ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+        if (ImGui::BeginPopupModal("Erro ao Salvar Projeto", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text("Não é possível salvar um projeto sem uma seção transversal definida.");
+            ImGui::Text("Por favor, defina a geometria da seção (Poligonal, Retangular, T ou Circular)");
+            ImGui::Text("e/ou adicione a armadura antes de salvar.");
+            ImGui::Separator();
+
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f);
+            if (ImGui::Button("OK", ImVec2(120, 0)))
+            {
+                showEmptySectionSaveError = false; // Reseta a flag para fechar o popup
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
     }
 }
 
@@ -522,6 +585,8 @@ void Interface::clearSection(Section &section)
     section.workingPolygon.clearPolygonVertices();
     section.envelopeMoments.clear();
     section.combinations.clear();
+    section.concrete.setParameters(StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2023, 30.0, 1.4);
+    section.steel.setParameters(StressStrainSteelModelType::PASSIVE_REINFORCEMENT, 500.0, 1.15, 210.0);
 }
 
 void Interface::interfaceMaterials(Section &section)
@@ -1679,25 +1744,26 @@ void Interface::EffortsTable(Section &section)
 
             // Coluna 1 - Nsd
             ImGui::TableSetColumnIndex(1);
-            if (section.combinations[i].isCalculated)
-            {
-                if (!section.combinations[i].isMomentValid)
-                {
-                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255)); // Vermelho se inválido
-                    ImGui::Text("%.2f", section.combinations[i].Normal);
-                    ImGui::PopStyleColor();
-                }
-                else
-                {
-                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0, 255, 0, 255)); // Verde se válido
-                    ImGui::Text("%.2f", section.combinations[i].Normal);
-                    ImGui::PopStyleColor();
-                }
-            }
-            else
-            {
-                ImGui::Text("%.2f", section.combinations[i].Normal); // Cor padrão se ainda não calculado
-            }
+            ImGui::Text("%.2f", section.combinations[i].Normal); 
+            // if (section.combinations[i].isCalculated)
+            // {
+            //     if (!section.combinations[i].isMomentValid)
+            //     {
+            //         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255)); // Vermelho se inválido
+            //         ImGui::Text("%.2f", section.combinations[i].Normal);
+            //         ImGui::PopStyleColor();
+            //     }
+            //     else
+            //     {
+            //         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0, 255, 0, 255)); // Verde se válido
+            //         ImGui::Text("%.2f", section.combinations[i].Normal);
+            //         ImGui::PopStyleColor();
+            //     }
+            // }
+            // else
+            // {
+            //     ImGui::Text("%.2f", section.combinations[i].Normal); 
+            // }
 
             // Coluna 2 - MsdX
             ImGui::TableSetColumnIndex(2);
@@ -1877,10 +1943,6 @@ void Interface::EffortsTable(Section &section)
     }
 }
 
-
-
-
-
 void Interface::crossSectionTable(Section &section)
 {
     if (ImGui::BeginTable("Tabela", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
@@ -1981,6 +2043,24 @@ void Interface::saveSectionData(Section &section, const std::string &filename)
     std::cout << "Dados da seção salvos com sucesso em: " << filename << '\n';
 }
 
+// void Interface::loadSectionData(Section &section, const std::string &filename)
+// {
+//     std::ifstream is(filename, std::ios::binary);
+
+//     if (!is.is_open())
+//     {
+//         std::cerr << "Erro ao abrir o arquivo para leitura: " << filename << '\n';
+//         return;
+//     }
+
+//     cereal::JSONInputArchive archive(is);
+//     archive(CEREAL_NVP(section));
+//     std::cout << "Dados da secao carregados de: " << filename << '\n';
+
+//     section.defineGeometry(section.originalPolygon, section.originalReinforcement);
+//     section.defineMaterials(section.concrete, section.steel);
+// }
+
 void Interface::loadSectionData(Section &section, const std::string &filename)
 {
     std::ifstream is(filename, std::ios::binary);
@@ -1988,15 +2068,51 @@ void Interface::loadSectionData(Section &section, const std::string &filename)
     if (!is.is_open())
     {
         std::cerr << "Erro ao abrir o arquivo para leitura: " << filename << '\n';
+        // Aqui você pode adicionar um popup para o usuário se quiser informar que não conseguiu abrir o arquivo.
+        // Por enquanto, apenas o erro no console já é um bom passo.
         return;
     }
 
-    cereal::JSONInputArchive archive(is);
-    archive(CEREAL_NVP(section));
-    std::cout << "Dados da secao carregados de: " << filename << '\n';
+    try
+    {
+        cereal::JSONInputArchive archive(is);
+        archive(CEREAL_NVP(section));
+        std::cout << "Dados da secao carregados de: " << filename << '\n';
 
-    section.defineGeometry(section.originalPolygon, section.originalReinforcement);
-    section.defineMaterials(section.concrete, section.steel);
+        // Se o carregamento foi bem-sucedido, defina a geometria e materiais
+        section.defineGeometry(section.originalPolygon, section.originalReinforcement);
+        section.defineMaterials(section.concrete, section.steel);
+        
+        // Ative as flags de auto-ajuste para os gráficos
+        shouldAutoFit = true;
+        shouldAutoFitEnv = true;
+
+        // Limpa o mapeamento de combinações, se houver
+        if (!section.combinations.empty()) {
+            for (size_t j = 0; j < mappingID.size(); ++j)
+                mappingID[j] = false; 
+        }
+        
+    }
+    catch (const cereal::Exception &e)
+    {
+        // Captura exceções específicas do cereal
+        std::cerr << "Erro ao carregar dados da secao (Cereal Exception): " << e.what() << '\n';
+        // Ativa a flag para mostrar o popup de erro na interface
+        showCorrupedFileError = true; 
+    }
+    catch (const std::exception &e)
+    {
+        // Captura outras exceções padrão (ex: problemas de E/S inesperados)
+        std::cerr << "Erro inesperado ao carregar dados da secao: " << e.what() << '\n';
+        showCorrupedFileError = true;
+    }
+    catch (...)
+    {
+        // Captura qualquer outra exceção não especificada
+        std::cerr << "Erro desconhecido ao carregar dados da secao.\n";
+        showCorrupedFileError = true;
+    }
 }
 
 void Interface::autoFitToPointsWithMargin(const vector<Point> &points, float margin)

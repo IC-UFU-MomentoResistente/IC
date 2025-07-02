@@ -36,6 +36,8 @@ class Interface
 private:
     bool shouldAutoFit = false;
     bool shouldAutoFitEnv = false;
+    bool showCorrupedFileError = false;
+    bool showEmptySectionSaveError = false;
     std::vector<bool> mappingID = {};
 
 public:

@@ -321,7 +321,7 @@ void Interface::inputSectionRectangle(Section &section)
 {
     static float rectBase = 20.0f; 
     static float rectHeight = 40.0f;
-    
+
     ImGui::SeparatorText("Dados da Seção Retangular:");
     ImGui::InputFloat("Base (cm)", &rectBase);
     ImGui::InputFloat("Altura (cm)", &rectHeight);
@@ -340,11 +340,14 @@ void Interface::inputSectionRectangle(Section &section)
             {-halfBase, -halfHeight},
             { halfBase, -halfHeight},
             { halfBase,  halfHeight},
-            {-halfBase,  halfHeight}
+            {-halfBase,  halfHeight},
         };
 
         section.originalPolygon.setVertices(rectPoints);
         section.originalPolygon.SetNumPoints(rectPoints.size()); // Atualiza o número de pontos
+        section.originalPolygon.computeArea();
+        section.originalPolygon.computeCentroid();
+        section.originalPolygon.computeHeight();
         section.defineGeometry(section.originalPolygon, section.originalReinforcement);
 
         shouldAutoFit = true;
@@ -391,6 +394,9 @@ void Interface::inputSectionT(Section &section)
         
         section.originalPolygon.setVertices(tPoints);
         section.originalPolygon.SetNumPoints(tPoints.size()); 
+        section.originalPolygon.computeArea();
+        section.originalPolygon.computeCentroid();
+        section.originalPolygon.computeHeight();
         section.defineGeometry(section.originalPolygon, section.originalReinforcement);
 
         shouldAutoFit = true;
@@ -426,6 +432,9 @@ void Interface::inputSectionCircular(Section &section)
 
         section.originalPolygon.setVertices(circlePoints);
         section.originalPolygon.SetNumPoints(circlePoints.size());
+        section.originalPolygon.computeArea();
+        section.originalPolygon.computeCentroid();
+        section.originalPolygon.computeHeight();
         section.defineGeometry(section.originalPolygon, section.originalReinforcement);
 
         shouldAutoFit = true;
@@ -481,6 +490,9 @@ void Interface::inputSectionPolygonal(Section &section)
             if (ImGui::InputFloat(labelX, &x))
             {
                 section.originalPolygon.SetTableData(row, x, y); // Atualiza a coordenada 'x' diretamente no vetor
+                section.originalPolygon.computeArea();
+                section.originalPolygon.computeCentroid();
+                section.originalPolygon.computeHeight();
                 section.defineGeometry(section.originalPolygon, section.originalReinforcement);
             }
 
@@ -492,6 +504,9 @@ void Interface::inputSectionPolygonal(Section &section)
             if (ImGui::InputFloat(labelY, &y))
             {
                 section.originalPolygon.SetTableData(row, x, y); // Atualiza a coordenada 'y' diretamente no vetor
+                section.originalPolygon.computeArea();
+                section.originalPolygon.computeCentroid();
+                section.originalPolygon.computeHeight();
                 section.defineGeometry(section.originalPolygon, section.originalReinforcement);
             }
 
@@ -524,8 +539,12 @@ void Interface::inputSectionDebug(Section &section)
         std::vector<double> collectedDiameters = {10, 10, 10, 10};
 
         section.originalPolygon.setVertices(collectedPoints);
+        section.originalPolygon.computeArea();
+        section.originalPolygon.computeCentroid();
+        section.originalPolygon.computeHeight();
         section.originalReinforcement.setReinforcement(collectedReinf, collectedDiameters);
         section.originalReinforcement.computeArea();
+        section.originalReinforcement.computeTotalArea();
 
         section.defineGeometry(section.originalPolygon, section.originalReinforcement);
 
@@ -537,11 +556,11 @@ void Interface::showGeometricParameters(Section &section)
 {
     ImGui::SeparatorText("Parâmetros Geométricos da Seção");   
 
-    ImGui::Text("Area: %.2f (cm²) |", section.workingPolygon.getPolygonArea());
+    ImGui::Text("Area: %.2f (cm²) |", section.originalPolygon.getPolygonArea());
     ImGui::SameLine();
-    ImGui::Text("Altura: %.2f (cm) |", section.workingPolygon.getMaxY() - section.workingPolygon.getMinY()); // Corrigi para usar getHeight
+    ImGui::Text("Altura: %.2f (cm) |", section.originalPolygon.getMaxY() - section.originalPolygon.getMinY()); // Corrigi para usar getHeight
     ImGui::SameLine();
-    ImGui::Text("CG: %.2f, %.2f", section.workingPolygon.getGeometricCenter().getX(), section.workingPolygon.getGeometricCenter().getY());
+    ImGui::Text("CG: %.2f, %.2f", section.originalPolygon.getGeometricCenter().getX(), section.originalPolygon.getGeometricCenter().getY());
 
     ImGui::SeparatorText("Aviso");
 
@@ -808,9 +827,9 @@ void Interface::steelInterface(Section &section)
         collectedE = 210;
     }
 
-    if (collectedFyk > 1000)
+    if (collectedFyk > 2000)
     {
-        collectedFyk = 1000;
+        collectedFyk = 2000;
     }
 
     StressStrainSteelModelType modelPassive = StressStrainSteelModelType::PASSIVE_REINFORCEMENT;
@@ -895,6 +914,7 @@ void Interface::reinforcementInterface(Section &section)
             if (tempNumPoints != section.originalReinforcement.getReinforcement().size())
             {
                 section.originalReinforcement.SetNumPoints(tempNumPoints);
+                section.originalReinforcement.computeTotalArea();
                 section.defineReinforcement(section.originalReinforcement);            
             }
 
@@ -1336,6 +1356,10 @@ void Interface::effortSectionInterface(Section &section)
             tempNumCombinations = 1;
             
             section.stressRegions.clearStressRegions();
+
+            for (size_t j = 0; j < mappingID.size(); ++j)
+                mappingID[j] = false; // Limpa o mapeamento antes de selecionar
+                
             relatorio = false;
         }
 
@@ -1387,6 +1411,8 @@ void Interface::effortSectionInterface(Section &section)
 
                         for (size_t j = 0; j < mappingID.size(); ++j)
                             mappingID[j] = false; // Limpa o mapeamento antes de selecionar
+                    
+                        mappingID.back() = true; // Marca o último ID como selecionado
                     }
                 }
                 relatorio = true; 
@@ -1518,28 +1544,28 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
     if (ImPlot::BeginPlot("Gráfico da Seção Transversal", ImVec2(plotSize.x, plotSize.y), 
-    ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend | ImPlotFlags_NoInputs))
+    ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit))
     {
-        ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_AutoFit);
-        ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_AutoFit);
+        ImPlot::SetupAxis(ImAxis_X1, "x (cm)");
+        ImPlot::SetupAxis(ImAxis_Y1, "y (cm)");
 
         ImPlot::PushStyleVar(ImPlotStyleVar_FitPadding, ImVec2(0.1f, 0.1f));
 
-        if (section.workingPolygon.getPolygonVertices().size() > 2)
+        if (section.originalPolygon.getPolygonVertices().size() > 2)
         {
             if (shouldAutoFit)
             {
-                autoFitToPointsWithMargin(section.workingPolygon.getPolygonVertices(), 0.1f);
+                autoFitToPointsWithMargin(section.originalPolygon.getPolygonVertices(), 0.1f);
  
                 shouldAutoFit = false;
             }
 
-            renderPolygon(section.workingPolygon.getPolygonVertices(), "Vertices", "Polygon");
-            renderPolygon(section.stressRegions.getCompressedRegion().getPolygonVertices(), "vComp", "pComp");
-            renderPolygon(section.stressRegions.getParabolicRegion().getPolygonVertices(), "vParab", "pParab");
-            renderPolygon(section.stressRegions.getRectangularRegion().getPolygonVertices(), "vRec", "pRec");
+            renderPolygon(section.originalPolygon.getPolygonVertices(), "Vertices", "Poligonal");
+            renderReinforcement(section.originalReinforcement, "Armadura");
+            //renderPolygon(section.stressRegions.getCompressedRegion().getPolygonVertices(), "vComp", "Região Comprimida");
+            //renderPolygon(section.stressRegions.getParabolicRegion().getPolygonVertices(), "vParab", "pParab");
+            //renderPolygon(section.stressRegions.getRectangularRegion().getPolygonVertices(), "vRec", "pRec")
             //renderVectorPoint(section.workingReinforcement.getReinforcement(), "Barras");
-            renderReinforcement(section, "Barras");
         }
 
         ImPlot::EndPlot();
@@ -1572,10 +1598,10 @@ void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
     
     if (ImPlot::BeginPlot("Envoltoria de Momentos Resistentes", ImVec2(plotSize.x, plotSize.y), 
-    ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit | ImPlotFlags_NoLegend | ImPlotFlags_NoInputs))
+    ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit))
     {
-        ImPlot::SetupAxis(ImAxis_X1, "MsdY (kN.m)", ImPlotAxisFlags_AutoFit);
-        ImPlot::SetupAxis(ImAxis_Y1, "MsdX (kN.m)", ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_Invert);
+        ImPlot::SetupAxis(ImAxis_X1, "MsdY (kN.m)");
+        ImPlot::SetupAxis(ImAxis_Y1, "MsdX (kN.m)", ImPlotAxisFlags_Invert);
 
         ImPlot::PushStyleVar(ImPlotStyleVar_FitPadding, ImVec2(0.1f, 0.1f));
 
@@ -1595,7 +1621,7 @@ void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
                 {
                     ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 5, ImVec4(1.0f, 0.0f, 0.0f, 1.0f), 1.0f, ImVec4(0.8f, 0.0f, 0.0f, 1.0f));
                     std::vector<Point> singlePointVector = {section.combinations[i].getMsd()};
-                    renderVectorPoint(singlePointVector, "Msd Solicitante");
+                    renderVectorPoint(singlePointVector, "Msd");
                 }
             }
         }
@@ -1714,12 +1740,13 @@ void Interface::EffortsTable(Section &section)
     static bool showPopUpErrorPolygon = false;
     static bool showPopUpErrorBar = false;
 
-    if (ImGui::BeginTable("Tabela", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+    if (ImGui::BeginTable("Tabela", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
     {
         ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 30.0f);
-        ImGui::TableSetupColumn("Nsd (kN)", ImGuiTableColumnFlags_WidthFixed, 60.0f);
-        ImGui::TableSetupColumn("M,x (kN.m)", ImGuiTableColumnFlags_WidthFixed, 70.0f);
-        ImGui::TableSetupColumn("M,y (kN.m)", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+        ImGui::TableSetupColumn("Nsd", ImGuiTableColumnFlags_WidthFixed, 40.0f);
+        ImGui::TableSetupColumn("Msd,x", ImGuiTableColumnFlags_WidthFixed, 50.0f);
+        ImGui::TableSetupColumn("Msd,y", ImGuiTableColumnFlags_WidthFixed, 50.0f);
+        ImGui::TableSetupColumn("Mr", ImGuiTableColumnFlags_WidthFixed, 40.0f);
         ImGui::TableHeadersRow();
 
         for (size_t i = 0; i < section.combinations.size(); ++i)
@@ -1781,6 +1808,20 @@ void Interface::EffortsTable(Section &section)
             // Coluna 3 - M. Resistente (com destaque em vermelho se inválido)
             ImGui::TableSetColumnIndex(3);
             ImGui::Text("%.2f", section.combinations[i].MsdY);
+
+            ImGui::TableSetColumnIndex(4);
+            if (section.combinations[i].isMomentValid)
+            {
+                ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0, 255, 0, 255)); // Vermelho se inválido
+                ImGui::Text("Ok");
+                ImGui::PopStyleColor();
+            }
+            else
+            {
+                ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255)); // Vermelho se inválido
+                ImGui::Text("Inválido");
+                ImGui::PopStyleColor();
+            }
         }
 
         ImGui::EndTable();
@@ -1955,18 +1996,19 @@ void Interface::EffortsTable(Section &section)
 void Interface::crossSectionTable(Section &section)
 {
     ImGui::SeparatorText("Propriedades da Seção Transversal");
-    ImGui::Text("Área: %.2f cm²", section.workingPolygon.getPolygonArea());
+    ImGui::Text("Área: %.2f cm²", section.originalPolygon.getPolygonArea());
     ImGui::Text("Ix,cg: cm");
     ImGui::Text("Iy,cg: cm");
-    ImGui::Text("X,cg: %.2f cm", section.workingPolygon.getGeometricCenter().getX());
-    ImGui::Text("Y,cg: %.2f cm", section.workingPolygon.getGeometricCenter().getY());
+    ImGui::Text("X,cg: %.2f cm", section.originalPolygon.getGeometricCenter().getX());
+    ImGui::Text("Y,cg: %.2f cm", section.originalPolygon.getGeometricCenter().getY());
 
     ImGui::SeparatorText("Propriedades da Armadura");
-    ImGui::Text("Área de armadura: cm²");
+    ImGui::Text("As: %.2f cm² (ρ = %.2f%)", section.originalReinforcement.getTotalArea(), 
+    (section.originalReinforcement.getTotalArea() / section.originalPolygon.getPolygonArea()) * 100.0f);
     ImGui::Text("Fyk: %.2f MPa", section.steel.getFyk());
 
     ImGui::SeparatorText("Propriedades do Concreto");
-    ImGui::Text("Área do concreto: cm²");
+    ImGui::Text("Ac: %.2f cm²", (section.originalPolygon.getPolygonArea() - section.originalReinforcement.getTotalArea()));
     ImGui::Text("Fck: %.2f MPa", section.concrete.getFck());
 
     ImGui::SeparatorText("Momentos Resistentes");
@@ -2018,6 +2060,8 @@ void Interface::RightTablePos(const char *nome1, const char *nome2, float posY, 
                      ImGuiWindowFlags_NoTitleBar);
 
     ImGui::Text("Tabela de Esforços:");
+    ImGui::SameLine();
+    ImGui::Text("Unidades: [kN, kN.m]");
     EffortsTable(section);
 
     ImGui::End();
@@ -2167,7 +2211,7 @@ void Interface::autoFitToPointsWithMargin(const vector<Point> &points, float mar
         ImGuiCond_Always);
 }
 
-void Interface::renderReinforcement(Section &section, std::string plotLabel)
+void Interface::renderReinforcement(Reinforcement &reinforcement, std::string plotLabel)
 {
  
     ImPlotPoint p1_data = ImPlotPoint(0, 0);
@@ -2177,11 +2221,11 @@ void Interface::renderReinforcement(Section &section, std::string plotLabel)
     float pixels_per_cm_x = std::fabs(p2_pixels.x - p1_pixels.x);
 
     // Iterar sobre cada barra de armadura para desenhá-la individualmente
-    for (size_t i = 0; i < section.getWorkingReinforcement().GetNumPoints(); ++i)
+    for (size_t i = 0; i < reinforcement.GetNumPoints(); ++i)
     {
         double x_bar, y_bar, diameter_bar_mm;
         // Obter as coordenadas e o diâmetro da barra.
-        section.workingReinforcement.GetTableData(i, &x_bar, &y_bar, &diameter_bar_mm);
+        reinforcement.GetTableData(i, &x_bar, &y_bar, &diameter_bar_mm);
 
         // Converter o diâmetro de mm para cm (ou para a unidade do seu plot).
         float diameter_bar_cm = static_cast<float>(diameter_bar_mm / 10.0); // Diâmetro em cm
@@ -2194,7 +2238,7 @@ void Interface::renderReinforcement(Section &section, std::string plotLabel)
         { // Exemplo: tamanho mínimo de 2 pixels
             marker_size_pixels = 1.0f;
         }
-// Configurar o estilo do marcador para a barra atual.
+        // Configurar o estilo do marcador para a barra atual.
         ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle,
                                    marker_size_pixels,
                                    ImVec4(0.0f, 0.0f, 1.0f, 1.0f), // Cor azul
@@ -2204,7 +2248,7 @@ void Interface::renderReinforcement(Section &section, std::string plotLabel)
 
         
         char bar_label[32];
-        snprintf(bar_label, sizeof(bar_label), "%s Bar %zu", plotLabel.c_str(), i + 1);
+        snprintf(bar_label, sizeof(bar_label), "%s %zu", plotLabel.c_str(), i + 1);
 
         double single_x[] = {x_bar}; // PlotScatter espera um array, mesmo para um único ponto
         double single_y[] = {y_bar};

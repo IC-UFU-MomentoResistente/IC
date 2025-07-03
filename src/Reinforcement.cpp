@@ -6,6 +6,7 @@ Reinforcement::Reinforcement()
 	diameters = {};
 	areas = {};
 	effectiveDepth = 0;
+    totalArea = 0;
 }
 
 void Reinforcement::setReinforcement(vector<Point> collectedReinforcement, vector<double> collectedDiameters)
@@ -118,6 +119,15 @@ void Reinforcement::setEffectiveDepth(double maxY)
 	}
 }
 
+void Reinforcement::computeTotalArea() const
+{
+    double totalArea = 0.0;
+    for (size_t i = 0; i < areas.size(); ++i)
+    {
+        totalArea += areas[i];
+    }
+}
+
 vector<Point> Reinforcement::getReinforcement() const
 {
 	return reinforcement;
@@ -138,6 +148,10 @@ double Reinforcement::getEffectiveDepth() const
     return effectiveDepth;
 }
 
+double Reinforcement::getTotalArea() const
+{
+    return totalArea; // Retorna a área total calculada
+}
 
 void Reinforcement::SetNumPoints(int numPointsInput)
 {

@@ -16,6 +16,7 @@ private:
 	vector<double> diameters;
 	vector<double> areas;
 	double effectiveDepth;
+	double totalArea;
 
 	friend class cereal::access;
 	template <class Archive>
@@ -39,11 +40,13 @@ public:
 	void translateToCentroidPolygon(Point centroid);
 	void rotateAroundCentroidPolygon(double angle);
 	void setEffectiveDepth(double maxY);
+    void computeTotalArea() const;
 
-	vector<Point> getReinforcement() const;
+    vector<Point> getReinforcement() const;
 	vector<double> getDiameters() const;
 	vector<double> getAreas() const;
 	double getEffectiveDepth() const;
+    double getTotalArea() const;
     void SetNumPoints(int numPointsInput);
     int GetNumPoints() const;
     void GetTableData(int index, double *x, double *y, double *d) const;

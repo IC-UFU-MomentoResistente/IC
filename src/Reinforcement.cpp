@@ -53,7 +53,9 @@ void Reinforcement::clearReinforcement()
 // Reinforcement.cpp
 void Reinforcement::computeArea()
 {
-    areas.clear(); // LIMPA O VETOR DE AREAS ANTES DE REPREENCHER
+    areas.clear();
+    totalArea = 0.0;
+
     for (size_t i = 0; i < diameters.size(); ++i) // Itera sobre os diâmetros
     {
         double currentDiameter_mm = diameters[i];
@@ -67,8 +69,9 @@ void Reinforcement::computeArea()
         }
         
         areas.push_back(tempArea_cm2); // Adiciona a área calculada
+
+        totalArea += tempArea_cm2;
     }
-   
 }
 
 void Reinforcement::translateToCentroidPolygon(Point centroid)
@@ -119,15 +122,6 @@ void Reinforcement::setEffectiveDepth(double maxY)
 	}
 }
 
-void Reinforcement::computeTotalArea() const
-{
-    double totalArea = 0.0;
-    for (size_t i = 0; i < areas.size(); ++i)
-    {
-        totalArea += areas[i];
-    }
-}
-
 vector<Point> Reinforcement::getReinforcement() const
 {
 	return reinforcement;
@@ -171,8 +165,7 @@ void Reinforcement::SetNumPoints(int numPointsInput)
         {
             reinforcement[i] = Point(0.0, 0.0); // Ponto padrão
             diameters[i] = 10.0; // DIÂMETRO PADRÃO NÃO-ZERO (10 mm)
-            areas[i] = 0.0; // A área será recalculada pelo computeArea() posteriormente
-                           
+            areas[i] = 0.0; // A área será recalculada pelo computeArea() posteriormente          
         }
     }
     

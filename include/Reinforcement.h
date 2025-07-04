@@ -40,7 +40,6 @@ public:
 	void translateToCentroidPolygon(Point centroid);
 	void rotateAroundCentroidPolygon(double angle);
 	void setEffectiveDepth(double maxY);
-    void computeTotalArea() const;
 
     vector<Point> getReinforcement() const;
 	vector<double> getDiameters() const;

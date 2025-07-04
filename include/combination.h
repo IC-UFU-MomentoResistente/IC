@@ -19,6 +19,8 @@ public:
     double MsolverYY;
     bool isMomentValid;
     bool isCalculated;
+    bool isNormalForceValid;
+    bool isSafe;
 
     Combination();
     Combination(double normal, double msdX, double msdY, double MsolverXX, double MsolverYY, bool isValid = true, bool isCalculated = false);

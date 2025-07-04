@@ -63,6 +63,7 @@ public:
     void reinforcementInterface(Section &section);
     void ReferenceValues();
     void effortSectionInterface(Section &section);
+    void calculate(Section &section);
     void crossSectionPlotInterface(Section &section, float posY);
     void envelopeMomentsPlotInterface(Section &section, float posY);
     void renderPolygon(const vector<Point> &polygonVertices, string nameVertices, string namePolygon);

@@ -251,6 +251,7 @@ void Interface::showSecondaryMenuBar(Section &section)
         interfaceMaterials(section);
         reinforcementInterface(section);
         effortSectionInterface(section);
+        calculate(section);
 
         ImGui::EndMenuBar();
     }
@@ -1262,9 +1263,6 @@ void Interface::effortSectionInterface(Section &section)
         ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always);
         ImGui::SetNextWindowPos(ImVec2(265, 47));
         static int tempNumCombinations = 1;
-        static bool showPopUpErrorAxialForce = false;
-        static bool showPopUpErrorPolygon = false;
-        static bool showPopUpErrorBar = false;
 
         ImGui::Begin("Entrada de Dados: Esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
         ImGui::PushItemWidth(100);
@@ -1334,137 +1332,192 @@ void Interface::effortSectionInterface(Section &section)
         {
             section.combinations.clear();
             section.envelopeMoments.clear();
-            tempNumCombinations = 1; // Reseta para 1
+            tempNumCombinations = 1;                                                    // Reseta para 1
             section.combinations.resize(1, Combination(0.0f, 0.0f, 0.0f, 0.0f, false)); // Adiciona uma linha padrão
             mappingID.resize(1);
-            
+
             section.stressRegions.clearStressRegions();
-            
+
             for (size_t j = 0; j < mappingID.size(); ++j)
                 mappingID[j] = false;
 
             relatorio = false;
         }
 
-        ImGui::SameLine();
-
-        // --- LÓGICA DO BOTÃO CALCULAR CORRIGIDA ---
-        if (ImGui::Button("Calcular"))
-        {
-            // 1. Garante que os dados de geometria e materiais estejam atualizados
-            section.defineGeometry(section.originalPolygon, section.originalReinforcement);
-            section.defineMaterials(section.concrete, section.steel);
-
-            // 2. Verifica se a geometria da seção e a armadura foram definidas
-            bool hasPolygon = !section.workingPolygon.getPolygonVertices().empty();
-            bool hasReinforcement = !section.workingReinforcement.getReinforcement().empty();
-
-            if (!hasPolygon) {
-                showPopUpErrorPolygon = true;
-            } else if (!hasReinforcement) {
-                showPopUpErrorBar = true;
-            } else {
-                // 3. Se tudo estiver OK, calcula os limites da força normal
-                section.internalForces.computeMaxCompression(section.workingPolygon, section.workingReinforcement, section.steel, section.concrete);
-                section.internalForces.computeMaxTraction(section.workingPolygon, section.workingReinforcement, section.steel);
-
-                bool anyCombinationIsInvalid = false;
-                
-                // 4. Itera sobre cada combinação para verificar a segurança
-                for (int i = 0; i < section.combinations.size(); ++i)
-                {
-                    section.internalForces.setNormalSolicitation(section.combinations[i].Normal);
-                    
-                    // Verifica se o esforço normal está dentro dos limites da seção
-                    if (section.internalForces.getNormalSolicitation() < section.internalForces.getMaxNormalCompression() || section.internalForces.getNormalSolicitation() > section.internalForces.getMaxNormalTraction())
-                    {
-                        // Se estiver fora, marca como inválido
-                        section.combinations[i].isNormalForceValid = false;
-                        section.combinations[i].isSafe = false;
-                        anyCombinationIsInvalid = true; 
-                    }
-                    else
-                    {
-                        // Se for válido, procede com o cálculo da envoltória e verificação do momento
-                        section.combinations[i].isNormalForceValid = true;
-                        
-                        // Calcula a envoltória para esta força normal
-                        section.computeEnvelope(section.combinations[i].Normal);
-                        
-                        // Cria o ponto do momento solicitante
-                        Point msdPoint(section.combinations[i].MsdY, section.combinations[i].MsdX);
-
-                        // Verifica se o ponto está dentro da envoltória (seguro)
-                        section.combinations[i].isSafe = section.isMomentSafe(msdPoint);
-                    }
-                    // Marca que esta combinação foi calculada
-                    section.combinations[i].isCalculated = true;
-                }
-
-                if (anyCombinationIsInvalid)
-                {
-                    showPopUpErrorAxialForce = true;
-                }
-
-                // Seleciona a primeira combinação por padrão para exibir sua envoltória no gráfico
-                if (!section.combinations.empty()) {
-                    for (size_t j = 0; j < mappingID.size(); ++j)
-                        mappingID[j] = false;
-                    mappingID[0] = true;
-
-                    // Recalcula a envoltória para a primeira combinação para garantir que o gráfico seja exibido corretamente
-                    if(section.combinations[0].isNormalForceValid) {
-                        section.computeEnvelope(section.combinations[0].Normal);
-                    } else {
-                        section.envelopeMoments.clear(); // Limpa a envoltória se a força normal for inválida
-                    }
-                }
-
-                // Atualiza a interface gráfica
-                shouldAutoFitEnv = true;
-                relatorio = true;
-            }
-        }
-
-        // --- POPUPS DE ERRO (sem alteração) ---
-        if (showPopUpErrorAxialForce)
-        {
-            ImGuiIO &io = ImGui::GetIO();
-            ImGui::OpenPopup("Erro de Esforço Normal");
-            ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
-            ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-            if (ImGui::BeginPopupModal("Erro de Esforço Normal", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-            {
-                ImGui::Text("Pelo menos um esforço normal solicitante está fora do intervalo resistente da seção.");
-                ImGui::Separator();
-                ImGui::Text("Intervalo permitido:");
-                ImGui::BulletText("Máx. Compressão: %.2f kN", section.internalForces.getMaxNormalCompression());
-                ImGui::BulletText("Máx. Tração: %.2f kN", section.internalForces.getMaxNormalTraction());
-                ImGui::Separator();
-                ImGui::Text("Verifique a tabela de resultados para ver o status de cada combinação.");
-
-                if (ImGui::Button("OK", ImVec2(120, 0)))
-                {
-                    showPopUpErrorAxialForce = false;
-                    ImGui::CloseCurrentPopup();
-                }
-                ImGui::EndPopup();
-            }
-        }
-
-        if (showPopUpErrorPolygon)
-        {
-            // ... (código do popup de erro do polígono - sem alterações)
-        }
-
-        if (showPopUpErrorBar)
-        {
-            // ... (código do popup de erro da armadura - sem alterações)
-        }
-
         ImGui::End();
         ImGui::EndMenu();
+    }
+}
+
+void Interface::calculate(Section &section)
+{
+    static bool showPopUpErrorAxialForce = false;
+    static bool showPopUpErrorPolygon = false;
+    static bool showPopUpErrorBar = false;
+    // --- LÓGICA DO BOTÃO CALCULAR CORRIGIDA ---
+    if (ImGui::Button("Calcular"))
+    {
+        // 1. Garante que os dados de geometria e materiais estejam atualizados
+        section.defineGeometry(section.originalPolygon, section.originalReinforcement);
+        section.defineMaterials(section.concrete, section.steel);
+
+        // 2. Verifica se a geometria da seção e a armadura foram definidas
+        bool hasPolygon = !section.workingPolygon.getPolygonVertices().empty();
+        bool hasReinforcement = !section.workingReinforcement.getReinforcement().empty();
+
+        if (!hasPolygon)
+        {
+            showPopUpErrorPolygon = true;
+        }
+        else if (!hasReinforcement)
+        {
+            showPopUpErrorBar = true;
+        }
+        else
+        {
+            // 3. Se tudo estiver OK, calcula os limites da força normal
+            section.internalForces.computeMaxCompression(section.workingPolygon, section.workingReinforcement, section.steel, section.concrete);
+            section.internalForces.computeMaxTraction(section.workingPolygon, section.workingReinforcement, section.steel);
+
+            bool anyCombinationIsInvalid = false;
+
+            // 4. Itera sobre cada combinação para verificar a segurança
+            for (int i = 0; i < section.combinations.size(); ++i)
+            {
+                section.internalForces.setNormalSolicitation(section.combinations[i].Normal);
+
+                // Verifica se o esforço normal está dentro dos limites da seção
+                if (section.internalForces.getNormalSolicitation() < section.internalForces.getMaxNormalCompression() || section.internalForces.getNormalSolicitation() > section.internalForces.getMaxNormalTraction())
+                {
+                    // Se estiver fora, marca como inválido
+                    section.combinations[i].isNormalForceValid = false;
+                    section.combinations[i].isSafe = false;
+                    anyCombinationIsInvalid = true;
+                }
+                else
+                {
+                    // Se for válido, procede com o cálculo da envoltória e verificação do momento
+                    section.combinations[i].isNormalForceValid = true;
+
+                    // Calcula a envoltória para esta força normal
+                    section.computeEnvelope(section.combinations[i].Normal);
+
+                    // Cria o ponto do momento solicitante
+                    Point msdPoint(section.combinations[i].MsdY, section.combinations[i].MsdX);
+
+                    // Verifica se o ponto está dentro da envoltória (seguro)
+                    section.combinations[i].isSafe = section.isMomentSafe(msdPoint);
+                }
+                // Marca que esta combinação foi calculada
+                section.combinations[i].isCalculated = true;
+            }
+
+            if (anyCombinationIsInvalid)
+            {
+                showPopUpErrorAxialForce = true;
+            }
+
+            // Seleciona a primeira combinação por padrão para exibir sua envoltória no gráfico
+            if (!section.combinations.empty())
+            {
+                for (size_t j = 0; j < mappingID.size(); ++j)
+                    mappingID[j] = false;
+                mappingID[0] = true;
+
+                // Recalcula a envoltória para a primeira combinação para garantir que o gráfico seja exibido corretamente
+                if (section.combinations[0].isNormalForceValid)
+                {
+                    section.computeEnvelope(section.combinations[0].Normal);
+                }
+                else
+                {
+                    section.envelopeMoments.clear(); // Limpa a envoltória se a força normal for inválida
+                }
+            }
+
+            // Atualiza a interface gráfica
+            shouldAutoFitEnv = true;
+            relatorio = true;
+        }
+    }
+
+    // --- POPUPS DE ERRO (sem alteração) ---
+    if (showPopUpErrorAxialForce)
+    {
+        ImGuiIO &io = ImGui::GetIO();
+        ImGui::OpenPopup("Erro de Esforço Normal");
+        ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+        if (ImGui::BeginPopupModal("Erro de Esforço Normal", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text("Pelo menos um esforço normal solicitante está fora do intervalo resistente da seção.");
+            ImGui::Separator();
+            ImGui::Text("Intervalo permitido:");
+            ImGui::BulletText("Máx. Compressão: %.2f kN", section.internalForces.getMaxNormalCompression());
+            ImGui::BulletText("Máx. Tração: %.2f kN", section.internalForces.getMaxNormalTraction());
+            ImGui::Separator();
+            ImGui::Text("Verifique a tabela de resultados para ver o status de cada combinação.");
+
+            if (ImGui::Button("OK", ImVec2(120, 0)))
+            {
+                showPopUpErrorAxialForce = false;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+    }
+
+    if (showPopUpErrorPolygon)
+    {
+        ImGuiIO &io = ImGui::GetIO();
+
+        ImGui::OpenPopup("Erro de inserção de dados");
+
+        // Define a posição para o centro da tela
+        ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+        if (ImGui::BeginPopupModal("Erro de inserção de dados", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text("O polígono não foi definido corretamente.");
+            ImGui::Separator();
+
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f); // Centraliza o botão
+            if (ImGui::Button("OK", ImVec2(120, 0)))
+            {
+                showPopUpErrorPolygon = false;
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+    }
+
+    if (showPopUpErrorBar)
+    {
+        ImGuiIO &io = ImGui::GetIO();
+
+        ImGui::OpenPopup("Erro de inserção de dados");
+
+        // Define a posição para o centro da tela
+        ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+        if (ImGui::BeginPopupModal("Erro de inserção de dados", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text("A armadura não foi definida corretamente.");
+            ImGui::Separator();
+
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f); // Centraliza o botão
+            if (ImGui::Button("OK", ImVec2(120, 0)))
+            {
+                showPopUpErrorBar = false;
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
     }
 }
 
@@ -1683,7 +1736,7 @@ void Interface::renderStrainSteelDiagram(const vector<Point> &vectorPoint, strin
 void Interface::EffortsTable(Section &section)
 {
     static int selectedEffort = -1;
-    
+
     if (ImGui::BeginTable("Tabela", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
     {
         ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 30.0f);
@@ -1699,7 +1752,7 @@ void Interface::EffortsTable(Section &section)
 
             // Coluna 0 - ID e Lógica de Seleção
             ImGui::TableSetColumnIndex(0);
-            
+
             bool is_selected = (selectedEffort == (int)i);
 
             // --- MUDANÇA AQUI: Label do Selectable agora é invisível ---
@@ -1730,9 +1783,8 @@ void Interface::EffortsTable(Section &section)
             // Como o Selectable agora é invisível, desenhamos o texto da célula por cima dele.
             // As chamadas ImGui::SameLine() e ImGui::TextUnformatted() foram removidas.
             ImGui::SetCursorScreenPos(ImGui::GetCursorScreenPos() + ImVec2(0, -ImGui::GetFrameHeight())); // Move o cursor para o início da célula
-            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetStyle().CellPadding.x); // Adiciona padding
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetStyle().CellPadding.x);               // Adiciona padding
             ImGui::Text("%d", static_cast<int>(i + 1));
-
 
             // Coluna 1 - Nsd
             ImGui::TableSetColumnIndex(1);
@@ -1961,40 +2013,56 @@ void Interface::loadSectionData(Section &section, const std::string &filename)
     }
 }
 
-void Interface::autoFitToPointsWithMargin(const vector<Point> &points, float margin)
+void Interface::autoFitToPointsWithMargin(const vector<Point> &points, float margin_percentage)
 {
-    if (points.size() < 2)
-        return;
-
-    double minX = points[0].getX();
-    double maxX = points[0].getX();
-    double minY = points[0].getY();
-    double maxY = points[0].getY();
-
-    for (const Point &p : points)
+    // Garante que a seção tenha pontos para calcular os limites.
+    if (points.empty())
     {
-        if (p.getX() < minX)
-            minX = p.getX();
-        if (p.getX() > maxX)
-            maxX = p.getX();
-        if (p.getY() < minY)
-            minY = p.getY();
-        if (p.getY() > maxY)
-            maxY = p.getY();
+        return;
     }
 
-    double marginX = 0.1 * (maxX - minX);
-    double marginY = 0.1 * (maxY - minY);
+    // 1. Encontra os limites (mínimo e máximo) da geometria para definir a "bounding box".
+    double minX = points[0].getX();
+    double maxX = minX;
+    double minY = points[0].getY();
+    double maxY = minY;
 
-    if (marginX == 0)
-        marginX = 1.0;
-    if (marginY == 0)
-        marginY = 1.0;
+    for (size_t i = 1; i < points.size(); ++i)
+    {
+        const Point &p = points[i];
+        if (p.getX() < minX) minX = p.getX();
+        if (p.getX() > maxX) maxX = p.getX();
+        if (p.getY() < minY) minY = p.getY();
+        if (p.getY() > maxY) maxY = p.getY();
+    }
 
-    ImPlot::SetupAxesLimits(
-        minX - marginX, maxX + marginX,
-        minY - marginY, maxY + marginY,
-        ImGuiCond_Always);
+    // 2. Calcula a largura, a altura e o centro exato do desenho.
+    double rangeX = maxX - minX;
+    double rangeY = maxY - minY;
+    double centerX = minX + rangeX / 2.0;
+    double centerY = minY + rangeY / 2.0;
+
+    // 3. Usa a maior dimensão (largura ou altura) para garantir a proporção 1:1.
+    double maxRange = std::max(rangeX, rangeY);
+    
+    // Define um valor mínimo caso a seção seja apenas um ponto ou uma linha.
+    if (maxRange == 0) {
+        maxRange = 10.0;
+    }
+
+    // 4. Calcula o espaço total necessário para a visualização, incluindo a margem.
+    // O 'halfSpan' é metade do "lado" da nossa caixa de visualização quadrada.
+    double marginValue = maxRange * margin_percentage;
+    double halfSpan = (maxRange / 2.0) + marginValue;
+
+    // 5. Define os limites do gráfico, centrados no desenho.
+    double plotMinX = centerX - halfSpan;
+    double plotMaxX = centerX + halfSpan;
+    double plotMinY = centerY - halfSpan;
+    double plotMaxY = centerY + halfSpan;
+
+    // 6. Aplica os limites ao gráfico, forçando a atualização.
+    ImPlot::SetupAxesLimits(plotMinX, plotMaxX, plotMinY, plotMaxY, ImGuiCond_Always);
 }
 
 void Interface::renderReinforcement(Reinforcement &reinforcement, std::string plotLabel)

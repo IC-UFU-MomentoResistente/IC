@@ -12,6 +12,12 @@ Polygon::Polygon()
     staticMomentY = 0;
     numPoints = 0;
 	angle = 0;
+    inertiaX = 0;
+    inertiaY = 0;
+    inertiaXY = 0;
+    inertiaX_cg = 0;
+    inertiaY_cg = 0;
+    inertiaXY_cg = 0;
 }
 
 void Polygon::setVertices(std::vector<Point> collectedVertices)
@@ -168,6 +174,44 @@ void Polygon::rotateAroundCentroid()
     }
 }
 
+void Polygon::computeInertia()
+{
+    if (polygonVertices.size() < 3) return;
+    
+    inertiaX = 0;
+    inertiaY = 0;  
+    inertiaXY = 0;
+
+    int polygonSize = polygonVertices.size();
+
+    for (size_t i = 0; i < polygonSize; i++)
+    {
+        int j = (i + 1) % polygonSize;
+        double xi = polygonVertices[i].getX();
+        double yi = polygonVertices[i].getY();
+        double xj = polygonVertices[j].getX();
+        double yj = polygonVertices[j].getY();
+
+        double factor = (xi * yj) - (xj * yi);
+
+        inertiaX += (yi * yi + yi * yj + yj * yj) * factor;
+        inertiaY += (xi * xi + xi * xj + xj * xj) * factor;
+        inertiaXY += (xi * yj + 2 * xi * yi + 2 * xj * yj + xj * yi) * factor;
+    }
+
+    inertiaX /= 12.0;
+    inertiaY /= 12.0;
+    inertiaXY /= 24.0;
+
+    // Teorema dos Eixos Paralelos para mover a inércia da origem para o centroide
+    double cg_x = geometricCenter.getX();
+    double cg_y = geometricCenter.getY();
+
+    inertiaX_cg = inertiaX - polygonArea * cg_y * cg_y;
+    inertiaY_cg = inertiaY - polygonArea * cg_x * cg_x;
+    inertiaXY_cg = inertiaXY - polygonArea * cg_x * cg_y;
+}
+
 std::vector<Point> Polygon::getPolygonVertices() const
 {
     return polygonVertices;  // Retorna os vértices do polígono
@@ -217,6 +261,21 @@ double Polygon::getVet0Y() const
         return polygonVertices[0].getY();  // Retorna a coordenada Y do primeiro vértice
     else
         return 1;
+}
+
+double Polygon::getInertiaX_cg() const
+{
+    return inertiaX_cg;
+}
+
+double Polygon::getInertiaY_cg() const
+{
+    return inertiaY_cg;
+}
+
+double Polygon::getInertiaXY_cg() const
+{
+    return inertiaXY_cg;
 }
 
 void Polygon::SetNumPoints(int numPointsInput)

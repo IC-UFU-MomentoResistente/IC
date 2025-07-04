@@ -26,6 +26,9 @@ private:
 	double staticMomentX;
 	double staticMomentY;
 	double numPoints;
+	double angle;
+	double inertiaX, inertiaY, inertiaXY;
+	double inertiaX_cg, inertiaY_cg, inertiaXY_cg;
 
 	friend class cereal::access;
 	template <class Archive>
@@ -43,7 +46,6 @@ private:
 			CEREAL_NVP(numPoints)		
 		);
 	}
-	double angle;
 
 public:
 	Polygon();
@@ -63,6 +65,7 @@ public:
 	void computeCentroid();
 	void translateToCentroid();
 	void rotateAroundCentroid();
+	void computeInertia();
 
 	vector<Point> getPolygonVertices() const;
     Point getGeometricCenter() const;
@@ -73,6 +76,9 @@ public:
 	double getPolygonArea() const;
 	double getVet0X() const;
 	double getVet0Y() const;
+	double getInertiaX_cg() const;
+	double getInertiaY_cg() const;
+	double getInertiaXY_cg() const;
     void SetNumPoints(int numPointsInput);
     int GetNumPoints() const;
     void GetTableData(int index, float *x, float *y) const;

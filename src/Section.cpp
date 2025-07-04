@@ -15,6 +15,22 @@ Section::Section()
     momentSolver = MomentSolver();
 }
 
+void Section::updateGeometricProperties()
+{
+    if (!originalPolygon.getPolygonVertices().empty())
+    {
+        originalPolygon.computeArea();
+        originalPolygon.computeCentroid();
+        originalPolygon.computeHeight();
+        originalPolygon.computeInertia(); 
+    }
+
+    if (!originalReinforcement.getReinforcement().empty())
+    {
+        originalReinforcement.computeArea();
+    }
+}
+
 void Section::defineGeometry(const Polygon &polygon, const Reinforcement &reinforcement)
 {
     originalPolygon = polygon;
@@ -162,6 +178,32 @@ void Section::computeEnvelope(double Nsd)
     }
 
     cout << "--------------------------------------------\n";
+}
+
+bool Section::isMomentSafe(const Point &momentPoint) const
+{
+    if (envelopeMoments.size() < 3) return false;
+
+    int crossings = 0;
+    
+    for (size_t i = 0; i < envelopeMoments.size(); i++)
+    {
+        const Point& p1 = envelopeMoments[i];
+        const Point& p2 = envelopeMoments[(i + 1) % envelopeMoments.size()];
+
+        double x1 = p1.getX();
+        double y1 = p1.getY();
+        double x2 = p2.getX();
+        double y2 = p2.getY();
+
+        if (((y1 <= momentPoint.getY() && y2 > momentPoint.getY()) || (y2 <= momentPoint.getY() && y1 > momentPoint.getY())) &&
+            (momentPoint.getX() < (x2 - x1) * (momentPoint.getY() - y1) / (y2 - y1) + x1)) {
+            crossings++;
+        }
+    }
+
+    // Se o número de cruzamentos for ímpar, o ponto está dentro.
+    return (crossings % 2) == 1;
 }
 
 // void Section::computeSectionEquilibriumSolver(double Nsd)

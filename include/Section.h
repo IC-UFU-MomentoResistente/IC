@@ -37,6 +37,7 @@ public:
 
     Section();
 
+    void updateGeometricProperties();
     void defineGeometry(const Polygon& polygon, const Reinforcement& reinforcement);
     void definePolygon(const Polygon &polygon);
     void defineReinforcement(const Reinforcement &reinforcement);
@@ -49,6 +50,7 @@ public:
     void verifyEquilibrium(double Nsd, double eps1, double eps2);
     void computeEquilibrium(double Nsd, double eps1, double eps2);
     void computeEnvelope(double Nsd);
+    bool isMomentSafe(const Point& momentPoint) const;
 
     const Polygon& getWorkingPolygon() const { return workingPolygon; }
     const Reinforcement& getWorkingReinforcement() const { return workingReinforcement; }

@@ -36,9 +36,11 @@ void Section::defineGeometry(const Polygon &polygon, const Reinforcement &reinfo
     originalPolygon = polygon;
     originalReinforcement = reinforcement;
 
-    definePolygon(polygon);
-
-    defineReinforcement(reinforcement);
+    if (!originalPolygon.getPolygonVertices().empty() || !originalReinforcement.getReinforcement().empty())
+    {
+        definePolygon(polygon);
+        defineReinforcement(reinforcement);  
+    }
 }
 
 void Section::definePolygon(const Polygon &polygon)

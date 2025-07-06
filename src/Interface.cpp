@@ -27,8 +27,9 @@ void Interface::initInterface()
 
     ImFontConfig fontConfig;
     static const ImWchar customRange[] = {
-        0x0020, 0x00FF, // ASCII estendido
+        0x0020, 0x00FF, // ASCII estendido (contém ², ³)
         0x0370, 0x03FF, // Grego
+        0x2070, 0x209F, // Sobrescritos e Subscritos (contém ⁰¹²³⁴⁵⁶⁷⁸⁹)
         0x2030, 0x2030, // Símbolo de por mil (‰)
         0};
 
@@ -1354,14 +1355,18 @@ void Interface::calculate(Section &section)
     static bool showPopUpErrorAxialForce = false;
     static bool showPopUpErrorPolygon = false;
     static bool showPopUpErrorBar = false;
-    // --- LÓGICA DO BOTÃO CALCULAR CORRIGIDA ---
+
     if (ImGui::Button("Calcular"))
     {
-        // 1. Garante que os dados de geometria e materiais estejam atualizados
+        if (section.combinations.empty())
+        {
+            section.combinations.resize(1, Combination(0.0f, 0.0f, 0.0f, 0.0f, false));
+            mappingID.resize(section.combinations.size(), false);
+        }
+
         section.defineGeometry(section.originalPolygon, section.originalReinforcement);
         section.defineMaterials(section.concrete, section.steel);
 
-        // 2. Verifica se a geometria da seção e a armadura foram definidas
         bool hasPolygon = !section.workingPolygon.getPolygonVertices().empty();
         bool hasReinforcement = !section.workingReinforcement.getReinforcement().empty();
 
@@ -1375,40 +1380,31 @@ void Interface::calculate(Section &section)
         }
         else
         {
-            // 3. Se tudo estiver OK, calcula os limites da força normal
             section.internalForces.computeMaxCompression(section.workingPolygon, section.workingReinforcement, section.steel, section.concrete);
             section.internalForces.computeMaxTraction(section.workingPolygon, section.workingReinforcement, section.steel);
 
             bool anyCombinationIsInvalid = false;
 
-            // 4. Itera sobre cada combinação para verificar a segurança
             for (int i = 0; i < section.combinations.size(); ++i)
             {
                 section.internalForces.setNormalSolicitation(section.combinations[i].Normal);
 
-                // Verifica se o esforço normal está dentro dos limites da seção
                 if (section.internalForces.getNormalSolicitation() < section.internalForces.getMaxNormalCompression() || section.internalForces.getNormalSolicitation() > section.internalForces.getMaxNormalTraction())
                 {
-                    // Se estiver fora, marca como inválido
                     section.combinations[i].isNormalForceValid = false;
                     section.combinations[i].isSafe = false;
                     anyCombinationIsInvalid = true;
                 }
                 else
                 {
-                    // Se for válido, procede com o cálculo da envoltória e verificação do momento
                     section.combinations[i].isNormalForceValid = true;
 
-                    // Calcula a envoltória para esta força normal
                     section.computeEnvelope(section.combinations[i].Normal);
 
-                    // Cria o ponto do momento solicitante
                     Point msdPoint(section.combinations[i].MsdY, section.combinations[i].MsdX);
 
-                    // Verifica se o ponto está dentro da envoltória (seguro)
                     section.combinations[i].isSafe = section.isMomentSafe(msdPoint);
                 }
-                // Marca que esta combinação foi calculada
                 section.combinations[i].isCalculated = true;
             }
 
@@ -1417,31 +1413,27 @@ void Interface::calculate(Section &section)
                 showPopUpErrorAxialForce = true;
             }
 
-            // Seleciona a primeira combinação por padrão para exibir sua envoltória no gráfico
             if (!section.combinations.empty())
             {
                 for (size_t j = 0; j < mappingID.size(); ++j)
                     mappingID[j] = false;
                 mappingID[0] = true;
 
-                // Recalcula a envoltória para a primeira combinação para garantir que o gráfico seja exibido corretamente
                 if (section.combinations[0].isNormalForceValid)
                 {
                     section.computeEnvelope(section.combinations[0].Normal);
                 }
                 else
                 {
-                    section.envelopeMoments.clear(); // Limpa a envoltória se a força normal for inválida
+                    section.envelopeMoments.clear();
                 }
             }
 
-            // Atualiza a interface gráfica
             shouldAutoFitEnv = true;
             relatorio = true;
         }
     }
 
-    // --- POPUPS DE ERRO (sem alteração) ---
     if (showPopUpErrorAxialForce)
     {
         ImGuiIO &io = ImGui::GetIO();
@@ -1544,19 +1536,16 @@ void Interface::crossSectionPlotInterface(Section &section, float posY)
 
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
-    if (ImPlot::BeginPlot("Gráfico da Seção Transversal", ImVec2(plotSize.x, plotSize.y),
-                          ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit))
+    if (ImPlot::BeginPlot("Gráfico da Seção Transversal", ImVec2(plotSize.x, plotSize.y), ImPlotFlags_Equal))
     {
         ImPlot::SetupAxis(ImAxis_X1, "x (cm)");
         ImPlot::SetupAxis(ImAxis_Y1, "y (cm)");
-
-        ImPlot::PushStyleVar(ImPlotStyleVar_FitPadding, ImVec2(0.1f, 0.1f));
 
         if (section.originalPolygon.getPolygonVertices().size() > 2)
         {
             if (shouldAutoFit)
             {
-                autoFitToPointsWithMargin(section.originalPolygon.getPolygonVertices(), 0.1f);
+                autoFitToPointsWithMargin(section.originalPolygon.getPolygonVertices(), 0.5f);
 
                 shouldAutoFit = false;
             }
@@ -1608,7 +1597,7 @@ void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
 
         if (shouldAutoFitEnv)
         {
-            autoFitToPointsWithMargin(section.getEnvelopeMoments(), 0.1f);
+            autoFitToPointsWithMargin(section.getEnvelopeMoments(), 0.3f);
             shouldAutoFitEnv = false;
         }
 
@@ -1660,6 +1649,7 @@ void Interface::renderPolygon(const vector<Point> &polygonVertices, string nameV
             xTempEdge[polygonVertices.size()] = polygonVertices[0].getX();
             yTempEdge[polygonVertices.size()] = polygonVertices[0].getY();
 
+            ImPlot::SetNextLineStyle(ImVec4(0.2f, 0.6f, 1.0f, 1.0));
             ImPlot::PlotLine(namePolygon.c_str(), xTempEdge.data(), yTempEdge.data(), static_cast<int>(xTempEdge.size()));
         }
     }
@@ -1739,11 +1729,11 @@ void Interface::EffortsTable(Section &section)
 
     if (ImGui::BeginTable("Tabela", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
     {
-        ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 30.0f);
-        ImGui::TableSetupColumn("Nsd", ImGuiTableColumnFlags_WidthFixed, 40.0f);
-        ImGui::TableSetupColumn("Msd,x", ImGuiTableColumnFlags_WidthFixed, 50.0f);
-        ImGui::TableSetupColumn("Msd,y", ImGuiTableColumnFlags_WidthFixed, 50.0f);
-        ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+        ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Nsd", ImGuiTableColumnFlags_WidthFixed, 50);
+        ImGui::TableSetupColumn("Msd,x", ImGuiTableColumnFlags_WidthFixed, 50);
+        ImGui::TableSetupColumn("Msd,y", ImGuiTableColumnFlags_WidthFixed, 50);
+        ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableHeadersRow();
 
         for (size_t i = 0; i < section.combinations.size(); ++i)
@@ -1844,12 +1834,6 @@ void Interface::crossSectionTable(Section &section)
     float fck = section.concrete.getFck();
     float fyk = section.steel.getFyk();
 
-    float mrdX_max = 0;
-    float mrdX_min = 0;
-
-    float mrdY_max = 0;
-    float mrdY_min = 0;
-
     ImGui::SeparatorText("Propriedades da Seção Transversal");
     ImGui::Text("Área: %.2f cm²", polygonArea);
     ImGui::Text("Ix,cg: %.2f cm⁴", inertiaX_cg);
@@ -1864,12 +1848,6 @@ void Interface::crossSectionTable(Section &section)
     ImGui::SeparatorText("Propriedades do Concreto");
     ImGui::Text("Ac: %.2f cm²", (polygonArea - reinforcementArea));
     ImGui::Text("fck: %.2f MPa", fck);
-
-    ImGui::SeparatorText("Momentos Resistentes");
-    ImGui::Text("Mrd,x (max): %.2f kN.m", mrdX_max);
-    ImGui::Text("Mrd,x (min): %.2f kN.m", mrdX_min);
-    ImGui::Text("Mrd,y (max): %.2f kN.m", mrdY_max);
-    ImGui::Text("Mrd,y (min): %.2f kN.m", mrdY_min);
 }
 
 void Interface::RightTablePos(const char *nome1, const char *nome2, float posY, Section &section)
@@ -2030,10 +2008,14 @@ void Interface::autoFitToPointsWithMargin(const vector<Point> &points, float mar
     for (size_t i = 1; i < points.size(); ++i)
     {
         const Point &p = points[i];
-        if (p.getX() < minX) minX = p.getX();
-        if (p.getX() > maxX) maxX = p.getX();
-        if (p.getY() < minY) minY = p.getY();
-        if (p.getY() > maxY) maxY = p.getY();
+        if (p.getX() < minX)
+            minX = p.getX();
+        if (p.getX() > maxX)
+            maxX = p.getX();
+        if (p.getY() < minY)
+            minY = p.getY();
+        if (p.getY() > maxY)
+            maxY = p.getY();
     }
 
     // 2. Calcula a largura, a altura e o centro exato do desenho.
@@ -2044,9 +2026,10 @@ void Interface::autoFitToPointsWithMargin(const vector<Point> &points, float mar
 
     // 3. Usa a maior dimensão (largura ou altura) para garantir a proporção 1:1.
     double maxRange = std::max(rangeX, rangeY);
-    
+
     // Define um valor mínimo caso a seção seja apenas um ponto ou uma linha.
-    if (maxRange == 0) {
+    if (maxRange == 0)
+    {
         maxRange = 10.0;
     }
 
@@ -2095,9 +2078,9 @@ void Interface::renderReinforcement(Reinforcement &reinforcement, std::string pl
         // Configurar o estilo do marcador para a barra atual.
         ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle,
                                    marker_size_pixels,
-                                   ImVec4(0.0f, 0.0f, 1.0f, 1.0f), // Cor azul
-                                   1.0f,                           // Espessura da borda
-                                   ImVec4(0.0f, 0.0f, 0.8f, 1.0f)  // Cor da borda
+                                   ImVec4(1.0f, 0.5f, 0.0f, 1.0f), // Cor Laranja Vibrante para o preenchimento
+                                   1.5f,                           // Espessura da borda (aumentei um pouco para dar mais destaque)
+                                   ImVec4(0.8f, 0.4f, 0.0f, 1.0f)  // Cor Laranja Escuro para a borda
         );
 
         char bar_label[32];

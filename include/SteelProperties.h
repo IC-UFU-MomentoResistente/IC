@@ -42,6 +42,7 @@ private:
 public:
     SteelProperties();
 
+    void calculateParameters();
     void setParameters(StressStrainSteelModelType model, double collectedFyk, double collectedGammaS, double collectedE);
     double computeStress(double strain);
     void setCurveStressStrain();

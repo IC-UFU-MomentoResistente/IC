@@ -10,19 +10,16 @@ ConcreteProperties::ConcreteProperties() :
 	strengthReductionFactor(0.0),
 	stressStrainExponent(0.0)
 {
-	curveStressStrain = {};
 	modelType = StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2023;
+	curveStressStrain = {};
+	calculateParameters();
 }
 
-void ConcreteProperties::setParameters(StressStrainConcreteModelType model, double collectedFck, double collectedGammaC)
+void ConcreteProperties::calculateParameters()
 {
-	modelType = model;
-
-	if (collectedFck <= 50)
+	if (fck <= 50)
 	{
-		fck = collectedFck;
-		gammaC = collectedGammaC;
-		fcd = collectedFck / collectedGammaC;
+		fcd = fck / gammaC;
 		factorMultiplierFcd = 0.85;
 		strainConcretePlastic = 2;
 		strainConcreteRupture = 3.5;
@@ -30,19 +27,26 @@ void ConcreteProperties::setParameters(StressStrainConcreteModelType model, doub
 	}
 	else
 	{
-		fck = collectedFck;
-		gammaC = collectedGammaC;
-		fcd = collectedFck / collectedGammaC;
-		factorMultiplierFcd = 0.85 * (1 - (collectedFck - 50) / 200);
-		strainConcretePlastic = 2 + 0.085 * pow((collectedFck - 50), 0.53);
-		strainConcreteRupture = 2.6 + 35 * pow(((90 - collectedFck) / 100), 4);
-		stressStrainExponent = 1.4 + 23.4 * pow(((90 - collectedFck) / 100), 4);
+		fcd = fck / gammaC;
+		factorMultiplierFcd = 0.85 * (1 - (fck - 50) / 200);
+		strainConcretePlastic = 2 + 0.085 * pow((fck - 50), 0.53);
+		strainConcreteRupture = 2.6 + 35 * pow(((90 - fck) / 100), 4);
+		stressStrainExponent = 1.4 + 23.4 * pow(((90 - fck) / 100), 4);
 
 		if (strainConcretePlastic > strainConcreteRupture)
 			strainConcretePlastic = strainConcreteRupture;
 	}
 
-	strengthReductionFactor = (collectedFck <= 40) ? 1 : pow((40.0 / collectedFck), (1.0 / 3.0));
+	strengthReductionFactor = (fck <= 40) ? 1 : pow((40.0 / fck), (1.0 / 3.0));
+}
+
+void ConcreteProperties::setParameters(StressStrainConcreteModelType model, double collectedFck, double collectedGammaC)
+{
+	modelType = model;
+    fck = collectedFck;
+    gammaC = collectedGammaC;
+
+    calculateParameters();
 }
 
 double ConcreteProperties::computeStress(double strain)

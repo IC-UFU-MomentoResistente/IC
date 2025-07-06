@@ -46,7 +46,8 @@ private:
 public:
 	ConcreteProperties();
 
-	void setParameters(StressStrainConcreteModelType model, double collectedFck, double collectedGammaC);
+    void calculateParameters();
+    void setParameters(StressStrainConcreteModelType model, double collectedFck, double collectedGammaC);
 	double computeStress(double strain);
 	void setCurveStressStrain();
 

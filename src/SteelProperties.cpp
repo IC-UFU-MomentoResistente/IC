@@ -7,19 +7,25 @@ SteelProperties::SteelProperties() :
     fyd(0.0), 
     strainSteelYield(0.0), 
     strainSteelRupture(0.0)
-    
-    {}
+{
+    calculateParameters();
+}
+
+void SteelProperties::calculateParameters()
+{
+    fyd = fyk / gammaS; //MPa
+    strainSteelYield = fyd / E; //por mil
+    strainSteelRupture = 10; //por mil
+}
 
 void SteelProperties::setParameters(StressStrainSteelModelType model, double collectedFyk, double collectedGammaS, double collectedE)
 {
     modelType = model;
-
-    fyk = collectedFyk; //MPa
+    fyk = collectedFyk;
     gammaS = collectedGammaS;
-    E = collectedE; //GPa
-    fyd = collectedFyk / collectedGammaS; //MPa
-    strainSteelYield = fyd / E; //por mil
-    strainSteelRupture = 10; //por mil
+    E = collectedE;
+
+    calculateParameters();
 }
 
 double SteelProperties::computeStress(double strain)

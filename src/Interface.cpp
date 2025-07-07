@@ -1593,6 +1593,47 @@ void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
         ImPlot::SetupAxis(ImAxis_X1, "MsdY (kN.m)");
         ImPlot::SetupAxis(ImAxis_Y1, "MsdX (kN.m)", ImPlotAxisFlags_Invert);
 
+        bool isNsdInvalidForSelected = false;
+        if (selectedEffort >= 0 && selectedEffort < section.combinations.size())
+        {
+            if (section.combinations[selectedEffort].isCalculated && !section.combinations[selectedEffort].isNormalForceValid)
+            {
+                isNsdInvalidForSelected = true;
+            }
+        }
+
+        if (isNsdInvalidForSelected)
+        {
+            ImPlotRect limits = ImPlot::GetPlotLimits();
+            double centerX = (limits.X.Min + limits.X.Max) * 0.5;
+            double centerY = (limits.Y.Min + limits.Y.Max) * 0.5;
+
+            ImVec2 centerPixels = ImPlot::PlotToPixels(ImPlotPoint(centerX, centerY));
+
+            ImDrawList *drawList = ImGui::GetWindowDrawList();
+
+            const char *line1 = "AVISO: O esforço normal (Nsd) solicitante está fora";
+            const char *line2 = "dos limites resistentes para a combinação selecionada.";
+            ImU32 textColor = IM_COL32(255, 165, 0, 255); // Cor laranja
+
+            ImVec2 line1Size = ImGui::CalcTextSize(line1);
+            ImVec2 line2Size = ImGui::CalcTextSize(line2);
+
+            float lineHeight = ImGui::GetTextLineHeightWithSpacing();
+            float totalTextHeight = lineHeight * 2;
+
+            float line1_x = centerPixels.x - (line1Size.x * 0.5f);
+            float line1_y = centerPixels.y - (totalTextHeight * 0.5f);
+
+            float line2_x = centerPixels.x - (line2Size.x * 0.5f);
+            float line2_y = line1_y + lineHeight;
+
+            drawList->PushClipRect(ImPlot::GetPlotPos(), ImPlot::GetPlotPos() + ImPlot::GetPlotSize());
+            drawList->AddText(ImVec2(line1_x, line1_y), textColor, line1);
+            drawList->AddText(ImVec2(line2_x, line2_y), textColor, line2);
+            drawList->PopClipRect();
+        }
+
         ImPlot::PushStyleVar(ImPlotStyleVar_FitPadding, ImVec2(0.1f, 0.1f));
 
         if (shouldAutoFitEnv)
@@ -1609,9 +1650,12 @@ void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
             {
                 if (mappingID[i] == true)
                 {
-                    ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 5, ImVec4(1.0f, 0.0f, 0.0f, 1.0f), 1.0f, ImVec4(0.8f, 0.0f, 0.0f, 1.0f));
-                    Point msd_point(section.combinations[i].MsdY, section.combinations[i].MsdX);
-                    renderVectorPoint({msd_point}, "Msd"); // Passa um vetor contendo o ponto
+                    if (!isNsdInvalidForSelected)
+                    {
+                        ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 5, ImVec4(1.0f, 0.0f, 0.0f, 1.0f), 1.0f, ImVec4(0.8f, 0.0f, 0.0f, 1.0f));
+                        Point msd_point(section.combinations[i].MsdY, section.combinations[i].MsdX);
+                        renderVectorPoint({msd_point}, "Msd"); // Passa um vetor contendo o ponto
+                    }
                 }
             }
         }
@@ -1725,7 +1769,7 @@ void Interface::renderStrainSteelDiagram(const vector<Point> &vectorPoint, strin
 
 void Interface::EffortsTable(Section &section)
 {
-    static int selectedEffort = -1;
+    // static int selectedEffort = -1;
 
     if (ImGui::BeginTable("Tabela", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
     {
@@ -1769,9 +1813,6 @@ void Interface::EffortsTable(Section &section)
                 }
             }
 
-            // --- MUDANÇA AQUI: Desenhamos o texto do ID apenas uma vez ---
-            // Como o Selectable agora é invisível, desenhamos o texto da célula por cima dele.
-            // As chamadas ImGui::SameLine() e ImGui::TextUnformatted() foram removidas.
             ImGui::SetCursorScreenPos(ImGui::GetCursorScreenPos() + ImVec2(0, -ImGui::GetFrameHeight())); // Move o cursor para o início da célula
             ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetStyle().CellPadding.x);               // Adiciona padding
             ImGui::Text("%d", static_cast<int>(i + 1));
@@ -1794,8 +1835,8 @@ void Interface::EffortsTable(Section &section)
             {
                 if (!section.combinations[i].isNormalForceValid)
                 {
-                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 165, 0, 255));
-                    ImGui::Text("Nsd Inválido");
+                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));
+                    ImGui::Text("Não Seguro");
                     ImGui::PopStyleColor();
                 }
                 else if (section.combinations[i].isSafe)

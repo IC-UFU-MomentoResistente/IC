@@ -39,6 +39,7 @@ private:
     bool showCorrupedFileError = false;
     bool showEmptySectionSaveError = false;
     bool relatorio = false;
+    int selectedEffort = -1;
     std::vector<bool> mappingID = {};
 
 public:

@@ -1,74 +1,60 @@
 #include <fstream>
 #include <iostream>
 
+// Headers do Emscripten para o loop principal
+#include <emscripten/emscripten.h>
+
+// Headers da sua aplicação
 #include "raylib.h"
 #include "imgui.h"
 #include "implot.h"
 #include "rlImGui.h"
-
-#include "Point.h"
-#include "Polygon.h"
-#include "Reinforcement.h"
-#include "ConcreteProperties.h"
-#include "SteelProperties.h"
-#include "StrainDistribution.h"
-#include "PolygonStressRegions.h"
-#include "AnalyticalIntegration.h"
-#include "InternalForces.h"
-#include "MomentSolver.h"
 #include "Section.h"
 #include "Interface.h"
-#include "Combination.h"
 
-using std::cout;
-using std::endl;
-using std::vector;
+// Estrutura para manter o estado da nossa aplicação vivo entre os frames
+struct AppContext {
+    Section section;
+    Interface interface;
+};
 
-int main()
-{
-	std::ofstream logFile("log_resultados.txt");
+// Esta função será chamada pelo navegador repetidamente (ex: 60 vezes por segundo)
+void main_loop(void* arg) {
+    AppContext* ctx = static_cast<AppContext*>(arg);
 
-	if (!logFile.is_open())
-	{
-		std::cerr << "Erro ao abrir o arquivo de log" << std::endl;
-		return 1;
-	}
+    // --- TODO O CÓDIGO QUE ESTAVA DENTRO DO SEU 'while' VEM AQUI ---
+    BeginDrawing();
+    ClearBackground(DARKGRAY);
+    rlImGuiBegin();
 
-	std::streambuf *coutbuf = std::cout.rdbuf();
-	std::cout.rdbuf(logFile.rdbuf());
+    ctx->interface.showPrimaryMenuBar(ctx->section);
+    ctx->interface.showSecondaryMenuBar(ctx->section);
+    ctx->interface.crossSectionPlotInterface(ctx->section, 56);
+    ctx->interface.envelopeMomentsPlotInterface(ctx->section, 56);
+    ctx->interface.RightTablePos("Tabela de Pontos", "Tabela de Esforços", 56, ctx->section);
 
-	Section section;
-	Interface interface;
+    rlImGuiEnd();
+    EndDrawing();
+    // --- FIM DO CÓDIGO DO LOOP ---
+}
 
-	interface.initInterface();
+int main() {
+    // A inicialização continua a mesma
+    // Não precisamos mais do log em arquivo, pois o console do navegador será nosso log
+    
+    AppContext ctx;
+    ctx.interface.initInterface(); // Sua função que chama InitWindow e outras inicializações
 
-	while (!WindowShouldClose())
-	{
-		BeginDrawing();
-		ClearBackground(DARKGRAY);
-		rlImGuiBegin();
+    // Em vez de um laço while, nós registramos a função de loop com o Emscripten
+    // O navegador se encarregará de chamá-la continuamente.
+    // O '0' significa para rodar na maior frequência possível (geralmente limitado pelo navegador)
+    // O '1' significa para simular um loop infinito.
+    emscripten_set_main_loop_arg(main_loop, &ctx, 0, 1);
 
-		interface.showPrimaryMenuBar(section);
-		interface.showSecondaryMenuBar(section);
-		interface.crossSectionPlotInterface(section, 56);
-		interface.envelopeMomentsPlotInterface(section, 56);
-		interface.RightTablePos("Tabela de Pontos", "Tabela de Esforços", 56, section);
+    // O código abaixo só será alcançado se o loop for cancelado
+    ImPlot::DestroyContext();
+    rlImGuiShutdown();
+    CloseWindow();
 
-		// bool showDemoWindow = true;
-		// if (showDemoWindow)
-		// 	ImGui::ShowDemoWindow(&showDemoWindow);
-
-		rlImGuiEnd();
-		EndDrawing();
-	}
-
-	ImPlot::DestroyContext();
-	rlImGuiShutdown();
-	CloseWindow();
-
-	std::cout.rdbuf(coutbuf);
-
-	logFile.close();
-
-	return 0;
+    return 0;
 }

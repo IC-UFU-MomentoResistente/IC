@@ -8,7 +8,8 @@
         "${workspaceFolder}/lib/raylib/src",
         "${workspaceFolder}/lib/imgui",
         "${workspaceFolder}/lib/implot",
-        "${workspaceFolder}/lib/rlImGui"
+        "${workspaceFolder}/lib/rlImGui",
+        "C:/emsdk/upstream/emscripten/system/include"
       ],
       "defines": [
         "_DEBUG",

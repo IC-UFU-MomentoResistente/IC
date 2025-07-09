@@ -1,4 +1,4 @@
-#include "Combination.h"
+#include "combination.h"
 
 Combination::Combination() : Normal(0.0), MsdX(0.0), MsdY(0.0), MsolverXX(0.0), MsolverYY(0.0), isMomentValid(true), isCalculated(false), isNormalForceValid(false), isSafe(false)
 {

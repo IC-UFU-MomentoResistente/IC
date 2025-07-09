@@ -9,7 +9,7 @@
 #include "PolygonStressRegions.h"
 #include "AnalyticalIntegration.h"
 #include "InternalForces.h"
-#include "Combination.h"
+#include "combination.h"
 #include "MomentSolver.h"
 
 using std::vector;

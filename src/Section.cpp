@@ -143,13 +143,13 @@ void Section::computeEquilibrium(double Nsd, double eps1, double eps2)
         strainDistribution, stressRegions, analyticalIntegration,
         internalForces, Nsd);
 
-    std::cout << "--------------------------------------------\n";
-    std::cout << "Angulo: " << workingPolygon.getAngle() << "; "
-                  << "eps1: " << momentSolver.getTopFiberStrain() << "; "
-                  << "eps2: " << momentSolver.getBottomFiberStrain() << "; "
-                  << "Mrdxx: " << momentSolver.getMoment().getX() << "; "
-                  << "Mrdyy: " << momentSolver.getMoment().getY() << endl;
-    std::cout << "--------------------------------------------\n";
+    // std::cout << "--------------------------------------------\n";
+    // std::cout << "Angulo: " << workingPolygon.getAngle() << "; "
+    //               << "eps1: " << momentSolver.getTopFiberStrain() << "; "
+    //               << "eps2: " << momentSolver.getBottomFiberStrain() << "; "
+    //               << "Mrdxx: " << momentSolver.getMoment().getX() << "; "
+    //               << "Mrdyy: " << momentSolver.getMoment().getY() << std::endl;
+    // std::cout << "--------------------------------------------\n";
 }
 
 void Section::computeEnvelope(double Nsd)
@@ -167,7 +167,7 @@ void Section::computeEnvelope(double Nsd)
         339, 342, 345, 348, 351, 354, 357, 360
     };
     
-    cout << "--------------------------------------------\n";
+    // cout << "--------------------------------------------\n";
 
     for (double angle : angles)
     {
@@ -179,7 +179,7 @@ void Section::computeEnvelope(double Nsd)
         envelopeMoments.push_back(momentSolver.getMoment());
     }
 
-    cout << "--------------------------------------------\n";
+    // std::cout << "--------------------------------------------\n";
 }
 
 bool Section::isMomentSafe(const Point &momentPoint) const
@@ -261,104 +261,104 @@ bool Section::isMomentSafe(const Point &momentPoint) const
 //     }
 // }
 
-void Section::printSectionData()
-{
-    cout << "--------------------------------------------\n";
-    cout << "Secao: " << endl;
+// void Section::printSectionData()
+// {
+//     cout << "--------------------------------------------\n";
+//     cout << "Secao: " << endl;
 
-    cout << "\nVertices:" << endl;
+//     cout << "\nVertices:" << endl;
 
-    for (size_t i = 0; i < stressRegions.getOriginalPolygon().getPolygonVertices().size(); i++)
-    {
-        cout << i << ": "
-             << stressRegions.getOriginalPolygon().getPolygonVertices()[i].getX() << " "
-             << stressRegions.getOriginalPolygon().getPolygonVertices()[i].getY() << endl;
-    }
+//     for (size_t i = 0; i < stressRegions.getOriginalPolygon().getPolygonVertices().size(); i++)
+//     {
+//         cout << i << ": "
+//              << stressRegions.getOriginalPolygon().getPolygonVertices()[i].getX() << " "
+//              << stressRegions.getOriginalPolygon().getPolygonVertices()[i].getY() << endl;
+//     }
 
-    cout << "\nRegiao comprimida:" << endl;
+//     cout << "\nRegiao comprimida:" << endl;
 
-    for (size_t i = 0; i < stressRegions.getCompressedRegion().getPolygonVertices().size(); i++)
-    {
-        cout << i << ": "
-             << stressRegions.getCompressedRegion().getPolygonVertices()[i].getX() << " "
-             << stressRegions.getCompressedRegion().getPolygonVertices()[i].getY() << endl;
-    }
+//     for (size_t i = 0; i < stressRegions.getCompressedRegion().getPolygonVertices().size(); i++)
+//     {
+//         cout << i << ": "
+//              << stressRegions.getCompressedRegion().getPolygonVertices()[i].getX() << " "
+//              << stressRegions.getCompressedRegion().getPolygonVertices()[i].getY() << endl;
+//     }
 
-    cout << "\nRegiao parabolica:" << endl;
+//     cout << "\nRegiao parabolica:" << endl;
 
-    for (size_t i = 0; i < stressRegions.getParabolicRegion().getPolygonVertices().size(); i++)
-    {
-        cout << i << ": "
-             << stressRegions.getParabolicRegion().getPolygonVertices()[i].getX() << " "
-             << stressRegions.getParabolicRegion().getPolygonVertices()[i].getY() << endl;
-    }
+//     for (size_t i = 0; i < stressRegions.getParabolicRegion().getPolygonVertices().size(); i++)
+//     {
+//         cout << i << ": "
+//              << stressRegions.getParabolicRegion().getPolygonVertices()[i].getX() << " "
+//              << stressRegions.getParabolicRegion().getPolygonVertices()[i].getY() << endl;
+//     }
 
-    cout << "\nRegiao retangular:" << endl;
+//     cout << "\nRegiao retangular:" << endl;
 
-    for (size_t i = 0; i < stressRegions.getRectangularRegion().getPolygonVertices().size(); i++)
-    {
-        cout << i << ": "
-             << stressRegions.getRectangularRegion().getPolygonVertices()[i].getX() << " "
-             << stressRegions.getRectangularRegion().getPolygonVertices()[i].getY() << endl;
-    }
+//     for (size_t i = 0; i < stressRegions.getRectangularRegion().getPolygonVertices().size(); i++)
+//     {
+//         cout << i << ": "
+//              << stressRegions.getRectangularRegion().getPolygonVertices()[i].getX() << " "
+//              << stressRegions.getRectangularRegion().getPolygonVertices()[i].getY() << endl;
+//     }
 
-    cout << "--------------------------------------------\n";
-    cout << "Altura secao: " << workingPolygon.getPolygonHeight() << endl;
-    cout << "Altura util: " << workingReinforcement.getEffectiveDepth() << endl;
-    cout << "yMaximo: " << workingPolygon.getMaxY() << endl;
-    cout << "yMinimo: " << workingPolygon.getMinY() << endl;
-    cout << "Area: " << workingPolygon.getPolygonArea() << endl;
-    cout << "--------------------------------------------\n";
+//     cout << "--------------------------------------------\n";
+//     cout << "Altura secao: " << workingPolygon.getPolygonHeight() << endl;
+//     cout << "Altura util: " << workingReinforcement.getEffectiveDepth() << endl;
+//     cout << "yMaximo: " << workingPolygon.getMaxY() << endl;
+//     cout << "yMinimo: " << workingPolygon.getMinY() << endl;
+//     cout << "Area: " << workingPolygon.getPolygonArea() << endl;
+//     cout << "--------------------------------------------\n";
 
-    cout << "--------------------------------------------\n";
-    cout << "Parametros Concreto: \n";
-    cout << "fcd: " << concrete.getFcd() << " MPa" << endl;
-    cout << "Fator mult: " << concrete.getFactorMultiplierFcd() << endl;
-    cout << "Exp: " << concrete.getStressStrainExponent() << endl;
-    cout << "Eps Ultimo: " << concrete.getStrainConcreteRupture() << endl;
-    cout << "Eps Limite " << concrete.getStrainConcretePlastic() << endl;
-    cout << "--------------------------------------------\n";
+//     cout << "--------------------------------------------\n";
+//     cout << "Parametros Concreto: \n";
+//     cout << "fcd: " << concrete.getFcd() << " MPa" << endl;
+//     cout << "Fator mult: " << concrete.getFactorMultiplierFcd() << endl;
+//     cout << "Exp: " << concrete.getStressStrainExponent() << endl;
+//     cout << "Eps Ultimo: " << concrete.getStrainConcreteRupture() << endl;
+//     cout << "Eps Limite " << concrete.getStrainConcretePlastic() << endl;
+//     cout << "--------------------------------------------\n";
 
-    cout << "--------------------------------------------\n";
-    cout << "Alturas Deformacao (Concreto): \n";
-    cout << "xAlpha: " << strainDistribution.getNeutralAxisCoord() << endl;
-    cout << "xEpsLimite: " << strainDistribution.getPlasticStrainCoord() << endl;
-    cout << "xEpsUltimo: " << strainDistribution.getRuptureStrainCoord() << endl;
-    cout << "hLN: " << stressRegions.getNeutralAxisHeight() << endl;
-    cout << "hEpsLimite: " << stressRegions.getPlasticHeight() << endl;
-    cout << "hEpsUltimo: " << stressRegions.getRuptureHeight() << endl;
-    cout << "--------------------------------------------\n";
+//     cout << "--------------------------------------------\n";
+//     cout << "Alturas Deformacao (Concreto): \n";
+//     cout << "xAlpha: " << strainDistribution.getNeutralAxisCoord() << endl;
+//     cout << "xEpsLimite: " << strainDistribution.getPlasticStrainCoord() << endl;
+//     cout << "xEpsUltimo: " << strainDistribution.getRuptureStrainCoord() << endl;
+//     cout << "hLN: " << stressRegions.getNeutralAxisHeight() << endl;
+//     cout << "hEpsLimite: " << stressRegions.getPlasticHeight() << endl;
+//     cout << "hEpsUltimo: " << stressRegions.getRuptureHeight() << endl;
+//     cout << "--------------------------------------------\n";
 
-    cout << "--------------------------------------------\n";
-    cout << "Forca e Momento (Concreto): \n";
-    cout << "Normal: " << internalForces.getNormalConcrete() << " kN" << endl;
-    cout << "Momento: " << internalForces.getMomentConcrete() << " kN*m" << endl;
-    cout << "--------------------------------------------\n";
+//     cout << "--------------------------------------------\n";
+//     cout << "Forca e Momento (Concreto): \n";
+//     cout << "Normal: " << internalForces.getNormalConcrete() << " kN" << endl;
+//     cout << "Momento: " << internalForces.getMomentConcrete() << " kN*m" << endl;
+//     cout << "--------------------------------------------\n";
 
-    cout << "--------------------------------------------\n";
-    cout << "Parametros Aco Passivo: \n";
-    cout << "fyd: " << steel.getFyd() << " MPa" << endl;
-    cout << "elasY: " << steel.getE() << " GPa" << endl;
-    cout << "epsYd: " << steel.getStrainSteelYield() << endl;
-    cout << "--------------------------------------------\n";
+//     cout << "--------------------------------------------\n";
+//     cout << "Parametros Aco Passivo: \n";
+//     cout << "fyd: " << steel.getFyd() << " MPa" << endl;
+//     cout << "elasY: " << steel.getE() << " GPa" << endl;
+//     cout << "epsYd: " << steel.getStrainSteelYield() << endl;
+//     cout << "--------------------------------------------\n";
 
-    cout << "--------------------------------------------\n";
-    cout << "Forca e Momento (Aco Passivo): \n";
-    cout << "Normal: " << internalForces.getNormalSteel() << " kN" << endl;
-    cout << "Momento: " << internalForces.getMomentSteel() << " kN*m" << endl;
-    cout << "--------------------------------------------\n";
+//     cout << "--------------------------------------------\n";
+//     cout << "Forca e Momento (Aco Passivo): \n";
+//     cout << "Normal: " << internalForces.getNormalSteel() << " kN" << endl;
+//     cout << "Momento: " << internalForces.getMomentSteel() << " kN*m" << endl;
+//     cout << "--------------------------------------------\n";
 
-    cout << "--------------------------------------------\n";
-    cout << "Normal Minima e Maxima: \n";
-    cout << "Maxima compressao: " << internalForces.getMaxNormalCompression() << " kN" << endl;
-    cout << "Maxima tracao: " << internalForces.getMaxNormalTraction() << " kN" << endl;
-    cout << "--------------------------------------------\n";
+//     cout << "--------------------------------------------\n";
+//     cout << "Normal Minima e Maxima: \n";
+//     cout << "Maxima compressao: " << internalForces.getMaxNormalCompression() << " kN" << endl;
+//     cout << "Maxima tracao: " << internalForces.getMaxNormalTraction() << " kN" << endl;
+//     cout << "--------------------------------------------\n";
 
-    cout << "--------------------------------------------\n";
-    cout << "Equilibrio: \n";
-    cout << "Normal: " << internalForces.getNormalSection() << " kN" << endl;
-    cout << "Mrdxx: " << internalForces.getMomentXXSection() << " kN*m" << endl;
-    cout << "Mrdyy: " << internalForces.getMomentYYSection() << " kN*m" << endl;
-    cout << "--------------------------------------------\n";
-    combinations = std::vector<Combination>();
-}
+//     cout << "--------------------------------------------\n";
+//     cout << "Equilibrio: \n";
+//     cout << "Normal: " << internalForces.getNormalSection() << " kN" << endl;
+//     cout << "Mrdxx: " << internalForces.getMomentXXSection() << " kN*m" << endl;
+//     cout << "Mrdyy: " << internalForces.getMomentYYSection() << " kN*m" << endl;
+//     cout << "--------------------------------------------\n";
+//     combinations = std::vector<Combination>();
+// }

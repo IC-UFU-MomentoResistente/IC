@@ -1666,7 +1666,7 @@ void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
     ImGui::End();
 }
 
-void Interface::renderPolygon(const vector<Point> &polygonVertices, string nameVertices, string namePolygon)
+void Interface::renderPolygon(const vector<Point> &polygonVertices, std::string nameVertices, std::string namePolygon)
 {
     if (!polygonVertices.empty())
     {
@@ -1699,7 +1699,7 @@ void Interface::renderPolygon(const vector<Point> &polygonVertices, string nameV
     }
 }
 
-void Interface::renderVectorPoint(const vector<Point> &vectorPoint, string nameVectorPoint)
+void Interface::renderVectorPoint(const vector<Point> &vectorPoint, std::string nameVectorPoint)
 {
     if (!vectorPoint.empty())
     {
@@ -1716,7 +1716,7 @@ void Interface::renderVectorPoint(const vector<Point> &vectorPoint, string nameV
     }
 }
 
-void Interface::renderStrainConcreteRuptureDiagram(const vector<Point> &vectorPoint, string nameVectorPoint)
+void Interface::renderStrainConcreteRuptureDiagram(const vector<Point> &vectorPoint, std::string nameVectorPoint)
 {
     if (!vectorPoint.empty())
     {
@@ -1741,7 +1741,7 @@ void Interface::renderStrainConcreteRuptureDiagram(const vector<Point> &vectorPo
     }
 }
 
-void Interface::renderStrainSteelDiagram(const vector<Point> &vectorPoint, string nameVectorPoint)
+void Interface::renderStrainSteelDiagram(const vector<Point> &vectorPoint, std::string nameVectorPoint)
 {
 
     if (!vectorPoint.empty())
@@ -1974,7 +1974,7 @@ void Interface::saveSectionData(Section &section, const std::string &filename)
 
     cereal::JSONOutputArchive archive(os);
     archive(CEREAL_NVP(section));
-    std::cout << "Dados da seção salvos com sucesso em: " << filename << '\n';
+    // std::cout << "Dados da seção salvos com sucesso em: " << filename << '\n';
 }
 
 void Interface::loadSectionData(Section &section, const std::string &filename)
@@ -1993,7 +1993,7 @@ void Interface::loadSectionData(Section &section, const std::string &filename)
     {
         cereal::JSONInputArchive archive(is);
         archive(CEREAL_NVP(section));
-        std::cout << "Dados da secao carregados de: " << filename << '\n';
+        // std::cout << "Dados da secao carregados de: " << filename << '\n';
 
         // Se o carregamento foi bem-sucedido, defina a geometria e materiais
         section.updateGeometricProperties();

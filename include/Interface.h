@@ -26,11 +26,6 @@
 #include <cereal/types/vector.hpp>
 #include <cereal/types/string.hpp>
 
-using std::cout;
-using std::endl;
-using std::string;
-using std::vector;
-
 class Interface
 {
 private:
@@ -67,10 +62,10 @@ public:
     void calculate(Section &section);
     void crossSectionPlotInterface(Section &section, float posY);
     void envelopeMomentsPlotInterface(Section &section, float posY);
-    void renderPolygon(const vector<Point> &polygonVertices, string nameVertices, string namePolygon);
-    void renderVectorPoint(const vector<Point> &vector, string nameReinforcement);
-    void renderStrainConcreteRuptureDiagram(const vector<Point> &vectorPoint, string nameVectorPoint);
-    void renderStrainSteelDiagram(const vector<Point> &vectorPoint, string nameVectorPoint);
+    void renderPolygon(const vector<Point> &polygonVertices, std::string nameVertices, std::string namePolygon);
+    void renderVectorPoint(const vector<Point> &vector, std::string nameReinforcement);
+    void renderStrainConcreteRuptureDiagram(const vector<Point> &vectorPoint, std::string nameVectorPoint);
+    void renderStrainSteelDiagram(const vector<Point> &vectorPoint, std::string nameVectorPoint);
     void EffortsTable(Section &section);
     void crossSectionTable(Section &section);
     void RightTablePos(const char *nome1, const char *nome2, float posY, Section &section);

@@ -43,6 +43,17 @@ void Interface::initInterface()
         &fontConfig,
         customRange);
 
+    m_logoUFU = LoadTexture("logo5.png");
+    if (m_logoUFU.id <= 0) {
+        std::cerr << "ERRO: Nao foi possivel carregar a textura 'logo.png'." << std::endl;
+    }
+
+    // --- ADICIONE O CARREGAMENTO DA NOVA IMAGEM AQUI ---
+    m_esforcos = LoadTexture("esforcos.png"); // Use o nome exato do seu arquivo
+    if (m_esforcos.id <= 0) {
+        std::cerr << "ERRO: Nao foi possivel carregar a textura 'outra_imagem.png'." << std::endl;
+    }
+
     if (customFont)
     {
         io.FontDefault = customFont;
@@ -206,25 +217,64 @@ void Interface::showPrimaryMenuBar(Section &section)
         }
     }
 }
-
 void Interface::autorsWindow()
 {
     ImGui::SeparatorText("Software de cálculo do momento resistente em seções de concreto armado");
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::Spacing();
+
+   
+    ImGui::Columns(2, "info_layout", false);
+
+    
+    ImGui::SetColumnWidth(0, ImGui::GetWindowWidth() * 0.65f);
+
+    ImGui::Dummy(ImVec2(0.0f, 12.0ff)); 
     ImGui::Text("Desenvolvido por:");
     ImGui::BulletText("Arthur C. Pena - arthur.cunha.pena@ufu.br");
     ImGui::BulletText("Gabriel A. P. Lunarti - gabriel.lunarti@ufu.br");
+
+   
+    ImGui::NextColumn();
+
+   
+    if (m_logoUFU.id > 0) 
+    {
+        float largura_desejada = 120.0f;
+        float altura_proporcional = 0.0f;
+
+        
+        if (m_logoUFU.width > 0)
+        {
+             float aspectRatio = (float)m_logoUFU.height / (float)m_logoUFU.width;
+             altura_proporcional = largura_desejada * aspectRatio;
+        }
+
+        
+        ImGui::Dummy(ImVec2(0.0f, 8.0f));
+
+      
+        float largura_coluna_imagem = ImGui::GetColumnWidth();
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (largura_coluna_imagem - largura_desejada) * 0.5f);
+       
+        ImGui::Image((ImTextureID)&m_logoUFU, ImVec2(largura_desejada, altura_proporcional));
+    }
+
+    ImGui::Columns(1);
+
+    ImGui::Separator(); 
     ImGui::Spacing();
+
     ImGui::Text("Orientador:");
     ImGui::BulletText("Prof. Dr. Eduardo Vicente Wolf Trentini - etrentini@ufu.br ");
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::Spacing();
 
-    ImGui::SetCursorPosX(25); // Centraliza o botão
-    if (ImGui::Button("Fechar", ImVec2(100, 30)))
+    float buttonWidth = 100.0f;
+    ImGui::SetCursorPosX((ImGui::GetWindowWidth() - buttonWidth) * 0.5f);
+    if (ImGui::Button("Fechar", ImVec2(buttonWidth, 30)))
     {
         ImGui::CloseCurrentPopup();
     }
@@ -262,60 +312,66 @@ void Interface::showSecondaryMenuBar(Section &section)
 
 void Interface::crossSectionData(Section &section)
 {
-    if (ImGui::BeginMenu("Seção Transversal"))
+    static bool mostrar_janela_secao = false;
+
+    // O MenuItem funciona como um interruptor (toggle)
+    if (ImGui::MenuItem("Seção Transversal"))
     {
-        ImGui::SetNextWindowPos(ImVec2(3, 47));
-        ImGui::SetNextWindowSize(ImVec2(420, 400));
+        mostrar_janela_secao = !mostrar_janela_secao;
+    }
 
-        ImGui::Begin("Inserir Dados da Seção Transversal", nullptr,
-                     ImGuiWindowFlags_NoCollapse |
-                         ImGuiWindowFlags_NoResize |
-                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
+    if (mostrar_janela_secao)
+    {
+        ImGui::SetNextWindowPos(ImVec2(3, 47), ImGuiCond_Appearing);
+        ImGui::SetNextWindowSize(ImVec2(420, 400), ImGuiCond_Appearing);
 
-        if (ImGui::BeginTabBar("Tabela de Entrada de Dados da Seção Transversal"))
+        if (ImGui::Begin("Inserir Dados da Seção Transversal", &mostrar_janela_secao,
+                         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize))
         {
-            if (ImGui::BeginTabItem("Poligonal"))
+            // Lógica de fechamento robusta: fecha se clicar fora E nenhum outro item estiver ativo
+            if (!ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGui::IsAnyItemActive())
             {
-                inputSectionPolygonal(section);
-                clearInputSection(section);
-                ImGui::EndTabItem();
+                mostrar_janela_secao = false;
             }
 
-            if (ImGui::BeginTabItem("Seção Retangular"))
+            // Conteúdo da janela (abas)
+            if (ImGui::BeginTabBar("Tabela de Entrada de Dados da Seção Transversal"))
             {
-                inputSectionRectangle(section);
-                clearInputSection(section);
-                ImGui::EndTabItem();
+                if (ImGui::BeginTabItem("Poligonal"))
+                {
+                    inputSectionPolygonal(section);
+                    clearInputSection(section);
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Seção Retangular"))
+                {
+                    inputSectionRectangle(section);
+                    clearInputSection(section);
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Seção T"))
+                {
+                    inputSectionT(section);
+                    clearInputSection(section);
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Seção Circular"))
+                {
+                    inputSectionCircular(section);
+                    clearInputSection(section);
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Debug"))
+                {
+                    inputSectionDebug(section);
+                    clearInputSection(section);
+                    ImGui::EndTabItem();
+                }
+                showGeometricParameters(section);
+                ImGui::EndTabBar();
             }
-
-            if (ImGui::BeginTabItem("Seção T"))
-            {
-                inputSectionT(section);
-                clearInputSection(section);
-                ImGui::EndTabItem();
-            }
-
-            if (ImGui::BeginTabItem("Seção Circular"))
-            {
-                inputSectionCircular(section);
-                clearInputSection(section);
-                ImGui::EndTabItem();
-            }
-
-            if (ImGui::BeginTabItem("Debug"))
-            {
-                inputSectionDebug(section);
-                clearInputSection(section);
-                ImGui::EndTabItem();
-            }
-
-            showGeometricParameters(section);
-
-            ImGui::EndTabBar();
         }
-
-        ImGui::End();     // Fim da janela
-        ImGui::EndMenu(); // Fim do menu
+        ImGui::End();
     }
 }
 
@@ -601,43 +657,57 @@ void Interface::clearSection(Section &section)
 
 void Interface::interfaceMaterials(Section &section)
 {
-    if (ImGui::BeginMenu("Materiais"))
+    // 1. A variável de controle (booleano) que "lembra" se a janela está aberta.
+    static bool mostrar_janela_materiais = false;
+
+    // 2. O gatilho (MenuItem) que funciona como um interruptor para o booleano.
+    if (ImGui::MenuItem("Materiais"))
     {
-        // Janela normal sendo aberta enquanto o menu estiver ativo
-        ImGui::SetNextWindowSize(ImVec2(800, 500), ImGuiCond_Always); // Tamanho da janela
-        ImGui::SetNextWindowPos(ImVec2(123, 47));                     // Posição na tela
+        mostrar_janela_materiais = !mostrar_janela_materiais;
+    }
 
-        ImGui::Begin("Inserir Dados dos Materiais", nullptr,
-                     ImGuiWindowFlags_NoCollapse |
-                         ImGuiWindowFlags_NoResize |
-                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+    // 3. O bloco da janela, que só é desenhado se o booleano for verdadeiro.
+    if (mostrar_janela_materiais)
+    {
+        // Posição e tamanho da janela (do seu código original)
+        ImGui::SetNextWindowSize(ImVec2(800, 500), ImGuiCond_Appearing);
+        ImGui::SetNextWindowPos(ImVec2(123, 47), ImGuiCond_Appearing);
 
-        if (ImGui::BeginTabBar("Tabela de Entrada de Dados de Materiais"))
+        // O '&' cria o botão 'X' que desliga o booleano automaticamente.
+        if (ImGui::Begin("Inserir Dados dos Materiais", &mostrar_janela_materiais,
+                         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
         {
-            if (ImGui::BeginTabItem("Concreto"))
+            // 4. A lógica para fechar a janela com um clique fora dela.
+            if (!ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGui::IsAnyItemActive())
             {
-                concreteInterface(section);
-                ImGui::EndTabItem();
+                mostrar_janela_materiais = false;
             }
 
-            if (ImGui::BeginTabItem("Armadura Passiva"))
+            // --- O CONTEÚDO ORIGINAL DA SUA JANELA COMEÇA AQUI (INTOCADO) ---
+            if (ImGui::BeginTabBar("Tabela de Entrada de Dados de Materiais"))
             {
-                steelInterface(section);
-                ImGui::EndTabItem();
-            }
+                if (ImGui::BeginTabItem("Concreto"))
+                {
+                    concreteInterface(section);
+                    ImGui::EndTabItem();
+                }
 
-            if (ImGui::BeginTabItem("Valores de Referência"))
-            {
-                ReferenceValues();
-                ImGui::EndTabItem();
-            }
+                if (ImGui::BeginTabItem("Armadura Passiva"))
+                {
+                    steelInterface(section);
+                    ImGui::EndTabItem();
+                }
 
-            ImGui::EndTabBar();
+                if (ImGui::BeginTabItem("Valores de Referência"))
+                {
+                    ReferenceValues();
+                    ImGui::EndTabItem();
+                }
+
+                ImGui::EndTabBar();
+            }
         }
-
-        ImGui::End(); // Fecha janela
-
-        ImGui::EndMenu(); // Fecha menu
+        ImGui::End(); // Fecha a janela "Inserir Dados dos Materiais"
     }
 }
 
@@ -866,200 +936,203 @@ void Interface::steelInterface(Section &section)
 
 void Interface::reinforcementInterface(Section &section)
 {
-    if (ImGui::BeginMenu("Armadura"))
+    // 1. A variável de controle (booleano) que "lembra" se a janela está aberta.
+    static bool mostrar_janela_armadura = false;
+
+    // 2. O gatilho (MenuItem) que funciona como um interruptor.
+    if (ImGui::MenuItem("Armadura"))
     {
-        ImGui::SetNextWindowSize(ImVec2(610, 420), ImGuiCond_Always);
-        ImGui::SetNextWindowPos(ImVec2(191, 47));
+        mostrar_janela_armadura = !mostrar_janela_armadura;
+    }
 
-        static int barMode = 0, numBar = 0, tempNumPoints = 0;
-        static double coordXBar, coordYBar, diameterBar = 10;
-        static double coordXiBar, coordXfBar, coordYiBar, coordYfBar;
-        static bool showPopUpErrorBar = false;
+    // 3. O bloco da janela, que só é desenhado se o booleano for verdadeiro.
+    if (mostrar_janela_armadura)
+    {
+        // Posição e tamanho da janela (do seu código original)
+        ImGui::SetNextWindowSize(ImVec2(610, 420), ImGuiCond_Appearing);
+        ImGui::SetNextWindowPos(ImVec2(191, 47), ImGuiCond_Appearing);
 
-        if (section.originalReinforcement.getReinforcement().empty())
-            tempNumPoints = 0; // Se o vetor de armadura estiver vazio, o número de pontos temporário é 0
-        else
-            tempNumPoints = section.originalReinforcement.getReinforcement().size(); // Atualiza o número de pontos temporário com o tamanho do vetor de armadura
-
-        ImGui::Begin("Inserir Dados da Armadura Passiva", nullptr,
-                     ImGuiWindowFlags_NoCollapse |
-                         ImGuiWindowFlags_NoResize |
-                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
-
-        ImGui::SeparatorText("Modo de Inserção");
-        ImGui::RadioButton("Uma barra", &barMode, 0);
-        ImGui::SameLine();
-        ImGui::RadioButton("Linha de barras", &barMode, 1);
-        ImGui::PushItemWidth(100);
-        ImGui::InputInt("Número de barras", &tempNumPoints);
-        if (tempNumPoints < 0)
-            tempNumPoints = 0;
-
-        if (barMode == 0)
+        // O '&' cria o botão 'X' que desliga o booleano automaticamente.
+        if (ImGui::Begin("Inserir Dados da Armadura Passiva", &mostrar_janela_armadura,
+                         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar))
         {
-            ImGui::SeparatorText("Barra Individual");
+            // 4. A lógica para fechar a janela com um clique fora.
+            if (!ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGui::IsAnyItemActive())
+            {
+                mostrar_janela_armadura = false;
+            }
 
+            // --- O CONTEÚDO ORIGINAL DA SUA JANELA COMEÇA AQUI (INTOCADO) ---
+            static int barMode = 0, numBar = 0, tempNumPoints = 0;
+            static double coordXBar, coordYBar, diameterBar = 10;
+            static double coordXiBar, coordXfBar, coordYiBar, coordYfBar;
+            static bool showPopUpErrorBar = false;
+
+            if (section.originalReinforcement.getReinforcement().empty())
+                tempNumPoints = 0;
+            else
+                tempNumPoints = section.originalReinforcement.getReinforcement().size();
+
+            ImGui::SeparatorText("Modo de Inserção");
+            ImGui::RadioButton("Uma barra", &barMode, 0);
+            ImGui::SameLine();
+            ImGui::RadioButton("Linha de barras", &barMode, 1);
             ImGui::PushItemWidth(100);
+            ImGui::InputInt("Número de barras", &tempNumPoints);
+            if (tempNumPoints < 0)
+                tempNumPoints = 0;
 
-            if (tempNumPoints != section.originalReinforcement.getReinforcement().size())
+            if (barMode == 0)
             {
-                section.originalReinforcement.SetNumPoints(tempNumPoints);
-                section.defineReinforcement(section.originalReinforcement);
-            }
-
-            if (ImGui::Button("Limpar Tudo"))
-            {
-                section.originalReinforcement.clearReinforcement();
-                section.defineReinforcement(section.originalReinforcement);
-                section.stressRegions.clearStressRegions();
-                relatorio = false;
-            }
-        }
-
-        if (barMode == 1)
-        {
-            ImGui::PushID(1); // Garante que o ID seja único para cada barra
-            ImGui::PushItemWidth(100);
-            ImGui::BeginGroup();
-            ImGui::SeparatorText("Quantidade de barras:");
-
-            if (tempNumPoints != section.originalReinforcement.getReinforcement().size())
-            {
-                section.originalReinforcement.SetNumPoints(tempNumPoints);
-                section.defineReinforcement(section.originalReinforcement);
-            }
-
-            if (ImGui::Button("Limpar Tudo"))
-            {
-                section.originalReinforcement.clearReinforcement();
-                section.defineReinforcement(section.originalReinforcement);
-                section.stressRegions.clearStressRegions();
-                relatorio = false;
-            }
-
-            ImGui::PopID(); // Remove o ID do ponto atual após a linha ter sido processada
-
-            ImGui::SeparatorText("Linha de Barras:");
-            ImGui::PushID(2); // Garante que o ID seja único para cada barra
-            ImGui::InputInt("Número de barras", &numBar);
-            if (numBar < 2)
-                numBar = 2;
-            ImGui::InputDouble("Diâmetro das barras (mm)", &diameterBar, 0.0, 0.0, "%.2f");
-            ImGui::InputDouble("xi (cm)", &coordXiBar, 0.0, 0.0, "%.2f");
-            ImGui::SameLine();
-            ImGui::InputDouble("xf (cm)", &coordXfBar, 0.0, 0.0, "%.2f");
-            ImGui::InputDouble("yi (cm)", &coordYiBar, 0.0, 0.0, "%.2f");
-            ImGui::SameLine();
-            ImGui::InputDouble("yf (cm)", &coordYfBar, 0.0, 0.0, "%.2f");
-            ImGui::SameLine();
-            ImGui::PopID();
-            ImGui::EndGroup();
-
-            if (diameterBar < 0)
-            {
-                diameterBar = 0; // Valor padrão se o diâmetro for negativo
-            }
-
-            if (ImGui::Button("Adicionar Linha"))
-            {
-                if (diameterBar > 0)
+                ImGui::SeparatorText("Barra Individual");
+                ImGui::PushItemWidth(100);
+                if (tempNumPoints != section.originalReinforcement.getReinforcement().size())
                 {
-                    double stepX = (coordXfBar - coordXiBar) / (numBar - 1);
-                    double stepY = (coordYfBar - coordYiBar) / (numBar - 1);
-                    for (int i = 0; i < numBar; ++i)
-                    {
-                        double x = coordXiBar + stepX * i;
-                        double y = coordYiBar + stepY * i;
-                        section.originalReinforcement.addReinforcement(x, y, diameterBar);
-                    }
-                    section.updateGeometricProperties();
+                    section.originalReinforcement.SetNumPoints(tempNumPoints);
                     section.defineReinforcement(section.originalReinforcement);
                 }
-                else
-                    showPopUpErrorBar = true;
+                if (ImGui::Button("Limpar Tudo"))
+                {
+                    section.originalReinforcement.clearReinforcement();
+                    section.defineReinforcement(section.originalReinforcement);
+                    section.stressRegions.clearStressRegions();
+                    relatorio = false;
+                }
             }
-        }
 
-        // Tabela com dados das barras
-        if (ImGui::BeginTable("TabelaBarras", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
-        {
-            ImGui::TableSetupColumn("ID");
-            ImGui::TableSetupColumn("x (cm)");
-            ImGui::TableSetupColumn("y (cm)");
-            ImGui::TableSetupColumn("Diâmetro (mm)");
-            ImGui::TableHeadersRow();
-
-            for (size_t i = 0; i < section.originalReinforcement.GetNumPoints(); ++i)
+            if (barMode == 1)
             {
-                ImGui::PushID(i);
-                ImGui::TableNextRow();
-                ImGui::TableSetColumnIndex(0);
-                ImGui::Text("%d", static_cast<int>(i + 1)); // ID da barra
+                ImGui::PushID(1);
+                ImGui::PushItemWidth(100);
+                ImGui::BeginGroup();
+                ImGui::SeparatorText("Quantidade de barras:");
 
-                ImGui::TableSetColumnIndex(1);
-                char labelX[10];
-                snprintf(labelX, sizeof(labelX), "##x%d", i); // Cria o label para cada coordenada X
-                double x, y, d;
-                section.originalReinforcement.GetTableData(i, &x, &y, &d); // Obter as coordenadas do ponto na linha 'row'
-
-                if (ImGui::InputDouble(labelX, &x, 0.0, 0.0, "%.2f")) // Cria um campo editável para a coordenada x
+                if (tempNumPoints != section.originalReinforcement.getReinforcement().size())
                 {
-                    section.originalReinforcement.SetTableData(i, x, y, d); // Atualiza a coordenada 'x' diretamente no vetor
-                    section.updateGeometricProperties();
-                    section.defineReinforcement(section.originalReinforcement); // Atualiza a geometria da seção
-                }
-                ImGui::TableSetColumnIndex(2); // Coluna para 'y'
-                char labelY[10];
-                snprintf(labelY, sizeof(labelY), "##y%d", i); // Cria o label para cada coordenada Y
-
-                if (ImGui::InputDouble(labelY, &y, 0.0, 0.0, "%.2f")) // Cria um campo editável para a coordenada y
-                {
-                    section.originalReinforcement.SetTableData(i, x, y, d); // Atualiza a coordenada 'y' diretamente no vetor
-                    section.updateGeometricProperties();
-                    section.defineReinforcement(section.originalReinforcement); // Atualiza a geometria da seção
+                    section.originalReinforcement.SetNumPoints(tempNumPoints);
+                    section.defineReinforcement(section.originalReinforcement);
                 }
 
-                ImGui::TableSetColumnIndex(3); // Coluna para 'Diâmetro'
-                char labelD[10];
-                snprintf(labelD, sizeof(labelD), "##d%d", i);         // Cria o label para cada diâmetro
-                if (ImGui::InputDouble(labelD, &d, 0.0, 0.0, "%.2f")) // Cria um campo editável para o diâmetro
+                if (ImGui::Button("Limpar Tudo"))
                 {
-                    if (d > 0)
+                    section.originalReinforcement.clearReinforcement();
+                    section.defineReinforcement(section.originalReinforcement);
+                    section.stressRegions.clearStressRegions();
+                    relatorio = false;
+                }
+                ImGui::PopID(); 
+                ImGui::SeparatorText("Linha de Barras:");
+                ImGui::PushID(2); 
+                ImGui::InputInt("Número de barras", &numBar);
+                if (numBar < 2)
+                    numBar = 2;
+                ImGui::InputDouble("Diâmetro das barras (mm)", &diameterBar, 0.0, 0.0, "%.2f");
+                ImGui::InputDouble("xi (cm)", &coordXiBar, 0.0, 0.0, "%.2f");
+                ImGui::SameLine();
+                ImGui::InputDouble("xf (cm)", &coordXfBar, 0.0, 0.0, "%.2f");
+                ImGui::InputDouble("yi (cm)", &coordYiBar, 0.0, 0.0, "%.2f");
+                ImGui::SameLine();
+                ImGui::InputDouble("yf (cm)", &coordYfBar, 0.0, 0.0, "%.2f");
+                ImGui::SameLine();
+                ImGui::PopID();
+                ImGui::EndGroup();
+
+                if (diameterBar < 0)
+                {
+                    diameterBar = 0;
+                }
+
+                if (ImGui::Button("Adicionar Linha"))
+                {
+                    if (diameterBar > 0)
                     {
-                        section.originalReinforcement.SetTableData(i, x, y, d);     // Atualiza o diâmetro diretamente no vetor
-                        section.updateGeometricProperties();                        // Recalcula a área da armadura
-                        section.defineReinforcement(section.originalReinforcement); // Atualiza a geometria da seção
+                        double stepX = (coordXfBar - coordXiBar) / (numBar - 1);
+                        double stepY = (coordYfBar - coordYiBar) / (numBar - 1);
+                        for (int i = 0; i < numBar; ++i)
+                        {
+                            double x = coordXiBar + stepX * i;
+                            double y = coordYiBar + stepY * i;
+                            section.originalReinforcement.addReinforcement(x, y, diameterBar);
+                        }
+                        section.updateGeometricProperties();
+                        section.defineReinforcement(section.originalReinforcement);
                     }
                     else
-                    {
-                        showPopUpErrorBar = true; // Exibe popup de erro se o diâmetro for inválido
-                    }
+                        showPopUpErrorBar = true;
                 }
-                ImGui::PopID(); // Remove o ID do ponto atual após a linha ter sido processada
             }
 
-            ImGui::EndTable();
-        }
-
-        // Popup de erro
-        if (showPopUpErrorBar)
-        {
-            ImGui::OpenPopup("Erro de Entrada");
-        }
-
-        if (ImGui::BeginPopupModal("Erro de Entrada", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            ImGui::Text("Diâmetro inválido. Insira um valor positivo.");
-            if (ImGui::Button("OK", ImVec2(120, 0)))
+            if (ImGui::BeginTable("TabelaBarras", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
             {
-                showPopUpErrorBar = false;
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::EndPopup();
-        }
+                ImGui::TableSetupColumn("ID");
+                ImGui::TableSetupColumn("x (cm)");
+                ImGui::TableSetupColumn("y (cm)");
+                ImGui::TableSetupColumn("Diâmetro (mm)");
+                ImGui::TableHeadersRow();
 
-        ImGui::End(); // Fecha janela
-        ImGui::EndMenu();
+                for (size_t i = 0; i < section.originalReinforcement.GetNumPoints(); ++i)
+                {
+                    ImGui::PushID(i);
+                    ImGui::TableNextRow();
+                    ImGui::TableSetColumnIndex(0);
+                    ImGui::Text("%d", static_cast<int>(i + 1));
+                    ImGui::TableSetColumnIndex(1);
+                    char labelX[10];
+                    snprintf(labelX, sizeof(labelX), "##x%d", i);
+                    double x, y, d;
+                    section.originalReinforcement.GetTableData(i, &x, &y, &d);
+                    if (ImGui::InputDouble(labelX, &x, 0.0, 0.0, "%.2f"))
+                    {
+                        section.originalReinforcement.SetTableData(i, x, y, d);
+                        section.updateGeometricProperties();
+                        section.defineReinforcement(section.originalReinforcement);
+                    }
+                    ImGui::TableSetColumnIndex(2);
+                    char labelY[10];
+                    snprintf(labelY, sizeof(labelY), "##y%d", i);
+                    if (ImGui::InputDouble(labelY, &y, 0.0, 0.0, "%.2f"))
+                    {
+                        section.originalReinforcement.SetTableData(i, x, y, d);
+                        section.updateGeometricProperties();
+                        section.defineReinforcement(section.originalReinforcement);
+                    }
+                    ImGui::TableSetColumnIndex(3);
+                    char labelD[10];
+                    snprintf(labelD, sizeof(labelD), "##d%d", i);
+                    if (ImGui::InputDouble(labelD, &d, 0.0, 0.0, "%.2f"))
+                    {
+                        if (d > 0)
+                        {
+                            section.originalReinforcement.SetTableData(i, x, y, d);
+                            section.updateGeometricProperties();
+                            section.defineReinforcement(section.originalReinforcement);
+                        }
+                        else
+                        {
+                            showPopUpErrorBar = true;
+                        }
+                    }
+                    ImGui::PopID();
+                }
+                ImGui::EndTable();
+            }
+
+            if (showPopUpErrorBar)
+            {
+                ImGui::OpenPopup("Erro de Entrada");
+            }
+            if (ImGui::BeginPopupModal("Erro de Entrada", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("Diâmetro inválido. Insira um valor positivo.");
+                if (ImGui::Button("OK", ImVec2(120, 0)))
+                {
+                    showPopUpErrorBar = false;
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+        }
+        ImGui::End(); // Fecha a janela "Inserir Dados da Armadura Passiva"
     }
 }
 
@@ -1259,94 +1332,118 @@ void Interface::ReferenceValues()
 
 void Interface::effortSectionInterface(Section &section)
 {
-    if (ImGui::BeginMenu("Esforços"))
+    static bool mostrar_janela_esforcos = false;
+
+    if (ImGui::MenuItem("Esforços"))
     {
-        ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Always);
-        ImGui::SetNextWindowPos(ImVec2(265, 47));
-        static int tempNumCombinations = 1;
+        mostrar_janela_esforcos = !mostrar_janela_esforcos;
+    }
 
-        ImGui::Begin("Entrada de Dados: Esforços", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
-        ImGui::PushItemWidth(100);
-        ImGui::SeparatorText("Número de combinações de esforços");
+    if (mostrar_janela_esforcos)
+    {
+        ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Appearing);
+        ImGui::SetNextWindowPos(ImVec2(265, 47), ImGuiCond_Appearing);
 
-        // Garante que a seção de combinações nunca esteja vazia
-        if (section.combinations.empty())
+        if (ImGui::Begin("Entrada de Dados: Esforços", &mostrar_janela_esforcos,
+                         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar))
         {
-            section.combinations.resize(1, Combination(0.0f, 0.0f, 0.0f, 0.0f, false));
-            mappingID.resize(1);
-        }
-
-        tempNumCombinations = section.combinations.size();
-        if (ImGui::InputInt("##XX:", &tempNumCombinations))
-        {
-            if (tempNumCombinations < 1)
-                tempNumCombinations = 1;
-
-            section.combinations.resize(tempNumCombinations, Combination(0.0f, 0.0f, 0.0f, 0.0f, false));
-            mappingID.resize(tempNumCombinations);
-        }
-
-        if (ImGui::BeginTable("TabelaEsforcos", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp))
-        {
-            ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 50.0f);
-            ImGui::TableSetupColumn("Nsd (kN)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
-            ImGui::TableSetupColumn("Msd,x (kN.m)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
-            ImGui::TableSetupColumn("Msd,y (kN.m)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
-            ImGui::TableHeadersRow();
-
-            for (int i = 0; i < section.combinations.size(); ++i)
+            if (!ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGui::IsAnyItemActive())
             {
-                ImGui::PushID(i);
-                ImGui::TableNextRow();
-
-                float nsd = section.combinations[i].Normal;
-                float mx = section.combinations[i].MsdX;
-                float my = section.combinations[i].MsdY;
-
-                ImGui::TableSetColumnIndex(0);
-                ImGui::Text("%d", i + 1);
-
-                ImGui::TableSetColumnIndex(1);
-                char labelN[16];
-                snprintf(labelN, sizeof(labelN), "##nsd%d", i);
-                if (ImGui::InputFloat(labelN, &nsd))
-                    section.combinations[i].Normal = nsd;
-
-                ImGui::TableSetColumnIndex(2);
-                char labelMx[16];
-                snprintf(labelMx, sizeof(labelMx), "##mx%d", i);
-                if (ImGui::InputFloat(labelMx, &mx))
-                    section.combinations[i].MsdX = mx;
-
-                ImGui::TableSetColumnIndex(3);
-                char labelMy[16];
-                snprintf(labelMy, sizeof(labelMy), "##my%d", i);
-                if (ImGui::InputFloat(labelMy, &my))
-                    section.combinations[i].MsdY = my;
-
-                ImGui::PopID();
+                mostrar_janela_esforcos = false;
             }
-            ImGui::EndTable();
+           
+            static int tempNumCombinations = 1;
+            ImGui::PushItemWidth(100);
+            ImGui::SeparatorText("Número de combinações de esforços");
+
+            if (section.combinations.empty())
+            {
+                section.combinations.resize(1, Combination(0.0f, 0.0f, 0.0f, 0.0f, false));
+                mappingID.resize(1);
+            }
+
+            tempNumCombinations = section.combinations.size();
+            if (ImGui::InputInt("##XX:", &tempNumCombinations))
+            {
+                if (tempNumCombinations < 1)
+                    tempNumCombinations = 1;
+                section.combinations.resize(tempNumCombinations, Combination(0.0f, 0.0f, 0.0f, 0.0f, false));
+                mappingID.resize(tempNumCombinations);
+            }
+            ImGui::PopItemWidth();
+
+            if (ImGui::BeginTable("TabelaEsforcos", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp))
+            {
+                ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 50.0f);
+                ImGui::TableSetupColumn("Nsd (kN)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
+                ImGui::TableSetupColumn("Msd,x (kN.m)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
+                ImGui::TableSetupColumn("Msd,y (kN.m)", ImGuiTableColumnFlags_WidthFixed, 120.0f);
+                ImGui::TableHeadersRow();
+
+                for (size_t i = 0; i < section.combinations.size(); ++i)
+                {
+                    ImGui::PushID(i);
+                    ImGui::TableNextRow();
+                    float nsd = section.combinations[i].Normal;
+                    float mx = section.combinations[i].MsdX;
+                    float my = section.combinations[i].MsdY;
+
+                    ImGui::TableSetColumnIndex(0);
+                    ImGui::Text("%zu", i + 1);
+
+                    ImGui::TableSetColumnIndex(1);
+                    char labelN[16];
+                    snprintf(labelN, sizeof(labelN), "##nsd%zu", i);
+                    if (ImGui::InputFloat(labelN, &nsd))
+                        section.combinations[i].Normal = nsd;
+
+                    ImGui::TableSetColumnIndex(2);
+                    char labelMx[16];
+                    snprintf(labelMx, sizeof(labelMx), "##mx%zu", i);
+                    if (ImGui::InputFloat(labelMx, &mx))
+                        section.combinations[i].MsdX = mx;
+
+                    ImGui::TableSetColumnIndex(3);
+                    char labelMy[16];
+                    snprintf(labelMy, sizeof(labelMy), "##my%zu", i);
+                    if (ImGui::InputFloat(labelMy, &my))
+                        section.combinations[i].MsdY = my;
+
+                    ImGui::PopID();
+                }
+                ImGui::EndTable();
+            }
+
+            if (ImGui::Button("Limpar"))
+            {
+                section.combinations.clear();
+                section.envelopeMoments.clear();
+                tempNumCombinations = 1;
+                section.combinations.resize(1, Combination(0.0f, 0.0f, 0.0f, 0.0f, false));
+                mappingID.resize(1);
+                section.stressRegions.clearStressRegions();
+                for (size_t j = 0; j < mappingID.size(); ++j)
+                    mappingID[j] = false;
+                relatorio = false;
+            }
+
+            if (m_esforcos.id > 0)
+            {
+                ImVec2 tamanho_da_imagem = ImVec2(150, 150); 
+                
+                ImVec2 espaco_disponivel = ImGui::GetContentRegionAvail();
+                
+                float offsetX = (espaco_disponivel.x - tamanho_da_imagem.x) * 0.5f;
+                float offsetY = (espaco_disponivel.y - tamanho_da_imagem.y) * 0.5f;
+               
+                if (offsetX > 0) ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offsetX);
+                if (offsetY > 0) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
+
+                // 6. Desenhe a imagem.
+                ImGui::Image((ImTextureID)&m_esforcos, tamanho_da_imagem);
+            }
         }
-
-        if (ImGui::Button("Limpar"))
-        {
-            section.combinations.clear();
-            section.envelopeMoments.clear();
-            tempNumCombinations = 1;                                                    // Reseta para 1
-            section.combinations.resize(1, Combination(0.0f, 0.0f, 0.0f, 0.0f, false)); // Adiciona uma linha padrão
-            mappingID.resize(1);
-
-            section.stressRegions.clearStressRegions();
-
-            for (size_t j = 0; j < mappingID.size(); ++j)
-                mappingID[j] = false;
-
-            relatorio = false;
-        }
-
         ImGui::End();
-        ImGui::EndMenu();
     }
 }
 
@@ -2132,4 +2229,14 @@ void Interface::renderReinforcement(Reinforcement &reinforcement, std::string pl
 
         ImPlot::PlotScatter(bar_label, single_x, single_y, 1);
     }
+}
+
+void Interface::shutdown()
+{
+    UnloadTexture(m_logoUFU);
+    UnloadTexture(m_esforcos); 
+
+    ImPlot::DestroyContext();
+    rlImGuiShutdown();
+    CloseWindow();
 }

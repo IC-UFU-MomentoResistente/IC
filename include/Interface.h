@@ -40,6 +40,8 @@ private:
     bool showEmptySectionSaveError = false;
     bool relatorio = false;
     int selectedEffort = -1;
+    Texture2D m_logoUFU;
+    Texture2D m_esforcos;
     std::vector<bool> mappingID = {};
 
 public:
@@ -80,4 +82,5 @@ public:
     void loadSectionData(Section &section, const std::string &filename);
     void autoFitToPointsWithMargin(const vector<Point> &points, float margin = 0.1f);
     void renderReinforcement(Reinforcement &reinforcement, std::string plotLabel);
+    void shutdown();
 };

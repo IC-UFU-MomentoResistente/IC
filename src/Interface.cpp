@@ -1681,8 +1681,8 @@ void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
     if (ImPlot::BeginPlot("Envoltoria de Momentos Resistentes", ImVec2(plotSize.x, plotSize.y),
                           ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit))
     {
-        ImPlot::SetupAxis(ImAxis_X1, "MsdY (kN.m)");
-        ImPlot::SetupAxis(ImAxis_Y1, "MsdX (kN.m)", ImPlotAxisFlags_Invert);
+        ImPlot::SetupAxis(ImAxis_X1, "Msd,y (kN.m)");
+        ImPlot::SetupAxis(ImAxis_Y1, "Msd,x (kN.m)", ImPlotAxisFlags_Invert);
 
         bool isNsdInvalidForSelected = false;
         if (selectedEffort >= 0 && selectedEffort < section.combinations.size())

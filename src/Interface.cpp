@@ -1,6 +1,6 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "Interface.h"
-#include "segoeuisl_data.h"
+// #include "segoeuisl_data.h"
 
 #include <iostream>
 #include <functional>
@@ -10,50 +10,53 @@
 void Interface::initInterface()
 {
 
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    int screenWidth = 1280;
-    int screenHeight = 960;
+    // int screenWidth = 1280;
+    // int screenHeight = 720;
 
-    InitWindow(screenWidth, screenHeight, "SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO");
+    // SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
 
-    if (!IsWindowReady()) // Verifique se a janela foi criada com sucesso
-    {
-        std::cerr << "Erro ao criar a janela!" << std::endl;
-        return; // Saia da função se a janela não foi criada
-    }
+    // InitWindow(screenWidth, screenHeight, "SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO");
+    // SetWindowMinSize(320,240);
 
-    rlImGuiBeginInitImGui();
-    ImGui::StyleColorsDark();
+    // // if (!IsWindowReady()) // Verifique se a janela foi criada com sucesso
+    // // {
+    // //     std::cerr << "Erro ao criar a janela!" << std::endl;
+    // //     return; // Saia da função se a janela não foi criada
+    // // }
 
-    ImFontConfig fontConfig;
-    static const ImWchar customRange[] = {
-        0x0020, 0x00FF, // ASCII estendido (contém ², ³)
-        0x0370, 0x03FF, // Grego
-        0x2070, 0x209F, // Sobrescritos e Subscritos (contém ⁰¹²³⁴⁵⁶⁷⁸⁹)
-        0x2030, 0x2030, // Símbolo de por mil (‰)
-        0};
+    // rlImGuiBeginInitImGui();
 
-    ImGuiIO &io = ImGui::GetIO();
-    // ImFont *customFont = io.Fonts->AddFontFromFileTTF("src/segoeuisl.ttf", 18.0f, &fontConfig, customRange);
+    // ImGui::StyleColorsDark();
 
-    ImFont *customFont = io.Fonts->AddFontFromMemoryTTF(
-        (void *)segoeuisl_ttf,
-        segoeuisl_ttf_len,
-        18.0f,
-        &fontConfig,
-        customRange);
+    // ImFontConfig fontConfig;
+    // static const ImWchar customRange[] = {
+    //     0x0020, 0x00FF, // ASCII estendido (contém ², ³)
+    //     0x0370, 0x03FF, // Grego
+    //     0x2070, 0x209F, // Sobrescritos e Subscritos (contém ⁰¹²³⁴⁵⁶⁷⁸⁹)
+    //     0x2030, 0x2030, // Símbolo de por mil (‰)
+    //     0};
 
-    if (customFont)
-    {
-        io.FontDefault = customFont;
-    }
-    else
-    {
-        std::cerr << "Erro ao carregar a fonte personalizada!" << std::endl;
-    }
+    // ImGuiIO &io = ImGui::GetIO();
+    // // ImFont *customFont = io.Fonts->AddFontFromFileTTF("src/segoeuisl.ttf", 18.0f, &fontConfig, customRange);
 
-    rlImGuiEndInitImGui();
-    ImPlot::CreateContext();
+    // ImFont *customFont = io.Fonts->AddFontFromMemoryTTF(
+    //     (void *)segoeuisl_ttf,
+    //     segoeuisl_ttf_len,
+    //     18.0f,
+    //     &fontConfig,
+    //     customRange);
+
+    // if (customFont)
+    // {
+    //     io.FontDefault = customFont;
+    // }
+    // else
+    // {
+    //     std::cerr << "Erro ao carregar a fonte personalizada!" << std::endl;
+    // }
+
+    // rlImGuiEndInitImGui();
+    // ImPlot::CreateContext();
 }
 
 void Interface::interfaceLoop()
@@ -71,29 +74,29 @@ void Interface::showPrimaryMenuBar(Section &section)
                 clearSection(section);
             }
 
-            if (ImGui::MenuItem("Salvar"))
-            {
-                if (section.originalPolygon.getPolygonVertices().empty() && section.originalReinforcement.getReinforcement().empty())
-                {
-                    showEmptySectionSaveError = true;
-                }
-                else
-                {
-                    IGFD::FileDialogConfig configSave;
-                    configSave.path = ".";
-                    configSave.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
-                    ImGuiFileDialog::Instance()->OpenDialog("SaveFileDialog", "Salvar Projeto", ".json", configSave);
-                }
-            }
+            // if (ImGui::MenuItem("Salvar"))
+            // {
+            //     if (section.originalPolygon.getPolygonVertices().empty() && section.originalReinforcement.getReinforcement().empty())
+            //     {
+            //         showEmptySectionSaveError = true;
+            //     }
+            //     else
+            //     {
+            //         IGFD::FileDialogConfig configSave;
+            //         configSave.path = ".";
+            //         configSave.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
+            //         ImGuiFileDialog::Instance()->OpenDialog("SaveFileDialog", "Salvar Projeto", ".json", configSave);
+            //     }
+            // }
 
-            if (ImGui::MenuItem("Carregar"))
-            {
-                IGFD::FileDialogConfig configLoad;
-                configLoad.path = ".";
-                ImGuiFileDialog::Instance()->OpenDialog("LoadFileDialog", "Carregar Projeto", ".json", configLoad);
-                shouldAutoFit = true;
-                shouldAutoFitEnv = true;
-            }
+            // if (ImGui::MenuItem("Carregar"))
+            // {
+            //     IGFD::FileDialogConfig configLoad;
+            //     configLoad.path = ".";
+            //     ImGuiFileDialog::Instance()->OpenDialog("LoadFileDialog", "Carregar Projeto", ".json", configLoad);
+            //     shouldAutoFit = true;
+            //     shouldAutoFitEnv = true;
+            // }
 
             ImGui::EndMenu();
         }
@@ -132,79 +135,79 @@ void Interface::showPrimaryMenuBar(Section &section)
     // --- Fim das modificações ---
 
     // Aplica a posição calculada antes de exibir o File Dialog de Salvar
-    ImGui::SetNextWindowPos(centeredPos, ImGuiCond_Appearing);
-    ImGui::SetNextWindowSize(dialogCurrentSize, ImGuiCond_Appearing);
+    // ImGui::SetNextWindowPos(centeredPos, ImGuiCond_Appearing);
+    // ImGui::SetNextWindowSize(dialogCurrentSize, ImGuiCond_Appearing);
 
-    if (ImGuiFileDialog::Instance()->Display("SaveFileDialog"))
-    {
-        if (ImGuiFileDialog::Instance()->IsOk())
-        {
-            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-            saveSectionData(section, filePathName);
-        }
-        ImGuiFileDialog::Instance()->Close();
-    }
+    // if (ImGuiFileDialog::Instance()->Display("SaveFileDialog"))
+    // {
+    //     if (ImGuiFileDialog::Instance()->IsOk())
+    //     {
+    //         std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+    //         saveSectionData(section, filePathName);
+    //     }
+    //     ImGuiFileDialog::Instance()->Close();
+    // }
 
-    // Aplica a posição calculada antes de exibir o File Dialog de Carregar
-    ImGui::SetNextWindowPos(centeredPos, ImGuiCond_Appearing);
-    ImGui::SetNextWindowSize(dialogCurrentSize, ImGuiCond_Appearing);
+    // // Aplica a posição calculada antes de exibir o File Dialog de Carregar
+    // ImGui::SetNextWindowPos(centeredPos, ImGuiCond_Appearing);
+    // ImGui::SetNextWindowSize(dialogCurrentSize, ImGuiCond_Appearing);
 
-    if (ImGuiFileDialog::Instance()->Display("LoadFileDialog"))
-    {
-        if (ImGuiFileDialog::Instance()->IsOk())
-        {
-            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-            loadSectionData(section, filePathName);
-        }
-        ImGuiFileDialog::Instance()->Close();
-    }
+    // if (ImGuiFileDialog::Instance()->Display("LoadFileDialog"))
+    // {
+    //     if (ImGuiFileDialog::Instance()->IsOk())
+    //     {
+    //         std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+    //         loadSectionData(section, filePathName);
+    //     }
+    //     ImGuiFileDialog::Instance()->Close();
+    // }
 
-    if (showCorrupedFileError)
-    {
-        ImGuiIO &io = ImGui::GetIO();
-        ImGui::OpenPopup("Erro ao Carregar Projeto");
-        ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
-        ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+    // if (showCorrupedFileError)
+    // {
+    //     ImGuiIO &io = ImGui::GetIO();
+    //     ImGui::OpenPopup("Erro ao Carregar Projeto");
+    //     ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+    //     ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
-        if (ImGui::BeginPopupModal("Erro ao Carregar Projeto", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            ImGui::Text("O arquivo selecionado está corrompido ou não é um arquivo de projeto válido.");
-            ImGui::Text("Por favor, selecione um arquivo de projeto válido ou crie um novo.");
-            ImGui::Separator();
+    //     if (ImGui::BeginPopupModal("Erro ao Carregar Projeto", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+    //     {
+    //         ImGui::Text("O arquivo selecionado está corrompido ou não é um arquivo de projeto válido.");
+    //         ImGui::Text("Por favor, selecione um arquivo de projeto válido ou crie um novo.");
+    //         ImGui::Separator();
 
-            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f);
-            if (ImGui::Button("OK", ImVec2(120, 0)))
-            {
-                showCorrupedFileError = false;
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::EndPopup();
-        }
-    }
+    //         ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f);
+    //         if (ImGui::Button("OK", ImVec2(120, 0)))
+    //         {
+    //             showCorrupedFileError = false;
+    //             ImGui::CloseCurrentPopup();
+    //         }
+    //         ImGui::EndPopup();
+    //     }
+    // }
 
-    if (showEmptySectionSaveError)
-    {
-        ImGuiIO &io = ImGui::GetIO();
-        ImGui::OpenPopup("Erro ao Salvar Projeto");
-        ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
-        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+    // if (showEmptySectionSaveError)
+    // {
+    //     ImGuiIO &io = ImGui::GetIO();
+    //     ImGui::OpenPopup("Erro ao Salvar Projeto");
+    //     ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+    //     ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
-        if (ImGui::BeginPopupModal("Erro ao Salvar Projeto", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            ImGui::Text("Não é possível salvar um projeto sem uma seção transversal definida.");
-            ImGui::Text("Por favor, defina a geometria da seção (Poligonal, Retangular, T ou Circular)");
-            ImGui::Text("e/ou adicione a armadura antes de salvar.");
-            ImGui::Separator();
+    //     if (ImGui::BeginPopupModal("Erro ao Salvar Projeto", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    //     {
+    //         ImGui::Text("Não é possível salvar um projeto sem uma seção transversal definida.");
+    //         ImGui::Text("Por favor, defina a geometria da seção (Poligonal, Retangular, T ou Circular)");
+    //         ImGui::Text("e/ou adicione a armadura antes de salvar.");
+    //         ImGui::Separator();
 
-            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f);
-            if (ImGui::Button("OK", ImVec2(120, 0)))
-            {
-                showEmptySectionSaveError = false; // Reseta a flag para fechar o popup
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::EndPopup();
-        }
-    }
+    //         ImGui::SetCursorPosX((ImGui::GetWindowSize().x - 120.0f) * 0.5f);
+    //         if (ImGui::Button("OK", ImVec2(120, 0)))
+    //         {
+    //             showEmptySectionSaveError = false; // Reseta a flag para fechar o popup
+    //             ImGui::CloseCurrentPopup();
+    //         }
+    //         ImGui::EndPopup();
+    //     }
+    // }
 }
 
 void Interface::autorsWindow()

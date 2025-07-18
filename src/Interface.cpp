@@ -219,52 +219,42 @@ void Interface::showPrimaryMenuBar(Section &section)
 }
 void Interface::autorsWindow()
 {
+    // Títulos e separadores iniciais (sem alterações)
     ImGui::SeparatorText("Software de cálculo do momento resistente em seções de concreto armado");
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::Spacing();
 
-   
-    ImGui::Columns(2, "info_layout", false);
-
-    
-    ImGui::SetColumnWidth(0, ImGui::GetWindowWidth() * 0.65f);
-
-    ImGui::Dummy(ImVec2(0.0f, 12.0ff)); 
+    ImGui::BeginGroup();
+    ImGui::Dummy(ImVec2(0.0f, 12.0f)); // Um pequeno espaço no topo para alinhamento visual
     ImGui::Text("Desenvolvido por:");
     ImGui::BulletText("Arthur C. Pena - arthur.cunha.pena@ufu.br");
     ImGui::BulletText("Gabriel A. P. Lunarti - gabriel.lunarti@ufu.br");
+    ImGui::EndGroup(); // Fim do grupo de texto
 
-   
-    ImGui::NextColumn();
+    ImGui::SameLine(0.0f, 100.0f); 
+    ImGui::BeginGroup();
+    if (m_esforcos.id > 0)
+            {
 
-   
-    if (m_logoUFU.id > 0) 
-    {
-        float largura_desejada = 120.0f;
-        float altura_proporcional = 0.0f;
+                float largura_desejada = 200.0f; // Um tamanho mais apropriado
+                float altura_proporcional = 0.0f;
 
-        
-        if (m_logoUFU.width > 0)
-        {
-             float aspectRatio = (float)m_logoUFU.height / (float)m_logoUFU.width;
-             altura_proporcional = largura_desejada * aspectRatio;
-        }
+                float aspectRatio = (float)m_logoUFU.height / (float)m_logoUFU.width;
+                altura_proporcional = largura_desejada * aspectRatio;
 
-        
-        ImGui::Dummy(ImVec2(0.0f, 8.0f));
-
-      
-        float largura_coluna_imagem = ImGui::GetColumnWidth();
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (largura_coluna_imagem - largura_desejada) * 0.5f);
-       
-        ImGui::Image((ImTextureID)&m_logoUFU, ImVec2(largura_desejada, altura_proporcional));
-    }
-
-    ImGui::Columns(1);
-
-    ImGui::Separator(); 
-    ImGui::Spacing();
+                ImVec2 tamanho_da_imagem = ImVec2(largura_desejada, altura_proporcional); 
+                ImVec2 espaco_disponivel = ImGui::GetContentRegionAvail();
+                
+                float offsetX = (espaco_disponivel.x - tamanho_da_imagem.x) * 0.5f;
+               
+                ImGui::SetCursorPosX(280.0f);
+                ImGui::SetCursorPosY(15.0f); // Ajusta a posição Y para centralizar verticalmente
+                ImGui::Image((ImTextureID)&m_logoUFU, tamanho_da_imagem);
+            }
+    ImGui::EndGroup();
+    
+    ImGui::Separator();
 
     ImGui::Text("Orientador:");
     ImGui::BulletText("Prof. Dr. Eduardo Vicente Wolf Trentini - etrentini@ufu.br ");
@@ -272,6 +262,7 @@ void Interface::autorsWindow()
     ImGui::Separator();
     ImGui::Spacing();
 
+    // Botão Fechar (sem alterações)
     float buttonWidth = 100.0f;
     ImGui::SetCursorPosX((ImGui::GetWindowWidth() - buttonWidth) * 0.5f);
     if (ImGui::Button("Fechar", ImVec2(buttonWidth, 30)))
@@ -1341,7 +1332,7 @@ void Interface::effortSectionInterface(Section &section)
 
     if (mostrar_janela_esforcos)
     {
-        ImGui::SetNextWindowSize(ImVec2(610, 400), ImGuiCond_Appearing);
+        ImGui::SetNextWindowSize(ImVec2(610, 450), ImGuiCond_Appearing);
         ImGui::SetNextWindowPos(ImVec2(265, 47), ImGuiCond_Appearing);
 
         if (ImGui::Begin("Entrada de Dados: Esforços", &mostrar_janela_esforcos,
@@ -1429,17 +1420,20 @@ void Interface::effortSectionInterface(Section &section)
 
             if (m_esforcos.id > 0)
             {
-                ImVec2 tamanho_da_imagem = ImVec2(150, 150); 
-                
+
+                float largura_desejada = 400.0f; // Um tamanho mais apropriado
+                float altura_proporcional = 0.0f;
+
+                float aspectRatio = (float)m_esforcos.height / (float)m_esforcos.width;
+                altura_proporcional = largura_desejada * aspectRatio;
+
+                ImVec2 tamanho_da_imagem = ImVec2(largura_desejada, altura_proporcional); 
                 ImVec2 espaco_disponivel = ImGui::GetContentRegionAvail();
                 
                 float offsetX = (espaco_disponivel.x - tamanho_da_imagem.x) * 0.5f;
-                float offsetY = (espaco_disponivel.y - tamanho_da_imagem.y) * 0.5f;
                
-                if (offsetX > 0) ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offsetX);
-                if (offsetY > 0) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
-
-                // 6. Desenhe a imagem.
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offsetX);
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 80.0f); // Ajusta a posição Y para centralizar verticalmente
                 ImGui::Image((ImTextureID)&m_esforcos, tamanho_da_imagem);
             }
         }
@@ -1994,13 +1988,13 @@ void Interface::RightTablePos(const char *nome1, const char *nome2, float posY, 
 
     float larguraFixa = 300.0f;
     float alturaTotal = io.DisplaySize.y - posY;
-    float alturaCadaJanela = alturaTotal / 2.0f;
+    float alturaCadaJanela = alturaTotal / 3.0f;
 
     // --- Janela 1: Tabela de Pontos ---
     ImVec2 posJanela1 = ImVec2(io.DisplaySize.x - larguraFixa, posY);
 
     ImGui::SetNextWindowPos(posJanela1, ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(larguraFixa, alturaCadaJanela), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(larguraFixa, 1.1 * alturaCadaJanela), ImGuiCond_Always);
     ImGui::Begin(nome1, nullptr,
                  ImGuiWindowFlags_NoMove |
                      ImGuiWindowFlags_NoResize |
@@ -2020,10 +2014,10 @@ void Interface::RightTablePos(const char *nome1, const char *nome2, float posY, 
     ImGui::End();
 
     // --- Janela 2: Tabela de Esforços ---
-    ImVec2 posJanela2 = ImVec2(io.DisplaySize.x - larguraFixa, posY + alturaCadaJanela);
+    ImVec2 posJanela2 = ImVec2(io.DisplaySize.x - larguraFixa, posY + 1.1 * alturaCadaJanela);
 
     ImGui::SetNextWindowPos(posJanela2, ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(larguraFixa, alturaCadaJanela), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(larguraFixa, 1.9 * alturaCadaJanela), ImGuiCond_Always);
     ImGui::Begin(nome2, nullptr,
                  ImGuiWindowFlags_NoMove |
                      ImGuiWindowFlags_NoResize |

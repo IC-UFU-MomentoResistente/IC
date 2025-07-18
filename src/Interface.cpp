@@ -234,24 +234,24 @@ void Interface::autorsWindow()
 
     ImGui::SameLine(0.0f, 100.0f); 
     ImGui::BeginGroup();
-    if (m_esforcos.id > 0)
-            {
+    if (m_logoUFU.id > 0)
+    {
+        float largura_desejada = 200.0f; // Um tamanho mais apropriado
+        float altura_proporcional = 0.0f;
 
-                float largura_desejada = 200.0f; // Um tamanho mais apropriado
-                float altura_proporcional = 0.0f;
+        float aspectRatio = (float)m_logoUFU.height / (float)m_logoUFU.width;
+        altura_proporcional = largura_desejada * aspectRatio;
 
-                float aspectRatio = (float)m_logoUFU.height / (float)m_logoUFU.width;
-                altura_proporcional = largura_desejada * aspectRatio;
-
-                ImVec2 tamanho_da_imagem = ImVec2(largura_desejada, altura_proporcional); 
-                ImVec2 espaco_disponivel = ImGui::GetContentRegionAvail();
-                
-                float offsetX = (espaco_disponivel.x - tamanho_da_imagem.x) * 0.5f;
-               
-                ImGui::SetCursorPosX(280.0f);
-                ImGui::SetCursorPosY(15.0f); // Ajusta a posição Y para centralizar verticalmente
-                ImGui::Image((ImTextureID)&m_logoUFU, tamanho_da_imagem);
-            }
+        ImVec2 tamanho_da_imagem = ImVec2(largura_desejada, altura_proporcional); 
+        ImVec2 espaco_disponivel = ImGui::GetContentRegionAvail();
+        
+        float offsetX = (espaco_disponivel.x - tamanho_da_imagem.x) * 0.5f;
+        
+        ImGui::SetCursorPosX(280.0f);
+        ImGui::SetCursorPosY(15.0f); // Ajusta a posição Y para centralizar verticalmente
+        // ImGui::Image((ImTextureID)(intptr_t)&m_logoUFU, tamanho_da_imagem);
+        rlImGuiImageSize(&m_logoUFU, (int)largura_desejada, (int)altura_proporcional);
+    }
     ImGui::EndGroup();
     
     ImGui::Separator();
@@ -1434,7 +1434,8 @@ void Interface::effortSectionInterface(Section &section)
                
                 ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offsetX);
                 ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 80.0f); // Ajusta a posição Y para centralizar verticalmente
-                ImGui::Image((ImTextureID)&m_esforcos, tamanho_da_imagem);
+                // ImGui::Image((ImTextureID)(intptr_t)&m_esforcos, tamanho_da_imagem);
+                rlImGuiImageSize(&m_esforcos, (int)largura_desejada, (int)altura_proporcional);
             }
         }
         ImGui::End();

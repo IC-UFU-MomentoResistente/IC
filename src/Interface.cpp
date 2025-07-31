@@ -352,12 +352,12 @@ void Interface::crossSectionData(Section &section)
                     clearInputSection(section);
                     ImGui::EndTabItem();
                 }
-                if (ImGui::BeginTabItem("Debug"))
-                {
-                    inputSectionDebug(section);
-                    clearInputSection(section);
-                    ImGui::EndTabItem();
-                }
+                // if (ImGui::BeginTabItem("Debug"))
+                // {
+                //     inputSectionDebug(section);
+                //     clearInputSection(section);
+                //     ImGui::EndTabItem();
+                // }
                 showGeometricParameters(section);
                 ImGui::EndTabBar();
             }
@@ -644,6 +644,7 @@ void Interface::clearSection(Section &section)
     section.combinations.clear();
     section.concrete.setParameters(StressStrainConcreteModelType::PARABOLA_RECTANGLE_NBR6118_2023, 30.0, 1.4);
     section.steel.setParameters(StressStrainSteelModelType::PASSIVE_REINFORCEMENT, 500.0, 1.15, 210.0);
+    relatorio = false;
 }
 
 void Interface::interfaceMaterials(Section &section)
@@ -1679,7 +1680,7 @@ void Interface::envelopeMomentsPlotInterface(Section &section, float posY)
 
     ImVec2 plotSize = ImGui::GetContentRegionAvail();
 
-    if (ImPlot::BeginPlot("Envoltoria de Momentos Resistentes", ImVec2(plotSize.x, plotSize.y),
+    if (ImPlot::BeginPlot("Envoltória de Momentos Resistentes", ImVec2(plotSize.x, plotSize.y),
                           ImPlotFlags_Equal | ImPlotAxisFlags_AutoFit))
     {
         ImPlot::SetupAxis(ImAxis_X1, "Msd,y (kN.m)");

@@ -57,6 +57,12 @@ void Polygon::clearPolygonVertices()
     polygonArea = 0;
     staticMomentX = 0;
     staticMomentY = 0;
+    inertiaX = 0;
+    inertiaY = 0;
+    inertiaXY = 0;
+    inertiaX_cg = 0;
+    inertiaY_cg = 0;
+    inertiaXY_cg = 0;
 }
 
 void Polygon::clearGeometricCenter()

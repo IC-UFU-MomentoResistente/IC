@@ -48,6 +48,7 @@ void Reinforcement::clearReinforcement()
 	reinforcement.clear();
 	diameters.clear();
 	areas.clear();
+    totalArea = 0.0; 
 }
 
 // Reinforcement.cpp

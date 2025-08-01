@@ -43,14 +43,16 @@ void Interface::initInterface()
         &fontConfig,
         customRange);
 
-    m_logoUFU = LoadTexture("logo5.png");
-    if (m_logoUFU.id <= 0) {
+    m_logoUFU = LoadTexture("msolver.png");
+    if (m_logoUFU.id <= 0)
+    {
         std::cerr << "ERRO: Nao foi possivel carregar a textura 'logo.png'." << std::endl;
     }
 
     // --- ADICIONE O CARREGAMENTO DA NOVA IMAGEM AQUI ---
     m_esforcos = LoadTexture("esforcos.png"); // Use o nome exato do seu arquivo
-    if (m_esforcos.id <= 0) {
+    if (m_esforcos.id <= 0)
+    {
         std::cerr << "ERRO: Nao foi possivel carregar a textura 'outra_imagem.png'." << std::endl;
     }
 
@@ -219,53 +221,53 @@ void Interface::showPrimaryMenuBar(Section &section)
 }
 void Interface::autorsWindow()
 {
-    // Títulos e separadores iniciais (sem alterações)
-    ImGui::SeparatorText("Software de cálculo do momento resistente em seções de concreto armado");
-    ImGui::Spacing();
-    ImGui::Separator();
-    ImGui::Spacing();
+    ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
     ImGui::BeginGroup();
-    ImGui::Dummy(ImVec2(0.0f, 12.0f)); // Um pequeno espaço no topo para alinhamento visual
     ImGui::Text("Desenvolvido por:");
+    ImGui::Indent(); // Adiciona um recuo para os itens da lista
     ImGui::BulletText("Arthur C. Pena - arthur.cunha.pena@ufu.br");
     ImGui::BulletText("Gabriel A. P. Lunarti - gabriel.lunarti@ufu.br");
+    ImGui::Unindent(); // Remove o recuo
+
+    ImGui::Dummy(ImVec2(0.0f, 10.0f)); // Adiciona um espaço vertical
+
+    ImGui::Text("Orientador:");
+    ImGui::Indent();
+    ImGui::BulletText("Prof. Dr. Eduardo Vicente Wolf Trentini - etrentini@ufu.br");
+    ImGui::Unindent();
     ImGui::EndGroup(); // Fim do grupo de texto
 
-    ImGui::SameLine(0.0f, 100.0f); 
+    ImGui::SameLine();
+
     ImGui::BeginGroup();
     if (m_logoUFU.id > 0)
     {
-        float largura_desejada = 200.0f; // Um tamanho mais apropriado
-        float altura_proporcional = 0.0f;
+        float largura_logo = 120.0f; // Um bom tamanho para o layout lado a lado
+        float altura_logo = 0.0f;
+        if (m_logoUFU.width > 0)
+        {
+            float aspectRatio = (float)m_logoUFU.height / (float)m_logoUFU.width;
+            altura_logo = largura_logo * aspectRatio;
+        }
 
-        float aspectRatio = (float)m_logoUFU.height / (float)m_logoUFU.width;
-        altura_proporcional = largura_desejada * aspectRatio;
+        float altura_bloco_texto = ImGui::GetItemRectSize().y; // Pega a altura do último item (nosso grupo de texto)
+        float offset_vertical_logo = (altura_bloco_texto - altura_logo) * 0.5f;
 
-        ImVec2 tamanho_da_imagem = ImVec2(largura_desejada, altura_proporcional); 
-        ImVec2 espaco_disponivel = ImGui::GetContentRegionAvail();
-        
-        float offsetX = (espaco_disponivel.x - tamanho_da_imagem.x) * 0.5f;
-        
-        ImGui::SetCursorPosX(280.0f);
-        ImGui::SetCursorPosY(15.0f); // Ajusta a posição Y para centralizar verticalmente
-        // ImGui::Image((ImTextureID)(intptr_t)&m_logoUFU, tamanho_da_imagem);
-        rlImGuiImageSize(&m_logoUFU, (int)largura_desejada, (int)altura_proporcional);
+        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 30.0f, ImGui::GetCursorPosY() + offset_vertical_logo));
+
+        rlImGuiImageSize(&m_logoUFU, (int)largura_logo, (int)altura_logo);
     }
     ImGui::EndGroup();
-    
-    ImGui::Separator();
 
-    ImGui::Text("Orientador:");
-    ImGui::BulletText("Prof. Dr. Eduardo Vicente Wolf Trentini - etrentini@ufu.br ");
-    ImGui::Spacing();
-    ImGui::Separator();
-    ImGui::Spacing();
+    ImGui::Dummy(ImVec2(0.0f, 20.0f)); // Espaço acima do botão
 
-    // Botão Fechar (sem alterações)
-    float buttonWidth = 100.0f;
-    ImGui::SetCursorPosX((ImGui::GetWindowWidth() - buttonWidth) * 0.5f);
-    if (ImGui::Button("Fechar", ImVec2(buttonWidth, 30)))
+    float largura_botao = 100.0f;
+    float offset_horizontal_botao = (ImGui::GetContentRegionAvail().x - largura_botao) * 0.5f;
+
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offset_horizontal_botao);
+
+    if (ImGui::Button("Fechar", ImVec2(largura_botao, 0)))
     {
         ImGui::CloseCurrentPopup();
     }
@@ -1012,9 +1014,9 @@ void Interface::reinforcementInterface(Section &section)
                     section.stressRegions.clearStressRegions();
                     relatorio = false;
                 }
-                ImGui::PopID(); 
+                ImGui::PopID();
                 ImGui::SeparatorText("Linha de Barras:");
-                ImGui::PushID(2); 
+                ImGui::PushID(2);
                 ImGui::InputInt("Número de barras", &numBar);
                 if (numBar < 2)
                     numBar = 2;
@@ -1343,7 +1345,7 @@ void Interface::effortSectionInterface(Section &section)
             {
                 mostrar_janela_esforcos = false;
             }
-           
+
             static int tempNumCombinations = 1;
             ImGui::PushItemWidth(100);
             ImGui::SeparatorText("Número de combinações de esforços");
@@ -1422,17 +1424,17 @@ void Interface::effortSectionInterface(Section &section)
             if (m_esforcos.id > 0)
             {
 
-                float largura_desejada = 400.0f; // Um tamanho mais apropriado
+                float largura_desejada = 800.0f; // Um tamanho mais apropriado
                 float altura_proporcional = 0.0f;
 
                 float aspectRatio = (float)m_esforcos.height / (float)m_esforcos.width;
                 altura_proporcional = largura_desejada * aspectRatio;
 
-                ImVec2 tamanho_da_imagem = ImVec2(largura_desejada, altura_proporcional); 
+                ImVec2 tamanho_da_imagem = ImVec2(largura_desejada, altura_proporcional);
                 ImVec2 espaco_disponivel = ImGui::GetContentRegionAvail();
-                
+
                 float offsetX = (espaco_disponivel.x - tamanho_da_imagem.x) * 0.5f;
-               
+
                 ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offsetX);
                 ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 80.0f); // Ajusta a posição Y para centralizar verticalmente
                 // ImGui::Image((ImTextureID)(intptr_t)&m_esforcos, tamanho_da_imagem);
@@ -2230,7 +2232,7 @@ void Interface::renderReinforcement(Reinforcement &reinforcement, std::string pl
 void Interface::shutdown()
 {
     UnloadTexture(m_logoUFU);
-    UnloadTexture(m_esforcos); 
+    UnloadTexture(m_esforcos);
 
     ImPlot::DestroyContext();
     rlImGuiShutdown();

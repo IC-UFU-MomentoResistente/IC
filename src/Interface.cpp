@@ -16,6 +16,12 @@ void Interface::initInterface()
 
     InitWindow(screenWidth, screenHeight, "SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO");
 
+    Image icon = LoadImage("msolver.png");
+
+    SetWindowIcon(icon);
+
+    UnloadImage(icon);
+
     if (!IsWindowReady()) // Verifique se a janela foi criada com sucesso
     {
         std::cerr << "Erro ao criar a janela!" << std::endl;

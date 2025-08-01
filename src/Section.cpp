@@ -33,8 +33,14 @@ void Section::updateGeometricProperties()
 
 void Section::defineGeometry(const Polygon &polygon, const Reinforcement &reinforcement)
 {
-    originalPolygon = polygon;
-    originalReinforcement = reinforcement;
+    if (!polygon.getPolygonVertices().empty() || !reinforcement.getReinforcement().empty())
+    {
+        originalPolygon = polygon;
+        originalReinforcement = reinforcement;
+    }
+
+    // originalPolygon = polygon;
+    // originalReinforcement = reinforcement;
 
     if (!originalPolygon.getPolygonVertices().empty() || !originalReinforcement.getReinforcement().empty())
     {

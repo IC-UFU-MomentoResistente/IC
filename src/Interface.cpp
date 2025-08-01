@@ -1058,7 +1058,10 @@ void Interface::reinforcementInterface(Section &section)
                         section.defineReinforcement(section.originalReinforcement);
                     }
                     else
-                        showPopUpErrorBar = true;
+                    {
+                        // showPopUpErrorBar = true;
+                        ImGui::OpenPopup("Erro de Entrada");
+                    }
                 }
             }
 
@@ -1109,7 +1112,9 @@ void Interface::reinforcementInterface(Section &section)
                         }
                         else
                         {
-                            showPopUpErrorBar = true;
+                            ImGui::OpenPopup("Erro de Entrada");
+                            double temp_x, temp_y;
+                            section.originalReinforcement.GetTableData(i, &temp_x, &temp_y, &d);
                         }
                     }
                     ImGui::PopID();
@@ -1117,10 +1122,10 @@ void Interface::reinforcementInterface(Section &section)
                 ImGui::EndTable();
             }
 
-            if (showPopUpErrorBar)
-            {
-                ImGui::OpenPopup("Erro de Entrada");
-            }
+            // if (showPopUpErrorBar)
+            // {
+            //     ImGui::OpenPopup("Erro de Entrada");
+            // }
             if (ImGui::BeginPopupModal("Erro de Entrada", NULL, ImGuiWindowFlags_AlwaysAutoResize))
             {
                 ImGui::Text("Diâmetro inválido. Insira um valor positivo.");
@@ -2239,8 +2244,4 @@ void Interface::shutdown()
 {
     UnloadTexture(m_logoUFU);
     UnloadTexture(m_esforcos);
-
-    ImPlot::DestroyContext();
-    rlImGuiShutdown();
-    CloseWindow();
 }

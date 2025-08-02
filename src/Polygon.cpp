@@ -72,8 +72,7 @@ void Polygon::clearGeometricCenter()
 
 void Polygon::computeMaxCoordY()
 {
-    if (polygonVertices.empty())
-        throw std::invalid_argument("polygonVertices is empty");
+    if (polygonVertices.empty()) return;  // Verifica se há vértices[]
 
     maxY = polygonVertices[0].getY();
     for (size_t i = 0; i < polygonVertices.size(); i++)
@@ -85,9 +84,8 @@ void Polygon::computeMaxCoordY()
 
 void Polygon::computeMinCoordY()
 {
-    if (polygonVertices.empty())
-        throw std::invalid_argument("polygonVertices is empty");
-
+    if (polygonVertices.empty()) return;  // Verifica se há vértices[]
+    
     minY = polygonVertices[0].getY();
     for (size_t i = 0; i < polygonVertices.size(); i++)
     {

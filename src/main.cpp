@@ -63,7 +63,6 @@ int main()
 	}
 
 	interface.shutdown();
-
 	ImPlot::DestroyContext();
 	rlImGuiShutdown();
 	CloseWindow();

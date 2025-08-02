@@ -15,7 +15,7 @@ void Interface::initInterface()
     int screenHeight = 960;
 
     InitWindow(screenWidth, screenHeight, "SOFTWARE DE CÁLCULO DO MOMENTO RESISTENTE EM SEÇÕES DE CONCRETO ARMADO");
-
+    
     Image icon = LoadImage("msolver.png");
 
     SetWindowIcon(icon);
@@ -1898,8 +1898,11 @@ void Interface::EffortsTable(Section &section)
             // --- MUDANÇA AQUI: Label do Selectable agora é invisível ---
             // Usamos "##" no início para que o Selectable não tenha texto visível,
             // mas ainda tenha um ID único para o ImGui.
+            // char selectable_label[32];
+            // sprintf(selectable_label, "##row_selectable_%zu", i);
+
             char selectable_label[32];
-            sprintf(selectable_label, "##row_selectable_%zu", i);
+            snprintf(selectable_label, sizeof(selectable_label), "##row_selectable_%zu", i);
 
             if (ImGui::Selectable(selectable_label, is_selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap))
             {
